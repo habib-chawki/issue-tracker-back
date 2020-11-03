@@ -1,4 +1,4 @@
-package com.habibInc.issueTracker.Issue;
+package com.habibInc.issueTracker.issue;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
