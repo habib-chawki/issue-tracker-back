@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 
 
@@ -23,9 +25,10 @@ public class IssueControllerTest {
 
     @Test
     public void itShouldGetIssueById() throws Exception {
-        // mock issue service and return new issue
-        when(issueService.getIssue(anyLong())).thenReturn(new Issue(1L));
+        // mock the service to return a new issue
+        when(issueService.getIssue(1L)).thenReturn(new Issue(1L));
 
+        // perform get request and expect proper issue to have been returned
         mockMvc.perform(get("/issues/1"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
@@ -34,6 +37,13 @@ public class IssueControllerTest {
 
     @Test
     public void itShouldCreateIssue() throws Exception {
+        Issue issue = new Issue(1L);
+
+        // mock issueService to add new issue
+        when(issueService.createIssue(any()))
+                .thenReturn(new ResponseEntity<>(issue, HttpStatus.CREATED));
+
+        // perform a post request and expect the new issue to have been created
         mockMvc.perform(post("/issues"))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("id").exists());
