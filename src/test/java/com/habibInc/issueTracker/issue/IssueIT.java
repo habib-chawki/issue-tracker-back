@@ -14,9 +14,18 @@ public class IssueIT {
     TestRestTemplate restTemplate;
 
     @Test
-    public void itShouldReturnIssue() throws Exception{
+    public void itShouldReturnIssue() {
         ResponseEntity<Issue> response = restTemplate.getForEntity("/issues/1", Issue.class);
+
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().getId()).isEqualTo(1);
+    }
+
+    @Test
+    public void itShouldCreateIssue() {
+        Issue newIssue = new Issue();
+        ResponseEntity<Issue> response = restTemplate.postForEntity("/issues", newIssue, Issue.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
     }
 }

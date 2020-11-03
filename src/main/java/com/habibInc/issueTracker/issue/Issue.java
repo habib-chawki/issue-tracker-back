@@ -7,7 +7,7 @@ import javax.persistence.Id;
 import java.io.Serializable;
 
 @Entity
-public class Issue implements Serializable{
+public class Issue {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
