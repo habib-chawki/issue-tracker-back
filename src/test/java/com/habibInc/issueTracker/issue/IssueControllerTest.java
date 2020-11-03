@@ -7,6 +7,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(IssueController.class)
@@ -20,5 +21,12 @@ public class IssueControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(jsonPath("id").value("1"));
+    }
+
+    @Test
+    public void itShouldCreateIssue() throws Exception {
+        mockMvc.perform(post("/issues"))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("id").exists());
     }
 }
