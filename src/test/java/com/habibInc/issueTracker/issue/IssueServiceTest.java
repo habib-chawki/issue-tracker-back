@@ -37,4 +37,15 @@ public class IssueServiceTest {
 
         assertThat(returnedIssue.getId()).isEqualTo(1L);
     }
+
+    @Test
+    public void itShouldCreateIssue(){
+        // return created issue
+        Issue issue = new Issue(1L);
+        when(issueRepository.save(any(Issue.class))).thenReturn(issue);
+
+        Issue returnedIssue = issueService.createIssue(issue);
+
+        assertThat(returnedIssue.getId()).isEqualTo(1L);
+    }
 }
