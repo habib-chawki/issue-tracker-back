@@ -1,6 +1,5 @@
 package com.habibInc.issueTracker.issue;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -9,7 +8,7 @@ public class IssueService {
         return null;
     }
 
-    public ResponseEntity<Issue> createIssue(Issue issue) {
+    public Issue createIssue(Issue issue) {
         return null;
     }
 }
