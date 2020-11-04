@@ -1,7 +1,7 @@
 package com.habibInc.issueTracker.issue;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,7 +16,8 @@ public class IssueController {
     }
 
     @PostMapping({"", "/"})
-    public ResponseEntity<Issue> createIssue(Issue issue){
+    @ResponseStatus(HttpStatus.CREATED)
+    public Issue createIssue(Issue issue){
         return issueService.createIssue(issue);
     }
 }
