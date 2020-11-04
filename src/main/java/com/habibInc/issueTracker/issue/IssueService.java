@@ -13,6 +13,6 @@ public class IssueService {
     }
 
     public Issue createIssue(Issue issue) {
-        return null;
+        return issueRepository.save(issue);
     }
 }
