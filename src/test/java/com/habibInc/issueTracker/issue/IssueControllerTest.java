@@ -40,8 +40,7 @@ public class IssueControllerTest {
         Issue issue = new Issue(1L);
 
         // mock issueService to add new issue
-        when(issueService.createIssue(any()))
-                .thenReturn(new ResponseEntity<>(issue, HttpStatus.CREATED));
+        when(issueService.createIssue(any())).thenReturn(issue);
 
         // perform a post request and expect the new issue to have been created
         mockMvc.perform(post("/issues"))
