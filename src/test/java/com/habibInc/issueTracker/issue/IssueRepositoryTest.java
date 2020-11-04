@@ -6,9 +6,10 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.*;
 
 @DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@AutoConfigureTestDatabase(replace = Replace.NONE)
 public class IssueRepositoryTest {
 
     @Autowired
@@ -16,9 +17,8 @@ public class IssueRepositoryTest {
 
     @Test
     public void itShouldSaveIssue(){
-        Issue issue = new Issue(1L);
-        Issue savedIssue = issueRepository.save(issue);
+        Issue savedIssue = issueRepository.save(new Issue());
 
-        assertThat(savedIssue.getId()).isEqualTo(1L);
+        assertThat(savedIssue.getId()).isEqualTo(savedIssue.getId());
     }
 }
