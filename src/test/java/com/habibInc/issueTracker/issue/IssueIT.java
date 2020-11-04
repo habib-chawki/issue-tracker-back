@@ -13,19 +13,28 @@ public class IssueIT {
     @Autowired
     TestRestTemplate restTemplate;
 
-    @Test
-    public void itShouldReturnIssue() {
-        ResponseEntity<Issue> response = restTemplate.getForEntity("/issues/1", Issue.class);
+    @Autowired
+    IssueService issueService;
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().getId()).isEqualTo(1);
-    }
 
     @Test
     public void itShouldCreateIssue() {
-        Issue newIssue = new Issue();
-        ResponseEntity<Issue> response = restTemplate.postForEntity("/issues", newIssue, Issue.class);
+        Issue issue = new Issue();
+        ResponseEntity<Issue> response = restTemplate.postForEntity("/issues", issue, Issue.class);
 
+        response.getBody();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(response.getBody().getId()).isNotNull().isPositive();
     }
+
+    @Test
+    public void itShouldReturnIssue() {
+        Issue issue = issueService.createIssue(new Issue());
+
+        ResponseEntity<Issue> response = restTemplate.getForEntity("/issues/" + issue.getId(), Issue.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().getId()).isEqualTo(issue.getId());
+    }
+
 }
