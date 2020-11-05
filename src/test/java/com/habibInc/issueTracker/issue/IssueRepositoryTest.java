@@ -25,7 +25,7 @@ public class IssueRepositoryTest {
         Issue savedIssue = issueRepository.save(new Issue());
 
         // expect the issue to have been saved successfully
-        assertThat(savedIssue.getId()).isEqualTo(savedIssue.getId());
+        assertThat(savedIssue).isNotNull();
     }
 
     @Test
