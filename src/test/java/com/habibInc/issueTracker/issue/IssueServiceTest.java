@@ -65,7 +65,7 @@ public class IssueServiceTest {
         when(issueRepository.findAll()).thenReturn(mockedIssues);
 
         // retrieve list of issues
-        Iterable<Issue> issues = issueService.getIssues();
+        Iterable<Issue> issues = issueService.getAllIssues();
 
         // expect all issues to have been retrieved successfully
         assertThat(issues).contains(issue1);
