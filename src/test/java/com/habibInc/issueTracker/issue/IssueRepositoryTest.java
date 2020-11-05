@@ -27,7 +27,7 @@ public class IssueRepositoryTest {
     }
 
     @Test
-    public void itShouldGetIssueById(){
+    public void itShouldFindIssueById(){
         // save a new issue
         Issue issue = issueRepository.save(new Issue());
 
@@ -39,7 +39,7 @@ public class IssueRepositoryTest {
     }
 
     @Test
-    public void itShouldGetAllIssues(){
+    public void itShouldFindAllIssues(){
         // save a list of issues
         Issue issue1 = issueRepository.save(new Issue());
         Issue issue2 = issueRepository.save(new Issue());
