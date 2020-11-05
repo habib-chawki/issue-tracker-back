@@ -4,12 +4,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 
-
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -24,6 +20,19 @@ public class IssueControllerTest {
     IssueService issueService;
 
     @Test
+    public void itShouldCreateIssue() throws Exception {
+        Issue issue = new Issue(1L);
+
+        // mock issue service to add new issue
+        when(issueService.createIssue(any())).thenReturn(issue);
+
+        // perform a post request and expect the new issue to have been created
+        mockMvc.perform(post("/issues"))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("id").exists());
+    }
+
+    @Test
     public void itShouldGetIssueById() throws Exception {
         // mock the service to return a new issue
         when(issueService.getIssue(1L)).thenReturn(new Issue(1L));
@@ -33,18 +42,5 @@ public class IssueControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(jsonPath("id").value("1"));
-    }
-
-    @Test
-    public void itShouldCreateIssue() throws Exception {
-        Issue issue = new Issue(1L);
-
-        // mock issueService to add new issue
-        when(issueService.createIssue(any())).thenReturn(issue);
-
-        // perform a post request and expect the new issue to have been created
-        mockMvc.perform(post("/issues"))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("id").exists());
     }
 }
