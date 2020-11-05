@@ -16,7 +16,7 @@ public class IssueService {
         return issueRepository.save(issue);
     }
 
-    public Iterable<Issue> getIssues() {
+    public Iterable<Issue> getAllIssues() {
         return issueRepository.findAll();
     }
 }

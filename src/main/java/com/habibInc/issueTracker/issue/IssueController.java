@@ -10,14 +10,19 @@ public class IssueController {
     @Autowired
     IssueService issueService;
 
+    @PostMapping({"", "/"})
+    @ResponseStatus(HttpStatus.CREATED)
+    public Issue createIssue(Issue issue){
+        return issueService.createIssue(issue);
+    }
+
     @GetMapping("/{id}")
     public Issue getIssue(@PathVariable Long id){
         return issueService.getIssue(id);
     }
 
-    @PostMapping({"", "/"})
-    @ResponseStatus(HttpStatus.CREATED)
-    public Issue createIssue(Issue issue){
-        return issueService.createIssue(issue);
+    @GetMapping({"", "/"})
+    public Iterable<Issue> getAllIssues(){
+        return issueService.getAllIssues();
     }
 }
