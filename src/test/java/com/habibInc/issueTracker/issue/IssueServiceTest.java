@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +30,19 @@ public class IssueServiceTest {
     }
 
     @Test
+    public void itShouldCreateIssue(){
+        // mock repository and create a new issue
+        Issue issue = new Issue(1L);
+        when(issueRepository.save(any(Issue.class))).thenReturn(issue);
+
+        // create the issue
+        Issue createdIssue = issueService.createIssue(issue);
+
+        // expect the issue to have been created successfully
+        assertThat(createdIssue.getId()).isEqualTo(1L);
+    }
+
+    @Test
     public void itShouldGetIssueById(){
         // mock repository behaviour and return an issue optional
         Issue issue = new Issue(1L);
@@ -40,19 +52,6 @@ public class IssueServiceTest {
         Issue returnedIssue = issueService.getIssue(1L);
 
         // expect the proper issue to have been retrieved
-        assertThat(returnedIssue.getId()).isEqualTo(1L);
-    }
-
-    @Test
-    public void itShouldCreateIssue(){
-        // return created issue
-        Issue issue = new Issue(1L);
-        when(issueRepository.save(any(Issue.class))).thenReturn(issue);
-
-        // create the issue
-        Issue returnedIssue = issueService.createIssue(issue);
-
-        // expect the issue to have been created successfully
         assertThat(returnedIssue.getId()).isEqualTo(1L);
     }
 
