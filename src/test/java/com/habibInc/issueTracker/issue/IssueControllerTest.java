@@ -6,6 +6,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Arrays;
+import java.util.List;
+
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -29,7 +33,7 @@ public class IssueControllerTest {
         // perform a post request and expect the new issue to have been created
         mockMvc.perform(post("/issues"))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("id").exists());
+                .andExpect(jsonPath("$.id").exists());
     }
 
     @Test
@@ -41,6 +45,21 @@ public class IssueControllerTest {
         mockMvc.perform(get("/issues/1"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
-                .andExpect(jsonPath("id").value("1"));
+                .andExpect(jsonPath("$.id").value("1"));
+    }
+
+    @Test
+    public void itShouldGetAllIssues() throws Exception {
+        Issue issue1 = new Issue(1L);
+        Issue issue2 = new Issue(2L);
+        List<Issue> issues = Arrays.asList(issue1, issue2);
+
+        when(issueService.getAllIssues()).thenReturn(issues);
+
+        // perform get request and expect the list of all issues
+        mockMvc.perform(get("/issues"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json"))
+                .andExpect(jsonPath("$.[*].id").value(containsInAnyOrder(1, 2)));
     }
 }
