@@ -1,6 +1,5 @@
 package com.habibInc.issueTracker.issue;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +14,7 @@ import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class IssueIT {
+
     @Autowired
     TestRestTemplate restTemplate;
 
@@ -27,9 +27,11 @@ public class IssueIT {
     @Test
     public void itShouldCreateIssue() {
         Issue issue = new Issue();
+
+        // make post request to create new issue
         ResponseEntity<Issue> response = restTemplate.postForEntity("/issues", issue, Issue.class);
 
-        response.getBody();
+        // expect issue to have been created successfully
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getBody().getId()).isNotNull().isPositive();
     }
@@ -38,8 +40,10 @@ public class IssueIT {
     public void itShouldGetIssueById() {
         Issue issue = issueService.createIssue(new Issue());
 
+        // make get request to retrieve an issue by id
         ResponseEntity<Issue> response = restTemplate.getForEntity("/issues/" + issue.getId(), Issue.class);
 
+        // expect the proper issue to have been retrieved
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().getId()).isEqualTo(issue.getId());
     }
@@ -54,19 +58,20 @@ public class IssueIT {
 
         issueRepository.saveAll(issues);
 
-        // get a list of all issues
+        // make a get request to fetch a list of all issues
         ResponseEntity<Issue[]> response = restTemplate.getForEntity("/issues", Issue[].class);
 
-        // convert issues array to list
+        // convert the response issues array to list
         List<Issue> returnedIssues = Arrays.asList(response.getBody());
 
-        // expect all issues to have been returned
+        // expect all issues to have been retrieved
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(returnedIssues).isEqualTo(issues);
     }
 
     @AfterEach
     public void teardown(){
+        // delete all issues
         issueRepository.deleteAll();
     }
 
