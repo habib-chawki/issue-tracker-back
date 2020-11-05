@@ -5,8 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import java.util.Iterator;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,18 +39,18 @@ public class IssueRepositoryTest {
     }
 
     @Test
-    public void itShouldGetListOfIssues(){
+    public void itShouldGetAllIssues(){
         // save a list of issues
         Issue issue1 = issueRepository.save(new Issue());
         Issue issue2 = issueRepository.save(new Issue());
         Issue issue3 = issueRepository.save(new Issue());
 
         // find all issues
-        Iterable<Issue> response = issueRepository.findAll();
+        Iterable<Issue> issues = issueRepository.findAll();
 
         // assert that all issues have been retrieved successfully
-        assertThat(response).contains(issue1);
-        assertThat(response).contains(issue2);
-        assertThat(response).contains(issue3);
+        assertThat(issues).contains(issue1);
+        assertThat(issues).contains(issue2);
+        assertThat(issues).contains(issue3);
     }
 }
