@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -23,23 +25,68 @@ public class IssueServiceTest {
     @Mock
     IssueRepository issueRepository;
 
+    Issue issue1, issue2;
+
     @BeforeEach
     public void setup(){
         // initialize mocks
         initMocks(this);
+
+        // create issue
+        issue1 = new Issue();
+
+        issue1.setId(1L);
+        issue1.setKey("KJ54d3");
+
+        issue1.setSummary("Issue 1 summary");
+        issue1.setDescription("Issue 1 description");
+
+        issue1.setType(IssueType.STORY);
+        issue1.setResolution(IssueResolution.DONE);
+
+        issue1.setComments(Arrays.asList("comment 1", "comment 2"));
+        issue1.setVotes(5);
+
+        issue1.setAssignee("Me");
+        issue1.setReporter("Jon Doe");
+
+        issue1.setCreationTime(LocalDateTime.now());
+        issue1.setUpdateTime(LocalDateTime.now());
+        issue1.setEstimate(LocalTime.of(2, 0));
+
+        // create another issue
+        issue2 = new Issue();
+
+        issue2.setId(2L);
+        issue2.setKey("YF8E33");
+
+        issue2.setSummary("Issue 2 summary");
+        issue2.setDescription("Issue 2 description");
+
+        issue2.setType(IssueType.TASK);
+        issue2.setResolution(IssueResolution.DUPLICATE);
+
+        issue2.setComments(Arrays.asList("comment 1", "comment 2", "comment 3"));
+        issue2.setVotes(3);
+
+        issue2.setAssignee("You");
+        issue2.setReporter("Jane Doe");
+
+        issue2.setCreationTime(LocalDateTime.now());
+        issue2.setUpdateTime(LocalDateTime.now());
+        issue2.setEstimate(LocalTime.of(6, 15));
     }
 
     @Test
     public void itShouldCreateIssue(){
         // mock repository and create a new issue
-        Issue issue = new Issue(1L);
-        when(issueRepository.save(any(Issue.class))).thenReturn(issue);
+        when(issueRepository.save(any(Issue.class))).thenReturn(issue1);
 
         // create the issue
-        Issue createdIssue = issueService.createIssue(issue);
+        Issue createdIssue = issueService.createIssue(issue1);
 
         // expect the issue to have been created successfully
-        assertThat(createdIssue.getId()).isEqualTo(1L);
+        assertThat(createdIssue).isEqualTo(issue1);
     }
 
     @Test
