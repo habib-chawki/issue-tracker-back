@@ -103,18 +103,17 @@ public class IssueServiceTest {
 
     @Test
     public void itShouldGetAllIssues(){
-        // create a list of mocked issues
-        Issue issue1 = new Issue();
-        Issue issue2 = new Issue();
-        List<Issue> mockedIssues = Arrays.asList(issue1, issue2);
+        // given a list of issues
+        List<Issue> issues = Arrays.asList(issue1, issue2);
 
-        when(issueRepository.findAll()).thenReturn(mockedIssues);
+        // when issueRepository is invoked return the list of issues
+        when(issueRepository.findAll()).thenReturn(issues);
 
         // retrieve list of issues
-        Iterable<Issue> issues = issueService.getAllIssues();
+        Iterable<Issue> returnedIssues = issueService.getAllIssues();
 
         // expect all issues to have been retrieved successfully
-        assertThat(issues).contains(issue1);
-        assertThat(issues).contains(issue2);
+        assertThat(returnedIssues).contains(issue1);
+        assertThat(returnedIssues).contains(issue2);
     }
 }
