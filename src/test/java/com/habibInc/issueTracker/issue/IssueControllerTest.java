@@ -1,11 +1,15 @@
 package com.habibInc.issueTracker.issue;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,20 +24,48 @@ public class IssueControllerTest {
     @Autowired
     MockMvc mockMvc;
 
+    @Autowired
+    ObjectMapper mapper;
+
     @MockBean
     IssueService issueService;
 
+    Issue issue1;
+
+    @BeforeEach
+    public void init(){
+        // create issue
+        issue1 = new Issue();
+
+        issue1.setId(1L);
+        issue1.setKey("KJ54d3");
+
+        issue1.setSummary("Issue 1 summary");
+        issue1.setDescription("Issue 1 description");
+
+        issue1.setType(IssueType.STORY);
+        issue1.setResolution(IssueResolution.DONE);
+
+        issue1.setComments(Arrays.asList("comment 1", "comment 2"));
+        issue1.setVotes(5);
+
+        issue1.setAssignee("Me");
+        issue1.setReporter("Jon Doe");
+
+        issue1.setCreationTime(LocalDateTime.now());
+        issue1.setUpdateTime(LocalDateTime.now());
+        issue1.setEstimate(LocalTime.of(2, 0));
+    }
+
     @Test
     public void itShouldCreateIssue() throws Exception {
-        Issue issue = new Issue(1L);
-
         // mock issue service to add new issue
-        when(issueService.createIssue(any())).thenReturn(issue);
+        when(issueService.createIssue(any())).thenReturn(issue1);
 
         // perform a post request and expect the new issue to have been created
         mockMvc.perform(post("/issues"))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").exists());
+                .andExpect(content().json(mapper.writeValueAsString(issue1)));
     }
 
     @Test
