@@ -93,10 +93,9 @@ public class IssueRepositoryTest {
 
     @Test
     public void itShouldFindAllIssues(){
-        // save a list of issues
-        Issue issue1 = issueRepository.save(new Issue());
-        Issue issue2 = issueRepository.save(new Issue());
-        Issue issue3 = issueRepository.save(new Issue());
+        // given a list of issues
+        issueRepository.save(issue1);
+        issueRepository.save(issue2);
 
         // find all issues
         Iterable<Issue> issues = issueRepository.findAll();
@@ -104,6 +103,5 @@ public class IssueRepositoryTest {
         // assert that all issues have been retrieved successfully
         assertThat(issues).contains(issue1);
         assertThat(issues).contains(issue2);
-        assertThat(issues).contains(issue3);
     }
 }
