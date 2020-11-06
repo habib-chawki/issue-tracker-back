@@ -36,7 +36,7 @@ public class IssueServiceTest {
         issue1 = new Issue();
 
         issue1.setId(1L);
-        issue1.setKey("KJ54d3");
+        issue1.setIssueKey("KJ54d3");
 
         issue1.setSummary("Issue 1 summary");
         issue1.setDescription("Issue 1 description");
@@ -44,7 +44,7 @@ public class IssueServiceTest {
         issue1.setType(IssueType.STORY);
         issue1.setResolution(IssueResolution.DONE);
 
-        issue1.setComments(Arrays.asList("comment 1", "comment 2"));
+        issue1.setComments("comments");
         issue1.setVotes(5);
 
         issue1.setAssignee("Me");
@@ -58,7 +58,7 @@ public class IssueServiceTest {
         issue2 = new Issue();
 
         issue2.setId(2L);
-        issue2.setKey("YF8E33");
+        issue2.setIssueKey("YF8E33");
 
         issue2.setSummary("Issue 2 summary");
         issue2.setDescription("Issue 2 description");
@@ -66,7 +66,7 @@ public class IssueServiceTest {
         issue2.setType(IssueType.TASK);
         issue2.setResolution(IssueResolution.DUPLICATE);
 
-        issue2.setComments(Arrays.asList("comment 1", "comment 2", "comment 3"));
+        issue2.setComments("comments");
         issue2.setVotes(3);
 
         issue2.setAssignee("You");
