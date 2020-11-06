@@ -83,7 +83,8 @@ public class IssueIT {
 
         // expect issue to have been created successfully
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(response.getBody().toString()).isEqualTo(issue1.toString());
+        assertThat(response.getBody().getId()).isPositive();
+        assertThat(response.getBody()).isEqualToComparingOnlyGivenFields(issue1);
 
     }
 
