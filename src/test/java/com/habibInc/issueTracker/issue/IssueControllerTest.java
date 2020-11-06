@@ -84,11 +84,16 @@ public class IssueControllerTest {
         // mock issue service to add new issue
         when(issueService.createIssue(any())).thenReturn(issue1);
 
+        // set up json request body
+        String requestBody = mapper.writeValueAsString(issue1);
+
         // perform a post request and expect the new issue to have been created
-        mockMvc.perform(post("/issues"))
+        mockMvc.perform(post("/issues")
+                        .content(requestBody)
+                        .contentType("application/json"))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType("application/json"))
-                .andExpect(content().json(mapper.writeValueAsString(issue1)));
+                .andExpect(content().json(requestBody));
     }
 
     @Test
