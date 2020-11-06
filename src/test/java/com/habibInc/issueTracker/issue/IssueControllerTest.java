@@ -13,6 +13,7 @@ import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.hamcrest.Matchers.arrayContaining;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -21,6 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(IssueController.class)
 public class IssueControllerTest {
+
     @Autowired
     MockMvc mockMvc;
 
@@ -33,7 +35,7 @@ public class IssueControllerTest {
     Issue issue1, issue2;
 
     @BeforeEach
-    public void init(){
+    public void init() {
         // create issue
         issue1 = new Issue();
 
@@ -105,16 +107,16 @@ public class IssueControllerTest {
 
     @Test
     public void itShouldGetAllIssues() throws Exception {
-        Issue issue1 = new Issue(1L);
-        Issue issue2 = new Issue(2L);
+        // given a list of issues
         List<Issue> issues = Arrays.asList(issue1, issue2);
 
+        // when issue service is invoked return the list of issues
         when(issueService.getAllIssues()).thenReturn(issues);
 
-        // perform get request and expect the list of all issues
+        // perform get request and expect the list of all issues to have been returned
         mockMvc.perform(get("/issues"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
-                .andExpect(jsonPath("$.[*].id").value(containsInAnyOrder(1, 2)));
+                .andExpect(content().string(mapper.writeValueAsString(issues)));
     }
 }
