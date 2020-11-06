@@ -92,14 +92,13 @@ public class IssueServiceTest {
     @Test
     public void itShouldGetIssueById(){
         // mock repository behaviour and return an issue optional
-        Issue issue = new Issue(1L);
-        when(issueRepository.findById(anyLong())).thenReturn(Optional.of(issue));
+        when(issueRepository.findById(anyLong())).thenReturn(Optional.of(issue2));
 
         // get the issue by id
-        Issue returnedIssue = issueService.getIssue(1L);
+        Issue returnedIssue = issueService.getIssue(2L);
 
         // expect the proper issue to have been retrieved
-        assertThat(returnedIssue.getId()).isEqualTo(1L);
+        assertThat(returnedIssue).isEqualTo(issue2);
     }
 
     @Test
