@@ -30,7 +30,7 @@ public class IssueControllerTest {
     @MockBean
     IssueService issueService;
 
-    Issue issue1;
+    Issue issue1, issue2;
 
     @BeforeEach
     public void init(){
@@ -55,6 +55,28 @@ public class IssueControllerTest {
         issue1.setCreationTime(LocalDateTime.now());
         issue1.setUpdateTime(LocalDateTime.now());
         issue1.setEstimate(LocalTime.of(2, 0));
+
+        // create another issue
+        issue2 = new Issue();
+
+        issue2.setId(2L);
+        issue2.setKey("YF8E33");
+
+        issue2.setSummary("Issue 2 summary");
+        issue2.setDescription("Issue 2 description");
+
+        issue2.setType(IssueType.TASK);
+        issue2.setResolution(IssueResolution.DUPLICATE);
+
+        issue2.setComments(Arrays.asList("comment 1", "comment 2", "comment 3"));
+        issue2.setVotes(3);
+
+        issue2.setAssignee("You");
+        issue2.setReporter("Jane Doe");
+
+        issue2.setCreationTime(LocalDateTime.now());
+        issue2.setUpdateTime(LocalDateTime.now());
+        issue2.setEstimate(LocalTime.of(6, 15));
     }
 
     @Test
@@ -65,19 +87,20 @@ public class IssueControllerTest {
         // perform a post request and expect the new issue to have been created
         mockMvc.perform(post("/issues"))
                 .andExpect(status().isCreated())
+                .andExpect(content().contentType("application/json"))
                 .andExpect(content().json(mapper.writeValueAsString(issue1)));
     }
 
     @Test
     public void itShouldGetIssueById() throws Exception {
         // mock the service to return a new issue
-        when(issueService.getIssue(1L)).thenReturn(new Issue(1L));
+        when(issueService.getIssue(2L)).thenReturn(issue2);
 
         // perform get request and expect proper issue to have been returned
-        mockMvc.perform(get("/issues/1"))
+        mockMvc.perform(get("/issues/2"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
-                .andExpect(jsonPath("$.id").value("1"));
+                .andExpect(content().json(mapper.writeValueAsString(issue2)));
     }
 
     @Test
