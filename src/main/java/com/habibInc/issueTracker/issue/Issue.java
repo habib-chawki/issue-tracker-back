@@ -1,23 +1,21 @@
 package com.habibInc.issueTracker.issue;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import org.hibernate.annotations.NaturalId;
+
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
 public class Issue {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String key;
+    @NaturalId
+    private String IssueKey;
 
     private String description;
     private String summary;
@@ -25,7 +23,7 @@ public class Issue {
     private IssueType type;
     private IssueResolution resolution;
 
-    private List<String> comments;
+    private String comments;
     private int votes;
 
     private String assignee;
@@ -35,19 +33,37 @@ public class Issue {
     private LocalDateTime updateTime;
     private LocalTime estimate;
 
-
+    // constructors
     public Issue(){}
 
-    public Issue(Long id) {
+    public Issue(Long id, String IssueKey, String description, String summary,
+                 IssueType type, IssueResolution resolution,
+                 String comments, int votes,
+                 String assignee, String reporter,
+                 LocalDateTime creationTime, LocalDateTime updateTime,
+                 LocalTime estimate) {
         this.id = id;
+        this.IssueKey = IssueKey;
+        this.description = description;
+        this.summary = summary;
+        this.type = type;
+        this.resolution = resolution;
+        this.comments = comments;
+        this.votes = votes;
+        this.assignee = assignee;
+        this.reporter = reporter;
+        this.creationTime = creationTime;
+        this.updateTime = updateTime;
+        this.estimate = estimate;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    // access methods
+    public void setIssueKey(String issueKey) {
+        this.IssueKey = issueKey;
     }
 
-    public String getKey() {
-        return key;
+    public String getIssueKey() {
+        return IssueKey;
     }
 
     public void setId(Long id) {
@@ -90,11 +106,11 @@ public class Issue {
         return resolution;
     }
 
-    public void setComments(List<String> comments) {
+    public void setComments(String comments) {
         this.comments = comments;
     }
 
-    public List<String> getComments() {
+    public String getComments() {
         return comments;
     }
 
@@ -146,6 +162,7 @@ public class Issue {
         return creationTime;
     }
 
+    // equals and hashCode
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
