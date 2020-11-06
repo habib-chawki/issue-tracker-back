@@ -12,7 +12,7 @@ public class IssueController {
 
     @PostMapping({"", "/"})
     @ResponseStatus(HttpStatus.CREATED)
-    public Issue createIssue(Issue issue){
+    public Issue createIssue(@RequestBody Issue issue){
         return issueService.createIssue(issue);
     }
 
