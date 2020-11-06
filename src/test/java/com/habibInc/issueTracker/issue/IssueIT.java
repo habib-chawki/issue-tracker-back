@@ -102,15 +102,12 @@ public class IssueIT {
 
     @Test
     public void itShouldGetAllIssues() {
-        // save a list of issues
-        Issue issue1 = new Issue();
-        Issue issue2 = new Issue();
-        Issue issue3 = new Issue();
-        List<Issue> issues = Arrays.asList(issue1, issue2, issue3);
+        // given a list of issues
+        List<Issue> issues = Arrays.asList(issue1, issue2);
 
         issueRepository.saveAll(issues);
 
-        // make a get request to fetch a list of all issues
+        // fetch the list of all issues
         ResponseEntity<Issue[]> response = restTemplate.getForEntity("/issues", Issue[].class);
 
         // convert the response issues array to list
@@ -120,11 +117,4 @@ public class IssueIT {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(returnedIssues).isEqualTo(issues);
     }
-
-    @AfterEach
-    public void teardown(){
-        // delete all issues
-        issueRepository.deleteAll();
-    }
-
 }
