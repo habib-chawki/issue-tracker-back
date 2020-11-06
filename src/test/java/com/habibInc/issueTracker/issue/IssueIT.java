@@ -1,12 +1,15 @@
 package com.habibInc.issueTracker.issue;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,28 +27,77 @@ public class IssueIT {
     @Autowired
     IssueRepository issueRepository;
 
+    Issue issue1, issue2;
+
+    @BeforeEach
+    public void setup(){
+        // create issue
+        issue1 = new Issue();
+
+        issue1.setIssueKey("KJ54d3");
+
+        issue1.setSummary("Issue 1 summary");
+        issue1.setDescription("Issue 1 description");
+
+        issue1.setType(IssueType.STORY);
+        issue1.setResolution(IssueResolution.DONE);
+
+        issue1.setComments("comments");
+        issue1.setVotes(5);
+
+        issue1.setAssignee("Me");
+        issue1.setReporter("Jon Doe");
+
+        issue1.setCreationTime(LocalDateTime.now());
+        issue1.setUpdateTime(LocalDateTime.now());
+        issue1.setEstimate(LocalTime.of(2, 0));
+
+        // create another issue
+        issue2 = new Issue();
+
+        issue2.setIssueKey("YF8E33");
+
+        issue2.setSummary("Issue 2 summary");
+        issue2.setDescription("Issue 2 description");
+
+        issue2.setType(IssueType.TASK);
+        issue2.setResolution(IssueResolution.DUPLICATE);
+
+        issue2.setComments("comments");
+        issue2.setVotes(3);
+
+        issue2.setAssignee("You");
+        issue2.setReporter("Jane Doe");
+
+        issue2.setCreationTime(LocalDateTime.now());
+        issue2.setUpdateTime(LocalDateTime.now());
+        issue2.setEstimate(LocalTime.of(6, 15));
+    }
+
     @Test
     public void itShouldCreateIssue() {
-        Issue issue = new Issue();
-
         // make post request to create new issue
-        ResponseEntity<Issue> response = restTemplate.postForEntity("/issues", issue, Issue.class);
+        ResponseEntity<Issue> response = restTemplate.postForEntity("/issues", issue1, Issue.class);
+
+        System.out.println("BODY => "+ response);
 
         // expect issue to have been created successfully
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(response.getBody().getId()).isNotNull().isPositive();
+        assertThat(response.getBody().toString()).isEqualTo(issue1.toString());
+
     }
 
     @Test
     public void itShouldGetIssueById() {
-        Issue issue = issueService.createIssue(new Issue());
+        issueService.createIssue(issue2);
 
         // make get request to retrieve an issue by id
-        ResponseEntity<Issue> response = restTemplate.getForEntity("/issues/" + issue.getId(), Issue.class);
+        ResponseEntity<Issue> response = restTemplate.getForEntity("/issues/" + issue2.getId(), Issue.class);
 
         // expect the proper issue to have been retrieved
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().getId()).isEqualTo(issue.getId());
+        assertThat(response.getBody().getId()).isPositive();
+        assertThat(response.getBody()).isEqualTo(issue2);
     }
 
     @Test
