@@ -1,5 +1,6 @@
 package com.habibInc.issueTracker.issue;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -85,7 +86,6 @@ public class IssueIT {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getBody().getId()).isPositive();
         assertThat(response.getBody()).isEqualToComparingOnlyGivenFields(issue1);
-
     }
 
     @Test
@@ -117,5 +117,10 @@ public class IssueIT {
         // expect all issues to have been retrieved
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(returnedIssues).isEqualTo(issues);
+    }
+
+    @AfterEach
+    public void tearDown(){
+        issueRepository.deleteAll();
     }
 }
