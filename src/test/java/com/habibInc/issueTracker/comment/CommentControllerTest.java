@@ -1,5 +1,7 @@
 package com.habibInc.issueTracker.comment;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,11 +13,17 @@ import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(CommentController.class)
 public class CommentControllerTest {
     @Autowired
     MockMvc mockMvc;
+
+    @Autowired
+    ObjectMapper mapper;
 
     @MockBean
     CommentService commentService;
@@ -23,7 +31,7 @@ public class CommentControllerTest {
     Comment comment;
 
     @BeforeEach
-    public void setup(){
+    public void setup() {
         // set up a new comment
         comment = new Comment();
 
@@ -35,7 +43,17 @@ public class CommentControllerTest {
     }
 
     @Test
-    public void itShouldCreateComment(){
+    public void itShouldCreateComment() throws Exception {
         when(commentService.createComment(comment)).thenReturn(comment);
+
+        String requestBody = mapper.writeValueAsString(comment);
+
+        // send a post request and expect the comment to be created successfully
+        mockMvc.perform(post("/comments")
+                .contentType("application/json")
+                .content(requestBody))
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType("application/json"))
+                .andExpect(content().json(requestBody));
     }
 }
