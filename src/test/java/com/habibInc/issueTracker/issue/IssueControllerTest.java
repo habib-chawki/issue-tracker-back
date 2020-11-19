@@ -89,8 +89,8 @@ public class IssueControllerTest {
 
         // perform a post request and expect the new issue to have been created
         mockMvc.perform(post("/issues")
-                        .content(requestBody)
-                        .contentType("application/json"))
+                .content(requestBody)
+                .contentType("application/json"))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(content().json(requestBody));
