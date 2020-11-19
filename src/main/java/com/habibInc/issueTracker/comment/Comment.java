@@ -8,6 +8,9 @@ public class Comment {
     private LocalDateTime updateTime;
     private String content;
 
+    public Comment() {
+    }
+
     public void setOwner(String owner) {
         this.owner = owner;
     }
