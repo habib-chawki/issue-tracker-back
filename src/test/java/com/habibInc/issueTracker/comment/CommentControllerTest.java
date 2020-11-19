@@ -1,12 +1,12 @@
 package com.habibInc.issueTracker.comment;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
@@ -44,16 +44,16 @@ public class CommentControllerTest {
 
     @Test
     public void itShouldCreateComment() throws Exception {
-        when(commentService.createComment(comment)).thenReturn(comment);
+        when(commentService.createComment(any(Comment.class))).thenReturn(comment);
 
         String requestBody = mapper.writeValueAsString(comment);
 
         // send a post request and expect the comment to be created successfully
-        mockMvc.perform(post("/comments")
-                .contentType("application/json")
-                .content(requestBody))
+        mockMvc.perform(post("/comments/")
+                .content(requestBody)
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
-                .andExpect(content().contentType("application/json"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(requestBody));
     }
 }
