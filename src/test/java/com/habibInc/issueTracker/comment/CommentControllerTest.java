@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDateTime;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -17,9 +19,13 @@ public class CommentControllerTest {
     @BeforeEach
     public void setup(){
         Comment comment = new Comment();
+        comment.setOwner("owner");
+        comment.setCreationTime(LocalDateTime.now());
+        comment.setUpdateTime(LocalDateTime.now());
     }
 
     @Test
     public void itShouldCreateComment(){
+
     }
 }
