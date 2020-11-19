@@ -6,6 +6,7 @@ public class Comment {
     private String owner;
     private LocalDateTime creationTime;
     private LocalDateTime updateTime;
+    private String content;
 
     public void setOwner(String owner) {
         this.owner = owner;
@@ -29,5 +30,13 @@ public class Comment {
 
     public LocalDateTime getUpdateTime() {
         return updateTime;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getContent() {
+        return content;
     }
 }

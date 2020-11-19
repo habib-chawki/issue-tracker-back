@@ -18,10 +18,14 @@ public class CommentControllerTest {
 
     @BeforeEach
     public void setup(){
+        // set up a new comment
         Comment comment = new Comment();
+
         comment.setOwner("owner");
+        comment.setContent("This is a comment");
         comment.setCreationTime(LocalDateTime.now());
         comment.setUpdateTime(LocalDateTime.now());
+
     }
 
     @Test
