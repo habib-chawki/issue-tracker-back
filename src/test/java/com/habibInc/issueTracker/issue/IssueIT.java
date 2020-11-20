@@ -80,11 +80,9 @@ public class IssueIT {
         // make post request to create new issue
         ResponseEntity<Issue> response = restTemplate.postForEntity("/issues", issue1, Issue.class);
 
-        System.out.println("BODY => "+ response);
-
         // expect issue to have been created successfully
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(response.getBody().getId()).isPositive();
+        assertThat(response.getBody().getId()).isNotNull().isPositive();
         assertThat(response.getBody()).isEqualToComparingOnlyGivenFields(issue1);
     }
 
