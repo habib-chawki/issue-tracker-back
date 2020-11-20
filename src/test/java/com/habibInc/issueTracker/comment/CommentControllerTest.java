@@ -35,6 +35,8 @@ public class CommentControllerTest {
         // set up a new comment
         comment = new Comment();
 
+        comment.setId(1L);
+
         comment.setOwner("owner");
         comment.setContent("This is a comment");
 
