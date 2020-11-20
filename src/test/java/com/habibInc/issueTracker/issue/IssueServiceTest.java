@@ -28,10 +28,13 @@ public class IssueServiceTest {
     Issue issue1, issue2;
 
     @BeforeEach
-    public void setup(){
+    public void init() {
         // initialize mocks
         initMocks(this);
+    }
 
+    @BeforeEach
+    public void setup() {
         // create issue
         issue1 = new Issue();
 
@@ -78,7 +81,7 @@ public class IssueServiceTest {
     }
 
     @Test
-    public void itShouldCreateIssue(){
+    public void itShouldCreateIssue() {
         // mock repository and create a new issue
         when(issueRepository.save(any(Issue.class))).thenReturn(issue1);
 
@@ -90,7 +93,7 @@ public class IssueServiceTest {
     }
 
     @Test
-    public void itShouldGetIssueById(){
+    public void itShouldGetIssueById() {
         // mock repository behaviour and return an issue optional
         when(issueRepository.findById(anyLong())).thenReturn(Optional.of(issue2));
 
@@ -102,7 +105,7 @@ public class IssueServiceTest {
     }
 
     @Test
-    public void itShouldGetAllIssues(){
+    public void itShouldGetAllIssues() {
         // given a list of issues
         List<Issue> issues = Arrays.asList(issue1, issue2);
 
