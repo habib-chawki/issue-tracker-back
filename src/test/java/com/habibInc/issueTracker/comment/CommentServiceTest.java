@@ -35,6 +35,8 @@ public class CommentServiceTest {
         // set up a new comment
         comment = new Comment();
 
+        comment.setId(1L);
+
         comment.setContent("My comment");
         comment.setOwner("Me");
 
