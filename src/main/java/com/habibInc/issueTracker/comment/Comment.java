@@ -3,6 +3,7 @@ package com.habibInc.issueTracker.comment;
 import java.time.LocalDateTime;
 
 public class Comment {
+    private Long id;
     private String owner;
     private LocalDateTime creationTime;
     private LocalDateTime updateTime;
@@ -41,5 +42,13 @@ public class Comment {
 
     public String getContent() {
         return content;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getId() {
+        return id;
     }
 }
