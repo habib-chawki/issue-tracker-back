@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -77,9 +78,9 @@ public class IssueControllerTest {
         // perform a post request and expect the new issue to have been created
         mockMvc.perform(post("/issues")
                 .content(requestBody)
-                .contentType("application/json"))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
-                .andExpect(content().contentType("application/json"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(requestBody));
     }
 
@@ -91,17 +92,22 @@ public class IssueControllerTest {
         // perform get request and expect proper issue to have been returned
         mockMvc.perform(get("/issues/2"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(mapper.writeValueAsString(issue2)));
     }
 
     @Test
-    public void itShouldReturnIssueNotFoundErrorMessage() throws Exception {
+    public void itShouldReturnIssueNotFoundError() throws Exception {
+        // given an error message
         String errorMessage = "Issue not found";
+
+        // when the issue service "getIssue()" method, throws a resource not found exception
         when(issueService.getIssue(3L)).thenThrow(new ResourceNotFoundException(errorMessage));
 
+        // then an error message with a status code of 404 should be returned
         mockMvc.perform(get("/issues/3"))
                 .andExpect(status().isNotFound())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.errorMessage").value(errorMessage));
     }
 
@@ -116,7 +122,7 @@ public class IssueControllerTest {
         // perform get request and expect the list of all issues to have been returned
         mockMvc.perform(get("/issues"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().string(mapper.writeValueAsString(issues)));
     }
 }
