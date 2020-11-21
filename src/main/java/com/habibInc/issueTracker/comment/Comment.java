@@ -13,11 +13,14 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private Long issueId;
+
     private String owner;
     private String content;
 
     private LocalDateTime creationTime;
     private LocalDateTime updateTime;
+
 
     public Comment() {
     }
@@ -27,8 +30,9 @@ public class Comment {
         this.content = content;
     }
 
-    public Comment(Long id, String owner, String content, LocalDateTime creationTime, LocalDateTime updateTime) {
+    public Comment(Long id, Long issueId, String owner, String content, LocalDateTime creationTime, LocalDateTime updateTime) {
         this.id = id;
+        this.issueId = issueId;
         this.owner = owner;
         this.content = content;
         this.creationTime = creationTime;
@@ -86,5 +90,13 @@ public class Comment {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public void setIssueId(Long issueId) {
+        this.issueId = issueId;
+    }
+
+    public Long getIssueId() {
+        return issueId;
     }
 }

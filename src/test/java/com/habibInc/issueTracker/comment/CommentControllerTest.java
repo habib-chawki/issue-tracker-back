@@ -36,6 +36,7 @@ public class CommentControllerTest {
         comment = new Comment();
 
         comment.setId(1L);
+        comment.setIssueId(10L);
 
         comment.setOwner("owner");
         comment.setContent("This is a comment");
