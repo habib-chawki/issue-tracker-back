@@ -1,6 +1,5 @@
 package com.habibInc.issueTracker.issue;
 
-import com.habibInc.issueTracker.comment.Comment;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
