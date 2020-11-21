@@ -12,20 +12,27 @@ public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String owner;
+    private String content;
+
     private LocalDateTime creationTime;
     private LocalDateTime updateTime;
-    private String content;
 
     public Comment() {
     }
 
-    public Comment(Long id, String owner, LocalDateTime creationTime, LocalDateTime updateTime, String content) {
+    public Comment(String owner, String content) {
+        this.owner = owner;
+        this.content = content;
+    }
+
+    public Comment(Long id, String owner, String content, LocalDateTime creationTime, LocalDateTime updateTime) {
         this.id = id;
         this.owner = owner;
+        this.content = content;
         this.creationTime = creationTime;
         this.updateTime = updateTime;
-        this.content = content;
     }
 
     public void setOwner(String owner) {
