@@ -101,8 +101,9 @@ public class IssueControllerTest {
         // given an error message
         String errorMessage = "Issue not found";
 
-        // when the issue service "getIssue()" method, throws a resource not found exception
-        when(issueService.getIssue(3L)).thenThrow(new ResourceNotFoundException(errorMessage));
+        // when the "getIssue()" service method throws a resource not found exception
+        when(issueService.getIssue(3L))
+                .thenThrow(new ResourceNotFoundException(errorMessage));
 
         // then an error message with a status code of 404 should be returned
         mockMvc.perform(get("/issues/3"))
@@ -116,7 +117,7 @@ public class IssueControllerTest {
         // given a list of issues
         List<Issue> issues = Arrays.asList(issue1, issue2);
 
-        // when issue service is invoked return the list of issues
+        // when issue service is invoked, return the list of issues
         when(issueService.getAllIssues()).thenReturn(issues);
 
         // perform get request and expect the list of all issues to have been returned
