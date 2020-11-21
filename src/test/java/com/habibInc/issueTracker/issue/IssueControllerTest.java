@@ -1,18 +1,21 @@
 package com.habibInc.issueTracker.issue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -90,6 +93,16 @@ public class IssueControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(content().json(mapper.writeValueAsString(issue2)));
+    }
+
+    @Test
+    public void itShouldReturnIssueNotFoundErrorMessage() throws Exception {
+        String errorMessage = "Issue not found";
+        when(issueService.getIssue(3L)).thenThrow(new ResourceNotFoundException(errorMessage));
+
+        mockMvc.perform(get("/issues/3"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.errorMessage").value(errorMessage));
     }
 
     @Test
