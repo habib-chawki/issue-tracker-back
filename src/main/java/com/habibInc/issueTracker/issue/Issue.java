@@ -1,10 +1,12 @@
 package com.habibInc.issueTracker.issue;
 
+import com.habibInc.issueTracker.comment.Comment;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -23,7 +25,7 @@ public class Issue {
     private IssueType type;
     private IssueResolution resolution;
 
-    private String comments;
+    private List<Comment> comments;
     private int votes;
 
     private String assignee;
@@ -38,7 +40,7 @@ public class Issue {
 
     public Issue(Long id, String IssueKey, String description, String summary,
                  IssueType type, IssueResolution resolution,
-                 String comments, int votes,
+                 List<Comment> comments, int votes,
                  String assignee, String reporter,
                  LocalDateTime creationTime, LocalDateTime updateTime,
                  LocalTime estimate) {
@@ -106,11 +108,11 @@ public class Issue {
         return resolution;
     }
 
-    public void setComments(String comments) {
+    public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
 
-    public String getComments() {
+    public List<Comment> getComments() {
         return comments;
     }
 
