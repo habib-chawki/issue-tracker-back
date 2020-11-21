@@ -1,6 +1,7 @@
 package com.habibInc.issueTracker.comment;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +15,7 @@ import java.time.LocalDateTime;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(CommentController.class)
 public class CommentControllerTest {
@@ -58,5 +58,24 @@ public class CommentControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(requestBody));
+    }
+
+    @Test
+    public void itShouldReturnIssueNotFoundError() throws Exception {
+        // given an error message
+        String errorMessage = "Issue not found";
+
+        // when an issue id is incorrect then an issue not found error should be returned
+        when(commentService.createComment(any(Comment.class)))
+                .thenThrow(new ResourceNotFoundException(errorMessage));
+
+        String requestBody = mapper.writeValueAsString(comment);
+
+        //
+        mockMvc.perform(post("/comments/")
+                .content(requestBody)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.errorMessage").value(errorMessage));
     }
 }
