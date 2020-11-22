@@ -1,9 +1,8 @@
 package com.habibInc.issueTracker.comment;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import com.habibInc.issueTracker.issue.Issue;
+
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -13,7 +12,8 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long issueId;
+    @ManyToOne
+    private Issue issue;
 
     private String owner;
     private String content;
@@ -30,9 +30,9 @@ public class Comment {
         this.content = content;
     }
 
-    public Comment(Long id, Long issueId, String owner, String content, LocalDateTime creationTime, LocalDateTime updateTime) {
+    public Comment(Long id, Issue issue, String owner, String content, LocalDateTime creationTime, LocalDateTime updateTime) {
         this.id = id;
-        this.issueId = issueId;
+        this.issue = issue;
         this.owner = owner;
         this.content = content;
         this.creationTime = creationTime;
@@ -79,6 +79,14 @@ public class Comment {
         return id;
     }
 
+    public Issue getIssue() {
+        return issue;
+    }
+
+    public void setIssue(Issue issue) {
+        this.issue = issue;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -92,11 +100,4 @@ public class Comment {
         return Objects.hash(id);
     }
 
-    public void setIssueId(Long issueId) {
-        this.issueId = issueId;
-    }
-
-    public Long getIssueId() {
-        return issueId;
-    }
 }
