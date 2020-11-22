@@ -25,7 +25,9 @@ public class Issue {
     private IssueType type;
     private IssueResolution resolution;
 
+    @OneToMany(mappedBy = "issue")
     private List<Comment> comments;
+
     private int votes;
 
     private String assignee;
