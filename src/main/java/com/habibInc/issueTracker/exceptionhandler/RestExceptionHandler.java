@@ -14,6 +14,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiError> handleResourceNotFoundException(ResourceNotFoundException ex){
         ApiError error = new ApiError(ex.getMessage(), LocalDateTime.now());
-        return new ResponseEntity<ApiError>(error, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 }
