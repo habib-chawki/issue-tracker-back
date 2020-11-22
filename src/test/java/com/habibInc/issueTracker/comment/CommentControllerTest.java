@@ -36,7 +36,6 @@ public class CommentControllerTest {
         comment = new Comment();
 
         comment.setId(1L);
-        comment.setIssueId(10L);
 
         comment.setOwner("owner");
         comment.setContent("This is a comment");
@@ -65,13 +64,13 @@ public class CommentControllerTest {
         // given an error message
         String errorMessage = "Issue not found";
 
-        // when an issue id is incorrect then an issue not found error should be returned
+        // when an issue id is incorrect
         when(commentService.createComment(any(Comment.class)))
                 .thenThrow(new ResourceNotFoundException(errorMessage));
 
         String requestBody = mapper.writeValueAsString(comment);
 
-        //
+        // then a 404 "issue not found" error should be returned
         mockMvc.perform(post("/comments/")
                 .content(requestBody)
                 .contentType(MediaType.APPLICATION_JSON))
