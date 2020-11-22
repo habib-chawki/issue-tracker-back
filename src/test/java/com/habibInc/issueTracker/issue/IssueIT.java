@@ -92,6 +92,7 @@ public class IssueIT {
                 restTemplate.getForEntity("/issues/" + 3L, ApiError.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Issue not found");
     }
 
     @Test
