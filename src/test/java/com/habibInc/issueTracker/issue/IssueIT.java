@@ -88,11 +88,14 @@ public class IssueIT {
 
     @Test
     public void itShouldReturnIssueNotFoundError() {
+        // when a request for an issue that does not exist is received
         ResponseEntity<ApiError> response =
                 restTemplate.getForEntity("/issues/" + 3L, ApiError.class);
 
+        // then the response should be an error with a 404 status and an issue not found message
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Issue not found");
+        assertThat(response.getBody().getTimestamp()).isNotNull();
     }
 
     @Test
