@@ -1,5 +1,6 @@
 package com.habibInc.issueTracker.issue;
 
+import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,7 +10,8 @@ public class IssueService {
     IssueRepository issueRepository;
 
     public Issue getIssue(Long id) {
-        return issueRepository.findById(id).get();
+        return issueRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Issue not found"));
     }
 
     public Issue createIssue(Issue issue) {
