@@ -1,5 +1,6 @@
 package com.habibInc.issueTracker.issue;
 
+import com.habibInc.issueTracker.exceptionhandler.ApiError;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -76,12 +77,21 @@ public class IssueIT {
         issueService.createIssue(issue2);
 
         // make get request to retrieve an issue by id
-        ResponseEntity<Issue> response = restTemplate.getForEntity("/issues/" + issue2.getId(), Issue.class);
+        ResponseEntity<Issue> response =
+                restTemplate.getForEntity("/issues/" + issue2.getId(), Issue.class);
 
         // expect the proper issue to have been retrieved
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().getId()).isPositive();
         assertThat(response.getBody()).isEqualTo(issue2);
+    }
+
+    @Test
+    public void itShouldReturnIssueNotFoundError() {
+        ResponseEntity<ApiError> response =
+                restTemplate.getForEntity("/issues/" + 3L, ApiError.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
     @Test
@@ -95,11 +105,11 @@ public class IssueIT {
         ResponseEntity<Issue[]> response = restTemplate.getForEntity("/issues", Issue[].class);
 
         // convert the response issues array to list
-        List<Issue> returnedIssues = Arrays.asList(response.getBody());
+        List<Issue> responseBody = Arrays.asList(response.getBody());
 
         // expect all issues to have been retrieved
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(returnedIssues).isEqualTo(issues);
+        assertThat(responseBody).isEqualTo(issues);
     }
 
     @AfterEach
