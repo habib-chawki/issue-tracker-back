@@ -9,6 +9,8 @@ public class ApiError {
     private HttpStatus status;
     private LocalDateTime timestamp;
 
+    public ApiError() {}
+
     public ApiError(String errorMessage, LocalDateTime timestamp) {
         this.errorMessage = errorMessage;
         this.timestamp = timestamp;
