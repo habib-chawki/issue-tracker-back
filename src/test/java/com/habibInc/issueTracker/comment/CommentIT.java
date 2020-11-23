@@ -35,6 +35,9 @@ public class CommentIT {
         issue.setType(IssueType.BUG);
         issue.setSummary("This is an issue");
 
+        // create the issue
+        issueService.createIssue(issue);
+
         // set up a new comment
         comment = new Comment();
 
@@ -55,9 +58,6 @@ public class CommentIT {
 
         comment2.setCreationTime(LocalDateTime.now());
         comment2.setUpdateTime(LocalDateTime.now());
-
-        // create the issue
-        issueService.createIssue(issue);
     }
 
     @Test
@@ -74,10 +74,9 @@ public class CommentIT {
 
     @Test
     public void itShouldReturnIssueNotFoundError() {
-        String response =
-                restTemplate.postForObject("/comments", comment2, String.class);
+        ResponseEntity<ApiError> response =
+                restTemplate.postForEntity("/comments", comment2, ApiError.class);
 
-        System.out.println("***********"+ response);
-//        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 }
