@@ -1,6 +1,7 @@
 package com.habibInc.issueTracker.comment;
 
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
-public interface CommentRepository extends CrudRepository<Comment, Long> {
-}
+@Repository
+public interface CommentRepository extends CrudRepository<Comment, Long> {}
