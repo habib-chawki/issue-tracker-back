@@ -68,13 +68,13 @@ public class IssueRepositoryTest {
     @Test
     public void itShouldFindIssueById(){
         // save a new issue
-        Issue issue = issueRepository.save(issue2);
+        Issue savedIssue = issueRepository.save(issue2);
 
         // find the issue by id
-        Optional<Issue> response = issueRepository.findById(issue.getId());
+        Optional<Issue> response = issueRepository.findById(savedIssue.getId());
 
         // expect the issue to have been found successfully
-        assertThat(response.get()).isEqualTo(issue2);
+        assertThat(response.get()).isEqualTo(savedIssue);
     }
 
     @Test
