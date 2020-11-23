@@ -1,5 +1,8 @@
 package com.habibInc.issueTracker.comment;
 
+import com.habibInc.issueTracker.exceptionhandler.ApiError;
+import com.habibInc.issueTracker.issue.Issue;
+import com.habibInc.issueTracker.issue.IssueService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +20,21 @@ public class CommentIT {
     @Autowired
     TestRestTemplate restTemplate;
 
+    @Autowired
+    IssueService issueService;
+
+    Issue issue;
     Comment comment;
 
     @BeforeEach
     public void setup() {
+
+        // set up an issue
+        issue = new Issue();
+
+        issue.setId(1L);
+        issue.setSummary("This is an issue");
+
         // set up a new comment
         comment = new Comment();
 
@@ -29,6 +43,8 @@ public class CommentIT {
 
         comment.setCreationTime(LocalDateTime.now());
         comment.setUpdateTime(LocalDateTime.now());
+
+        comment.setIssue(issue);
     }
 
     @Test
@@ -40,5 +56,14 @@ public class CommentIT {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getBody().getId()).isNotNull().isPositive();
         assertThat(response.getBody()).isEqualToComparingOnlyGivenFields(comment);
+    }
+
+    @Test
+    public void itShouldReturnIssueNotFoundError() {
+        issueService.createIssue(issue);
+
+        ResponseEntity<ApiError> response = restTemplate.postForEntity("/comments", comment, ApiError.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 }
