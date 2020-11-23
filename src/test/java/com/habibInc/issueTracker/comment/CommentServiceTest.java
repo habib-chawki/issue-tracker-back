@@ -1,5 +1,7 @@
 package com.habibInc.issueTracker.comment;
 
+import com.habibInc.issueTracker.issue.Issue;
+import com.habibInc.issueTracker.issue.IssueService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -18,10 +20,13 @@ public class CommentServiceTest {
     @InjectMocks
     CommentService commentService;
 
-    // mock the repository
     @Mock
     CommentRepository commentRepository;
 
+    @Mock
+    IssueService issueService;
+
+    Issue issue;
     Comment comment;
 
     @BeforeEach
@@ -42,12 +47,21 @@ public class CommentServiceTest {
 
         comment.setCreationTime(LocalDateTime.now());
         comment.setUpdateTime(LocalDateTime.now());
+
+        // add an issue
+        issue = new Issue();
+        issue.setId(1L);
+
+        comment.setIssue(issue);
     }
 
     @Test
     public void itShouldCreateComment() {
         // given a call to the repository "save()" method
         when(commentRepository.save(any(Comment.class))).thenReturn(comment);
+
+        // given a call to the issueService "getIssue()" method
+        when(issueService.getIssue(any(Long.class))).thenReturn(issue);
 
         // when the "createComment()" service method is called
         Comment response = commentService.createComment(comment);
