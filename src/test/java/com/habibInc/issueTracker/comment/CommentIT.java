@@ -73,7 +73,7 @@ public class CommentIT {
     }
 
     @Test
-    public void itShouldReturnIssueNotFoundError() {
+    public void whenIssueIdIsIncorrect_thenReturnIssueNotFoundError() {
         // when a post request is made to add a new comment with an incorrect issue id
         ResponseEntity<ApiError> response =
                 restTemplate.postForEntity("/comments", comment2, ApiError.class);
