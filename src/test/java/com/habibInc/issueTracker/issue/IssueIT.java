@@ -37,7 +37,6 @@ public class IssueIT {
         issue2 = new Issue();
 
         // set up issue1 properties
-        issue1.setId(1L);
         issue1.setSummary("Issue 1 summary");
         issue1.setDescription("Issue 1 description");
         issue1.setType(IssueType.STORY);
@@ -49,7 +48,6 @@ public class IssueIT {
         issue1.setEstimate(LocalTime.of(2, 0));
 
         // set up issue2 properties
-        issue2.setId(2L);
         issue2.setSummary("Issue 2 summary");
         issue2.setDescription("Issue 2 description");
         issue2.setType(IssueType.TASK);
@@ -64,7 +62,8 @@ public class IssueIT {
     @Test
     public void itShouldCreateIssue() {
         // make post request to create new issue
-        ResponseEntity<Issue> response = restTemplate.postForEntity("/issues", issue1, Issue.class);
+        ResponseEntity<Issue> response =
+                restTemplate.postForEntity("/issues", issue1, Issue.class);
 
         // expect issue to have been created successfully
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
@@ -106,7 +105,8 @@ public class IssueIT {
         issueRepository.saveAll(issues);
 
         // fetch the list of all issues
-        ResponseEntity<Issue[]> response = restTemplate.getForEntity("/issues", Issue[].class);
+        ResponseEntity<Issue[]> response =
+                restTemplate.getForEntity("/issues", Issue[].class);
 
         // convert the response issues array to list
         List<Issue> responseBody = Arrays.asList(response.getBody());
