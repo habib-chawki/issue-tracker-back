@@ -6,6 +6,10 @@ import com.habibInc.issueTracker.issue.IssueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
+import java.util.Optional;
+import java.util.OptionalLong;
+
 @Service
 public class CommentService {
     private IssueService issueService;
@@ -18,10 +22,20 @@ public class CommentService {
     }
 
     public Comment createComment(Comment comment) {
-        Issue issue = issueService.getIssue(comment.getIssue().getId());
+        Issue issue;
 
-        if(issue != null)
-            return commentRepository.save(comment);
+        // get issue id if issue is not null
+        Long issueId =
+                comment.getIssue() != null ? comment.getIssue().getId() : null;
+
+        if(issueId != null) {
+            // delegate call to issueService to get the issue by id
+            issue = issueService.getIssue(issueId);
+
+            // save the comment if the issue is present
+            if (issue != null)
+                return commentRepository.save(comment);
+        }
 
         throw new ResourceNotFoundException("Issue not found");
     }
