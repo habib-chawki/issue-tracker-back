@@ -81,5 +81,6 @@ public class CommentIT {
         // then a 404 issue not found error should be returned
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Issue not found");
+        assertThat(response.getBody().getTimestamp()).isNotNull();
     }
 }
