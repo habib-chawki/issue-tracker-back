@@ -59,7 +59,7 @@ public class IssueRepositoryTest {
         Issue savedIssue = issueRepository.save(issue1);
 
         // expect the issue to have been saved successfully
-        assertThat(savedIssue).isEqualTo(issue1);
+        assertThat(savedIssue).isEqualToComparingOnlyGivenFields(issue1);
 
         // expect the id to have been generated
         assertThat(savedIssue.getId()).isNotNull();
