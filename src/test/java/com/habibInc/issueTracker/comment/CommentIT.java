@@ -2,8 +2,10 @@ package com.habibInc.issueTracker.comment;
 
 import com.habibInc.issueTracker.exceptionhandler.ApiError;
 import com.habibInc.issueTracker.issue.Issue;
+import com.habibInc.issueTracker.issue.IssueRepository;
 import com.habibInc.issueTracker.issue.IssueService;
 import com.habibInc.issueTracker.issue.IssueType;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,9 @@ public class CommentIT {
 
     @Autowired
     IssueService issueService;
+
+    @Autowired
+    IssueRepository issueRepository;
 
     Issue issue;
     Comment comment, comment2;
@@ -82,5 +87,10 @@ public class CommentIT {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Issue not found");
         assertThat(response.getBody().getTimestamp()).isNotNull();
+    }
+
+    @AfterEach
+    public void teardown() {
+        issueRepository.deleteAll();
     }
 }
