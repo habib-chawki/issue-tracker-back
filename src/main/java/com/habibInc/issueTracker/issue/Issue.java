@@ -1,6 +1,8 @@
 package com.habibInc.issueTracker.issue;
 
 import com.habibInc.issueTracker.comment.Comment;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
@@ -26,6 +28,7 @@ public class Issue {
     private IssueResolution resolution;
 
     @OneToMany(mappedBy = "issue")
+    @Cascade(value = CascadeType.ALL)
     private List<Comment> comments;
 
     private int votes;
