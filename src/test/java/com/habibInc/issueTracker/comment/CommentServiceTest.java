@@ -3,7 +3,6 @@ package com.habibInc.issueTracker.comment;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.issue.IssueService;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -13,7 +12,6 @@ import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -61,10 +59,10 @@ public class CommentServiceTest {
     @Test
     public void itShouldCreateComment() {
         // given a call to the repository "save()" method
-        when(commentRepository.save(any(Comment.class))).thenReturn(comment);
+        when(commentRepository.save(comment)).thenReturn(comment);
 
         // given a call to the issueService "getIssue()" method
-        when(issueService.getIssue(any(Long.class))).thenReturn(issue);
+        when(issueService.getIssue(1L)).thenReturn(issue);
 
         // when the "createComment()" service method is called
         Comment response = commentService.createComment(comment);
@@ -75,8 +73,8 @@ public class CommentServiceTest {
 
     @Test
     public void itShouldReturnIssueNotFoundError() {
-        // when the issue is null
-        when(issueService.getIssue(any(Long.class))).thenReturn(null);
+        // when the issue does not exist
+        when(issueService.getIssue(10L)).thenReturn(null);
 
         // then an issue not found error should be returned
         assertThrows(ResourceNotFoundException.class, () -> {
