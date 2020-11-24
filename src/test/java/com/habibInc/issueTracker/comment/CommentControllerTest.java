@@ -70,10 +70,12 @@ public class CommentControllerTest {
         when(commentService.createComment(any(Comment.class)))
                 .thenThrow(new ResourceNotFoundException(errorMessage));
 
+        // set up base url and request body
+        String baseUrl = String.format("/issues/%s/comments", 10);
         String requestBody = mapper.writeValueAsString(comment);
 
         // then a 404 "issue not found" error should be returned
-        mockMvc.perform(post("/comments/")
+        mockMvc.perform(post(baseUrl)
                 .content(requestBody)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
