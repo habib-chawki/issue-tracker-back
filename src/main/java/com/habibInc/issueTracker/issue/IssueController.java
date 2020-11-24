@@ -1,5 +1,6 @@
 package com.habibInc.issueTracker.issue;
 
+import com.habibInc.issueTracker.exceptionhandler.InvalidIdException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -17,8 +18,13 @@ public class IssueController {
     }
 
     @GetMapping("/{id}")
-    public Issue getIssue(@PathVariable Long id){
-        return issueService.getIssue(id);
+    public Issue getIssue(@PathVariable String id){
+        try {
+            Long issueId = Long.parseLong(id);
+            return issueService.getIssue(issueId);
+        }catch(NumberFormatException ex){
+            throw new InvalidIdException("Invalid issue id");
+        }
     }
 
     @GetMapping({"", "/"})
