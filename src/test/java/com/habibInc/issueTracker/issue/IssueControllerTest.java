@@ -1,6 +1,7 @@
 package com.habibInc.issueTracker.issue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.habibInc.issueTracker.exceptionhandler.InvalidIdException;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -107,8 +108,19 @@ public class IssueControllerTest {
 
         // then an error message with a status code of 404 should be returned
         mockMvc.perform(get("/issues/3"))
-                .andExpect(status().isNotFound())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.errorMessage").value(errorMessage));
+    }
+
+    @Test
+    public void itShouldReturnInvalidIssueIdError() throws Exception {
+        String errorMessage = "Invalid issue id";
+
+        // expect an invalid issue id error
+        mockMvc.perform(get("/issues/invalid"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errorMessage").value(errorMessage));
     }
 
