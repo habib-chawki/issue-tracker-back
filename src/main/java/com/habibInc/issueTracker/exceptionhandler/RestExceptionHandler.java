@@ -16,4 +16,10 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         ApiError error = new ApiError(ex.getMessage(), LocalDateTime.now());
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(InvalidIdException.class)
+    public ResponseEntity<ApiError> handleInvalidIdException(InvalidIdException ex){
+        ApiError error = new ApiError(ex.getMessage(), LocalDateTime.now());
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
 }
