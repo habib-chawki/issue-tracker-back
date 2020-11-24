@@ -81,9 +81,11 @@ public class CommentIT {
 
     @Test
     public void whenIssueIdIsIncorrect_itShouldReturnIssueNotFoundError() {
+        String baseUrl = String.format("/issues/%s/comments", createdIssue.getId());
+
         // when a post request is made to add a new comment with an incorrect issue id
         ResponseEntity<ApiError> response =
-                restTemplate.postForEntity("/comments", comment2, ApiError.class);
+                restTemplate.postForEntity(baseUrl, comment2, ApiError.class);
 
         // then a 404 issue not found error should be returned
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
