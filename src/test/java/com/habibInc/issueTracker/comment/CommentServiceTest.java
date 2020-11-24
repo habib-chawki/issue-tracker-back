@@ -1,7 +1,9 @@
 package com.habibInc.issueTracker.comment;
 
+import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.issue.IssueService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -10,6 +12,7 @@ import org.mockito.Mock;
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -68,5 +71,14 @@ public class CommentServiceTest {
 
         // then the response should be the comment itself
         assertThat(response).isEqualTo(comment);
+    }
+
+    @Test
+    public void itShouldReturnIssueNotFoundError() {
+        when(issueService.getIssue(any(Long.class))).thenReturn(null);
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            Comment response = commentService.createComment(comment);
+        });
     }
 }
