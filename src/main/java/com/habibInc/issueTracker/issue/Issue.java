@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
@@ -35,8 +33,7 @@ public class Issue {
     private IssueType type;
     private IssueResolution resolution;
 
-    @OneToMany(mappedBy = "issue")
-    @Cascade(value = CascadeType.ALL)
+    @OneToMany(mappedBy = "issue", cascade = CascadeType.ALL)
     private List<Comment> comments;
 
     private int votes;
