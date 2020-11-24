@@ -91,4 +91,19 @@ public class CommentControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.errorMessage").value(errorMessage));
     }
+
+    @Test
+    public void itShouldReturnInvalidIssueIdError() throws Exception {
+        // set up base url, request body and error message
+        String baseUrl = String.format("/issues/%s/comments", "invalid_id");
+        String requestBody = mapper.writeValueAsString(comment);
+        String errorMessage = "Invalid issue id";
+
+        // then a 400 "Invalid issue id" error should be returned
+        mockMvc.perform(post(baseUrl)
+                .content(requestBody)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorMessage").value(errorMessage));
+    }
 }
