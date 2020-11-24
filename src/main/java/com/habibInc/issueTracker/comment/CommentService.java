@@ -6,10 +6,6 @@ import com.habibInc.issueTracker.issue.IssueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
-import java.util.Optional;
-import java.util.OptionalLong;
-
 @Service
 public class CommentService {
     private IssueService issueService;
