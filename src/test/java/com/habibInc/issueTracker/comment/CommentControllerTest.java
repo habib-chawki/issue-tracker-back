@@ -2,6 +2,7 @@ package com.habibInc.issueTracker.comment;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
+import com.habibInc.issueTracker.issue.Issue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,25 +29,31 @@ public class CommentControllerTest {
     @MockBean
     CommentService commentService;
 
+    Issue issue;
     Comment comment;
 
     @BeforeEach
     public void setup() {
+        // set up an issue
+        issue = new Issue();
+
+        issue.setId(1L);
+        issue.setSummary("Issue summary");
+
         // set up a new comment
         comment = new Comment();
 
         comment.setId(1L);
-
         comment.setOwner("owner");
         comment.setContent("This is a comment");
-
+        comment.setIssue(issue);
         comment.setCreationTime(LocalDateTime.now());
         comment.setUpdateTime(LocalDateTime.now());
     }
 
     @Test
     public void itShouldCreateComment() throws Exception {
-        when(commentService.createComment(any(Comment.class))).thenReturn(comment);
+        when(commentService.createComment(comment)).thenReturn(comment);
 
         // set up base url and request body
         String baseUrl = String.format("/issues/%s/comments", 1);
@@ -63,16 +70,19 @@ public class CommentControllerTest {
 
     @Test
     public void itShouldReturnIssueNotFoundError() throws Exception {
+        // given that the issue does not exist
+        comment.setIssue(null);
+
+        // given the base url and request body
+        String baseUrl = String.format("/issues/%s/comments", 10);
+        String requestBody = mapper.writeValueAsString(comment);
+
         // given an error message
         String errorMessage = "Issue not found";
 
-        // when an issue id is incorrect
-        when(commentService.createComment(any(Comment.class)))
+        // when the comment service is invoked to create the comment
+        when(commentService.createComment(comment))
                 .thenThrow(new ResourceNotFoundException(errorMessage));
-
-        // set up base url and request body
-        String baseUrl = String.format("/issues/%s/comments", 10);
-        String requestBody = mapper.writeValueAsString(comment);
 
         // then a 404 "issue not found" error should be returned
         mockMvc.perform(post(baseUrl)
