@@ -48,10 +48,12 @@ public class CommentControllerTest {
     public void itShouldCreateComment() throws Exception {
         when(commentService.createComment(any(Comment.class))).thenReturn(comment);
 
+        // set up base url and request body
+        String baseUrl = String.format("/issues/%s/comments", 1);
         String requestBody = mapper.writeValueAsString(comment);
 
         // send a post request and expect the comment to be created successfully
-        mockMvc.perform(post("/comments/")
+        mockMvc.perform(post(baseUrl)
                 .content(requestBody)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
