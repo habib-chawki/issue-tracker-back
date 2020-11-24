@@ -80,16 +80,30 @@ public class CommentIT {
     }
 
     @Test
-    public void whenIssueIdIsIncorrect_itShouldReturnIssueNotFoundError() {
+    public void whenIssueDoesNotExist_itShouldReturnIssueNotFoundError() {
         String baseUrl = String.format("/issues/%s/comments", createdIssue.getId());
 
         // when a post request is made to add a new comment with an incorrect issue id
         ResponseEntity<ApiError> response =
                 restTemplate.postForEntity(baseUrl, comment2, ApiError.class);
 
-        // then a 404 issue not found error should be returned
+        // then a 404 'issue not found' error should be returned
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Issue not found");
+        assertThat(response.getBody().getTimestamp()).isNotNull();
+    }
+
+    @Test
+    public void whenIssueIdIsInvalid_itShouldReturnInvalidIssueIdError() {
+        String baseUrl = "/issues/invalid/comments";
+
+        // when a post request is received with an invalid issue id
+        ResponseEntity<ApiError> response =
+                restTemplate.postForEntity(baseUrl, comment, ApiError.class);
+
+        // then a 400 'invalid issue id' error should be returned
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Invalid issue id");
         assertThat(response.getBody().getTimestamp()).isNotNull();
     }
 
