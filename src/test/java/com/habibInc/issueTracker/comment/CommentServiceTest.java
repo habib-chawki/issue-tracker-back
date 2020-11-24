@@ -75,10 +75,12 @@ public class CommentServiceTest {
 
     @Test
     public void itShouldReturnIssueNotFoundError() {
+        // when the issue is null
         when(issueService.getIssue(any(Long.class))).thenReturn(null);
 
+        // then an issue not found error should be returned
         assertThrows(ResourceNotFoundException.class, () -> {
-            Comment response = commentService.createComment(comment);
+            commentService.createComment(comment);
         });
     }
 }
