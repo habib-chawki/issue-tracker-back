@@ -71,7 +71,7 @@ public class IssueControllerTest {
     @Test
     public void itShouldCreateIssue() throws Exception {
         // mock issue service to add new issue
-        when(issueService.createIssue(any(Issue.class))).thenReturn(issue1);
+        when(issueService.createIssue(issue1)).thenReturn(issue1);
 
         // set up json request body
         String requestBody = mapper.writeValueAsString(issue1);
