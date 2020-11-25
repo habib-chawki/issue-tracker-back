@@ -1,6 +1,5 @@
 package com.habibInc.issueTracker.issue;
 
-import com.habibInc.issueTracker.comment.Comment;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -70,7 +69,7 @@ public class IssueServiceTest {
     @Test
     public void itShouldCreateIssue() {
         // mock repository and create a new issue
-        when(issueRepository.save(any(Issue.class))).thenReturn(issue1);
+        when(issueRepository.save(issue1)).thenReturn(issue1);
 
         // create the issue
         Issue createdIssue = issueService.createIssue(issue1);
@@ -82,7 +81,7 @@ public class IssueServiceTest {
     @Test
     public void itShouldGetIssueById() {
         // mock repository behaviour and return an issue optional
-        when(issueRepository.findById(anyLong())).thenReturn(Optional.of(issue2));
+        when(issueRepository.findById(2L)).thenReturn(Optional.of(issue2));
 
         // get the issue by id
         Issue returnedIssue = issueService.getIssue(2L);
