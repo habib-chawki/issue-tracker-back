@@ -13,7 +13,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -94,12 +93,14 @@ public class CommentControllerTest {
 
     @Test
     public void itShouldReturnInvalidIssueIdError() throws Exception {
-        // set up base url, request body and error message
-        String baseUrl = String.format("/issues/%s/comments", "invalid_id");
+        // given the request body and an error message
         String requestBody = mapper.writeValueAsString(comment);
         String errorMessage = "Invalid issue id";
 
-        // then a 400 "Invalid issue id" error should be returned
+        // when the request is made with an invalid issue id
+        String baseUrl = String.format("/issues/%s/comments", "invalid_id");
+
+        // then a 404 "Invalid issue id" error should be returned
         mockMvc.perform(post(baseUrl)
                 .content(requestBody)
                 .contentType(MediaType.APPLICATION_JSON))
