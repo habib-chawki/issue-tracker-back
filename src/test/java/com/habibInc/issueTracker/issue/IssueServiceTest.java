@@ -1,6 +1,7 @@
 package com.habibInc.issueTracker.issue;
 
 import com.habibInc.issueTracker.comment.Comment;
+import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.*;
 
@@ -87,6 +89,17 @@ public class IssueServiceTest {
 
         // expect the proper issue to have been retrieved
         assertThat(returnedIssue).isEqualTo(issue2);
+    }
+
+    @Test
+    public void itShouldReturnIssueNotFoundError() {
+        // when the issue does not exist
+        String errorMessage = "Issue not found";
+        when(issueRepository.findById(10L))
+                .thenThrow(new ResourceNotFoundException(errorMessage));
+
+        // then an issue not found exception is thrown
+        assertThrows(ResourceNotFoundException.class, () -> issueService.getIssue(10L));
     }
 
     @Test
