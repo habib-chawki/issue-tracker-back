@@ -62,7 +62,7 @@ public class IssueRepositoryTest {
         assertThat(savedIssue).isEqualToComparingOnlyGivenFields(issue1);
 
         // expect the id to have been generated
-        assertThat(savedIssue.getId()).isNotNull();
+        assertThat(savedIssue.getId()).isPositive().isNotNull();
     }
 
     @Test
