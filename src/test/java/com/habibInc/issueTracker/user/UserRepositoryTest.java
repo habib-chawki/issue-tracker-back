@@ -33,6 +33,8 @@ public class UserRepositoryTest {
     public void itShouldSaveUser() {
         User savedUser = userRepository.save(user);
 
+        // expect the user to have been saved successfully with an auto generated id
         assertThat(savedUser).isEqualToComparingOnlyGivenFields(user);
+        assertThat(savedUser.getId()).isNotNull().isPositive();
     }
 }
