@@ -1,5 +1,6 @@
 package com.habibInc.issueTracker.user;
 
+import com.habibInc.issueTracker.exceptionhandler.ApiError;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -58,6 +59,21 @@ public class UserIT {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualToComparingOnlyGivenFields(user);
         assertThat(response.getBody().getId()).isEqualTo(savedUser.getId());
+    }
+
+    @Test
+    public void itShouldReturnUserNotFoundError() {
+        // given an error message
+        String errorMessage = "User not found";
+
+        // when a post request with a user id that does not exist is made
+        ResponseEntity<ApiError> response =
+                restTemplate.getForEntity("/users/10", ApiError.class);
+
+        // then an user not found error should be returned
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(response.getBody().getErrorMessage()).isEqualToIgnoringCase(errorMessage);
+        assertThat(response.getBody().getTimestamp()).isNotNull();
     }
 
     @AfterEach
