@@ -21,9 +21,6 @@ public class UserIT {
     @Autowired
     UserRepository userRepository;
 
-    @Autowired
-    UserService userService;
-
     User user;
 
     @BeforeEach
