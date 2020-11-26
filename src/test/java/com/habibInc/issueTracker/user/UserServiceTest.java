@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -45,5 +47,17 @@ public class UserServiceTest {
 
         // then the user should be successfully created
         assertThat(createdUser).isEqualTo(user);
+    }
+
+    @Test
+    public void itShouldGetUserById() {
+        // given the repository returns a user
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+
+        // when the getUser service method is invoked with the user id
+        User returnedUser = userService.getUser(1L);
+
+        // then the response should be the proper user
+        assertThat(returnedUser).isEqualTo(user);
     }
 }
