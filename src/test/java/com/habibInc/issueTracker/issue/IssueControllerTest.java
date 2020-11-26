@@ -84,14 +84,17 @@ public class IssueControllerTest {
 
     @Test
     public void itShouldGetIssueById() throws Exception {
-        // mock the service to return a new issue
+        // return an issue when getIssue service method is invoked
         when(issueService.getIssue(2L)).thenReturn(issue2);
 
-        // perform get request and expect proper issue to have been returned
+        // the response body is expected to contain the returned issue
+        String responseBody = mapper.writeValueAsString(issue2);
+
+        // expect the proper issue to have been returned when a get request is made
         mockMvc.perform(get("/issues/2"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(mapper.writeValueAsString(issue2)));
+                .andExpect(content().json(responseBody));
     }
 
     @Test
