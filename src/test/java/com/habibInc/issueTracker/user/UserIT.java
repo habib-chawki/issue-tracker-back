@@ -45,6 +45,21 @@ public class UserIT {
         assertThat(response.getBody().getId()).isNotNull().isPositive();
     }
 
+    @Test
+    public void itShouldGetUserById() {
+        // given a user is created
+        User savedUser = userRepository.save(user);
+
+        // when a get request is made to retrieve the user by id
+        ResponseEntity<User> response =
+                restTemplate.getForEntity("/users/" + savedUser.getId(), User.class);
+
+        // then the proper user should be returned
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isEqualToComparingOnlyGivenFields(user);
+        assertThat(response.getBody().getId()).isEqualTo(savedUser.getId());
+    }
+
     @AfterEach
     public void teardown() {
         userRepository.deleteAll();
