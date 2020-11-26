@@ -3,6 +3,7 @@ package com.habibInc.issueTracker.user;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 @Service
 public class UserService {
     private UserRepository userRepository;
@@ -17,6 +18,6 @@ public class UserService {
     }
 
     public User getUser(Long id) {
-        return null;
+        return userRepository.findById(id).orElseThrow();
     }
 }
