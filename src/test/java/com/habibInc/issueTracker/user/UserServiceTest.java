@@ -1,13 +1,9 @@
 package com.habibInc.issueTracker.user;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -30,7 +26,13 @@ public class UserServiceTest {
     @BeforeEach
     public void setup() {
         user = new User();
+
+        user.setId(1L);
+        user.setFirstName("first");
+        user.setLastName("last");
+        user.setUserName("my_username");
         user.setEmail("my_email@email.com");
+        user.setPassword("this is it");
     }
 
     @Test
