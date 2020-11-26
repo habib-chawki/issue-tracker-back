@@ -1,5 +1,6 @@
 package com.habibInc.issueTracker.user;
 
+import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,8 @@ public class UserService {
     }
 
     public User getUser(Long id) {
-        return userRepository.findById(id).orElseThrow();
+        return userRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("User not found")
+        );
     }
 }
