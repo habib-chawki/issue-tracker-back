@@ -1,6 +1,7 @@
 package com.habibInc.issueTracker.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,5 +69,21 @@ public class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(responseBody));
+    }
+
+    @Test
+    public void itShouldReturnUserNotFoundError() throws Exception {
+        // given an error message
+        String errorMessage = "User not found";
+
+        // when the user does not exist
+        when(userService.getUser(10L)).thenThrow(new ResourceNotFoundException(errorMessage));
+
+        // then the response should be a 404 user not found error
+        mockMvc.perform(get("/users/10")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.errorMessage").value(errorMessage));
     }
 }
