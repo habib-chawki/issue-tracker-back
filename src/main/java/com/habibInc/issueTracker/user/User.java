@@ -1,8 +1,18 @@
 package com.habibInc.issueTracker.user;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
 public class User {
-    private String email;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    private String email;
     private String password;
     private String userName;
     private String firstName;
@@ -11,8 +21,13 @@ public class User {
     public User() {
     }
 
-    public User(String email){
+    public User(Long id, String email, String password, String userName, String firstName, String lastName) {
+        this.id = id;
         this.email = email;
+        this.password = password;
+        this.userName = userName;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
     public String getEmail() {
