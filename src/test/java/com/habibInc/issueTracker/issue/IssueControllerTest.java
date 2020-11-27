@@ -2,7 +2,6 @@ package com.habibInc.issueTracker.issue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
-import com.habibInc.issueTracker.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +32,6 @@ public class IssueControllerTest {
     @MockBean
     IssueService issueService;
 
-    User reporter, assignee1, assignee2;
     Issue issue1, issue2;
 
     @BeforeEach
@@ -42,18 +40,12 @@ public class IssueControllerTest {
         issue1 = new Issue();
         issue2 = new Issue();
 
-        reporter = new User();
-        assignee1 = new User();
-        assignee2 = new User();
-
         // set up issue1 properties
         issue1.setId(1L);
         issue1.setSummary("Issue 1 summary");
         issue1.setDescription("Issue 1 description");
         issue1.setType(IssueType.STORY);
         issue1.setResolution(IssueResolution.DONE);
-        issue1.setAssignee(assignee1);
-        issue1.setReporter(reporter);
         issue1.setCreationTime(LocalDateTime.now());
         issue1.setUpdateTime(LocalDateTime.now());
         issue1.setEstimate(LocalTime.of(2, 0));
@@ -64,8 +56,6 @@ public class IssueControllerTest {
         issue2.setDescription("Issue 2 description");
         issue2.setType(IssueType.TASK);
         issue2.setResolution(IssueResolution.DUPLICATE);
-        issue2.setAssignee(assignee2);
-        issue2.setReporter(reporter);
         issue2.setCreationTime(LocalDateTime.now());
         issue2.setUpdateTime(LocalDateTime.now());
         issue2.setEstimate(LocalTime.of(6, 15));
