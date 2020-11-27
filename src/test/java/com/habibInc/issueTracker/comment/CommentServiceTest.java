@@ -38,21 +38,17 @@ public class CommentServiceTest {
 
     @BeforeEach
     public void setup() {
+        // set up an issue
+        issue = new Issue();
+        issue.setId(1L);
+
         // set up a new comment
         comment = new Comment();
 
         comment.setId(1L);
-
         comment.setContent("My comment");
-        comment.setOwner("Me");
-
         comment.setCreationTime(LocalDateTime.now());
         comment.setUpdateTime(LocalDateTime.now());
-
-        // add an issue
-        issue = new Issue();
-        issue.setId(1L);
-
         comment.setIssue(issue);
     }
 
