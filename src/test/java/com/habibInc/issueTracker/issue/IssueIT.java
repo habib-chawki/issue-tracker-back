@@ -24,9 +24,6 @@ public class IssueIT {
     TestRestTemplate restTemplate;
 
     @Autowired
-    IssueService issueService;
-
-    @Autowired
     IssueRepository issueRepository;
 
     User reporter, assignee1, assignee2;
