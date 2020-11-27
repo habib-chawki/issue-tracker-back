@@ -1,6 +1,7 @@
 package com.habibInc.issueTracker.issue;
 
 import com.habibInc.issueTracker.comment.Comment;
+import com.habibInc.issueTracker.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,8 +39,8 @@ public class Issue {
 
     private int votes;
 
-    private String assignee;
-    private String reporter;
+    private User assignee;
+    private User reporter;
 
     private LocalDateTime creationTime;
     private LocalDateTime updateTime;
