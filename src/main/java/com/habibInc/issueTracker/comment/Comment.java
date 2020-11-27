@@ -1,7 +1,7 @@
 package com.habibInc.issueTracker.comment;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.habibInc.issueTracker.issue.Issue;
+import com.habibInc.issueTracker.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,17 +24,14 @@ public class Comment {
     @ManyToOne
     private Issue issue;
 
-    private String owner;
+    @OneToOne(cascade = CascadeType.PERSIST)
+    private User owner;
+
     private String content;
 
     private LocalDateTime creationTime;
     private LocalDateTime updateTime;
 
-
-    public Comment(String owner, String content) {
-        this.owner = owner;
-        this.content = content;
-    }
 
     // equals and hashCode
     @Override
@@ -49,5 +46,4 @@ public class Comment {
     public int hashCode() {
         return Objects.hash(id);
     }
-
 }
