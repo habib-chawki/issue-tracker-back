@@ -1,14 +1,13 @@
 package com.habibInc.issueTracker.user;
 
+import com.habibInc.issueTracker.issue.Issue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -26,6 +25,12 @@ public class User {
     private String userName;
     private String email;
     private String password;
+
+    @OneToMany(mappedBy = "assignee")
+    private List<Issue> assignedIssues;
+
+    @OneToMany(mappedBy = "reporter")
+    private List<Issue> reportedIssues;
 
     @Override
     public boolean equals(Object o) {
