@@ -26,7 +26,6 @@ public class CommentRepositoryTest {
         comment = new Comment();
 
         comment.setContent("My comment");
-        comment.setOwner("Me");
 
         comment.setCreationTime(LocalDateTime.now());
         comment.setUpdateTime(LocalDateTime.now());
