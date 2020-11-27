@@ -39,7 +39,10 @@ public class Issue {
 
     private int votes;
 
+    @OneToOne(cascade = CascadeType.PERSIST)
     private User assignee;
+
+    @OneToOne(cascade = CascadeType.PERSIST)
     private User reporter;
 
     private LocalDateTime creationTime;
