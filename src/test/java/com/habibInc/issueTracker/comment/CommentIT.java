@@ -3,8 +3,8 @@ package com.habibInc.issueTracker.comment;
 import com.habibInc.issueTracker.exceptionhandler.ApiError;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.issue.IssueRepository;
-import com.habibInc.issueTracker.issue.IssueService;
 import com.habibInc.issueTracker.issue.IssueType;
+import com.habibInc.issueTracker.user.User;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,16 +24,20 @@ public class CommentIT {
     TestRestTemplate restTemplate;
 
     @Autowired
-    IssueService issueService;
-
-    @Autowired
     IssueRepository issueRepository;
 
+    User owner;
     Issue issue, createdIssue;
     Comment comment, comment2;
 
     @BeforeEach
     public void setup() {
+        // set up the comment owner
+        owner = new User();
+
+        owner.setEmail("Me@email.com");
+        owner.setUserName("Jon_Doe");
+
         // set up an issue
         issue = new Issue();
 
@@ -41,26 +45,22 @@ public class CommentIT {
         issue.setSummary("This is an issue");
 
         // create the issue
-        createdIssue = issueService.createIssue(issue);
+        createdIssue = issueRepository.save(issue);
 
         // set up a new comment
         comment = new Comment();
 
+        comment.setIssue(createdIssue);
         comment.setContent("My comment");
-        comment.setOwner("Me");
-
+        comment.setOwner(owner);
         comment.setCreationTime(LocalDateTime.now());
         comment.setUpdateTime(LocalDateTime.now());
-
-        // associate the comment with the issue
-        comment.setIssue(createdIssue);
 
         // set up another comment without an issue
         comment2 = new Comment();
 
         comment2.setContent("Another comment");
-        comment2.setOwner("Jon Doe");
-
+        comment2.setOwner(owner);
         comment2.setCreationTime(LocalDateTime.now());
         comment2.setUpdateTime(LocalDateTime.now());
     }
