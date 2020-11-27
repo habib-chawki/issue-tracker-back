@@ -79,7 +79,7 @@ public class IssueIT {
 
     @Test
     public void itShouldGetIssueById() {
-        issueService.createIssue(issue2);
+        issueRepository.save(issue2);
 
         // make get request to retrieve an issue by id
         ResponseEntity<Issue> response =

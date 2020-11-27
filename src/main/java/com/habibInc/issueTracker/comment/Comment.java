@@ -1,5 +1,6 @@
 package com.habibInc.issueTracker.comment;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.habibInc.issueTracker.issue.Issue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
