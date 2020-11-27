@@ -2,7 +2,6 @@ package com.habibInc.issueTracker.comment;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
-import com.habibInc.issueTracker.issue.Issue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,24 +27,15 @@ public class CommentControllerTest {
     @MockBean
     CommentService commentService;
 
-    Issue issue;
     Comment comment;
 
     @BeforeEach
     public void setup() {
-        // set up an issue
-        issue = new Issue();
-
-        issue.setId(1L);
-        issue.setSummary("Issue summary");
-
         // set up a new comment
         comment = new Comment();
 
         comment.setId(1L);
-        comment.setOwner("owner");
         comment.setContent("This is a comment");
-        comment.setIssue(issue);
         comment.setCreationTime(LocalDateTime.now());
         comment.setUpdateTime(LocalDateTime.now());
     }
