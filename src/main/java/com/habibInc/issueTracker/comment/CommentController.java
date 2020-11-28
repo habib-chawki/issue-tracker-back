@@ -15,8 +15,8 @@ public class CommentController {
     @ResponseStatus(HttpStatus.CREATED)
     public Comment createComment(@RequestBody Comment comment, @PathVariable String id){
         try{
-            Long.parseLong(id);
-            return commentService.createComment(comment);
+            Long issueId = Long.parseLong(id);
+            return commentService.createComment(comment, issueId);
         }catch(NumberFormatException ex){
             throw new InvalidIdException("Invalid issue id");
         }
