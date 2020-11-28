@@ -70,8 +70,23 @@ public class UserIT {
         ResponseEntity<ApiError> response =
                 restTemplate.getForEntity("/users/10", ApiError.class);
 
-        // then an user not found error should be returned
+        // then a 404 user not found error should be returned
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(response.getBody().getErrorMessage()).isEqualToIgnoringCase(errorMessage);
+        assertThat(response.getBody().getTimestamp()).isNotNull();
+    }
+
+    @Test
+    public void itShouldReturnInvalidUserIdError() {
+        // given an error message
+        String errorMessage = "Invalid user id";
+
+        // when a get request with an invalid user id is made
+        ResponseEntity<ApiError> response =
+                restTemplate.getForEntity("/users/invalid", ApiError.class);
+
+        // then a 400 invalid user id error should be returned
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(response.getBody().getErrorMessage()).isEqualToIgnoringCase(errorMessage);
         assertThat(response.getBody().getTimestamp()).isNotNull();
     }
