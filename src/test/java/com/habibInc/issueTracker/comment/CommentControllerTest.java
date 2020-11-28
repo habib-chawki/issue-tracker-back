@@ -42,7 +42,7 @@ public class CommentControllerTest {
 
     @Test
     public void itShouldCreateComment() throws Exception {
-        when(commentService.createComment(comment)).thenReturn(comment);
+        when(commentService.createComment(comment, 1L)).thenReturn(comment);
 
         // set up base url and request body
         String baseUrl = String.format("/issues/%s/comments", 1);
@@ -70,7 +70,7 @@ public class CommentControllerTest {
         String errorMessage = "Issue not found";
 
         // when the comment service is invoked to create the comment
-        when(commentService.createComment(comment))
+        when(commentService.createComment(comment, 10L))
                 .thenThrow(new ResourceNotFoundException(errorMessage));
 
         // then a 404 "issue not found" error should be returned
