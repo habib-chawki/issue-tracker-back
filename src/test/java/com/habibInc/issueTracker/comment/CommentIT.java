@@ -86,7 +86,8 @@ public class CommentIT {
 
     @Test
     public void whenIssueDoesNotExist_itShouldReturnIssueNotFoundError() {
-        String baseUrl = String.format("/issues/%s/comments", createdIssue.getId());
+        // given an issue that does not exist
+        String baseUrl = String.format("/issues/%s/comments", 10L);
 
         // when a post request is made to add a new comment with an incorrect issue id
         ResponseEntity<ApiError> response =
