@@ -86,4 +86,18 @@ public class UserControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.errorMessage").value(errorMessage));
     }
+
+    @Test
+    public void itShouldReturnInvalidUserIdError() throws Exception {
+        // given an error message
+        String errorMessage = "Invalid user id";
+
+        // when a get request with an invalid user id is received
+        // then a 400 error should be returned
+        mockMvc.perform(get("/users/invalid")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorMessage").value(errorMessage));
+    }
 }
