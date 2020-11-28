@@ -5,6 +5,7 @@ import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.issue.IssueRepository;
 import com.habibInc.issueTracker.issue.IssueType;
 import com.habibInc.issueTracker.user.User;
+import com.habibInc.issueTracker.user.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,27 +25,31 @@ public class CommentIT {
     TestRestTemplate restTemplate;
 
     @Autowired
+    UserRepository userRepository;
+
+    @Autowired
     IssueRepository issueRepository;
 
-    User owner;
+    User owner, createdOwner;
     Issue issue, createdIssue;
     Comment comment, comment2;
 
     @BeforeEach
     public void setup() {
-        // set up the comment owner
+        // set up the comment owner and create it
         owner = new User();
 
         owner.setEmail("Me@email.com");
         owner.setUserName("Jon_Doe");
 
-        // set up an issue
+        createdOwner = userRepository.save(owner);
+
+        // set up an issue and create it
         issue = new Issue();
 
         issue.setType(IssueType.BUG);
         issue.setSummary("This is an issue");
 
-        // create the issue
         createdIssue = issueRepository.save(issue);
 
         // set up a new comment
@@ -52,7 +57,7 @@ public class CommentIT {
 
         comment.setIssue(createdIssue);
         comment.setContent("My comment");
-        comment.setOwner(owner);
+        comment.setOwner(createdOwner);
         comment.setCreationTime(LocalDateTime.now());
         comment.setUpdateTime(LocalDateTime.now());
 
@@ -60,7 +65,7 @@ public class CommentIT {
         comment2 = new Comment();
 
         comment2.setContent("Another comment");
-        comment2.setOwner(owner);
+        comment2.setOwner(createdOwner);
         comment2.setCreationTime(LocalDateTime.now());
         comment2.setUpdateTime(LocalDateTime.now());
     }
