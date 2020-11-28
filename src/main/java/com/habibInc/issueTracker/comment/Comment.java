@@ -24,7 +24,7 @@ public class Comment {
     @ManyToOne
     private Issue issue;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne
     private User owner;
 
     private String content;
