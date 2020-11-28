@@ -12,26 +12,18 @@ public class CommentService {
     private CommentRepository commentRepository;
 
     @Autowired
-    public CommentService(IssueService issueService, CommentRepository commentRepository){
+    public CommentService(IssueService issueService, CommentRepository commentRepository) {
         this.issueService = issueService;
         this.commentRepository = commentRepository;
     }
 
-    public Comment createComment(Comment comment) {
-        Issue issue;
+    public Comment createComment(Comment comment, Long issueId) {
+        // delegate call to issueService to get the issue by id
+        Issue issue = issueService.getIssue(issueId);
 
-        // get issue id if issue is not null
-        Long issueId =
-                comment.getIssue() != null ? comment.getIssue().getId() : null;
-
-        if(issueId != null) {
-            // delegate call to issueService to get the issue by id
-            issue = issueService.getIssue(issueId);
-
-            // save the comment if the issue is present
-            if (issue != null)
-                return commentRepository.save(comment);
-        }
+        // save the comment if the issue is present
+        if (issue != null)
+            return commentRepository.save(comment);
 
         throw new ResourceNotFoundException("Issue not found");
     }
