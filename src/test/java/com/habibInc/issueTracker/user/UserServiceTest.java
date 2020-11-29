@@ -69,7 +69,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void itShouldReturnUserNotFoundError() {
+    public void whenUserDoesNotExist_itShouldReturnUserNotFoundError() {
         // given a "user not found" error message
         String errorMessage = "User not found";
 
