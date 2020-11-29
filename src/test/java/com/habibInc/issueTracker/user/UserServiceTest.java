@@ -95,7 +95,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void itShouldLoadUserByEmail() {
+    public void whenLoadUserByUsernameIsCalled_itShouldLoadUserByEmail() {
         when(userRepository.findByEmail(user.getEmail())).thenReturn(user);
 
         // when loadUserByUsername is invoked with a user email
