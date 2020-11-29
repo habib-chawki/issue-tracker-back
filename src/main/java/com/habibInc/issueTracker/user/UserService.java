@@ -35,11 +35,15 @@ public class UserService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String userEmail) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String userEmail) {
         User loadedUser = userRepository.findByEmail(userEmail);
-        return new org.springframework.security.core.userdetails.User(
+
+        if(loadedUser != null)
+            return new org.springframework.security.core.userdetails.User(
                 loadedUser.getEmail(),
                 loadedUser.getPassword(),
                 new ArrayList<>());
+
+        throw new UsernameNotFoundException("Incorrect credentials");
     }
 }
