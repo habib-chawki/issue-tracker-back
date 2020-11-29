@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
@@ -88,5 +89,16 @@ public class UserServiceTest {
 
         // then the password should be hashed
         assertThat(createdUser.getPassword()).isEqualTo(hashedPassword);
+    }
+
+    @Test
+    public void itShouldLoadUserByEmail() {
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(user);
+
+        UserDetails loadedUser =
+                userService.loadUserByUsername(user.getEmail());
+
+        assertThat(loadedUser.getUsername()).isEqualTo(user.getEmail());
+        assertThat(loadedUser.getPassword()).isEqualTo(user.getPassword());
     }
 }

@@ -17,7 +17,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(UserController.class)
-public class UserControllerTest {
+public class UserEntityControllerTest {
     @Autowired
     MockMvc mockMvc;
 
@@ -27,25 +27,25 @@ public class UserControllerTest {
     @MockBean
     UserService userService;
 
-    User user;
+    UserEntity userEntity;
 
     @BeforeEach
     public void setup() {
-        user = new User();
+        userEntity = new UserEntity();
 
-        user.setId(1L);
-        user.setFirstName("first");
-        user.setLastName("last");
-        user.setUserName("my_username");
-        user.setEmail("my_email@email.com");
-        user.setPassword("this is it");
+        userEntity.setId(1L);
+        userEntity.setFirstName("first");
+        userEntity.setLastName("last");
+        userEntity.setUserName("my_username");
+        userEntity.setEmail("my_email@email.com");
+        userEntity.setPassword("this is it");
     }
 
     @Test
     public void itShouldCreateUser() throws Exception {
-        when(userService.createUser(any(User.class))).thenReturn(user);
+        when(userService.createUser(any(UserEntity.class))).thenReturn(userEntity);
 
-        String requestBody = mapper.writeValueAsString(user);
+        String requestBody = mapper.writeValueAsString(userEntity);
 
         mockMvc.perform(post("/users")
                 .content(requestBody)
@@ -57,13 +57,13 @@ public class UserControllerTest {
 
     @Test
     public void itShouldGetUserById() throws Exception {
-        // return a user when the getUser service method is invoked
-        when(userService.getUser(1L)).thenReturn(user);
+        // return a userEntity when the getUser service method is invoked
+        when(userService.getUser(1L)).thenReturn(userEntity);
 
         // set up the perceived response body
-        String responseBody = mapper.writeValueAsString(user);
+        String responseBody = mapper.writeValueAsString(userEntity);
 
-        // expect the user to have been returned successfully
+        // expect the userEntity to have been returned successfully
         mockMvc.perform(get("/users/1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -74,12 +74,12 @@ public class UserControllerTest {
     @Test
     public void itShouldReturnUserNotFoundError() throws Exception {
         // given an error message
-        String errorMessage = "User not found";
+        String errorMessage = "UserEntity not found";
 
-        // when the user does not exist
+        // when the userEntity does not exist
         when(userService.getUser(10L)).thenThrow(new ResourceNotFoundException(errorMessage));
 
-        // then the response should be a 404 user not found error
+        // then the response should be a 404 userEntity not found error
         mockMvc.perform(get("/users/10")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -90,9 +90,9 @@ public class UserControllerTest {
     @Test
     public void itShouldReturnInvalidUserIdError() throws Exception {
         // given an error message
-        String errorMessage = "Invalid user id";
+        String errorMessage = "Invalid userEntity id";
 
-        // when a get request with an invalid user id is received
+        // when a get request with an invalid userEntity id is received
         // then a 400 error should be returned
         mockMvc.perform(get("/users/invalid")
                 .contentType(MediaType.APPLICATION_JSON))
