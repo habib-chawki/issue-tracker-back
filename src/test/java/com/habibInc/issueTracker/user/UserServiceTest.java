@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
@@ -105,5 +106,15 @@ public class UserServiceTest {
         // then the proper user should be loaded
         assertThat(loadedUser.getUsername()).isEqualTo(user.getEmail());
         assertThat(loadedUser.getPassword()).isEqualTo(user.getPassword());
+    }
+
+    @Test
+    public void whenLoadUserByUsernameReturnsNull_itShouldReturnUserNotFoundError() {
+        String incorrectEmail = "userNotFound@email.com";
+
+        when(userRepository.findByEmail(incorrectEmail)).thenReturn(null);
+
+        assertThrows(UsernameNotFoundException.class,
+                () -> userService.loadUserByUsername(incorrectEmail));
     }
 }
