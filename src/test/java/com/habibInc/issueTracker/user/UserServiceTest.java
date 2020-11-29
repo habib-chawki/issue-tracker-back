@@ -95,9 +95,11 @@ public class UserServiceTest {
     public void itShouldLoadUserByEmail() {
         when(userRepository.findByEmail(user.getEmail())).thenReturn(user);
 
+        // when loadUserByUsername is invoked with a user email
         UserDetails loadedUser =
                 userService.loadUserByUsername(user.getEmail());
 
+        // then the proper user should be loaded
         assertThat(loadedUser.getUsername()).isEqualTo(user.getEmail());
         assertThat(loadedUser.getPassword()).isEqualTo(user.getPassword());
     }
