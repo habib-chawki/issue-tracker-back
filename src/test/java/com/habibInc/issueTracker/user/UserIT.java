@@ -22,6 +22,9 @@ public class UserIT {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    UserService userService;
+
     User user;
 
     @BeforeEach
@@ -32,7 +35,7 @@ public class UserIT {
         user.setLastName("last");
         user.setUserName("my_username");
         user.setEmail("my_email@email.com");
-        user.setPassword("this is it");
+        user.setPassword("MyPassword");
     }
 
     @Test
@@ -49,7 +52,7 @@ public class UserIT {
     @Test
     public void itShouldGetUserById() {
         // given a user is created
-        User savedUser = userRepository.save(user);
+        User savedUser = userService.createUser(user);
 
         // when a get request is made to retrieve the user by id
         ResponseEntity<User> response =
@@ -89,6 +92,16 @@ public class UserIT {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(response.getBody().getErrorMessage()).isEqualToIgnoringCase(errorMessage);
         assertThat(response.getBody().getTimestamp()).isNotNull();
+    }
+
+    @Test
+    public void itShouldHashUserPassword() {
+        User savedUser = userService.createUser(user);
+
+        ResponseEntity<User> response =
+                restTemplate.getForEntity("/users/" + savedUser.getId(), User.class);
+
+        assertThat(response.getBody().getPassword()).isNotEqualTo(user.getPassword());
     }
 
     @AfterEach
