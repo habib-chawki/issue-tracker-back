@@ -80,17 +80,17 @@ public class UserServiceTest {
     }
 
     @Test
-    public void itShouldEncryptUserPassword() {
-        String encryptedPassword = "xh4DeS$e@dt8u";
+    public void itShouldHashUserPassword() {
+        String hashedPassword = "xh4DeS$e@dt8u";
 
         when(userRepository.save(user)).thenReturn(user);
         when(bCryptPasswordEncoder.encode(user.getPassword()))
-                .thenReturn(encryptedPassword);
+                .thenReturn(hashedPassword);
 
         // when the user is created
         User createdUser = userService.createUser(user);
 
-        // then the password should be encrypted
-        assertThat(createdUser.getPassword()).isEqualTo(encryptedPassword);
+        // then the password should be hashed
+        assertThat(createdUser.getPassword()).isEqualTo(hashedPassword);
     }
 }
