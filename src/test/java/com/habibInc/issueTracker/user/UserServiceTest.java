@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
 
@@ -20,6 +21,9 @@ public class UserServiceTest {
 
     @Mock
     UserRepository userRepository;
+
+    @Mock
+    BCryptPasswordEncoder bCryptPasswordEncoder;
 
     User user;
 
@@ -37,7 +41,7 @@ public class UserServiceTest {
         user.setLastName("last");
         user.setUserName("my_username");
         user.setEmail("my_email@email.com");
-        user.setPassword("this is it");
+        user.setPassword("MyP@ssworD");
     }
 
     @Test
@@ -77,10 +81,16 @@ public class UserServiceTest {
 
     @Test
     public void itShouldEncryptUserPassword() {
-        when(userRepository.save(user)).thenReturn(user);
+        String encryptedPassword = "xh4DeS$e@dt8u";
 
+        when(userRepository.save(user)).thenReturn(user);
+        when(bCryptPasswordEncoder.encode(user.getPassword()))
+                .thenReturn(encryptedPassword);
+
+        // when the user is created
         User createdUser = userService.createUser(user);
 
-        assertThat(createdUser.getPassword()).isNotEqualTo(user.getPassword());
+        // then the password should be encrypted
+        assertThat(createdUser.getPassword()).isEqualTo(encryptedPassword);
     }
 }
