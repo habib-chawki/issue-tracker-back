@@ -110,10 +110,13 @@ public class UserServiceTest {
 
     @Test
     public void whenLoadUserByUsernameReturnsNull_itShouldReturnUserNotFoundError() {
+        // given an incorrect email of a user that does not exist
         String incorrectEmail = "userNotFound@email.com";
 
+        // when the userRepository#findByEmail method is invoked
         when(userRepository.findByEmail(incorrectEmail)).thenReturn(null);
 
+        // then a username not found error should be returned
         assertThrows(UsernameNotFoundException.class,
                 () -> userService.loadUserByUsername(incorrectEmail));
     }
