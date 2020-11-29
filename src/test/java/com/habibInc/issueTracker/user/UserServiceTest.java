@@ -1,6 +1,5 @@
 package com.habibInc.issueTracker.user;
 
-import com.habibInc.issueTracker.exceptionhandler.ApiError;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -74,18 +73,15 @@ public class UserServiceTest {
 
         when(userRepository.findById(10L)).thenThrow(new ResourceNotFoundException(errorMessage));
 
-        assertThrows(ResourceNotFoundException.class, () -> {
-            userService.getUser(10L);
-        });
+        assertThrows(ResourceNotFoundException.class, () -> userService.getUser(10L));
     }
 
     @Test
     public void itShouldHashUserPassword() {
         String hashedPassword = "xh4DeS$e@dt8u";
 
+        when(bCryptPasswordEncoder.encode(user.getPassword())).thenReturn(hashedPassword);
         when(userRepository.save(user)).thenReturn(user);
-        when(bCryptPasswordEncoder.encode(user.getPassword()))
-                .thenReturn(hashedPassword);
 
         // when the user is created
         User createdUser = userService.createUser(user);
