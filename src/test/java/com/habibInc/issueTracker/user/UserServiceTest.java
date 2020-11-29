@@ -74,4 +74,13 @@ public class UserServiceTest {
             userService.getUser(10L);
         });
     }
+
+    @Test
+    public void itShouldEncryptUserPassword() {
+        when(userRepository.save(user)).thenReturn(user);
+
+        User createdUser = userService.createUser(user);
+
+        assertThat(createdUser.getPassword()).isNotEqualTo(user.getPassword());
+    }
 }
