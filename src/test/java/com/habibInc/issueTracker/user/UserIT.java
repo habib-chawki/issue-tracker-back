@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.springframework.boot.test.context.SpringBootTest.*;
@@ -24,6 +25,9 @@ public class UserIT {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    BCryptPasswordEncoder bCryptPasswordEncoder;
 
     User user;
 
@@ -96,12 +100,19 @@ public class UserIT {
 
     @Test
     public void itShouldHashUserPassword() {
+        // given a saved user
         User savedUser = userService.createUser(user);
 
+        // when a get request is made with the saved user id
         ResponseEntity<User> response =
                 restTemplate.getForEntity("/users/" + savedUser.getId(), User.class);
 
-        assertThat(response.getBody().getPassword()).isNotEqualTo(user.getPassword());
+        // then the password should be hashed and matches the plain text
+        boolean match =
+                bCryptPasswordEncoder.matches("MyPassword", savedUser.getPassword());
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(match).isTrue();
     }
 
     @AfterEach
