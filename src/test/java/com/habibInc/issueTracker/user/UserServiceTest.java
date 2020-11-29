@@ -70,10 +70,13 @@ public class UserServiceTest {
 
     @Test
     public void itShouldReturnUserNotFoundError() {
+        // given a "user not found" error message
         String errorMessage = "User not found";
 
+        // when an incorrect id is used to fetch a user that does not exist
         when(userRepository.findById(10L)).thenThrow(new ResourceNotFoundException(errorMessage));
 
+        // then a ResourceNotFoundException should be thrown
         assertThrows(ResourceNotFoundException.class, () -> userService.getUser(10L));
     }
 
