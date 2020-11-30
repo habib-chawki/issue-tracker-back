@@ -22,24 +22,30 @@ public class AuthorizationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
+        // extract the authorization header
         String authHeader = request.getHeader("Authorization");
 
+        // check the header and make sure it starts with 'Bearer '
         if(authHeader == null || !authHeader.startsWith("Bearer ")){
             filterChain.doFilter(request, response);
             return;
         }
 
+        // extract the token
         String token = authHeader.replace("Bearer ", "");
 
+        // verify the token validity
         String subject = Jwts.parser()
                                 .setSigningKey(secretKey)
                                 .parseClaimsJws(token)
                                 .getBody()
                                 .getSubject();
 
+        // extract the principal from the auth token
         UsernamePasswordAuthenticationToken authentication =
                 new UsernamePasswordAuthenticationToken(subject, null);
 
+        // set authentication on the security context holder
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }
