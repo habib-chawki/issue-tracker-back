@@ -1,6 +1,7 @@
 package com.habibInc.issueTracker.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,12 +61,15 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                                             HttpServletResponse response,
                                             FilterChain chain,
                                             Authentication authResult) throws IOException, ServletException {
-        Jwts.builder()
+        // generate the auth token
+        String token = Jwts.builder()
                 .setSubject(authResult.getName())
                 .setIssuedAt(Date.valueOf(LocalDate.now()))
                 .setExpiration(Date.valueOf(LocalDate.now().plusWeeks(2)))
-                .signWith(SignatureAlgorithm.HS256, this.secretKey);
+                .signWith(SignatureAlgorithm.HS256, this.secretKey)
+                .compact();
 
-        super.successfulAuthentication(request, response, chain, authResult);
+        // embed the auth token in an authorization header
+        response.addHeader("Authorization", "Bearer " + token);
     }
 }
