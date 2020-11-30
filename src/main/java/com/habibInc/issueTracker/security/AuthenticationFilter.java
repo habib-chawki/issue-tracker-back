@@ -10,7 +10,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.stereotype.Component;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -20,19 +19,16 @@ import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDate;
 
-@Component
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private AuthenticationManager authenticationManager;
-    private ObjectMapper mapper;
 
     @Value("secretKey")
     private String secretKey;
 
     @Autowired
-    public AuthenticationFilter(AuthenticationManager authenticationManager, ObjectMapper mapper) {
+    public AuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
-        this.mapper = mapper;
     }
 
     @Override
@@ -41,7 +37,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         try {
             // extract the authentication request from the json request body
             AuthenticationRequest authenticationRequest =
-                    mapper.readValue(request.getInputStream(), AuthenticationRequest.class);
+                    new ObjectMapper().readValue(request.getInputStream(), AuthenticationRequest.class);
 
             // create an authentication object with the extracted email and password from the request body
             Authentication authentication = new UsernamePasswordAuthenticationToken(
