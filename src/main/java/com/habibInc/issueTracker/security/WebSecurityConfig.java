@@ -14,12 +14,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private UserService userService;
-    private AuthenticationFilter authenticationFilter;
 
     @Autowired
-    public WebSecurityConfig(UserService userService, AuthenticationFilter authenticationFilter) {
+    public WebSecurityConfig(UserService userService) {
         this.userService = userService;
-        this.authenticationFilter = authenticationFilter;
     }
 
     @Override
@@ -34,7 +32,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilter(authenticationFilter)
+                .addFilter(new AuthenticationFilter(authenticationManager()))
                 .authorizeRequests().anyRequest().permitAll();
     }
 
