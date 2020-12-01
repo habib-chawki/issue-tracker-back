@@ -5,8 +5,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
@@ -93,31 +91,5 @@ public class UserServiceTest {
 
         // then the password should be hashed
         assertThat(createdUser.getPassword()).isEqualTo(hashedPassword);
-    }
-
-    @Test
-    public void whenLoadUserByUsernameIsCalled_itShouldLoadUserByEmail() {
-        when(userRepository.findByEmail(user.getEmail())).thenReturn(user);
-
-        // when loadUserByUsername is invoked with a user email
-        UserDetails loadedUser =
-                userService.loadUserByUsername(user.getEmail());
-
-        // then the proper user should be loaded
-        assertThat(loadedUser.getUsername()).isEqualTo(user.getEmail());
-        assertThat(loadedUser.getPassword()).isEqualTo(user.getPassword());
-    }
-
-    @Test
-    public void whenLoadUserByUsernameReturnsNull_thenReturnUserNotFoundError() {
-        // given an incorrect email of a user that does not exist
-        String incorrectEmail = "userNotFound@email.com";
-
-        // when the userRepository#findByEmail method is invoked
-        when(userRepository.findByEmail(incorrectEmail)).thenReturn(null);
-
-        // then a username not found error should be returned
-        assertThrows(UsernameNotFoundException.class,
-                () -> userService.loadUserByUsername(incorrectEmail));
     }
 }
