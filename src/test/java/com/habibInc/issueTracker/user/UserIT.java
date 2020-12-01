@@ -1,7 +1,6 @@
 package com.habibInc.issueTracker.user;
 
 import com.habibInc.issueTracker.exceptionhandler.ApiError;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
