@@ -4,8 +4,10 @@ import com.habibInc.issueTracker.user.User;
 import com.habibInc.issueTracker.user.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
@@ -15,13 +17,18 @@ import static org.mockito.Mockito.when;
 
 public class UserDetailsServiceTest {
 
-    @Autowired
+    @InjectMocks
     UserDetailsServiceImpl userDetailsService;
 
-    @MockBean
+    @Mock
     UserRepository userRepository;
 
     User user;
+
+    @BeforeEach
+    public void init(){
+        MockitoAnnotations.initMocks(this);
+    }
 
     @BeforeEach
     public void setup() {
