@@ -21,7 +21,7 @@ import java.time.LocalDate;
 
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
     @Value("secretKey")
     private String secretKey;
@@ -70,5 +70,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
         // embed the auth token in an authorization header
         response.addHeader("Authorization", "Bearer " + token);
+
+        chain.doFilter(request, response);
     }
 }
