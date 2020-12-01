@@ -42,12 +42,12 @@ public class UserControllerTest {
     }
 
     @Test
-    public void itShouldCreateUser() throws Exception {
+    public void itShouldSignUpUser() throws Exception {
         when(userService.createUser(any(User.class))).thenReturn(user);
 
         String requestBody = mapper.writeValueAsString(user);
 
-        mockMvc.perform(post("/users")
+        mockMvc.perform(post("/users/signup")
                 .content(requestBody)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
