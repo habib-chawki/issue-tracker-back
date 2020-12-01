@@ -29,6 +29,8 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     @Autowired
     public AuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
+
+        setFilterProcessesUrl("/users/login");
     }
 
     @Override
