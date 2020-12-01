@@ -12,7 +12,7 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @PostMapping({"", "/"})
+    @PostMapping("/signup")
     @ResponseStatus(HttpStatus.CREATED)
     public User createUser(@RequestBody User user) {
         return userService.createUser(user);
