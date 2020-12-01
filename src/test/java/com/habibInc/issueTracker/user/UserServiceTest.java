@@ -109,7 +109,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void whenLoadUserByUsernameReturnsNull_itShouldReturnUserNotFoundError() {
+    public void whenLoadUserByUsernameReturnsNull_thenReturnUserNotFoundError() {
         // given an incorrect email of a user that does not exist
         String incorrectEmail = "userNotFound@email.com";
 
