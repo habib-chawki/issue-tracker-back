@@ -97,6 +97,7 @@ public class UserControllerTest {
     }
 
     @Test
+    @WithMockUser
     public void itShouldReturnInvalidUserIdError() throws Exception {
         // given an error message
         String errorMessage = "Invalid user id";
