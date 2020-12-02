@@ -1,5 +1,7 @@
 package com.habibInc.issueTracker.security;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.assertj.core.api.Assertions;
@@ -19,21 +21,23 @@ public class JwtUtilTest {
     String secretKey;
 
     @Test
-    public void itShouldGenerateJsonWebToken() {
+    public void itShouldGenerateJwt() {
         String jwt = jwtUtil.generateToken("Subject");
 
         assertThat(jwt).isNotNull();
     }
 
     @Test
-    public void itShouldVerifyJwtAndReturnTheSubject() {
+    public void itShouldVerifyJwt() {
         String token = Jwts.builder()
                 .setSubject("Habib")
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
 
-        String subject = jwtUtil.verifyToken(token);
+        Jws<Claims> claimsJws = jwtUtil.verifyToken(token);
 
-        assertThat(subject).isEqualTo("Habib");
+        assertThat(claimsJws.getHeader().getAlgorithm()).isEqualTo("HS256");
+        assertThat(claimsJws.getBody().getSubject()).isEqualTo("Habib");
+        assertThat(claimsJws.getSignature()).isNotNull();
     }
 }
