@@ -24,6 +24,10 @@ public class JwtUtilTest {
         String jwt = jwtUtil.generateToken("Subject");
 
         assertThat(jwt).isNotNull();
+
+        String subject = jwtUtil.getSubject(jwt);
+
+        assertThat(subject).isEqualTo("Subject");
     }
 
     @Test
