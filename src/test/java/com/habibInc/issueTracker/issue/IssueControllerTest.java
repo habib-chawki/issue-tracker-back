@@ -97,6 +97,7 @@ public class IssueControllerTest {
     }
 
     @Test
+    @WithMockUser
     public void itShouldReturnIssueNotFoundError() throws Exception {
         // given an error message
         String errorMessage = "Issue not found";
