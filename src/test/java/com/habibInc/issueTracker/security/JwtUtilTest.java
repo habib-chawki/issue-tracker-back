@@ -4,7 +4,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,5 +38,17 @@ public class JwtUtilTest {
         assertThat(claimsJws.getHeader().getAlgorithm()).isEqualTo("HS256");
         assertThat(claimsJws.getBody().getSubject()).isEqualTo("Habib");
         assertThat(claimsJws.getSignature()).isNotNull();
+    }
+
+    @Test
+    public void itShouldGetJwtSubject() {
+        String token = Jwts.builder()
+                .setSubject("Chawki")
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
+
+        String subject = jwtUtil.getSubject(token);
+
+        assertThat(subject).isEqualTo("Chawki");
     }
 }
