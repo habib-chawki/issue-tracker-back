@@ -81,6 +81,7 @@ public class IssueControllerTest {
     }
 
     @Test
+    @WithMockUser
     public void itShouldGetIssueById() throws Exception {
         // return an issue when getIssue service method is invoked
         when(issueService.getIssue(2L)).thenReturn(issue2);
