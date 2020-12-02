@@ -22,6 +22,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(IssueController.class)
+@WithMockUser
 public class IssueControllerTest {
 
     @Autowired
@@ -63,7 +64,6 @@ public class IssueControllerTest {
     }
 
     @Test
-    @WithMockUser
     public void itShouldCreateIssue() throws Exception {
         // mock issue service to add new issue
         when(issueService.createIssue(issue1)).thenReturn(issue1);
@@ -81,7 +81,6 @@ public class IssueControllerTest {
     }
 
     @Test
-    @WithMockUser
     public void itShouldGetIssueById() throws Exception {
         // return an issue when getIssue service method is invoked
         when(issueService.getIssue(2L)).thenReturn(issue2);
@@ -97,7 +96,6 @@ public class IssueControllerTest {
     }
 
     @Test
-    @WithMockUser
     public void itShouldReturnIssueNotFoundError() throws Exception {
         // given an error message
         String errorMessage = "Issue not found";
@@ -114,7 +112,6 @@ public class IssueControllerTest {
     }
 
     @Test
-    @WithMockUser
     public void itShouldReturnInvalidIssueIdError() throws Exception {
         String errorMessage = "Invalid issue id";
 
@@ -126,7 +123,6 @@ public class IssueControllerTest {
     }
 
     @Test
-    @WithMockUser
     public void itShouldGetAllIssues() throws Exception {
         // given a list of issues
         List<Issue> issues = Arrays.asList(issue1, issue2);
