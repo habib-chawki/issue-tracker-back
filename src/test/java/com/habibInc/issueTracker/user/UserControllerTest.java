@@ -80,6 +80,7 @@ public class UserControllerTest {
     }
 
     @Test
+    @WithMockUser
     public void itShouldReturnUserNotFoundError() throws Exception {
         // given an error message
         String errorMessage = "User not found";
