@@ -1,5 +1,7 @@
 package com.habibInc.issueTracker.security;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,11 +24,13 @@ public class JwtUtil {
                 .compact();
     }
 
-    public String verifyToken(String token) {
+    public Jws<Claims> verifyToken(String token) {
         return Jwts.parser()
                 .setSigningKey(secretKey)
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+                .parseClaimsJws(token);
+    }
+
+    public String getSubject(String token) {
+        return verifyToken(token).getBody().getSubject();
     }
 }
