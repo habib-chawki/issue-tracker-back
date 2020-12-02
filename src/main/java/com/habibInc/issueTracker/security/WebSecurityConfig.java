@@ -18,6 +18,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    private AuthorizationFilter authorizationFilter;
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth
@@ -33,7 +36,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .addFilter(new AuthenticationFilter(authenticationManager()))
-                .addFilterAfter(new AuthorizationFilter(), AuthenticationFilter.class)
+                .addFilterAfter(authorizationFilter, AuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers("/users/login").permitAll()
                 .antMatchers("/users/signup").permitAll()
