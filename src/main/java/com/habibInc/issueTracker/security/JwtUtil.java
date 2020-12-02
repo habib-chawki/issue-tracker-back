@@ -20,7 +20,7 @@ public class JwtUtil {
                 .setSubject(subject)
                 .setIssuedAt(Date.valueOf(LocalDate.now()))
                 .setExpiration(Date.valueOf(LocalDate.now().plusWeeks(2)))
-                .signWith(SignatureAlgorithm.HS256, this.secretKey.getBytes())
+                .signWith(SignatureAlgorithm.HS256, this.secretKey)
                 .compact();
     }
 
