@@ -42,9 +42,9 @@ public class UserIT {
     }
 
     @Test
-    public void itShouldCreateUser() {
+    public void itShouldSignUpUser() {
         ResponseEntity<User> response =
-                restTemplate.postForEntity("/users", user, User.class);
+                restTemplate.postForEntity("/users/signup", user, User.class);
 
         // expect user to have been properly and successfully created
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
