@@ -114,6 +114,7 @@ public class IssueControllerTest {
     }
 
     @Test
+    @WithMockUser
     public void itShouldReturnInvalidIssueIdError() throws Exception {
         String errorMessage = "Invalid issue id";
 
@@ -125,6 +126,7 @@ public class IssueControllerTest {
     }
 
     @Test
+    @WithMockUser
     public void itShouldGetAllIssues() throws Exception {
         // given a list of issues
         List<Issue> issues = Arrays.asList(issue1, issue2);
