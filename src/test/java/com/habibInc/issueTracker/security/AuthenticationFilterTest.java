@@ -38,17 +38,17 @@ public class AuthenticationFilterTest {
 
         authenticationRequest = new AuthenticationRequest();
 
-        authenticationRequest.setEmail(user.getEmail());
-        authenticationRequest.setPassword(user.getPassword());
+        authenticationRequest.setEmail(createdUser.getEmail());
+        authenticationRequest.setPassword(createdUser.getPassword());
     }
 
     @Test
     public void itShouldLoginUser() throws Exception {
         ResponseEntity<String> res =
-                restTemplate.postForEntity("/users/login", authenticationRequest, String.class);
-
-        assertThat(res.getStatusCode()).isEqualTo(HttpStatus.OK);
+                restTemplate.postForEntity("/auth", authenticationRequest, String.class);
 
         System.out.println("RESPONSE ==> " + res);
+
+        assertThat(res.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 }
