@@ -2,12 +2,10 @@ package com.habibInc.issueTracker.security;
 
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.time.LocalDate;
 
-@Service
 public class JwtUtil {
     @Value("${secret.key}")
     private String secretKey;
