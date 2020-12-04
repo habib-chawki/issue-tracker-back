@@ -10,6 +10,8 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
@@ -43,7 +45,7 @@ public class UserDetailsServiceTest {
 
     @Test
     public void whenLoadUserByUsernameIsCalled_itShouldLoadUserByEmail() {
-        when(userRepository.findByEmail(user.getEmail())).thenReturn(user);
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
 
         // when loadUserByUsername is invoked with a user email
         UserDetails loadedUser =
