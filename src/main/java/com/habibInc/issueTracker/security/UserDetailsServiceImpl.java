@@ -25,14 +25,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String userEmail) {
         Optional<User> userOptional = userRepository.findByEmail(userEmail);
 
-        User loadedUser = userOptional.get();
+        if (userOptional != null) {
+            User loadedUser = userOptional.get();
 
-        if(loadedUser != null)
             return new org.springframework.security.core.userdetails.User(
                     loadedUser.getEmail(),
                     loadedUser.getPassword(),
                     new ArrayList<>());
-
+        }
         throw new UsernameNotFoundException("Incorrect credentials");
     }
 }
