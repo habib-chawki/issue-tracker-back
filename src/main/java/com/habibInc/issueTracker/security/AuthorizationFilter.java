@@ -10,6 +10,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class AuthorizationFilter extends OncePerRequestFilter {
     @Autowired
@@ -38,9 +39,11 @@ public class AuthorizationFilter extends OncePerRequestFilter {
 
         // extract the principal from the auth token
         UsernamePasswordAuthenticationToken authentication =
-                new UsernamePasswordAuthenticationToken(subject, null);
+                new UsernamePasswordAuthenticationToken(subject, null, new ArrayList<>());
 
         // set authentication on the security context holder
         SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        filterChain.doFilter(request, response);
     }
 }
