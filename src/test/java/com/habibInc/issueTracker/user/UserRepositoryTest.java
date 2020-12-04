@@ -50,4 +50,15 @@ public class UserRepositoryTest {
         // then the response should be the proper user
         assertThat(response.get()).isEqualTo(savedUser);
     }
+
+    @Test
+    public void itShouldFindUserByEmail() {
+        User savedUser = userRepository.save(user);
+
+        // when the findByEmail method is invoked
+        Optional<User> response = userRepository.findByEmail(savedUser.getEmail());
+
+        // then the proper user should be returned
+        assertThat(response.get()).isEqualTo(savedUser);
+    }
 }
