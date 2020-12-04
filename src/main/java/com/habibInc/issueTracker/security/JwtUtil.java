@@ -1,9 +1,6 @@
 package com.habibInc.issueTracker.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -25,9 +22,13 @@ public class JwtUtil {
     }
 
     public Jws<Claims> verifyToken(String token) {
-        return Jwts.parser()
-                .setSigningKey(secretKey)
-                .parseClaimsJws(token);
+        try {
+             return Jwts.parser()
+                    .setSigningKey(secretKey)
+                    .parseClaimsJws(token);
+        } catch(Exception ex){
+            throw new MalformedJwtException("Unauthorized");
+        }
     }
 
     public String getSubject(String token) {
