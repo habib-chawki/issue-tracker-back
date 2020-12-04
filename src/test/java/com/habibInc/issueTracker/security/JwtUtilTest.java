@@ -1,15 +1,13 @@
 package com.habibInc.issueTracker.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest(classes = JwtUtil.class)
 public class JwtUtilTest {
@@ -54,5 +52,11 @@ public class JwtUtilTest {
         String subject = jwtUtil.getSubject(token);
 
         assertThat(subject).isEqualTo("Chawki");
+    }
+
+    @Test
+    public void itShouldReturnMalformedJwtError() {
+        assertThrows(MalformedJwtException.class,
+                () -> jwtUtil.verifyToken("invalid_token"));
     }
 }
