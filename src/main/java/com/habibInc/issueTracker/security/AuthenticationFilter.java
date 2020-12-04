@@ -1,10 +1,7 @@
 package com.habibInc.issueTracker.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,15 +13,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.Date;
-import java.time.LocalDate;
 
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
 
-    @Value("secretKey")
-    private String secretKey;
+    @Autowired
+    JwtUtil jwtUtil;
 
     @Autowired
     public AuthenticationFilter(AuthenticationManager authenticationManager) {
@@ -61,14 +56,10 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                                             FilterChain chain,
                                             Authentication authResult) throws IOException, ServletException {
         // generate the auth token
-        String token = Jwts.builder()
-                .setSubject(authResult.getName())
-                .setIssuedAt(Date.valueOf(LocalDate.now()))
-                .setExpiration(Date.valueOf(LocalDate.now().plusWeeks(2)))
-                .signWith(SignatureAlgorithm.HS256, this.secretKey)
-                .compact();
+        String subject = authResult.getName();
+        String token = jwtUtil.generateToken(subject);
 
-        // embed the auth token in an authorization header
+        // embed the token in an authorization header
         response.addHeader("Authorization", "Bearer " + token);
 
         chain.doFilter(request, response);
