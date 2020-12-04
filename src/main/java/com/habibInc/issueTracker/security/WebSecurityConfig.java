@@ -18,9 +18,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsService userDetailsService;
 
-    @Autowired
-    private AuthorizationFilter authorizationFilter;
-
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth
@@ -38,7 +35,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(new AuthenticationFilter(authenticationManager()))
-                .addFilterAfter(authorizationFilter, AuthenticationFilter.class)
+                .addFilterAfter(authorizationFilter(), AuthenticationFilter.class)
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
@@ -51,5 +48,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public JwtUtil jwtUtil() {
         return new JwtUtil();
+    }
+
+    @Bean
+    public AuthorizationFilter authorizationFilter() {
+        return new AuthorizationFilter();
     }
 }
