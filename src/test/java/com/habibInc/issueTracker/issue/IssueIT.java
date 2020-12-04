@@ -1,6 +1,7 @@
 package com.habibInc.issueTracker.issue;
 
 import com.habibInc.issueTracker.exceptionhandler.ApiError;
+import com.habibInc.issueTracker.security.JwtUtil;
 import com.habibInc.issueTracker.user.User;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +20,8 @@ import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class IssueIT {
+    @Autowired
+    JwtUtil jwtUtil;
 
     @Autowired
     TestRestTemplate restTemplate;
@@ -26,11 +29,17 @@ public class IssueIT {
     @Autowired
     IssueRepository issueRepository;
 
-    User reporter, assignee1, assignee2;
+    User reporter, assignee1, assignee2, user;
     Issue issue1, issue2;
+
 
     @BeforeEach
     public void init() {
+        // create a user
+        user = new User();
+        user.setEmail("Habib@email.com");
+        user.setPassword("memememe");
+
         // create issue
         issue1 = new Issue();
         issue2 = new Issue();
@@ -64,14 +73,26 @@ public class IssueIT {
 
     @Test
     public void itShouldCreateIssue() {
-        // make post request to create new issue
-        ResponseEntity<Issue> response =
-                restTemplate.postForEntity("/issues", issue1, Issue.class);
+        String token = jwtUtil.generateToken(user.getEmail());
 
-        // expect issue to have been created successfully
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(response.getBody().getId()).isNotNull().isPositive();
-        assertThat(response.getBody()).isEqualToComparingOnlyGivenFields(issue1);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer "+ token);
+
+        HttpEntity httpEntity = new HttpEntity(issue1, headers);
+
+        ResponseEntity<String> response =
+                restTemplate.exchange("/issues", HttpMethod.POST, httpEntity, String.class);
+
+        System.out.println("RESPONSE ==> " + response);
+
+//        // make post request to create new issue
+//        ResponseEntity<Issue> response =
+//                restTemplate.postForEntity("/issues", issue1, Issue.class);
+//
+//        // expect issue to have been created successfully
+//        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+//        assertThat(response.getBody().getId()).isNotNull().isPositive();
+//        assertThat(response.getBody()).isEqualToComparingOnlyGivenFields(issue1);
     }
 
     @Test
