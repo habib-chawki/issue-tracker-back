@@ -29,16 +29,25 @@ public class IssueIT {
     @Autowired
     IssueRepository issueRepository;
 
-    User reporter, assignee1, assignee2, user;
+    User reporter, assignee1, assignee2, authenticatedUser;
     Issue issue1, issue2;
 
+    String token;
+    HttpHeaders headers;
 
     @BeforeEach
     public void init() {
-        // create a user
-        user = new User();
-        user.setEmail("Habib@email.com");
-        user.setPassword("memememe");
+        // create a user to authenticate
+        authenticatedUser = new User();
+        authenticatedUser.setEmail("Habib@email.com");
+        authenticatedUser.setPassword("memememe");
+
+        // generate an auth token
+        token = jwtUtil.generateToken(authenticatedUser.getEmail());
+
+        // set up the token authorization header
+        headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + token);
 
         // create issue
         issue1 = new Issue();
@@ -73,26 +82,15 @@ public class IssueIT {
 
     @Test
     public void itShouldCreateIssue() {
-        String token = jwtUtil.generateToken(user.getEmail());
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer "+ token);
-
         HttpEntity httpEntity = new HttpEntity(issue1, headers);
 
-        ResponseEntity<String> response =
-                restTemplate.exchange("/issues", HttpMethod.POST, httpEntity, String.class);
+        ResponseEntity<Issue> response =
+                restTemplate.postForEntity("/issues", httpEntity, Issue.class);
 
-        System.out.println("RESPONSE ==> " + response);
-
-//        // make post request to create new issue
-//        ResponseEntity<Issue> response =
-//                restTemplate.postForEntity("/issues", issue1, Issue.class);
-//
-//        // expect issue to have been created successfully
-//        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-//        assertThat(response.getBody().getId()).isNotNull().isPositive();
-//        assertThat(response.getBody()).isEqualToComparingOnlyGivenFields(issue1);
+        // expect issue to have been created successfully
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(response.getBody().getId()).isNotNull().isPositive();
+        assertThat(response.getBody()).isEqualToComparingOnlyGivenFields(issue1);
     }
 
     @Test
@@ -153,7 +151,7 @@ public class IssueIT {
     }
 
     @AfterEach
-    public void tearDown(){
+    public void tearDown() {
         issueRepository.deleteAll();
     }
 }
