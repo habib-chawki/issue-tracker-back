@@ -1,7 +1,6 @@
 package com.habibInc.issueTracker.security;
 
-import io.jsonwebtoken.Jwts;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -15,8 +14,8 @@ import java.io.IOException;
 
 @Component
 public class AuthorizationFilter extends OncePerRequestFilter {
-    @Value("${secret.key}")
-    String secretKey;
+    @Autowired
+    JwtUtil jwtUtil;
 
     // intercept the request and check the Authorization header
     @Override
@@ -36,12 +35,8 @@ public class AuthorizationFilter extends OncePerRequestFilter {
         // extract the token
         String token = authHeader.replace("Bearer ", "");
 
-        // verify the token validity
-        String subject = Jwts.parser()
-                                .setSigningKey(secretKey)
-                                .parseClaimsJws(token)
-                                .getBody()
-                                .getSubject();
+        // verify the token validity and extract the subject
+        String subject = jwtUtil.getSubject(token);
 
         // extract the principal from the auth token
         UsernamePasswordAuthenticationToken authentication =
