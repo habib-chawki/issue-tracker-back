@@ -31,19 +31,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf().disable().cors().disable()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .addFilter(new AuthenticationFilter(authenticationManager()))
-                .addFilterAfter(authorizationFilter, AuthenticationFilter.class)
+                .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/users/login").permitAll()
                 .antMatchers("/users/signup").permitAll()
-                .anyRequest().authenticated();
+                .anyRequest().authenticated()
+                .and()
+                .addFilter(new AuthenticationFilter(authenticationManager()))
+                .addFilterAfter(authorizationFilter, AuthenticationFilter.class)
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
-
-
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
