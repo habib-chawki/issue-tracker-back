@@ -1,12 +1,15 @@
 package com.habibInc.issueTracker.user;
 
 import com.habibInc.issueTracker.exceptionhandler.ApiError;
+import com.habibInc.issueTracker.security.JwtUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -28,10 +31,17 @@ public class UserIT {
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    @Autowired
+    JwtUtil jwtUtil;
+
     User user;
+
+    String token;
+    HttpHeaders headers;
 
     @BeforeEach
     public void setup() {
+        // create a user
         user = new User();
 
         user.setFirstName("first");
@@ -39,6 +49,11 @@ public class UserIT {
         user.setUserName("my_username");
         user.setEmail("my_email@email.com");
         user.setPassword("MyPassword");
+
+        // authenticate the user
+        headers = new HttpHeaders();
+        token = jwtUtil.generateToken(user.getEmail());
+        headers.add("Authorization", "Bearer " + token);
     }
 
     @Test
