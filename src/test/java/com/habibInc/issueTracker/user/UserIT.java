@@ -88,12 +88,19 @@ public class UserIT {
 
     @Test
     public void itShouldReturnUserNotFoundError() {
+        // set up authorization header
+        HttpEntity httpEntity = new HttpEntity(headers);
+
         // given an error message
         String errorMessage = "User not found";
 
         // when a post request with a user id that does not exist is made
-        ResponseEntity<ApiError> response =
-                restTemplate.getForEntity("/users/10", ApiError.class);
+        ResponseEntity<ApiError> response = restTemplate.exchange(
+                "/users/10",
+                HttpMethod.GET,
+                httpEntity,
+                ApiError.class
+        );
 
         // then a 404 user not found error should be returned
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
