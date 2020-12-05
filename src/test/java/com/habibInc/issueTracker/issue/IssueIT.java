@@ -36,7 +36,7 @@ public class IssueIT {
     HttpHeaders headers;
 
     @BeforeEach
-    public void init() {
+    public void auth() {
         // create a user to authenticate
         authenticatedUser = new User();
         authenticatedUser.setEmail("Habib@email.com");
@@ -48,7 +48,10 @@ public class IssueIT {
         // set up the token authorization header
         headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + token);
+    }
 
+    @BeforeEach
+    public void init() {
         // create issue
         issue1 = new Issue();
         issue2 = new Issue();
