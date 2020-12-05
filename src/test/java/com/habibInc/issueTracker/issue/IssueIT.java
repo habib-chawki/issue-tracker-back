@@ -85,6 +85,7 @@ public class IssueIT {
 
     @Test
     public void itShouldCreateIssue() {
+        // set up request body and authorization header
         HttpEntity httpEntity = new HttpEntity(issue1, headers);
 
         ResponseEntity<Issue> response =
@@ -98,11 +99,19 @@ public class IssueIT {
 
     @Test
     public void itShouldGetIssueById() {
+        // save issue2
         issueRepository.save(issue2);
 
+        // set up authorization header
+        HttpEntity httpEntity = new HttpEntity(headers);
+
         // make get request to retrieve an issue by id
-        ResponseEntity<Issue> response =
-                restTemplate.getForEntity("/issues/" + issue2.getId(), Issue.class);
+        ResponseEntity<Issue> response = restTemplate.exchange(
+                        "/issues/" + issue2.getId(),
+                        HttpMethod.GET,
+                        httpEntity,
+                        Issue.class
+        );
 
         // expect the proper issue to have been retrieved
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
