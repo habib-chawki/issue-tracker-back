@@ -4,6 +4,7 @@ import com.habibInc.issueTracker.exceptionhandler.ApiError;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.issue.IssueRepository;
 import com.habibInc.issueTracker.issue.IssueType;
+import com.habibInc.issueTracker.security.JwtUtil;
 import com.habibInc.issueTracker.user.User;
 import com.habibInc.issueTracker.user.UserRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -30,9 +32,30 @@ public class CommentIT {
     @Autowired
     IssueRepository issueRepository;
 
-    User owner, createdOwner;
+    @Autowired
+    JwtUtil jwtUtil;
+
+    User owner, createdOwner, authenticatedUser;
     Issue issue, createdIssue;
     Comment comment, comment2;
+
+    String token;
+    HttpHeaders headers;
+
+    @BeforeEach
+    public void auth() {
+        // create a user to authenticate
+        authenticatedUser = new User();
+        authenticatedUser.setEmail("Habib@email.com");
+        authenticatedUser.setPassword("my_password");
+
+        // generate an auth token signed with the user email
+        token = jwtUtil.generateToken(authenticatedUser.getEmail());
+
+        // set up the authorization header with the auth token
+        headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + token);
+    }
 
     @BeforeEach
     public void setup() {
