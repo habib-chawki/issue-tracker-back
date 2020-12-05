@@ -16,7 +16,7 @@ import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class IssueIT {
@@ -107,10 +107,10 @@ public class IssueIT {
 
         // make get request to retrieve an issue by id
         ResponseEntity<Issue> response = restTemplate.exchange(
-                        "/issues/" + issue2.getId(),
-                        HttpMethod.GET,
-                        httpEntity,
-                        Issue.class
+                "/issues/" + issue2.getId(),
+                HttpMethod.GET,
+                httpEntity,
+                Issue.class
         );
 
         // expect the proper issue to have been retrieved
@@ -121,9 +121,16 @@ public class IssueIT {
 
     @Test
     public void itShouldReturnIssueNotFoundError() {
+        // set up authorization header
+        HttpEntity httpEntity = new HttpEntity(headers);
+
         // when a request with for an issue that does not exist is received
-        ResponseEntity<ApiError> response =
-                restTemplate.getForEntity("/issues/" + 3L, ApiError.class);
+        ResponseEntity<ApiError> response = restTemplate.exchange(
+                "/issues/" + 3L,
+                HttpMethod.GET,
+                httpEntity,
+                ApiError.class
+        );
 
         // then the response should be a 404 error with an 'issue not found' message
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
