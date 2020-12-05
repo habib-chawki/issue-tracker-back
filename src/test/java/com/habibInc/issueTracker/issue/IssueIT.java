@@ -159,14 +159,20 @@ public class IssueIT {
 
     @Test
     public void itShouldGetAllIssues() {
+        // set up authorization header
+        HttpEntity httpEntity = new HttpEntity(headers);
+
         // given a list of issues
         List<Issue> issues = Arrays.asList(issue1, issue2);
-
         issueRepository.saveAll(issues);
 
         // fetch the list of all issues
-        ResponseEntity<Issue[]> response =
-                restTemplate.getForEntity("/issues", Issue[].class);
+        ResponseEntity<Issue[]> response = restTemplate.exchange(
+                "/issues",
+                HttpMethod.GET,
+                httpEntity,
+                Issue[].class
+        );
 
         // convert the response issues array to list
         List<Issue> responseBody = Arrays.asList(response.getBody());
