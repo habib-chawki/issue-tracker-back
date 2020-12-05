@@ -8,10 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import static org.assertj.core.api.Assertions.*;
@@ -69,12 +66,19 @@ public class UserIT {
 
     @Test
     public void itShouldGetUserById() {
+        // set up authorization header
+        HttpEntity httpEntity = new HttpEntity(headers);
+
         // given a user is created
         User savedUser = userService.createUser(user);
 
         // when a get request is made to retrieve the user by id
-        ResponseEntity<User> response =
-                restTemplate.getForEntity("/users/" + savedUser.getId(), User.class);
+        ResponseEntity<User> response = restTemplate.exchange(
+                "/users/" + savedUser.getId(),
+                HttpMethod.GET,
+                httpEntity,
+                User.class
+        );
 
         // then the proper user should be returned
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
