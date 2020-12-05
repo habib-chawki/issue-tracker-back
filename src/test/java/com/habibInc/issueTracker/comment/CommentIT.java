@@ -131,11 +131,15 @@ public class CommentIT {
 
     @Test
     public void whenIssueIdIsInvalid_itShouldReturnInvalidIssueIdError() {
+        // set up request body and authorization header
+        HttpEntity httpEntity = new HttpEntity(comment, headers);
+
+        // given an issue with an invalid id
         String baseUrl = "/issues/invalid/comments";
 
         // when a post request is received with an invalid issue id
         ResponseEntity<ApiError> response =
-                restTemplate.postForEntity(baseUrl, comment, ApiError.class);
+                restTemplate.postForEntity(baseUrl, httpEntity, ApiError.class);
 
         // then a 400 'invalid issue id' error should be returned
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
