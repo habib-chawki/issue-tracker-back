@@ -110,12 +110,19 @@ public class UserIT {
 
     @Test
     public void itShouldReturnInvalidUserIdError() {
+        // set up authorization header
+        HttpEntity httpEntity = new HttpEntity(headers);
+
         // given an error message
         String errorMessage = "Invalid user id";
 
         // when a get request with an invalid user id is made
-        ResponseEntity<ApiError> response =
-                restTemplate.getForEntity("/users/invalid", ApiError.class);
+        ResponseEntity<ApiError> response = restTemplate.exchange(
+                "/users/invalid",
+                HttpMethod.GET,
+                httpEntity,
+                ApiError.class
+        );
 
         // then a 400 invalid user id error should be returned
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
