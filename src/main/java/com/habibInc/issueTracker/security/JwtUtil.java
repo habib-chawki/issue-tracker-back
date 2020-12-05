@@ -29,7 +29,7 @@ public class JwtUtil {
         }
     }
 
-    public String getSubject(String token) {
+    public String getSubject(String token) throws MalformedJwtException{
         return verifyToken(token).getBody().getSubject();
     }
 }
