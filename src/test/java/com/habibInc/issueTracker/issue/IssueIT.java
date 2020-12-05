@@ -124,7 +124,7 @@ public class IssueIT {
         // set up authorization header
         HttpEntity httpEntity = new HttpEntity(headers);
 
-        // when a request with for an issue that does not exist is received
+        // when a request for an issue that does not exist is received
         ResponseEntity<ApiError> response = restTemplate.exchange(
                 "/issues/" + 3L,
                 HttpMethod.GET,
@@ -140,9 +140,16 @@ public class IssueIT {
 
     @Test
     public void itShouldReturnInvalidIssueIdError() {
+        // set up authorization header
+        HttpEntity httpEntity = new HttpEntity(headers);
+
         // when a request with an invalid issue id is received
-        ResponseEntity<ApiError> response =
-                restTemplate.getForEntity("/issues/invalid", ApiError.class);
+        ResponseEntity<ApiError> response = restTemplate.exchange(
+                "/issues/invalid",
+                HttpMethod.GET,
+                httpEntity,
+                ApiError.class
+        );
 
         // then the response should be a 400 error with an 'invalid issue id' message
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
