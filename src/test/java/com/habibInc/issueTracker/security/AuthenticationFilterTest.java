@@ -36,18 +36,22 @@ public class AuthenticationFilterTest {
         user.setEmail("my_email@email.com");
         user.setPassword("MyPassword");
 
+    }
+
+    @Test
+    public void itShouldLoginUser() throws Exception {
         createdUser = userService.createUser(user);
 
         authenticationRequest = new AuthenticationRequest();
 
         authenticationRequest.setEmail(createdUser.getEmail());
         authenticationRequest.setPassword(createdUser.getPassword());
-    }
 
-    @Test
-    public void itShouldLoginUser() throws Exception {
-        ResponseEntity<String> res =
-                restTemplate.postForEntity("/auth", authenticationRequest, String.class);
+        ResponseEntity<String> res = restTemplate.postForEntity(
+                "/auth",
+                authenticationRequest,
+                String.class
+        );
 
         System.out.println("RESPONSE ==> " + res);
 
