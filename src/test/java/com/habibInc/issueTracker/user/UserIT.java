@@ -132,12 +132,19 @@ public class UserIT {
 
     @Test
     public void itShouldHashUserPassword() {
+        // set up authorization header
+        HttpEntity httpEntity = new HttpEntity(headers);
+
         // given a saved user
         User savedUser = userService.createUser(user);
 
         // when a get request is made with the saved user id
-        ResponseEntity<User> response =
-                restTemplate.getForEntity("/users/" + savedUser.getId(), User.class);
+        ResponseEntity<User> response = restTemplate.exchange(
+                "/users/" + savedUser.getId(),
+                HttpMethod.GET,
+                httpEntity,
+                User.class
+        );
 
         // then the password should be hashed and matches the plain text
         boolean match =
