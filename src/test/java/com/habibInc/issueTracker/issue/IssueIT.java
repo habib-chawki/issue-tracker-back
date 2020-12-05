@@ -40,22 +40,23 @@ public class IssueIT {
         // create a user to authenticate
         authenticatedUser = new User();
         authenticatedUser.setEmail("Habib@email.com");
-        authenticatedUser.setPassword("memememe");
+        authenticatedUser.setPassword("my_password");
 
-        // generate an auth token
+        // generate an auth token signed with the user email
         token = jwtUtil.generateToken(authenticatedUser.getEmail());
 
-        // set up the token authorization header
+        // set up the authorization header with the auth token
         headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + token);
     }
 
     @BeforeEach
     public void init() {
-        // create issue
+        // create issues
         issue1 = new Issue();
         issue2 = new Issue();
 
+        // create reporters and assignees
         reporter = new User();
         assignee1 = new User();
         assignee2 = new User();
