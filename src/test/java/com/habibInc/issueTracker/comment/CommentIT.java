@@ -113,12 +113,15 @@ public class CommentIT {
 
     @Test
     public void whenIssueDoesNotExist_itShouldReturnIssueNotFoundError() {
+        // set up request body and authorization header
+        HttpEntity httpEntity = new HttpEntity(comment2, headers);
+
         // given an issue that does not exist
         String baseUrl = String.format("/issues/%s/comments", 10L);
 
         // when a post request is made to add a new comment with an incorrect issue id
         ResponseEntity<ApiError> response =
-                restTemplate.postForEntity(baseUrl, comment2, ApiError.class);
+                restTemplate.postForEntity(baseUrl, httpEntity, ApiError.class);
 
         // then a 404 'issue not found' error should be returned
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
