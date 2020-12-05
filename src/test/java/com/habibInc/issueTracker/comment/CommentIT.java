@@ -97,7 +97,7 @@ public class CommentIT {
     @Test
     public void itShouldCreateComment() {
         // set up request body and authorization header
-        HttpEntity httpEntity = new HttpEntity(comment, headers);
+        HttpEntity<Comment> httpEntity = new HttpEntity<>(comment, headers);
 
         String baseUrl = String.format("/issues/%s/comments", createdIssue.getId());
 
@@ -114,7 +114,7 @@ public class CommentIT {
     @Test
     public void whenIssueDoesNotExist_itShouldReturnIssueNotFoundError() {
         // set up request body and authorization header
-        HttpEntity httpEntity = new HttpEntity(comment2, headers);
+        HttpEntity<Comment> httpEntity = new HttpEntity<>(comment2, headers);
 
         // given an issue that does not exist
         String baseUrl = String.format("/issues/%s/comments", 10L);
@@ -132,7 +132,7 @@ public class CommentIT {
     @Test
     public void whenIssueIdIsInvalid_itShouldReturnInvalidIssueIdError() {
         // set up request body and authorization header
-        HttpEntity httpEntity = new HttpEntity(comment, headers);
+        HttpEntity<Comment> httpEntity = new HttpEntity<>(comment, headers);
 
         // given an issue with an invalid id
         String baseUrl = "/issues/invalid/comments";

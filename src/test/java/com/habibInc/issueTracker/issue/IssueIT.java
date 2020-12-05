@@ -87,7 +87,7 @@ public class IssueIT {
     @Test
     public void itShouldCreateIssue() {
         // set up request body and authorization header
-        HttpEntity httpEntity = new HttpEntity(issue1, headers);
+        HttpEntity<Issue> httpEntity = new HttpEntity<>(issue1, headers);
 
         ResponseEntity<Issue> response =
                 restTemplate.postForEntity("/issues", httpEntity, Issue.class);
