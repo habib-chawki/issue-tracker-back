@@ -49,8 +49,6 @@ public class AuthenticationFilterTest {
                 String.class
         );
 
-        System.out.println("RESPONSE ==> " + res);
-
         assertThat(res.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 }
