@@ -15,8 +15,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
     private UserDetailsService userDetailsService;
+    private JwtUtil jwtUtil;
+
+    @Autowired
+    public WebSecurityConfig(UserDetailsService userDetailsService, JwtUtil jwtUtil) {
+        this.userDetailsService = userDetailsService;
+        this.jwtUtil = jwtUtil;
+    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -31,12 +37,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors().and()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/auth").permitAll()
+                .antMatchers("/login").permitAll()
                 .antMatchers("/users/signup").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .addFilter(new AuthenticationFilter(authenticationManager()))
-                .addFilterAfter(authorizationFilter(), AuthenticationFilter.class)
+                .addFilter(new AuthenticationFilter(authenticationManager(), jwtUtil))
+                .addFilterAfter(new AuthorizationFilter(jwtUtil), AuthenticationFilter.class)
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
@@ -46,13 +52,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public JwtUtil jwtUtil() {
-        return new JwtUtil();
-    }
-
-    @Bean
-    public AuthorizationFilter authorizationFilter() {
-        return new AuthorizationFilter();
-    }
+//    @Bean
+//    public JwtUtil jwtUtil() {
+//        return new JwtUtil();
+//    }
 }
