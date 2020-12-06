@@ -1,14 +1,19 @@
 package com.habibInc.issueTracker.security;
 
 import io.jsonwebtoken.*;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.time.LocalDate;
 
+//@ConfigurationProperties(prefix = "properties.jwt")
+@Service
 public class JwtUtil {
-    @Value("${secret.key}")
-    private String secretKey;
+    public static String secretKey = "thisismysecretfuckingkeyhere";
+
+    public JwtUtil() {
+    }
 
     public String generateToken(String subject) {
         return Jwts.builder()
