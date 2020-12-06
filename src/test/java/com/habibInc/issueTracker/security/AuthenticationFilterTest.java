@@ -7,8 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -35,17 +33,15 @@ public class AuthenticationFilterTest {
         user.setUserName("my_username");
         user.setEmail("my_email@email.com");
         user.setPassword("MyPassword");
-
     }
 
     @Test
-    public void itShouldLoginUser() throws Exception {
+    public void itShouldLoginUser() {
         createdUser = userService.createUser(user);
 
-        authenticationRequest = new AuthenticationRequest();
-
-        authenticationRequest.setEmail(createdUser.getEmail());
-        authenticationRequest.setPassword(createdUser.getPassword());
+        authenticationRequest = new AuthenticationRequest(
+                "my_email@email.com", "MyPassword"
+        );
 
         ResponseEntity<String> res = restTemplate.postForEntity(
                 "/auth",
