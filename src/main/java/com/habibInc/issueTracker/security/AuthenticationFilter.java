@@ -60,7 +60,5 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
         // embed the token in an authorization header
         response.addHeader("Authorization", "Bearer " + token);
-
-//        chain.doFilter(request, response);
     }
 }
