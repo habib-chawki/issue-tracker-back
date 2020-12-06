@@ -17,17 +17,13 @@ import java.util.ArrayList;
 
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-    private final AuthenticationManager authenticationManager;
-
+    private AuthenticationManager authenticationManager;
     private JwtUtil jwtUtil;
 
     @Autowired
-    public AuthenticationFilter(AuthenticationManager authenticationManager) {
+    public AuthenticationFilter(AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
         this.authenticationManager = authenticationManager;
-
-        jwtUtil = new JwtUtil();
-
-        setFilterProcessesUrl("/auth");
+        this.jwtUtil = jwtUtil;
     }
 
     @Override
@@ -65,6 +61,6 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         // embed the token in an authorization header
         response.addHeader("Authorization", "Bearer " + token);
 
-        chain.doFilter(request, response);
+//        chain.doFilter(request, response);
     }
 }
