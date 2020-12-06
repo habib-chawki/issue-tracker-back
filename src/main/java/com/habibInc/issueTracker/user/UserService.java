@@ -18,7 +18,9 @@ public class UserService {
 
     public User createUser(User user) {
         // hash user password before saving
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        String userPassword = user.getPassword();
+        user.setPassword(bCryptPasswordEncoder.encode(userPassword));
+
         return userRepository.save(user);
     }
 

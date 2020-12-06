@@ -65,6 +65,7 @@ public class IssueControllerTest {
 
     @Test
     public void itShouldCreateIssue() throws Exception {
+
         // mock issue service to add new issue
         when(issueService.createIssue(issue1)).thenReturn(issue1);
 
