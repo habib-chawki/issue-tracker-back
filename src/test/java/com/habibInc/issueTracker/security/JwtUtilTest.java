@@ -14,9 +14,6 @@ public class JwtUtilTest {
     @Autowired
     JwtUtil jwtUtil;
 
-    @Value("${secret.key}")
-    String secretKey;
-
     @Test
     public void itShouldGenerateJwt() {
         String jwt = jwtUtil.generateToken("Subject");
@@ -32,7 +29,7 @@ public class JwtUtilTest {
     public void itShouldVerifyJwt() {
         String token = Jwts.builder()
                 .setSubject("Habib")
-                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .signWith(SignatureAlgorithm.HS256, JwtUtil.secretKey)
                 .compact();
 
         Jws<Claims> claimsJws = jwtUtil.verifyToken(token);
@@ -46,7 +43,7 @@ public class JwtUtilTest {
     public void itShouldGetJwtSubject() {
         String token = Jwts.builder()
                 .setSubject("Chawki")
-                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .signWith(SignatureAlgorithm.HS256, JwtUtil.secretKey)
                 .compact();
 
         String subject = jwtUtil.getSubject(token);
