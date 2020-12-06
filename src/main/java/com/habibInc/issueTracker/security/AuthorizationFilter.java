@@ -13,8 +13,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class AuthorizationFilter extends OncePerRequestFilter {
+
+    private JwtUtil jwtUtil;
+
     @Autowired
-    JwtUtil jwtUtil;
+    public AuthorizationFilter(JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
+    }
 
     // intercept the request and check the Authorization header
     @Override
