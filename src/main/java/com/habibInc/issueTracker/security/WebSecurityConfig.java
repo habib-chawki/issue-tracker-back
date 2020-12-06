@@ -52,9 +52,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-//    @Bean
-//    public JwtUtil jwtUtil() {
-//        return new JwtUtil();
-//    }
 }
