@@ -44,7 +44,7 @@ public class AuthenticationFilterTest {
         );
 
         ResponseEntity<String> res = restTemplate.postForEntity(
-                "/auth",
+                "/login",
                 authenticationRequest,
                 String.class
         );
