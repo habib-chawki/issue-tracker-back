@@ -8,8 +8,13 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/issues")
 public class IssueController {
+
+    private final IssueService issueService;
+
     @Autowired
-    IssueService issueService;
+    public IssueController(IssueService issueService) {
+        this.issueService = issueService;
+    }
 
     @PostMapping({"", "/"})
     @ResponseStatus(HttpStatus.CREATED)
