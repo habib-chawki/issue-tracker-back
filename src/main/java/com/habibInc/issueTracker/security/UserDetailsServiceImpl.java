@@ -27,7 +27,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String userEmail) {
         Optional<User> userOptional = userRepository.findByEmail(userEmail);
 
-        if (userOptional != null) {
+        if (userOptional.isPresent()) {
             User loadedUser = userOptional.get();
 
             return new org.springframework.security.core.userdetails.User(
