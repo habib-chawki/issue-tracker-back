@@ -1,7 +1,6 @@
 package com.habibInc.issueTracker.security;
 
 import io.jsonwebtoken.*;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
