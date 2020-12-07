@@ -62,7 +62,7 @@ public class UserDetailsServiceTest {
         String incorrectEmail = "userNotFound@email.com";
 
         // when the userRepository#findByEmail method is invoked
-        when(userRepository.findByEmail(incorrectEmail)).thenReturn(null);
+        when(userRepository.findByEmail(incorrectEmail)).thenReturn(Optional.ofNullable(null));
 
         // then a username not found error should be returned
         assertThrows(UsernameNotFoundException.class,
