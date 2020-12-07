@@ -8,8 +8,13 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/issues/{id}/comments")
 public class CommentController {
+
+    private final CommentService commentService;
+
     @Autowired
-    CommentService commentService;
+    public CommentController(CommentService commentService) {
+        this.commentService = commentService;
+    }
 
     @PostMapping({"", "/"})
     @ResponseStatus(HttpStatus.CREATED)
