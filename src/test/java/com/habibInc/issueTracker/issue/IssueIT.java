@@ -104,7 +104,7 @@ public class IssueIT {
         issueRepository.save(issue2);
 
         // set up authorization header
-        HttpEntity httpEntity = new HttpEntity(headers);
+        HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
 
         // make get request to retrieve an issue by id
         ResponseEntity<Issue> response = restTemplate.exchange(
@@ -123,7 +123,7 @@ public class IssueIT {
     @Test
     public void itShouldReturnIssueNotFoundError() {
         // set up authorization header
-        HttpEntity httpEntity = new HttpEntity(headers);
+        HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
 
         // when a request for an issue that does not exist is received
         ResponseEntity<ApiError> response = restTemplate.exchange(
@@ -142,7 +142,7 @@ public class IssueIT {
     @Test
     public void itShouldReturnInvalidIssueIdError() {
         // set up authorization header
-        HttpEntity httpEntity = new HttpEntity(headers);
+        HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
 
         // when a request with an invalid issue id is received
         ResponseEntity<ApiError> response = restTemplate.exchange(
@@ -161,7 +161,7 @@ public class IssueIT {
     @Test
     public void itShouldGetAllIssues() {
         // set up authorization header
-        HttpEntity httpEntity = new HttpEntity(headers);
+        HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
 
         // given a list of issues
         List<Issue> issues = Arrays.asList(issue1, issue2);
