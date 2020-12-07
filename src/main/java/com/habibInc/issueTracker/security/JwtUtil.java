@@ -1,15 +1,17 @@
 package com.habibInc.issueTracker.security;
 
 import io.jsonwebtoken.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.time.LocalDate;
 
-//@ConfigurationProperties(prefix = "properties.jwt")
 @Service
 public class JwtUtil {
-    public static String secretKey = "thisismysecretfuckingkeyhere";
+
+    @Value("${secretKey}")
+    private String secretKey;
 
     public JwtUtil() {
     }
@@ -35,5 +37,9 @@ public class JwtUtil {
 
     public String getSubject(String token) throws MalformedJwtException{
         return verifyToken(token).getBody().getSubject();
+    }
+
+    public String getSecretKey() {
+        return secretKey;
     }
 }
