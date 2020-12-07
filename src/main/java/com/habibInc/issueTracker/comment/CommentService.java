@@ -8,8 +8,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CommentService {
-    private IssueService issueService;
-    private CommentRepository commentRepository;
+
+    private final IssueService issueService;
+    private final CommentRepository commentRepository;
 
     @Autowired
     public CommentService(IssueService issueService, CommentRepository commentRepository) {
