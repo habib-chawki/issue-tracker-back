@@ -67,7 +67,7 @@ public class UserIT {
     @Test
     public void itShouldGetUserById() {
         // set up authorization header
-        HttpEntity httpEntity = new HttpEntity(headers);
+        HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
 
         // given a user is created
         User savedUser = userService.createUser(user);
@@ -89,7 +89,7 @@ public class UserIT {
     @Test
     public void itShouldReturnUserNotFoundError() {
         // set up authorization header
-        HttpEntity httpEntity = new HttpEntity(headers);
+        HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
 
         // given an error message
         String errorMessage = "User not found";
@@ -111,7 +111,7 @@ public class UserIT {
     @Test
     public void itShouldReturnInvalidUserIdError() {
         // set up authorization header
-        HttpEntity httpEntity = new HttpEntity(headers);
+        HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
 
         // given an error message
         String errorMessage = "Invalid user id";
@@ -133,7 +133,7 @@ public class UserIT {
     @Test
     public void itShouldHashUserPassword() {
         // set up authorization header
-        HttpEntity httpEntity = new HttpEntity(headers);
+        HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
 
         // given a saved user
         User savedUser = userService.createUser(user);
