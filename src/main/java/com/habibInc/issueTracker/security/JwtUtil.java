@@ -9,6 +9,9 @@ import java.time.LocalDate;
 
 @Service
 public class JwtUtil {
+    public static final String HEADER = "Authorization";
+    public static final String TOKEN_PREFIX = "Bearer ";
+    public static final Date EXPIRATION_TIME = Date.valueOf(LocalDate.now().plusWeeks(2));
 
     @Value("${secretKey}")
     private String secretKey;
@@ -20,7 +23,7 @@ public class JwtUtil {
         return Jwts.builder()
                 .setSubject(subject)
                 .setIssuedAt(Date.valueOf(LocalDate.now()))
-                .setExpiration(Date.valueOf(LocalDate.now().plusWeeks(2)))
+                .setExpiration(EXPIRATION_TIME)
                 .signWith(SignatureAlgorithm.HS256, this.secretKey)
                 .compact();
     }
