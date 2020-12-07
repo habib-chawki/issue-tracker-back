@@ -35,6 +35,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                     loadedUser.getPassword(),
                     new ArrayList<>());
         }
-        throw new UsernameNotFoundException("Incorrect credentials");
+        throw new UsernameNotFoundException("Invalid credentials");
     }
 }
