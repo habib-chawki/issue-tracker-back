@@ -58,6 +58,6 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         String token = jwtUtil.generateToken(subject);
 
         // embed the token in an authorization header
-        response.addHeader("Authorization", "Bearer " + token);
+        response.addHeader(JwtUtil.HEADER, JwtUtil.TOKEN_PREFIX + token);
     }
 }
