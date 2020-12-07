@@ -28,16 +28,16 @@ public class AuthorizationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
 
         // extract the authorization header
-        String authHeader = request.getHeader("Authorization");
+        String authHeader = request.getHeader(JwtUtil.HEADER);
 
         // check the header and make sure it starts with 'Bearer '
-        if(authHeader == null || !authHeader.startsWith("Bearer ")){
+        if(authHeader == null || !authHeader.startsWith(JwtUtil.TOKEN_PREFIX)){
             filterChain.doFilter(request, response);
             return;
         }
 
         // extract the token
-        String token = authHeader.replace("Bearer ", "");
+        String token = authHeader.replace(JwtUtil.TOKEN_PREFIX, "");
 
         // verify the token validity and extract the subject
         String subject = jwtUtil.getSubject(token);
