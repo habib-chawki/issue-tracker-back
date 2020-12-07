@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 public class AuthorizationFilter extends OncePerRequestFilter {
 
-    private JwtUtil jwtUtil;
+    private final JwtUtil jwtUtil;
 
     @Autowired
     public AuthorizationFilter(JwtUtil jwtUtil) {
