@@ -28,7 +28,7 @@ public class JwtUtilTest {
     public void itShouldVerifyJwt() {
         String token = Jwts.builder()
                 .setSubject("Habib")
-                .signWith(SignatureAlgorithm.HS256, JwtUtil.secretKey)
+                .signWith(SignatureAlgorithm.HS256, jwtUtil.getSecretKey())
                 .compact();
 
         Jws<Claims> claimsJws = jwtUtil.verifyToken(token);
@@ -42,7 +42,7 @@ public class JwtUtilTest {
     public void itShouldGetJwtSubject() {
         String token = Jwts.builder()
                 .setSubject("Chawki")
-                .signWith(SignatureAlgorithm.HS256, JwtUtil.secretKey)
+                .signWith(SignatureAlgorithm.HS256, jwtUtil.getSecretKey())
                 .compact();
 
         String subject = jwtUtil.getSubject(token);
