@@ -6,8 +6,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class IssueService {
+
+    private final IssueRepository issueRepository;
+
     @Autowired
-    IssueRepository issueRepository;
+    public IssueService(IssueRepository issueRepository) {
+        this.issueRepository = issueRepository;
+    }
 
     public Issue getIssue(Long id) {
         return issueRepository.findById(id)
