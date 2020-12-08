@@ -13,7 +13,6 @@ public class JwtUtil {
     public static final String TOKEN_PREFIX = "Bearer ";
     public static final Date EXPIRATION_TIME = Date.valueOf(LocalDate.now().plusWeeks(2));
 
-    @Value("${secretKey}")
     private String secretKey;
 
     public String generateToken(String subject) {
@@ -37,6 +36,11 @@ public class JwtUtil {
 
     public String getSubject(String token) throws MalformedJwtException{
         return verifyToken(token).getBody().getSubject();
+    }
+
+    @Value("${secretKey}")
+    public void setSecretKey(String secretKey) {
+        this.secretKey = secretKey;
     }
 
     public String getSecretKey() {
