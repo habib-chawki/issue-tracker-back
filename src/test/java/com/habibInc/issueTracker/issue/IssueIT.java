@@ -3,6 +3,7 @@ package com.habibInc.issueTracker.issue;
 import com.habibInc.issueTracker.exceptionhandler.ApiError;
 import com.habibInc.issueTracker.security.JwtUtil;
 import com.habibInc.issueTracker.user.User;
+import com.habibInc.issueTracker.user.UserService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +30,10 @@ public class IssueIT {
     @Autowired
     IssueRepository issueRepository;
 
-    User reporter, assignee1, assignee2, authenticatedUser;
+    @Autowired
+    UserService userService;
+
+    User assignee1, assignee2, authenticatedUser;
     Issue issue1, issue2;
 
     String token;
@@ -41,6 +45,9 @@ public class IssueIT {
         authenticatedUser = new User();
         authenticatedUser.setEmail("Habib@email.com");
         authenticatedUser.setPassword("my_password");
+
+        // save the authenticated user
+        userService.createUser(authenticatedUser);
 
         // generate an auth token signed with the user email
         token = jwtUtil.generateToken(authenticatedUser.getEmail());
@@ -56,8 +63,7 @@ public class IssueIT {
         issue1 = new Issue();
         issue2 = new Issue();
 
-        // create reporters and assignees
-        reporter = new User();
+        // create assignees
         assignee1 = new User();
         assignee2 = new User();
 
@@ -67,7 +73,6 @@ public class IssueIT {
         issue1.setType(IssueType.STORY);
         issue1.setResolution(IssueResolution.DONE);
         issue1.setAssignee(assignee1);
-        issue1.setReporter(reporter);
         issue1.setCreationTime(LocalDateTime.now());
         issue1.setUpdateTime(LocalDateTime.now());
         issue1.setEstimate(LocalTime.of(2, 0));
@@ -78,7 +83,6 @@ public class IssueIT {
         issue2.setType(IssueType.TASK);
         issue2.setResolution(IssueResolution.DUPLICATE);
         issue2.setAssignee(assignee2);
-        issue2.setReporter(reporter);
         issue2.setCreationTime(LocalDateTime.now());
         issue2.setUpdateTime(LocalDateTime.now());
         issue2.setEstimate(LocalTime.of(6, 15));
@@ -181,6 +185,18 @@ public class IssueIT {
         // expect all issues to have been retrieved
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseBody).isEqualTo(issues);
+    }
+
+    @Test
+    public void itShouldSetTheCurrentLoggedInUserAsTheReporter() {
+        // set up the request body and the authorization header
+        HttpEntity<Issue> httpEntity = new HttpEntity<>(issue1, headers);
+
+        ResponseEntity<Issue> response =
+                restTemplate.postForEntity("/issues", httpEntity, Issue.class);
+
+        assertThat(response.getBody().getReporter().getEmail())
+                .isEqualTo(authenticatedUser.getEmail());
     }
 
     @AfterEach
