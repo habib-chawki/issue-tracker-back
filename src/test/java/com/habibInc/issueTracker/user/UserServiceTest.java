@@ -68,9 +68,9 @@ public class UserServiceTest {
     }
 
     @Test
-    public void whenUserDoesNotExist_itShouldReturnUserNotFoundError() {
+    public void givenGetUserById_whenUserDoesNotExist_itShouldReturnUserNotFoundError() {
         // given a "user not found" error message
-        String errorMessage = "User not found";
+        String errorMessage = "User can not be found by id";
 
         // when an incorrect id is used to fetch a user that does not exist
         when(userRepository.findById(10L)).thenThrow(new ResourceNotFoundException(errorMessage));
@@ -88,6 +88,21 @@ public class UserServiceTest {
 
         // then the response should be the proper user
         assertThat(returnedUser).isEqualTo(user);
+    }
+
+    @Test
+    public void givenGetUserByEmail_whenUserDoesNotExist_itShouldReturnUserNotFoundError(){
+        // set up an error message and an invalid email
+        String errorMessage = "User can not be found by email";
+        String invalidEmail = "user_does_not_exist@email.com";
+
+        // when an incorrect email is used and the user does not exist
+        when(userRepository.findByEmail(invalidEmail))
+                .thenThrow(new ResourceNotFoundException(errorMessage));
+
+        // then a ResourceNotFoundException should be thrown
+        assertThrows(ResourceNotFoundException.class,
+                () -> userService.getUserByEmail(invalidEmail));
     }
 
     @Test
