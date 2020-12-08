@@ -61,18 +61,7 @@ public class UserServiceTest {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
         // when the getUser service method is invoked with the user id
-        User returnedUser = userService.getUser(1L);
-
-        // then the response should be the proper user
-        assertThat(returnedUser).isEqualTo(user);
-    }
-
-    @Test
-    public void itShouldGetUserByEmail() {
-        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
-
-        // when getUserByEmail service method is invoked with the user email
-        User returnedUser = userService.getUserByEmail(user.getEmail());
+        User returnedUser = userService.getUserById(1L);
 
         // then the response should be the proper user
         assertThat(returnedUser).isEqualTo(user);
@@ -87,7 +76,18 @@ public class UserServiceTest {
         when(userRepository.findById(10L)).thenThrow(new ResourceNotFoundException(errorMessage));
 
         // then a ResourceNotFoundException should be thrown
-        assertThrows(ResourceNotFoundException.class, () -> userService.getUser(10L));
+        assertThrows(ResourceNotFoundException.class, () -> userService.getUserById(10L));
+    }
+
+    @Test
+    public void itShouldGetUserByEmail() {
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+
+        // when getUserByEmail service method is invoked with the user email
+        User returnedUser = userService.getUserByEmail(user.getEmail());
+
+        // then the response should be the proper user
+        assertThat(returnedUser).isEqualTo(user);
     }
 
     @Test
