@@ -68,6 +68,17 @@ public class UserServiceTest {
     }
 
     @Test
+    public void itShouldGetUserByEmail() {
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+
+        // when getUserByEmail service method is invoked with the user email
+        User returnedUser = userService.getUserByEmail(user.getEmail());
+
+        // then the response should be the proper user
+        assertThat(returnedUser).isEqualTo(user);
+    }
+
+    @Test
     public void whenUserDoesNotExist_itShouldReturnUserNotFoundError() {
         // given a "user not found" error message
         String errorMessage = "User not found";
