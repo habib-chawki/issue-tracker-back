@@ -60,7 +60,7 @@ public class UserControllerTest {
     @WithMockUser
     public void itShouldGetUserById() throws Exception {
         // return a user when the getUser service method is invoked
-        when(userService.getUser(1L)).thenReturn(user);
+        when(userService.getUserById(1L)).thenReturn(user);
 
         // set up the perceived response body
         String responseBody = mapper.writeValueAsString(user);
@@ -80,7 +80,7 @@ public class UserControllerTest {
         String errorMessage = "User not found";
 
         // when the user does not exist
-        when(userService.getUser(10L)).thenThrow(new ResourceNotFoundException(errorMessage));
+        when(userService.getUserById(10L)).thenThrow(new ResourceNotFoundException(errorMessage));
 
         // then the response should be a 404 user not found error
         mockMvc.perform(get("/users/10")
