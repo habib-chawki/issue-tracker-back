@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.*;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-public class AuthenticationFilterTest {
+public class AuthenticationFilterIT {
     @Autowired
     UserService userService;
 
