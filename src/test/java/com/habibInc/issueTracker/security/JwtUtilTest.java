@@ -1,17 +1,21 @@
 package com.habibInc.issueTracker.security;
 
 import io.jsonwebtoken.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringBootTest(classes = JwtUtil.class)
 public class JwtUtilTest {
-    @Autowired
+
     JwtUtil jwtUtil;
+
+    @BeforeEach
+    public void init(){
+        jwtUtil = new JwtUtil();
+        jwtUtil.setSecretKey("$hush$hush$");
+    }
 
     @Test
     public void itShouldGenerateJwt() {

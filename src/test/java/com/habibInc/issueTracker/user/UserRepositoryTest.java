@@ -13,52 +13,52 @@ import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTest
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)
-public class UserRepositoryTest {
+public class UserEntityRepositoryTest {
     @Autowired
     UserRepository userRepository;
 
-    User user;
+    UserEntity userEntity;
 
     @BeforeEach
     public void setup() {
-        user = new User();
+        userEntity = new UserEntity();
 
-        user.setFirstName("first");
-        user.setLastName("last");
-        user.setUserName("my_username");
-        user.setEmail("my_email@email.com");
-        user.setPassword("this is it");
+        userEntity.setFirstName("first");
+        userEntity.setLastName("last");
+        userEntity.setUserName("my_username");
+        userEntity.setEmail("my_email@email.com");
+        userEntity.setPassword("this is it");
     }
 
     @Test
     public void itShouldSaveUser() {
-        User savedUser = userRepository.save(user);
+        UserEntity savedUserEntity = userRepository.save(userEntity);
 
-        // expect the user to have been saved successfully with an auto generated id
-        assertThat(savedUser).isEqualToComparingOnlyGivenFields(user);
-        assertThat(savedUser.getId()).isNotNull().isPositive();
+        // expect the userEntity to have been saved successfully with an auto generated id
+        assertThat(savedUserEntity).isEqualToComparingOnlyGivenFields(userEntity);
+        assertThat(savedUserEntity.getId()).isNotNull().isPositive();
     }
 
     @Test
     public void itShouldFindUserById() {
-        // given a user is created
-        User savedUser = userRepository.save(user);
+        // given a userEntity is created
+        UserEntity savedUserEntity = userRepository.save(userEntity);
 
         // when the findById method is invoked
-        Optional<User> response = userRepository.findById(savedUser.getId());
+        Optional<UserEntity> response = userRepository.findById(savedUserEntity.getId());
 
-        // then the response should be the proper user
-        assertThat(response.get()).isEqualTo(savedUser);
+        // then the response should be the proper userEntity
+        assertThat(response.get()).isEqualTo(savedUserEntity);
     }
 
     @Test
     public void itShouldFindUserByEmail() {
-        User savedUser = userRepository.save(user);
+        UserEntity savedUserEntity = userRepository.save(userEntity);
 
         // when the findByEmail method is invoked
-        Optional<User> response = userRepository.findByEmail(savedUser.getEmail());
+        Optional<UserEntity> response = userRepository.findByEmail(savedUserEntity.getEmail());
 
-        // then the proper user should be returned
-        assertThat(response.get()).isEqualTo(savedUser);
+        // then the proper userEntity should be returned
+        assertThat(response.get()).isEqualTo(savedUserEntity);
     }
 }
