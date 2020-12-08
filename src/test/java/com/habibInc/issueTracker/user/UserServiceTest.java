@@ -68,7 +68,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void givenGetUserById_whenUserDoesNotExist_itShouldReturnUserNotFoundError() {
+    public void whenUserCanNotBeFoundById_itShouldReturnUserNotFoundError() {
         // given a "user not found" error message
         String errorMessage = "User can not be found by id";
 
@@ -91,7 +91,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void givenGetUserByEmail_whenUserDoesNotExist_itShouldReturnUserNotFoundError(){
+    public void whenUserCanNotBeFoundByEmail_itShouldReturnUserNotFoundError() {
         // set up an error message and an invalid email
         String errorMessage = "User can not be found by email";
         String invalidEmail = "user_does_not_exist@email.com";
