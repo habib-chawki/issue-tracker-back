@@ -27,7 +27,7 @@ public class UserController {
     public User getUser(@PathVariable String id){
         try{
             Long userId = Long.parseLong(id);
-            return userService.getUser(userId);
+            return userService.getUserById(userId);
         }catch(NumberFormatException ex){
             throw new InvalidIdException("Invalid user id");
         }
