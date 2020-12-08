@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class UserEntityServiceTest {
+public class UserServiceTest {
     @InjectMocks
     UserService userService;
 
@@ -24,7 +24,7 @@ public class UserEntityServiceTest {
     @Mock
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    UserEntity userEntity;
+    User user;
 
     @BeforeEach
     public void init() {
@@ -33,38 +33,38 @@ public class UserEntityServiceTest {
 
     @BeforeEach
     public void setup() {
-        userEntity = new UserEntity();
+        user = new User();
 
-        userEntity.setId(1L);
-        userEntity.setFirstName("first");
-        userEntity.setLastName("last");
-        userEntity.setUserName("my_username");
-        userEntity.setEmail("my_email@email.com");
-        userEntity.setPassword("MyP@ssworD");
+        user.setId(1L);
+        user.setFirstName("first");
+        user.setLastName("last");
+        user.setUserName("my_username");
+        user.setEmail("my_email@email.com");
+        user.setPassword("MyP@ssworD");
     }
 
     @Test
     public void itShouldCreateUser() {
         // given a call to the userRepository save method
-        when(userRepository.save(userEntity)).thenReturn(userEntity);
+        when(userRepository.save(user)).thenReturn(user);
 
         // when the service method createUser is invoked
-        UserEntity createdUserEntity = userService.createUser(userEntity);
+        User createdUserEntity = userService.createUser(user);
 
         // then the userEntity should be successfully created
-        assertThat(createdUserEntity).isEqualTo(userEntity);
+        assertThat(createdUserEntity).isEqualTo(user);
     }
 
     @Test
     public void itShouldGetUserById() {
         // given the repository returns a userEntity
-        when(userRepository.findById(1L)).thenReturn(Optional.of(userEntity));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
         // when the getUser service method is invoked with the userEntity id
-        UserEntity returnedUserEntity = userService.getUserById(1L);
+        User returnedUserEntity = userService.getUserById(1L);
 
         // then the response should be the proper userEntity
-        assertThat(returnedUserEntity).isEqualTo(userEntity);
+        assertThat(returnedUserEntity).isEqualTo(user);
     }
 
     @Test
@@ -81,13 +81,13 @@ public class UserEntityServiceTest {
 
     @Test
     public void itShouldGetUserByEmail() {
-        when(userRepository.findByEmail(userEntity.getEmail())).thenReturn(Optional.of(userEntity));
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
 
         // when getUserByEmail service method is invoked with the userEntity email
-        UserEntity returnedUserEntity = userService.getUserByEmail(userEntity.getEmail());
+        User returnedUserEntity = userService.getUserByEmail(user.getEmail());
 
         // then the response should be the proper userEntity
-        assertThat(returnedUserEntity).isEqualTo(userEntity);
+        assertThat(returnedUserEntity).isEqualTo(user);
     }
 
     @Test
@@ -109,11 +109,11 @@ public class UserEntityServiceTest {
     public void itShouldHashUserPassword() {
         String hashedPassword = "xh4DeS$e@dt8u";
 
-        when(bCryptPasswordEncoder.encode(userEntity.getPassword())).thenReturn(hashedPassword);
-        when(userRepository.save(userEntity)).thenReturn(userEntity);
+        when(bCryptPasswordEncoder.encode(user.getPassword())).thenReturn(hashedPassword);
+        when(userRepository.save(user)).thenReturn(user);
 
         // when the userEntity is created
-        UserEntity createdUserEntity = userService.createUser(userEntity);
+        User createdUserEntity = userService.createUser(user);
 
         // then the password should be hashed
         assertThat(createdUserEntity.getPassword()).isEqualTo(hashedPassword);
