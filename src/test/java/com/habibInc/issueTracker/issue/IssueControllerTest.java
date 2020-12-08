@@ -2,7 +2,6 @@ package com.habibInc.issueTracker.issue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
-import com.habibInc.issueTracker.user.User;
 import com.habibInc.issueTracker.user.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -72,7 +71,7 @@ public class IssueControllerTest {
     public void itShouldCreateIssue() throws Exception {
 
         // mock issue service to add new issue
-        when(issueService.createIssue(eq(issue1), any(User.class))).thenReturn(issue1);
+        when(issueService.createIssue(eq(issue1), any())).thenReturn(issue1);
 
         // set up json request body
         String requestBody = mapper.writeValueAsString(issue1);
