@@ -1,8 +1,11 @@
 package com.habibInc.issueTracker.issue;
 
 import com.habibInc.issueTracker.exceptionhandler.InvalidIdException;
+import com.habibInc.issueTracker.user.User;
+import com.habibInc.issueTracker.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -10,16 +13,20 @@ import org.springframework.web.bind.annotation.*;
 public class IssueController {
 
     private final IssueService issueService;
+    private final UserService userService;
 
     @Autowired
-    public IssueController(IssueService issueService) {
+    public IssueController(IssueService issueService, UserService userService) {
         this.issueService = issueService;
+        this.userService = userService;
     }
 
     @PostMapping({"", "/"})
     @ResponseStatus(HttpStatus.CREATED)
-    public Issue createIssue(@RequestBody Issue issue){
-        return issueService.createIssue(issue);
+    public Issue createIssue(@RequestBody Issue issue,
+                             @AuthenticationPrincipal String authenticatedUserEmail) {
+        User reporter = userService.getUserByEmail(authenticatedUserEmail);
+        return issueService.createIssue(issue, reporter);
     }
 
     @GetMapping("/{id}")
