@@ -2,6 +2,7 @@ package com.habibInc.issueTracker.comment;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
+import com.habibInc.issueTracker.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -44,7 +47,7 @@ public class CommentControllerTest {
 
     @Test
     public void itShouldCreateComment() throws Exception {
-        when(commentService.createComment(comment, 1L)).thenReturn(comment);
+        when(commentService.createComment(eq(comment), eq(1L), any())).thenReturn(comment);
 
         // set up base url and request body
         String baseUrl = String.format("/issues/%s/comments", 1);
@@ -72,7 +75,7 @@ public class CommentControllerTest {
         String errorMessage = "Issue not found";
 
         // when the comment service is invoked to create the comment
-        when(commentService.createComment(comment, 10L))
+        when(commentService.createComment(eq(comment), eq(10L), any()))
                 .thenThrow(new ResourceNotFoundException(errorMessage));
 
         // then a 404 "issue not found" error should be returned
