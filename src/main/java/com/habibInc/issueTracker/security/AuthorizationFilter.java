@@ -3,6 +3,8 @@ package com.habibInc.issueTracker.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -15,10 +17,12 @@ import java.util.ArrayList;
 public class AuthorizationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
+    private final UserDetailsService userDetailsService;
 
     @Autowired
-    public AuthorizationFilter(JwtUtil jwtUtil) {
+    public AuthorizationFilter(JwtUtil jwtUtil, UserDetailsService userDetailsService) {
         this.jwtUtil = jwtUtil;
+        this.userDetailsService = userDetailsService;
     }
 
     // intercept the request and check the Authorization header
@@ -31,7 +35,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
         String authHeader = request.getHeader(JwtUtil.HEADER);
 
         // check the header and make sure it starts with 'Bearer '
-        if(authHeader == null || !authHeader.startsWith(JwtUtil.TOKEN_PREFIX)){
+        if (authHeader == null || !authHeader.startsWith(JwtUtil.TOKEN_PREFIX)) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -42,9 +46,17 @@ public class AuthorizationFilter extends OncePerRequestFilter {
         // verify the token validity and extract the subject
         String subject = jwtUtil.getSubject(token);
 
-        // extract the principal from the auth token
+        // retrieve user details
+        CustomUserDetails userDetails =
+                (CustomUserDetails) userDetailsService.loadUserByUsername(subject);
+
+        // extract the authenticated user from userDetails and set it as principal
         UsernamePasswordAuthenticationToken authentication =
-                new UsernamePasswordAuthenticationToken(subject, null, new ArrayList<>());
+                new UsernamePasswordAuthenticationToken(
+                        userDetails.getAuthenticatedUser(),
+                        null,
+                        new ArrayList<>()
+                );
 
         // set authentication on the security context holder
         SecurityContextHolder.getContext().setAuthentication(authentication);
