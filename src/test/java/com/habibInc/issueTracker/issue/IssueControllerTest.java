@@ -101,7 +101,7 @@ public class IssueControllerTest {
     }
 
     @Test
-    public void itShouldReturnIssueNotFoundError() throws Exception {
+    public void whenIssueCannotBeFoundById_itShouldReturnIssueNotFoundError() throws Exception {
         // given an error message
         String errorMessage = "Issue not found";
 
@@ -117,7 +117,7 @@ public class IssueControllerTest {
     }
 
     @Test
-    public void itShouldReturnInvalidIssueIdError() throws Exception {
+    public void whenIssueIdIsInvalid_itShouldReturnInvalidIssueIdError() throws Exception {
         String errorMessage = "Invalid issue id";
 
         // expect an invalid issue id error
