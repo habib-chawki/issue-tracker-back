@@ -30,10 +30,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (userOptional.isPresent()) {
             User loadedUser = userOptional.get();
 
-            return new org.springframework.security.core.userdetails.User(
+            return new CustomUserDetails(
                     loadedUser.getEmail(),
                     loadedUser.getPassword(),
-                    new ArrayList<>());
+                    new ArrayList<>(),
+                    loadedUser
+            );
         }
         throw new UsernameNotFoundException("Invalid credentials");
     }
