@@ -42,7 +42,7 @@ public class Issue {
     @OneToOne(cascade = CascadeType.PERSIST)
     private User assignee;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne
     private User reporter;
 
     private LocalDateTime creationTime;
