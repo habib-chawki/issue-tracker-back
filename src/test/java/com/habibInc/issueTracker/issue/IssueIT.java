@@ -34,6 +34,9 @@ public class IssueIT {
     @Autowired
     UserService userService;
 
+    @Autowired
+    UserRepository userRepository;
+
     User assignee1, assignee2, authenticatedUser;
     Issue issue1, issue2;
 
@@ -46,6 +49,9 @@ public class IssueIT {
         authenticatedUser = new User();
         authenticatedUser.setEmail("Habib@email.com");
         authenticatedUser.setPassword("my_password");
+
+        // save the user to pass authorization
+        userService.createUser(authenticatedUser);
 
         // generate an auth token signed with the user email
         token = jwtUtil.generateToken(authenticatedUser.getEmail());
@@ -187,9 +193,6 @@ public class IssueIT {
 
     @Test
     public void itShouldSetTheCurrentLoggedInUserAsTheReporter() {
-        // save the authenticated user
-        userService.createUser(authenticatedUser);
-
         // set up the request body and the authorization header
         HttpEntity<Issue> httpEntity = new HttpEntity<>(issue1, headers);
 
@@ -205,5 +208,6 @@ public class IssueIT {
     @AfterEach
     public void tearDown() {
         issueRepository.deleteAll();
+        userRepository.deleteAll();
     }
 }
