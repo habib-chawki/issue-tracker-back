@@ -88,6 +88,10 @@ public class UserIT {
 
     @Test
     public void itShouldReturnUserNotFoundError() {
+
+        // save the user to pass the authorization filter successfully
+        userService.createUser(user);
+
         // set up authorization header
         HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
 
@@ -110,6 +114,10 @@ public class UserIT {
 
     @Test
     public void itShouldReturnInvalidUserIdError() {
+
+        // save the user to pass the authorization filter successfully
+        userService.createUser(user);
+
         // set up authorization header
         HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
 
