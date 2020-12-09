@@ -61,7 +61,7 @@ public class CommentServiceTest {
         when(issueService.getIssue(1L)).thenReturn(issue);
 
         // when the "createComment()" service method is called
-        Comment response = commentService.createComment(comment, 1L);
+        Comment response = commentService.createComment(comment, 1L, null);
 
         // then the response should be the comment itself
         assertThat(response).isEqualTo(comment);
@@ -74,7 +74,7 @@ public class CommentServiceTest {
 
         // then an issue not found error should be returned
         assertThrows(ResourceNotFoundException.class, () -> {
-            commentService.createComment(comment, 10L);
+            commentService.createComment(comment, 10L, null);
         });
     }
 }
