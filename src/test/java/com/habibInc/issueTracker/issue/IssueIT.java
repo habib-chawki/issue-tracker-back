@@ -129,7 +129,7 @@ public class IssueIT {
     }
 
     @Test
-    public void itShouldReturnIssueNotFoundError() {
+    public void whenIssueCannotBeFoundById_itShouldReturnIssueNotFoundError() {
         // set up authorization header
         HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
 
@@ -148,7 +148,7 @@ public class IssueIT {
     }
 
     @Test
-    public void itShouldReturnInvalidIssueIdError() {
+    public void whenIssueIdIsInvalid_itShouldReturnInvalidIssueIdError() {
         // set up authorization header
         HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
 
@@ -192,7 +192,7 @@ public class IssueIT {
     }
 
     @Test
-    public void itShouldSetTheCurrentLoggedInUserAsTheReporter() {
+    public void itShouldSetTheCurrentLoggedInUserAsTheIssueReporter() {
         // set up the request body and the authorization header
         HttpEntity<Issue> httpEntity = new HttpEntity<>(issue1, headers);
 
