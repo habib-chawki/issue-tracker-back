@@ -14,10 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 
 import java.time.LocalDateTime;
 
@@ -67,28 +64,20 @@ public class CommentIT {
 
     @BeforeEach
     public void setup() {
-        // set up the comment owner and create it
-        owner = new User();
-
-        owner.setEmail("Me@email.com");
-        owner.setUserName("Jon_Doe");
-
-        createdOwner = userRepository.save(owner);
-
         // set up an issue and create it
         issue = new Issue();
 
-        issue.setType(IssueType.BUG);
         issue.setSummary("This is an issue");
+        issue.setType(IssueType.BUG);
 
+        // save the issue
         createdIssue = issueRepository.save(issue);
 
-        // set up a new comment
+        // set up a comment
         comment = new Comment();
 
         comment.setIssue(createdIssue);
         comment.setContent("My comment");
-        comment.setOwner(createdOwner);
         comment.setCreationTime(LocalDateTime.now());
         comment.setUpdateTime(LocalDateTime.now());
 
@@ -96,7 +85,6 @@ public class CommentIT {
         comment2 = new Comment();
 
         comment2.setContent("Another comment");
-        comment2.setOwner(createdOwner);
         comment2.setCreationTime(LocalDateTime.now());
         comment2.setUpdateTime(LocalDateTime.now());
     }
@@ -152,6 +140,27 @@ public class CommentIT {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Invalid issue id");
         assertThat(response.getBody().getTimestamp()).isNotNull();
+    }
+
+    @Test
+    public void itShouldSetLoggedInUserAsCommentOwner() {
+        // set up request body and authorization header
+        HttpEntity<Comment> httpEntity = new HttpEntity<>(comment, headers);
+
+        // set up base url
+        String baseUrl = String.format("/issues/%s/comments", createdIssue.getId());
+
+        // when a post request is made to create a new comment
+        ResponseEntity<Comment> response = restTemplate.exchange(
+                baseUrl,
+                HttpMethod.POST,
+                httpEntity,
+                Comment.class
+        );
+
+        // then the created comment's owner should be the currently logged-in user
+        assertThat(response.getBody().getOwner().getEmail())
+                .isEqualTo(authenticatedUser.getEmail());
     }
 
     @AfterEach
