@@ -7,6 +7,7 @@ import com.habibInc.issueTracker.issue.IssueType;
 import com.habibInc.issueTracker.security.JwtUtil;
 import com.habibInc.issueTracker.user.User;
 import com.habibInc.issueTracker.user.UserRepository;
+import com.habibInc.issueTracker.user.UserService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class CommentIT {
     @Autowired
     TestRestTemplate restTemplate;
+
+    @Autowired
+    UserService userService;
 
     @Autowired
     UserRepository userRepository;
@@ -49,6 +53,9 @@ public class CommentIT {
         authenticatedUser = new User();
         authenticatedUser.setEmail("Habib@email.com");
         authenticatedUser.setPassword("my_password");
+
+        // save the user to pass authorization
+        userService.createUser(authenticatedUser);
 
         // generate an auth token signed with the user email
         token = jwtUtil.generateToken(authenticatedUser.getEmail());
@@ -150,5 +157,6 @@ public class CommentIT {
     @AfterEach
     public void teardown() {
         issueRepository.deleteAll();
+        userRepository.deleteAll();
     }
 }
