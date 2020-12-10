@@ -145,7 +145,8 @@ public class IssueControllerTest {
     @Test
     public void itShouldUpdateIssue() throws Exception {
         // make a copy of the issue
-        Issue updatedIssue = mapper.readValue(mapper.writeValueAsString(issue1), Issue.class);
+        String issueJson = mapper.writeValueAsString(issue1);
+        Issue updatedIssue = mapper.readValue(issueJson, Issue.class);
 
         // update the issue
         updatedIssue.setType(IssueType.BUG);
