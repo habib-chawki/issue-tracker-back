@@ -1,10 +1,14 @@
 package com.habibInc.issueTracker.issue;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -42,6 +46,7 @@ public class IssueServiceTest {
         issue2 = new Issue();
 
         // set up issue1 properties
+        issue1.setId(1L);
         issue1.setSummary("Issue 1 summary");
         issue1.setDescription("Issue 1 description");
         issue1.setType(IssueType.STORY);
@@ -51,6 +56,7 @@ public class IssueServiceTest {
         issue1.setEstimate(LocalTime.of(2, 0));
 
         // set up issue2 properties
+        issue2.setId(2L);
         issue2.setSummary("Issue 2 summary");
         issue2.setDescription("Issue 2 description");
         issue2.setType(IssueType.TASK);
@@ -109,5 +115,24 @@ public class IssueServiceTest {
         // expect all issues to have been retrieved successfully
         assertThat(returnedIssues).contains(issue1);
         assertThat(returnedIssues).contains(issue2);
+    }
+
+    @Test
+    public void itShouldUpdateIssue() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        // register JavaTimeModule to get rid of "can not construct instance of java.time.LocalDate" error
+        mapper.registerModule(new JavaTimeModule());
+
+        String issueJson = mapper.writeValueAsString(issue1);
+        Issue updatedIssue = mapper.readValue(issueJson, Issue.class);
+
+        updatedIssue.setSummary("updated summary");
+        updatedIssue.setType(IssueType.BUG);
+
+        when(issueRepository.save(updatedIssue)).thenReturn(updatedIssue);
+
+        Issue returnedIssue = issueService.updateIssue(1L, updatedIssue);
+
+        assertThat(returnedIssue).isEqualTo(updatedIssue);
     }
 }
