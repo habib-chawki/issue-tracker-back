@@ -34,6 +34,7 @@ public class IssueControllerTest {
     @MockBean
     IssueService issueService;
 
+    // mock user service
     @MockBean
     UserService userService;
 
@@ -143,16 +144,24 @@ public class IssueControllerTest {
 
     @Test
     public void itShouldUpdateIssue() throws Exception {
-        when(issueService.updateIssue(issue1)).thenReturn(issue2);
+        // make a copy of the issue
+        Issue updatedIssue = mapper.readValue(mapper.writeValueAsString(issue1), Issue.class);
 
-        String requestBody = mapper.writeValueAsString(issue1);
-        String expectedResponse = mapper.writeValueAsString(issue2);
+        // update the issue
+        updatedIssue.setType(IssueType.BUG);
+        updatedIssue.setSummary("Updated summary");
 
-        mockMvc.perform(put("/issues")
+        // set up the updated issue as the request body
+        String requestBody = mapper.writeValueAsString(updatedIssue);
+
+        when(issueService.updateIssue(updatedIssue)).thenReturn(updatedIssue);
+
+        // when a put request to update an issue is made, then the response should be the updated issue
+        mockMvc.perform(put("/issues/1")
                 .content(requestBody)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().string(expectedResponse));
+                .andExpect(content().string(requestBody));
     }
 }
