@@ -1,5 +1,7 @@
 package com.habibInc.issueTracker.issue;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.exceptionhandler.ApiError;
 import com.habibInc.issueTracker.security.JwtUtil;
 import com.habibInc.issueTracker.user.User;
@@ -36,6 +38,9 @@ public class IssueIT {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    ObjectMapper mapper;
 
     User assignee1, assignee2, authenticatedUser;
     Issue issue1, issue2;
@@ -203,6 +208,29 @@ public class IssueIT {
         // then the created issue should have the current logged-in user as a reporter
         assertThat(response.getBody().getReporter().getEmail())
                 .isEqualTo(authenticatedUser.getEmail());
+    }
+
+    @Test
+    public void itShouldUpdateIssue() throws JsonProcessingException {
+        // save the issue
+        Issue issue = issueRepository.save(issue1);
+
+        String issueJson = mapper.writeValueAsString(issue);
+        Issue updatedIssue = mapper.readValue(issueJson, Issue.class);
+
+        updatedIssue.setSummary("updated");
+        updatedIssue.setType(IssueType.BUG);
+
+        HttpEntity<Issue> httpEntity = new HttpEntity<>(updatedIssue, headers);
+
+        ResponseEntity<Issue> response = restTemplate.exchange(
+                "/issues/" + issue.getId(),
+                HttpMethod.PUT,
+                httpEntity,
+                Issue.class
+        );
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     @AfterEach
