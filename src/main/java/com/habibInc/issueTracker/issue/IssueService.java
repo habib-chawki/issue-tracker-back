@@ -28,4 +28,8 @@ public class IssueService {
     public Iterable<Issue> getAllIssues() {
         return issueRepository.findAll();
     }
+
+    public Issue updateIssue(Issue issue) {
+        return null;
+    }
 }
