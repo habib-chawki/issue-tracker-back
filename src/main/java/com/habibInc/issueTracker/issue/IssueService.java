@@ -29,7 +29,7 @@ public class IssueService {
         return issueRepository.findAll();
     }
 
-    public Issue updateIssue(Issue issue) {
+    public Issue updateIssue(Long issueId, Issue issueBody) {
         return null;
     }
 }
