@@ -244,15 +244,16 @@ public class IssueIT {
         HttpEntity<Issue> httpEntity = new HttpEntity<>(issue1, headers);
 
         // when a put request is made with an id of an issue that does not exist
-        ResponseEntity<Issue> response = restTemplate.exchange(
+        ResponseEntity<ApiError> response = restTemplate.exchange(
                 "/issues/100",
                 HttpMethod.PUT,
                 httpEntity,
-                Issue.class
+                ApiError.class
         );
 
         // then the response should be a 404 issue not found error
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Issue not found");
     }
 
     @AfterEach
