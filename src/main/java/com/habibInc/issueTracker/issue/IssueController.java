@@ -44,4 +44,10 @@ public class IssueController {
     public Iterable<Issue> getAllIssues(){
         return issueService.getAllIssues();
     }
+
+    @PutMapping({"", "/"})
+    @ResponseStatus(HttpStatus.OK)
+    public Issue updateIssue(@RequestBody Issue issue) {
+        return issueService.updateIssue(issue);
+    }
 }
