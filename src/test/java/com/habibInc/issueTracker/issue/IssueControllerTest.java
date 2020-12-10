@@ -1,6 +1,5 @@
 package com.habibInc.issueTracker.issue;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.user.UserService;
@@ -169,15 +168,20 @@ public class IssueControllerTest {
 
     @Test
     public void givenUpdateIssueById_whenIssueDoesNotExist_itShouldReturnIssueNotFoundError() throws Exception {
+        String errorMessage = "Issue not found";
+
+        // when attempting to update an issue with an incorrect id
         when(issueService.updateIssue(10L, issue1))
-                .thenThrow(new ResourceNotFoundException("Issue not found"));
+                .thenThrow(new ResourceNotFoundException(errorMessage));
 
         String requestBody = mapper.writeValueAsString(issue1);
 
+        // then a 404 not found error should be returned
         mockMvc.perform(put("/issues/10")
                 .content(requestBody)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.errorMessage").value(errorMessage));
     }
 
     @Test
@@ -185,6 +189,7 @@ public class IssueControllerTest {
         String errorMessage = "Invalid issue id";
         String requestBody = mapper.writeValueAsString(issue1);
 
+        // when the issue id is invalid then an 400 bad request error should be returned
         mockMvc.perform(put("/issues/invalid")
                 .content(requestBody).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
