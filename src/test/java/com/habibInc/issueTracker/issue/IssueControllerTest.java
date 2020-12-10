@@ -156,7 +156,7 @@ public class IssueControllerTest {
         // set up the updated issue as the request body
         String requestBody = mapper.writeValueAsString(updatedIssue);
 
-        when(issueService.updateIssue(updatedIssue)).thenReturn(updatedIssue);
+        when(issueService.updateIssue(1L, updatedIssue)).thenReturn(updatedIssue);
 
         // when a put request to update an issue is made, then the response should be the updated issue
         mockMvc.perform(put("/issues/1")
@@ -169,15 +169,26 @@ public class IssueControllerTest {
 
     @Test
     public void givenUpdateIssueById_whenIssueDoesNotExist_itShouldReturnIssueNotFoundError() throws Exception {
-        when(issueService.getIssue(10L))
+        when(issueService.updateIssue(10L, issue1))
                 .thenThrow(new ResourceNotFoundException("Issue not found"));
 
         String requestBody = mapper.writeValueAsString(issue1);
 
         mockMvc.perform(put("/issues/10")
-                .content(requestBody))
-                .andExpect(status().isBadRequest());
+                .content(requestBody)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 
+    @Test
+    public void givenUpdateIssueById_whenIssueIdIsInvalid_itShouldReturnInvalidIssueIdError() throws Exception {
+        String errorMessage = "Invalid issue id";
+        String requestBody = mapper.writeValueAsString(issue1);
 
+        mockMvc.perform(put("/issues/invalid")
+                .content(requestBody).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorMessage").value(errorMessage));
+    }
 }
