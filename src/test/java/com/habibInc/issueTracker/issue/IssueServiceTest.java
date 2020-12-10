@@ -117,20 +117,22 @@ public class IssueServiceTest {
 
     @Test
     public void itShouldUpdateIssue() throws Exception {
+        // register JavaTimeModule to fix "can not construct instance of java.time.LocalDate" error
         ObjectMapper mapper = new ObjectMapper();
-        // register JavaTimeModule to get rid of "can not construct instance of java.time.LocalDate" error
         mapper.registerModule(new JavaTimeModule());
 
+        // copy and update the issue
         String issueJson = mapper.writeValueAsString(issue1);
         Issue updatedIssue = mapper.readValue(issueJson, Issue.class);
-
         updatedIssue.setSummary("updated summary");
         updatedIssue.setType(IssueType.BUG);
 
         when(issueRepository.save(updatedIssue)).thenReturn(updatedIssue);
 
+        // when the updateIssue service method is invoked
         Issue returnedIssue = issueService.updateIssue(1L, updatedIssue);
 
+        // then expect the response to be the updated issue
         assertThat(returnedIssue).isEqualTo(updatedIssue);
     }
 }
