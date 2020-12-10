@@ -256,6 +256,24 @@ public class IssueIT {
         assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Issue not found");
     }
 
+    @Test
+    public void givenUpdateIssue_whenIssueIdIsInvalid_itShouldReturnInvalidIssueIdError() {
+        // set up the request body and headers
+        HttpEntity<Issue> httpEntity = new HttpEntity<>(issue1, headers);
+
+        // when a put request is made with an invalid issue id
+        ResponseEntity<ApiError> response = restTemplate.exchange(
+                "/issues/invalid",
+                HttpMethod.PUT,
+                httpEntity,
+                ApiError.class
+        );
+
+        // then the response should be a 400 bad request error
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Invalid issue id");
+    }
+
     @AfterEach
     public void tearDown() {
         issueRepository.deleteAll();
