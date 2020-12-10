@@ -18,8 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(IssueController.class)
@@ -140,5 +139,20 @@ public class IssueControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().string(mapper.writeValueAsString(issues)));
+    }
+
+    @Test
+    public void itShouldUpdateIssue() throws Exception {
+        when(issueService.updateIssue(issue1)).thenReturn(issue2);
+
+        String requestBody = mapper.writeValueAsString(issue1);
+        String expectedResponse = mapper.writeValueAsString(issue2);
+
+        mockMvc.perform(put("/issues")
+                .content(requestBody)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().string(expectedResponse));
     }
 }
