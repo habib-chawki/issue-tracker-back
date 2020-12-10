@@ -45,9 +45,9 @@ public class IssueController {
         return issueService.getAllIssues();
     }
 
-    @PutMapping({"", "/"})
+    @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Issue updateIssue(@RequestBody Issue issue) {
+    public Issue updateIssue(@PathVariable String id, @RequestBody Issue issue) {
         return issueService.updateIssue(issue);
     }
 }
