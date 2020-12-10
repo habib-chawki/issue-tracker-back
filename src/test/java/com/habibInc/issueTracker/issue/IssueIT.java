@@ -233,9 +233,26 @@ public class IssueIT {
                 Issue.class
         );
 
-        // then the response should be the issue
+        // then the response should be the updated issue
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo(updatedIssue);
+    }
+
+    @Test
+    public void givenUpdateIssue_whenIssueDoesNotExist_itShouldReturnIssueNotFoundError() {
+        // set up the request body and headers
+        HttpEntity<Issue> httpEntity = new HttpEntity<>(issue1, headers);
+
+        // when a put request is made with an id of an issue that does not exist
+        ResponseEntity<Issue> response = restTemplate.exchange(
+                "/issues/100",
+                HttpMethod.PUT,
+                httpEntity,
+                Issue.class
+        );
+
+        // then the response should be a 404 issue not found error
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
     @AfterEach
