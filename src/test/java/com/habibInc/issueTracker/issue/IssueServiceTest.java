@@ -135,4 +135,16 @@ public class IssueServiceTest {
         // then expect the response to be the updated issue
         assertThat(returnedIssue).isEqualTo(updatedIssue);
     }
+
+    @Test
+    public void givenUpdateIssue_whenIssueDoesNotExist_itShouldReturnIssueNotFoundError() {
+        String errorMessage = "Issue not found";
+
+        // when trying to update an issue that does not exist
+        when(issueRepository.findById(10L)).thenThrow(new ResourceNotFoundException(errorMessage));
+
+        // then a 404 issue not found error should be returned
+        assertThrows(ResourceNotFoundException.class,
+                () -> issueService.updateIssue(10L, issue1));
+    }
 }
