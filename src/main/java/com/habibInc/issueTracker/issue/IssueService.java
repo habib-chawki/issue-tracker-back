@@ -29,7 +29,9 @@ public class IssueService {
         return issueRepository.findAll();
     }
 
-    public Issue updateIssue(Long issueId, Issue issueBody) {
-        return null;
+    public Issue updateIssue(Long issueId, Issue issue) {
+        // make sure the issue already exists, otherwise an exception is thrown
+        getIssue(issueId);
+        return issueRepository.save(issue);
     }
 }
