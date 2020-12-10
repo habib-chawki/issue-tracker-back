@@ -215,14 +215,17 @@ public class IssueIT {
         // save the issue
         Issue issue = issueRepository.save(issue1);
 
+        // copy and update the issue
         String issueJson = mapper.writeValueAsString(issue);
         Issue updatedIssue = mapper.readValue(issueJson, Issue.class);
 
         updatedIssue.setSummary("updated");
         updatedIssue.setType(IssueType.BUG);
 
+        // set up the request body and headers
         HttpEntity<Issue> httpEntity = new HttpEntity<>(updatedIssue, headers);
 
+        // when a put request is made with a valid id of an issue that exists
         ResponseEntity<Issue> response = restTemplate.exchange(
                 "/issues/" + issue.getId(),
                 HttpMethod.PUT,
@@ -230,7 +233,9 @@ public class IssueIT {
                 Issue.class
         );
 
+        // then the response should be the issue
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isEqualTo(updatedIssue);
     }
 
     @AfterEach
