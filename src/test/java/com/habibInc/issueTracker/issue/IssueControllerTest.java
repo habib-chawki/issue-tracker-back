@@ -101,7 +101,7 @@ public class IssueControllerTest {
     }
 
     @Test
-    public void whenIssueCannotBeFoundById_itShouldReturnIssueNotFoundError() throws Exception {
+    public void whenGetIssueDoesNotExist_getIssueByIdShouldReturnIssueNotFoundError() throws Exception {
         // given an error message
         String errorMessage = "Issue not found";
 
@@ -164,5 +164,10 @@ public class IssueControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().string(requestBody));
+    }
+
+    @Test
+    public void whenIssueDoesNotExist_updateIssueByIdShouldReturnIssueNotFoundError() {
+
     }
 }
