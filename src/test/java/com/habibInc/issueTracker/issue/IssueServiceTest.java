@@ -85,7 +85,7 @@ public class IssueServiceTest {
     }
 
     @Test
-    public void itShouldReturnIssueNotFoundError() {
+    public void givenGetIssueById_whenIssueDoesNotExist_itShouldReturnIssueNotFoundError() {
         // when the issue does not exist
         String errorMessage = "Issue not found";
         when(issueRepository.findById(10L))
