@@ -121,12 +121,16 @@ public class IssueServiceTest {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
 
-        // copy and update the issue
+        // copy the issue
         String issueJson = mapper.writeValueAsString(issue1);
         Issue updatedIssue = mapper.readValue(issueJson, Issue.class);
+
+        // update the issue
         updatedIssue.setSummary("updated summary");
         updatedIssue.setType(IssueType.BUG);
 
+        // mock the issue repository behaviour
+        when(issueRepository.findById(1L)).thenReturn(Optional.of(issue1));
         when(issueRepository.save(updatedIssue)).thenReturn(updatedIssue);
 
         // when the updateIssue service method is invoked
