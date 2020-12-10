@@ -1,5 +1,6 @@
 package com.habibInc.issueTracker.issue;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.user.UserService;
@@ -101,7 +102,7 @@ public class IssueControllerTest {
     }
 
     @Test
-    public void whenGetIssueDoesNotExist_getIssueByIdShouldReturnIssueNotFoundError() throws Exception {
+    public void givenGetIssueById_whenIssueDoesNotExist_itShouldReturnIssueNotFoundError() throws Exception {
         // given an error message
         String errorMessage = "Issue not found";
 
@@ -117,7 +118,7 @@ public class IssueControllerTest {
     }
 
     @Test
-    public void whenIssueIdIsInvalid_itShouldReturnInvalidIssueIdError() throws Exception {
+    public void givenGetIssueById_whenIssueIdIsInvalid_itShouldReturnInvalidIssueIdError() throws Exception {
         String errorMessage = "Invalid issue id";
 
         // expect an invalid issue id error
@@ -128,7 +129,7 @@ public class IssueControllerTest {
     }
 
     @Test
-    public void itShouldGetAllIssues() throws Exception {
+    public void itShouldGetListOfAllIssues() throws Exception {
         // given a list of issues
         List<Issue> issues = Arrays.asList(issue1, issue2);
 
@@ -167,7 +168,16 @@ public class IssueControllerTest {
     }
 
     @Test
-    public void whenIssueDoesNotExist_updateIssueByIdShouldReturnIssueNotFoundError() {
+    public void givenUpdateIssueById_whenIssueDoesNotExist_itShouldReturnIssueNotFoundError() throws Exception {
+        when(issueService.getIssue(10L))
+                .thenThrow(new ResourceNotFoundException("Issue not found"));
 
+        String requestBody = mapper.writeValueAsString(issue1);
+
+        mockMvc.perform(put("/issues/10")
+                .content(requestBody))
+                .andExpect(status().isBadRequest());
     }
+
+
 }
