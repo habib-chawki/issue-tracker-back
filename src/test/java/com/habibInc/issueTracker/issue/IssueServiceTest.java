@@ -45,7 +45,12 @@ public class IssueServiceTest {
         // set an authenticated user
         authenticatedUser = new User();
         authenticatedUser.setId(100L);
-        authenticatedUser.setEmail("auth@email.com");
+        authenticatedUser.setEmail("authenticated.user@email.com");
+
+        // create a reporter for issue2
+        User reporter = new User();
+        reporter.setId(200L);
+        reporter.setEmail("issue2.reporter@email.com");
 
         // create issue
         issue1 = new Issue();
@@ -73,6 +78,9 @@ public class IssueServiceTest {
         issue2.setCreationTime(LocalDateTime.now());
         issue2.setUpdateTime(LocalDateTime.now());
         issue2.setEstimate(LocalTime.of(6, 15));
+
+        // set another reporter for issue2
+        issue2.setReporter(reporter);
     }
 
     @Test
@@ -165,14 +173,9 @@ public class IssueServiceTest {
 
     @Test
     public void givenUpdateIssue_whenAuthenticatedUserIsNotTheReporter_itShouldReturnUnauthorizedError() {
-        User reporter = new User();
-        reporter.setId(100L);
-        reporter.setEmail("reporter@email.com");
-
-        issue2.setReporter(reporter);
-
         when(issueRepository.findById(2L)).thenReturn(Optional.of(issue2));
 
+        // when authenticated user is not the reporter then they should not be authorized to update
         assertThrows(UnauthorizedOperationException.class,
                 () -> issueService.updateIssue(2L, issue2, authenticatedUser));
     }
