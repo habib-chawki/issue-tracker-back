@@ -233,7 +233,10 @@ public class IssueIT {
                 Issue.class
         );
 
-        // then the response should be the updated issue
+        // then the issue should be updated
+        assertThat(issueRepository.findById(issue.getId()).get()).isEqualTo(updatedIssue);
+
+        // the response body should be the updated issue
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo(updatedIssue);
     }
