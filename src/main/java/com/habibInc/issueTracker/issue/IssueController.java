@@ -47,10 +47,12 @@ public class IssueController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Issue updateIssue(@PathVariable String id, @RequestBody Issue issue) {
+    public Issue updateIssue(@PathVariable String id,
+                             @RequestBody Issue issue,
+                             @AuthenticationPrincipal User authenticatedUser) {
         try{
             Long issueId = Long.parseLong(id);
-            return issueService.updateIssue(issueId, issue);
+            return issueService.updateIssue(issueId, issue, authenticatedUser);
         }catch(NumberFormatException ex){
             throw new InvalidIdException("Invalid issue id");
         }
