@@ -155,7 +155,7 @@ public class IssueControllerTest {
         // set up the updated issue as the request body
         String requestBody = mapper.writeValueAsString(updatedIssue);
 
-        when(issueService.updateIssue(1L, updatedIssue)).thenReturn(updatedIssue);
+        when(issueService.updateIssue(eq(1L), eq(updatedIssue), any())).thenReturn(updatedIssue);
 
         // when a put request to update an issue is made, then the response should be the updated issue
         mockMvc.perform(put("/issues/1")
@@ -171,7 +171,7 @@ public class IssueControllerTest {
         String errorMessage = "Issue not found";
 
         // when attempting to update an issue with an incorrect id
-        when(issueService.updateIssue(10L, issue1))
+        when(issueService.updateIssue(eq(10L), eq(issue1), any()))
                 .thenThrow(new ResourceNotFoundException(errorMessage));
 
         String requestBody = mapper.writeValueAsString(issue1);
