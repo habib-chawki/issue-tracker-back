@@ -28,4 +28,11 @@ public class RestExceptionHandler {
         ApiError error = new ApiError(ex.getMessage(), LocalDateTime.now());
         return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }
+
+    @ExceptionHandler(UnauthorizedOperationException.class)
+    public ResponseEntity<ApiError> handleUnauthorizedException(UnauthorizedOperationException ex){
+        ApiError error = new ApiError(ex.getMessage(), LocalDateTime.now());
+        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+    }
+
 }
