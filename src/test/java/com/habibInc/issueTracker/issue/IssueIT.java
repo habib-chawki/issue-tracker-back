@@ -282,34 +282,38 @@ public class IssueIT {
 
     @Test
     public void itShouldNotUpdateIssueIfAuthenticatedUserIsNotTheReporter() throws JsonProcessingException {
-        User notTheReporter = new User();
-        notTheReporter.setId(401L);
-        notTheReporter.setEmail("not.the.reporter@email.com");
+        // given a random reporter who's not the authenticated user
+        User randomReporter = new User();
 
-        // create the issue
-        Issue issue = issueService.createIssue(issue1, authenticatedUser);
+        randomReporter.setEmail("not.the.authenticated.user@email.com");
+        randomReporter.setPassword("bla_bla_bla");
+
+        userService.createUser(randomReporter);
+
+        // given an issue created by the random reporter
+        Issue issue = issueService.createIssue(issue1, randomReporter);
 
         // copy and update the issue
         String issueJson = mapper.writeValueAsString(issue);
         Issue updatedIssue = mapper.readValue(issueJson, Issue.class);
 
-        updatedIssue.setReporter(notTheReporter);
         updatedIssue.setSummary("updated");
         updatedIssue.setType(IssueType.BUG);
 
-        // set up the request body and headers
+        // given the request body and headers
         HttpEntity<Issue> httpEntity = new HttpEntity<>(updatedIssue, headers);
 
-        // when a put request is made with a valid id of an issue that exists
-        ResponseEntity<Issue> response = restTemplate.exchange(
+        // when a put request is made to update an issue that belongs to someone else
+        ResponseEntity<ApiError> response = restTemplate.exchange(
                 "/issues/" + issue.getId(),
                 HttpMethod.PUT,
                 httpEntity,
-                Issue.class
+                ApiError.class
         );
 
-        // then the response should be the updated issue
+        // then the response should be an unauthorized error
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+        assertThat(response.getBody().getErrorMessage()).contains("Unauthorized");
     }
 
     @AfterEach
