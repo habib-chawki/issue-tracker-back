@@ -31,6 +31,9 @@ public class IssueIT {
     TestRestTemplate restTemplate;
 
     @Autowired
+    IssueService issueService;
+
+    @Autowired
     IssueRepository issueRepository;
 
     @Autowired
@@ -212,8 +215,8 @@ public class IssueIT {
 
     @Test
     public void itShouldUpdateIssue() throws JsonProcessingException {
-        // save the issue
-        Issue issue = issueRepository.save(issue1);
+        // create the issue
+        Issue issue = issueService.createIssue(issue1, authenticatedUser);
 
         // copy and update the issue
         String issueJson = mapper.writeValueAsString(issue);
@@ -275,6 +278,38 @@ public class IssueIT {
         // then the response should be a 400 bad request error
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Invalid issue id");
+    }
+
+    @Test
+    public void itShouldNotUpdateIssueIfAuthenticatedUserIsNotTheReporter() throws JsonProcessingException {
+        User notTheReporter = new User();
+        notTheReporter.setId(401L);
+        notTheReporter.setEmail("not.the.reporter@email.com");
+
+        // create the issue
+        Issue issue = issueService.createIssue(issue1, authenticatedUser);
+
+        // copy and update the issue
+        String issueJson = mapper.writeValueAsString(issue);
+        Issue updatedIssue = mapper.readValue(issueJson, Issue.class);
+
+        updatedIssue.setReporter(notTheReporter);
+        updatedIssue.setSummary("updated");
+        updatedIssue.setType(IssueType.BUG);
+
+        // set up the request body and headers
+        HttpEntity<Issue> httpEntity = new HttpEntity<>(updatedIssue, headers);
+
+        // when a put request is made with a valid id of an issue that exists
+        ResponseEntity<Issue> response = restTemplate.exchange(
+                "/issues/" + issue.getId(),
+                HttpMethod.PUT,
+                httpEntity,
+                Issue.class
+        );
+
+        // then the response should be the updated issue
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     }
 
     @AfterEach
