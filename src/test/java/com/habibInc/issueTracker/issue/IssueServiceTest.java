@@ -3,6 +3,7 @@ package com.habibInc.issueTracker.issue;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
+import com.habibInc.issueTracker.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -30,6 +31,7 @@ public class IssueServiceTest {
     IssueRepository issueRepository;
 
     Issue issue1, issue2;
+    User authenticatedUser;
 
     @BeforeEach
     public void init() {
@@ -39,6 +41,11 @@ public class IssueServiceTest {
 
     @BeforeEach
     public void setup() {
+        // set an authenticated user
+        authenticatedUser = new User();
+        authenticatedUser.setId(100L);
+        authenticatedUser.setEmail("auth@email.com");
+
         // create issue
         issue1 = new Issue();
         issue2 = new Issue();
@@ -52,6 +59,9 @@ public class IssueServiceTest {
         issue1.setCreationTime(LocalDateTime.now());
         issue1.setUpdateTime(LocalDateTime.now());
         issue1.setEstimate(LocalTime.of(2, 0));
+
+        // set the authenticated user as the reporter
+        issue1.setReporter(authenticatedUser);
 
         // set up issue2 properties
         issue2.setId(2L);
@@ -134,7 +144,7 @@ public class IssueServiceTest {
         when(issueRepository.save(updatedIssue)).thenReturn(updatedIssue);
 
         // when the updateIssue service method is invoked
-        Issue returnedIssue = issueService.updateIssue(1L, updatedIssue);
+        Issue returnedIssue = issueService.updateIssue(1L, updatedIssue, authenticatedUser);
 
         // then expect the response to be the updated issue
         assertThat(returnedIssue).isEqualTo(updatedIssue);
@@ -149,6 +159,6 @@ public class IssueServiceTest {
 
         // then a 404 issue not found error should be returned
         assertThrows(ResourceNotFoundException.class,
-                () -> issueService.updateIssue(10L, issue1));
+                () -> issueService.updateIssue(10L, issue1, authenticatedUser));
     }
 }
