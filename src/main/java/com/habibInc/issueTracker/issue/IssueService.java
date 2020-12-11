@@ -1,8 +1,10 @@
 package com.habibInc.issueTracker.issue;
 
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
+import com.habibInc.issueTracker.exceptionhandler.UnauthorizedOperationException;
 import com.habibInc.issueTracker.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,9 +31,15 @@ public class IssueService {
         return issueRepository.findAll();
     }
 
-    public Issue updateIssue(Long issueId, Issue issue) {
+    public Issue updateIssue(Long issueId, Issue issue, User authenticatedUser) {
         // make sure the issue already exists, otherwise an exception is thrown
-        getIssue(issueId);
-        return issueRepository.save(issue);
+        Issue issueToUpdate = getIssue(issueId);
+
+        // save the issue only if authenticated user is the reporter
+        if(issueToUpdate.getReporter().equals(authenticatedUser))
+            return issueRepository.save(issue);
+
+        // in case the authenticated user is not the reporter, throw an unauthorized error
+        throw new UnauthorizedOperationException("Unauthorized");
     }
 }
