@@ -3,6 +3,7 @@ package com.habibInc.issueTracker.issue;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
+import com.habibInc.issueTracker.exceptionhandler.UnauthorizedOperationException;
 import com.habibInc.issueTracker.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -160,5 +161,19 @@ public class IssueServiceTest {
         // then a 404 issue not found error should be returned
         assertThrows(ResourceNotFoundException.class,
                 () -> issueService.updateIssue(10L, issue1, authenticatedUser));
+    }
+
+    @Test
+    public void givenUpdateIssue_whenAuthenticatedUserIsNotTheReporter_itShouldReturnUnauthorizedError() {
+        User reporter = new User();
+        reporter.setId(100L);
+        reporter.setEmail("reporter@email.com");
+
+        issue2.setReporter(reporter);
+
+        when(issueRepository.findById(2L)).thenReturn(Optional.of(issue2));
+
+        assertThrows(UnauthorizedOperationException.class,
+                () -> issueService.updateIssue(2L, issue2, authenticatedUser));
     }
 }
