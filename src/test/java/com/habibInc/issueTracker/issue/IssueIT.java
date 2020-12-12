@@ -3,6 +3,7 @@ package com.habibInc.issueTracker.issue;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.exceptionhandler.ApiError;
+import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.security.JwtUtil;
 import com.habibInc.issueTracker.user.User;
 import com.habibInc.issueTracker.user.UserRepository;
@@ -21,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class IssueIT {
@@ -332,7 +334,10 @@ public class IssueIT {
                 Object.class
         );
 
+        // then the issue should have been deleted successfully
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThrows(ResourceNotFoundException.class ,
+                () -> issueService.getIssue(issue.getId()));
     }
 
     @Test
