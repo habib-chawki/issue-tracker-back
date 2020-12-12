@@ -69,14 +69,17 @@ public class UserServiceTest {
 
     @Test
     public void whenUserCanNotBeFoundById_itShouldReturnUserNotFoundError() {
-        // given a "userEntity not found" error message
-        String errorMessage = "UserEntity can not be found by id";
+        // given a "user not found" error message
+        String errorMessage = "User not found";
 
         // when an incorrect id is used to fetch a userEntity that does not exist
-        when(userRepository.findById(10L)).thenThrow(new ResourceNotFoundException(errorMessage));
+        when(userRepository.findById(10L))
+                .thenThrow(new ResourceNotFoundException(errorMessage));
 
         // then a ResourceNotFoundException should be thrown
-        assertThrows(ResourceNotFoundException.class, () -> userService.getUserById(10L));
+        assertThatExceptionOfType(ResourceNotFoundException.class)
+                .isThrownBy(() -> userService.getUserById(10L))
+                .withMessageContaining("User not found");
     }
 
     @Test
