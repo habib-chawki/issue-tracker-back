@@ -37,6 +37,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                     loadedUser
             );
         }
-        throw new UsernameNotFoundException("Invalid credentials");
+        throw new UsernameNotFoundException("User not found: invalid credentials");
     }
 }

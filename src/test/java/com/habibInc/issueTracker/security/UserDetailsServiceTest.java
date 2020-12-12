@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
@@ -62,10 +63,12 @@ public class UserDetailsServiceTest {
         String incorrectEmail = "userNotFound@email.com";
 
         // when the userRepository#findByEmail method is invoked
-        when(userRepository.findByEmail(incorrectEmail)).thenReturn(Optional.ofNullable(null));
+        when(userRepository.findByEmail(incorrectEmail))
+                .thenReturn(Optional.ofNullable(null));
 
         // then a username not found error should be returned
-        assertThrows(UsernameNotFoundException.class,
-                () -> userDetailsService.loadUserByUsername(incorrectEmail));
+        assertThatExceptionOfType(UsernameNotFoundException.class)
+                .isThrownBy(() -> userDetailsService.loadUserByUsername(incorrectEmail))
+                .withMessageContaining("User not found");
     }
 }
