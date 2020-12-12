@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class IssueIT {
@@ -336,8 +336,9 @@ public class IssueIT {
 
         // then the issue should have been deleted successfully
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThrows(ResourceNotFoundException.class ,
-                () -> issueService.getIssue(issue.getId()));
+        assertThatExceptionOfType(ResourceNotFoundException.class)
+                .isThrownBy(() -> issueService.getIssue(issue.getId()))
+                .withMessageContaining("Issue not found");
     }
 
     @Test
