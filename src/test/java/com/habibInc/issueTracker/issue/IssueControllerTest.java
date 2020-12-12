@@ -3,6 +3,7 @@ package com.habibInc.issueTracker.issue;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.user.UserService;
+import org.apache.http.client.methods.RequestBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -195,5 +196,11 @@ public class IssueControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errorMessage").value(errorMessage));
+    }
+
+    @Test
+    public void itShouldDeleteIssueById() throws Exception {
+        mockMvc.perform(delete("/issues/2"))
+                .andExpect(status().isOk());
     }
 }
