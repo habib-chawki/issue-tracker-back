@@ -3,7 +3,7 @@ package com.habibInc.issueTracker.issue;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
-import com.habibInc.issueTracker.exceptionhandler.UnauthorizedOperationException;
+import com.habibInc.issueTracker.exceptionhandler.ForbiddenOperationException;
 import com.habibInc.issueTracker.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -172,11 +172,11 @@ public class IssueServiceTest {
     }
 
     @Test
-    public void givenUpdateIssue_whenAuthenticatedUserIsNotTheReporter_itShouldReturnUnauthorizedError() {
+    public void givenUpdateIssue_whenAuthenticatedUserIsNotTheReporter_itShouldReturnForbiddenOperationError() {
         when(issueRepository.findById(2L)).thenReturn(Optional.of(issue2));
 
         // when authenticated user is not the reporter then they should not be authorized to update
-        assertThrows(UnauthorizedOperationException.class,
+        assertThrows(ForbiddenOperationException.class,
                 () -> issueService.updateIssue(2L, issue2, authenticatedUser));
     }
 }
