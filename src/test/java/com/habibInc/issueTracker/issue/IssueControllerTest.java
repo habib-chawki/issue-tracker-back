@@ -209,6 +209,20 @@ public class IssueControllerTest {
         String errorMessage = "Invalid issue id";
 
         mockMvc.perform(delete("/issues/invalid"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorMessage").value(errorMessage));
+    }
+
+    @Test
+    public void givenDeleteIssueById_whenIssueDoesNotExist_itShouldReturnIssueNotFoundError() throws Exception {
+        String errorMessage = "Issue not found";
+
+        doThrow(new ResourceNotFoundException(errorMessage))
+                .when(issueService).deleteIssue(eq(404L), any());
+
+        // when an issue does not exists then a 404 error message should be returned
+        mockMvc.perform(delete("/issues/404"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.errorMessage").value(errorMessage));
     }
 }
