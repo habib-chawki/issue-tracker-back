@@ -10,7 +10,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -49,22 +48,22 @@ public class UserServiceTest {
         when(userRepository.save(user)).thenReturn(user);
 
         // when the service method createUser is invoked
-        User createdUserEntity = userService.createUser(user);
+        User createdUser = userService.createUser(user);
 
-        // then the userEntity should be successfully created
-        assertThat(createdUserEntity).isEqualTo(user);
+        // then the user should be successfully created
+        assertThat(createdUser).isEqualTo(user);
     }
 
     @Test
     public void itShouldGetUserById() {
-        // given the repository returns a userEntity
+        // given the repository returns a user
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
-        // when the getUser service method is invoked with the userEntity id
-        User returnedUserEntity = userService.getUserById(1L);
+        // when the getUser service method is invoked with the user id
+        User returnedUser = userService.getUserById(1L);
 
-        // then the response should be the proper userEntity
-        assertThat(returnedUserEntity).isEqualTo(user);
+        // then the response should be the proper user
+        assertThat(returnedUser).isEqualTo(user);
     }
 
     @Test
@@ -72,7 +71,7 @@ public class UserServiceTest {
         // given a "user not found" error message
         String errorMessage = "User not found";
 
-        // when an incorrect id is used to fetch a userEntity that does not exist
+        // when an incorrect id is used to fetch a user that does not exist
         when(userRepository.findById(10L))
                 .thenThrow(new ResourceNotFoundException(errorMessage));
 
@@ -86,11 +85,11 @@ public class UserServiceTest {
     public void itShouldGetUserByEmail() {
         when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
 
-        // when getUserByEmail service method is invoked with the userEntity email
-        User returnedUserEntity = userService.getUserByEmail(user.getEmail());
+        // when getUserByEmail service method is invoked with the user email
+        User returnedUser = userService.getUserByEmail(user.getEmail());
 
-        // then the response should be the proper userEntity
-        assertThat(returnedUserEntity).isEqualTo(user);
+        // then the response should be the proper user
+        assertThat(returnedUser).isEqualTo(user);
     }
 
     @Test
@@ -99,7 +98,7 @@ public class UserServiceTest {
         String errorMessage = "User can not be found by email";
         String invalidEmail = "user_does_not_exist@email.com";
 
-        // when an incorrect email is used and the userEntity does not exist
+        // when an incorrect email is used and the user does not exist
         when(userRepository.findByEmail(invalidEmail))
                 .thenThrow(new ResourceNotFoundException(errorMessage));
 
@@ -116,10 +115,10 @@ public class UserServiceTest {
         when(bCryptPasswordEncoder.encode(user.getPassword())).thenReturn(hashedPassword);
         when(userRepository.save(user)).thenReturn(user);
 
-        // when the userEntity is created
-        User createdUserEntity = userService.createUser(user);
+        // when the user is created
+        User createdUser = userService.createUser(user);
 
         // then the password should be hashed
-        assertThat(createdUserEntity.getPassword()).isEqualTo(hashedPassword);
+        assertThat(createdUser.getPassword()).isEqualTo(hashedPassword);
     }
 }
