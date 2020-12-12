@@ -73,8 +73,7 @@ public class CommentServiceTest {
         when(issueService.getIssue(10L)).thenReturn(null);
 
         // then an issue not found error should be returned
-        assertThrows(ResourceNotFoundException.class, () -> {
-            commentService.createComment(comment, 10L, null);
-        });
+        assertThatExceptionOfType(ResourceNotFoundException.class)
+                .isThrownBy(() -> commentService.createComment(comment, 10L, null));
     }
 }
