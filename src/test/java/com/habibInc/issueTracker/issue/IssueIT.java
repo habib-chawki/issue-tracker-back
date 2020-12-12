@@ -281,7 +281,7 @@ public class IssueIT {
     }
 
     @Test
-    public void itShouldNotUpdateIssueIfAuthenticatedUserIsNotTheReporter() throws JsonProcessingException {
+    public void whenAuthenticatedUserIsNotTheReporter_itShouldNotAllowIssueUpdate() throws JsonProcessingException {
         // given a random reporter who's not the authenticated user
         User randomReporter = new User();
 
@@ -312,8 +312,8 @@ public class IssueIT {
         );
 
         // then the response should be an unauthorized error
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
-        assertThat(response.getBody().getErrorMessage()).contains("Unauthorized");
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat(response.getBody().getErrorMessage()).contains("Forbidden");
     }
 
     @AfterEach
