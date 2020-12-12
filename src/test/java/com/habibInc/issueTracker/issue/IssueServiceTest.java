@@ -182,7 +182,11 @@ public class IssueServiceTest {
 
     @Test
     public void itShouldDeleteIssue() {
+        doNothing().when(issueRepository).deleteById(1L);
 
+        when(issueRepository.findById(1L)).thenReturn(Optional.of(issue1));
+
+        issueService.deleteIssue(1L, authenticatedUser);
     }
 
     @Test
