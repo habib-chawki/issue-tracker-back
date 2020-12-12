@@ -56,7 +56,7 @@ public class JwtUtilTest {
 
     @Test
     public void itShouldReturnMalformedJwtError() {
-        assertThrows(MalformedJwtException.class,
-                () -> jwtUtil.verifyToken("invalid_token"));
+        assertThatExceptionOfType(MalformedJwtException.class)
+                .isThrownBy(() -> jwtUtil.verifyToken("invalid_token"));
     }
 }
