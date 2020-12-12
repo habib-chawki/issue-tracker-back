@@ -316,6 +316,26 @@ public class IssueIT {
         assertThat(response.getBody().getErrorMessage()).contains("Forbidden");
     }
 
+    @Test
+    public void itShouldDeleteIssueById() {
+
+    }
+
+    @Test
+    public void givenDeleteIssue_whenIssueDoesNotExist_itShouldReturnIssueNotFoundError() {
+
+    }
+
+    @Test
+    public void givenDeleteIssue_whenIssueIdIsInvalid_itShouldReturnInvalidIdError() {
+
+    }
+
+    @Test
+    public void whenAuthenticatedUserIsNotTheReporter_itShouldNotAllowDeleteIssue() {
+
+    }
+
     @AfterEach
     public void tearDown() {
         issueRepository.deleteAll();
