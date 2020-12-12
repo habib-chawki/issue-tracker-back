@@ -170,8 +170,9 @@ public class IssueServiceTest {
         when(issueRepository.findById(10L)).thenThrow(new ResourceNotFoundException(errorMessage));
 
         // then a 404 issue not found error should be returned
-        assertThrows(ResourceNotFoundException.class,
-                () -> issueService.updateIssue(10L, issue1, authenticatedUser));
+        assertThatExceptionOfType(ResourceNotFoundException.class)
+                .isThrownBy(() -> issueService.updateIssue(10L, issue1, authenticatedUser))
+                .withMessage(errorMessage);
     }
 
     @Test
@@ -179,8 +180,9 @@ public class IssueServiceTest {
         when(issueRepository.findById(2L)).thenReturn(Optional.of(issue2));
 
         // when authenticated user is not the reporter then they should not be authorized to update
-        assertThrows(ForbiddenOperationException.class,
-                () -> issueService.updateIssue(2L, issue2, authenticatedUser));
+        assertThatExceptionOfType(ForbiddenOperationException.class)
+                .isThrownBy(() -> issueService.updateIssue(2L, issue2, authenticatedUser))
+                .withMessageContaining("Forbidden");
     }
 
     @Test
@@ -196,7 +198,8 @@ public class IssueServiceTest {
     public void givenDeleteIssue_whenAuthenticatedUserIsNotTheReporter_itShouldReturnForbiddenOperationError() {
         when(issueRepository.findById(2L)).thenReturn(Optional.of(issue2));
 
-        assertThrows(ForbiddenOperationException.class,
-                () -> issueService.deleteIssue(2L, authenticatedUser));
+        assertThatExceptionOfType(ForbiddenOperationException.class)
+                .isThrownBy(() -> issueService.deleteIssue(2L, authenticatedUser))
+                .withMessageContaining("Forbidden");
     }
 }
