@@ -342,10 +342,12 @@ public class IssueIT {
 
     @Test
     public void givenDeleteIssue_whenIssueDoesNotExist_itShouldReturnIssueNotFoundError() {
+        String errorMessage = "Issue not found";
+
         // set the authorization header
         HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
 
-        // when a delete request is made
+        // when attempting to delete an issue that does not exist
         ResponseEntity<ApiError> response = restTemplate.exchange(
                 "/issues/404",
                 HttpMethod.DELETE,
@@ -353,7 +355,9 @@ public class IssueIT {
                 ApiError.class
         );
 
+        // then a 404 issue not found error should be returned
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(response.getBody().getErrorMessage()).contains(errorMessage);
     }
 
     @Test
