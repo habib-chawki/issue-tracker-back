@@ -179,4 +179,17 @@ public class IssueServiceTest {
         assertThrows(ForbiddenOperationException.class,
                 () -> issueService.updateIssue(2L, issue2, authenticatedUser));
     }
+
+    @Test
+    public void itShouldDeleteIssue() {
+
+    }
+
+    @Test
+    public void givenDeleteIssue_whenAuthenticatedUserIsNotTheReporter_itShouldReturnForbiddenOperationError() {
+        when(issueRepository.findById(2L)).thenReturn(Optional.of(issue2));
+
+        assertThrows(ForbiddenOperationException.class,
+                () -> issueService.deleteIssue(2L, authenticatedUser));
+    }
 }
