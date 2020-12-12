@@ -62,6 +62,11 @@ public class IssueController {
     @ResponseStatus(HttpStatus.OK)
     public void deleteIssue(@PathVariable String id,
                             @AuthenticationPrincipal User authenticatedUser){
-
+        try{
+            Long issueId = Long.parseLong(id);
+            issueService.deleteIssue(issueId, authenticatedUser);
+        }catch(NumberFormatException ex){
+            throw new InvalidIdException("Invalid issue id");
+        }
     }
 }
