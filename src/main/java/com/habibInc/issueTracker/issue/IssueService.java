@@ -1,7 +1,7 @@
 package com.habibInc.issueTracker.issue;
 
-import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.exceptionhandler.ForbiddenOperationException;
+import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,7 +35,7 @@ public class IssueService {
         Issue issueToUpdate = getIssue(issueId);
 
         // save the issue only if authenticated user is the reporter
-        if(issueToUpdate.getReporter().equals(authenticatedUser))
+        if (issueToUpdate.getReporter().equals(authenticatedUser))
             return issueRepository.save(issue);
 
         // in case the authenticated user is not the reporter, throw a forbidden error
@@ -45,10 +45,10 @@ public class IssueService {
     public void deleteIssue(Long issueId, User authenticatedUser) {
         Issue issueToDelete = getIssue(issueId);
 
-        if(issueToDelete.getReporter().equals(authenticatedUser))
-            issueRepository.deleteById(issueId);
-
         // in case the authenticated user is not the reporter, throw a forbidden error
-        throw new ForbiddenOperationException("Forbidden");
+        if (issueToDelete.getReporter().equals(authenticatedUser))
+            issueRepository.deleteById(issueId);
+        else
+            throw new ForbiddenOperationException("Forbidden");
     }
 }
