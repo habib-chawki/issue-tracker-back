@@ -96,7 +96,7 @@ public class UserServiceTest {
     @Test
     public void whenUserCanNotBeFoundByEmail_itShouldReturnUserNotFoundError() {
         // set up an error message and an invalid email
-        String errorMessage = "UserEntity can not be found by email";
+        String errorMessage = "User can not be found by email";
         String invalidEmail = "user_does_not_exist@email.com";
 
         // when an incorrect email is used and the userEntity does not exist
@@ -104,8 +104,9 @@ public class UserServiceTest {
                 .thenThrow(new ResourceNotFoundException(errorMessage));
 
         // then a ResourceNotFoundException should be thrown
-        assertThrows(ResourceNotFoundException.class,
-                () -> userService.getUserByEmail(invalidEmail));
+        assertThatExceptionOfType(ResourceNotFoundException.class)
+                .isThrownBy(() -> userService.getUserByEmail(invalidEmail))
+                .withMessageContaining(errorMessage);
     }
 
     @Test
