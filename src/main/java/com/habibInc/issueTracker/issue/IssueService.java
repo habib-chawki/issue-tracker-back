@@ -43,6 +43,12 @@ public class IssueService {
     }
 
     public void deleteIssue(Long issueId, User authenticatedUser) {
+        Issue issueToDelete = getIssue(issueId);
 
+        if(issueToDelete.getReporter().equals(authenticatedUser))
+            issueRepository.deleteById(issueId);
+
+        // in case the authenticated user is not the reporter, throw a forbidden error
+        throw new ForbiddenOperationException("Forbidden");
     }
 }
