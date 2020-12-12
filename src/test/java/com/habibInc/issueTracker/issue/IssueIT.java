@@ -318,7 +318,21 @@ public class IssueIT {
 
     @Test
     public void itShouldDeleteIssueById() {
+        // create the issue
+        Issue issue = issueService.createIssue(issue1, authenticatedUser);
 
+        // set the authorization header
+        HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
+
+        // when a delete request is made
+        ResponseEntity<Object> response = restTemplate.exchange(
+                "/issues/" + issue.getId(),
+                HttpMethod.DELETE,
+                httpEntity,
+                Object.class
+        );
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     @Test
