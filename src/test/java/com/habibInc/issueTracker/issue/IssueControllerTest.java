@@ -203,4 +203,12 @@ public class IssueControllerTest {
         mockMvc.perform(delete("/issues/2"))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    public void givenDeleteIssueById_whenIssueIdIsInvalid_itShouldReturnInvalidIssueIdError() throws Exception {
+        String errorMessage = "Invalid issue id";
+
+        mockMvc.perform(delete("/issues/invalid"))
+                .andExpect(status().isBadRequest());
+    }
 }
