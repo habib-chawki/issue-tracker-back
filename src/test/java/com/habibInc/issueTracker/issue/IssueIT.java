@@ -382,7 +382,30 @@ public class IssueIT {
 
     @Test
     public void whenAuthenticatedUserIsNotTheReporter_itShouldNotAllowDeleteIssue() {
+        // given a random reporter
+        User randomReporter = new User();
+        randomReporter.setEmail("not.the.authenticated.user@email.com");
+        randomReporter.setPassword("bla_bla_bla");
 
+        userService.createUser(randomReporter);
+
+        // given an issue created by the random reporter
+        Issue issue = issueService.createIssue(issue1, randomReporter);
+
+        // given the authorization header
+        HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
+
+        // when an attempt is made to delete someone else's issue
+        ResponseEntity<ApiError> response = restTemplate.exchange(
+                "/issues/" + issue.getId(),
+                HttpMethod.DELETE,
+                httpEntity,
+                ApiError.class
+        );
+
+        // then the operation should be forbidden
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat(response.getBody().getErrorMessage()).contains("Forbidden");
     }
 
     @AfterEach
