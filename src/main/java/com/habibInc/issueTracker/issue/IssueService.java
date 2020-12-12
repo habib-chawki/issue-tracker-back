@@ -41,4 +41,8 @@ public class IssueService {
         // in case the authenticated user is not the reporter, throw a forbidden error
         throw new ForbiddenOperationException("Forbidden");
     }
+
+    public void deleteIssue(Long issueId, User authenticatedUser) {
+
+    }
 }
