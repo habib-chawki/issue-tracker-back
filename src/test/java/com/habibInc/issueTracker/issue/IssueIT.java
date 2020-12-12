@@ -342,7 +342,18 @@ public class IssueIT {
 
     @Test
     public void givenDeleteIssue_whenIssueDoesNotExist_itShouldReturnIssueNotFoundError() {
+        // set the authorization header
+        HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
 
+        // when a delete request is made
+        ResponseEntity<ApiError> response = restTemplate.exchange(
+                "/issues/404",
+                HttpMethod.DELETE,
+                httpEntity,
+                ApiError.class
+        );
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
     @Test
