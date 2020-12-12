@@ -1,10 +1,9 @@
 package com.habibInc.issueTracker.issue;
 
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
-import com.habibInc.issueTracker.exceptionhandler.UnauthorizedOperationException;
+import com.habibInc.issueTracker.exceptionhandler.ForbiddenOperationException;
 import com.habibInc.issueTracker.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -39,7 +38,7 @@ public class IssueService {
         if(issueToUpdate.getReporter().equals(authenticatedUser))
             return issueRepository.save(issue);
 
-        // in case the authenticated user is not the reporter, throw an unauthorized error
-        throw new UnauthorizedOperationException("Unauthorized");
+        // in case the authenticated user is not the reporter, throw a forbidden error
+        throw new ForbiddenOperationException("Forbidden");
     }
 }
