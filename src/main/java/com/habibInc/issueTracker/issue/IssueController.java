@@ -57,4 +57,11 @@ public class IssueController {
             throw new InvalidIdException("Invalid issue id");
         }
     }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteIssue(@PathVariable String id,
+                            @AuthenticationPrincipal User authenticatedUser){
+
+    }
 }
