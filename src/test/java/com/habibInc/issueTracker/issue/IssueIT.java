@@ -362,7 +362,22 @@ public class IssueIT {
 
     @Test
     public void givenDeleteIssue_whenIssueIdIsInvalid_itShouldReturnInvalidIdError() {
+        String errorMessage = "Invalid issue id";
 
+        // set the authorization header
+        HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
+
+        // when the issue id is invalid
+        ResponseEntity<ApiError> response = restTemplate.exchange(
+                "/issues/invalid",
+                HttpMethod.DELETE,
+                httpEntity,
+                ApiError.class
+        );
+
+        // then a 400 invalid issue id error should be returned
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(response.getBody().getErrorMessage()).contains(errorMessage);
     }
 
     @Test
