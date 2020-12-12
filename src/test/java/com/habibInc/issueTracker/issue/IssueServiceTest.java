@@ -111,11 +111,14 @@ public class IssueServiceTest {
     public void givenGetIssueById_whenIssueDoesNotExist_itShouldReturnIssueNotFoundError() {
         // when the issue does not exist
         String errorMessage = "Issue not found";
+
         when(issueRepository.findById(10L))
                 .thenThrow(new ResourceNotFoundException(errorMessage));
 
         // then an issue not found exception is thrown
-        assertThrows(ResourceNotFoundException.class, () -> issueService.getIssue(10L));
+        assertThatExceptionOfType(ResourceNotFoundException.class)
+                .isThrownBy(() -> issueService.getIssue(10L))
+                .withMessage(errorMessage);
     }
 
     @Test
