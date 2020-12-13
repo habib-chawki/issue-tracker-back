@@ -8,7 +8,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/issues/{id}/comments")
+@RequestMapping("/issues/{issueId}/comments")
 public class CommentController {
 
     private final CommentService commentService;
@@ -21,7 +21,7 @@ public class CommentController {
     @PostMapping({"", "/"})
     @ResponseStatus(HttpStatus.CREATED)
     public Comment createComment(@RequestBody Comment comment,
-                                 @PathVariable String id,
+                                 @PathVariable("issueId") String id,
                                  @AuthenticationPrincipal User owner){
         try{
             // verify issueId type
@@ -31,4 +31,8 @@ public class CommentController {
             throw new InvalidIdException("Invalid issue id");
         }
     }
+
+    @DeleteMapping("/{commentId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteComment(){}
 }
