@@ -20,19 +20,20 @@ public class CommentService {
     }
 
     public Comment createComment(Comment comment, Long issueId, User owner) {
-        // delegate call to issueService to get the issue by id
-        Issue issue = issueService.getIssue(issueId);
+        // delegate call to issueService to get the issue by id (throws exception)
+        issueService.getIssue(issueId);
 
-        // save the comment if the issue is present
-        if (issue != null) {
-            comment.setOwner(owner);
-            return commentRepository.save(comment);
-        }
+        comment.setOwner(owner);
+        return commentRepository.save(comment);
 
-        throw new ResourceNotFoundException("Issue not found");
     }
 
     public void deleteComment(Long issueId, Long commentId) {
+        Issue issue = issueService.getIssue(issueId);
 
+        if (issue != null) {
+        }
+
+        throw new ResourceNotFoundException("Issue not found");
     }
 }
