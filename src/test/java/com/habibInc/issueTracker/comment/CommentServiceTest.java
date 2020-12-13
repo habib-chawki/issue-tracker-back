@@ -103,8 +103,10 @@ public class CommentServiceTest {
 
     @Test
     public void givenGetCommentByIssueId_whenCommentDoesNotExist_itShouldReturnResourceNotFoundError() {
+        // when the comment does not exist
         when(commentRepository.findByIssueId(404L)).thenReturn(Optional.ofNullable(null));
 
+        // then a 404 comment not found error should be returned
         assertThatExceptionOfType(ResourceNotFoundException.class)
                 .isThrownBy(() -> commentService.getCommentByIssueId(404L))
                 .withMessageContaining("Comment not found");
@@ -113,9 +115,7 @@ public class CommentServiceTest {
     @Test
     public void itShouldDeleteCommentById() {
         when(issueService.getIssue(issue.getId())).thenReturn(issue);
-
         doNothing().when(commentRepository).deleteById(comment.getId());
-
         commentService.deleteComment(issue.getId(), comment.getId());
     }
 
