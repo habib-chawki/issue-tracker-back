@@ -31,4 +31,8 @@ public class CommentService {
 
         throw new ResourceNotFoundException("Issue not found");
     }
+
+    public void deleteComment() {
+
+    }
 }
