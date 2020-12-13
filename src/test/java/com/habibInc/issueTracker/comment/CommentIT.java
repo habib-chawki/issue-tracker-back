@@ -143,7 +143,7 @@ public class CommentIT {
     }
 
     @Test
-    public void itShouldSetTheIssueAndTheAuthenticatedUserAsOwner() {
+    public void whenCommentIsCreated_itShouldSetTheIssueAndTheAuthenticatedUserAsOwner() {
         // set up request body and authorization header
         HttpEntity<Comment> httpEntity = new HttpEntity<>(comment, headers);
 
