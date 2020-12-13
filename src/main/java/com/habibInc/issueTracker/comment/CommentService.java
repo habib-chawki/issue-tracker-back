@@ -32,7 +32,7 @@ public class CommentService {
         throw new ResourceNotFoundException("Issue not found");
     }
 
-    public void deleteComment() {
+    public void deleteComment(Long issueId, Long commentId) {
 
     }
 }
