@@ -114,19 +114,19 @@ public class CommentServiceTest {
 
     @Test
     public void itShouldDeleteCommentById() {
-        when(issueService.getIssue(issue.getId())).thenReturn(issue);
+        when(commentRepository.findByIssueId(issue.getId())).thenReturn(Optional.of(comment));
         doNothing().when(commentRepository).deleteById(comment.getId());
         commentService.deleteComment(issue.getId(), comment.getId());
     }
 
     @Test
     public void givenDeleteComment_whenIssueDoesNotExist_itShouldReturnIssueNotFoundError() {
-        // when the issue does not exist
-        when(issueService.getIssue(404L))
-                .thenThrow(ResourceNotFoundException.class);
+        // when the comment cannot be found by issue id (ie. the issue does not exist)
+        when(commentRepository.findByIssueId(404L)).thenReturn(Optional.ofNullable(null));
 
-        // then a 404 issue not found error should be returned
+        // then expect a 404 resource not found exception to be raised
         assertThatExceptionOfType(ResourceNotFoundException.class)
-                .isThrownBy(() -> commentService.deleteComment(404L, comment.getId()));
+                .isThrownBy(() -> commentService.deleteComment(404L, comment.getId()))
+                .withMessageContaining("Comment not found");
     }
 }
