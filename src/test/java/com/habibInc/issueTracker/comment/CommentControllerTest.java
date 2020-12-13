@@ -2,6 +2,7 @@ package com.habibInc.issueTracker.comment;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
+import com.habibInc.issueTracker.issue.Issue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +16,7 @@ import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -34,6 +34,7 @@ public class CommentControllerTest {
     CommentService commentService;
 
     Comment comment;
+    Issue issue;
 
     @BeforeEach
     public void setup() {
@@ -44,6 +45,12 @@ public class CommentControllerTest {
         comment.setContent("This is a comment");
         comment.setCreationTime(LocalDateTime.now());
         comment.setUpdateTime(LocalDateTime.now());
+
+        // set the comment issue
+        issue = new Issue();
+        issue.setId(100L);
+
+        comment.setIssue(issue);
     }
 
     @Test
@@ -116,6 +123,9 @@ public class CommentControllerTest {
 
     @Test
     public void givenDeleteCommentById_whenIssueOrCommentDoNotExist_itShouldReturnResourceNotFoundError(){
+        doThrow(new ResourceNotFoundException("Resource not found"))
+                .when(commentService).deleteComment();
+
 
     }
 
