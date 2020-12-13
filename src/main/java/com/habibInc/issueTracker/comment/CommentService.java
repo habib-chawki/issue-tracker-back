@@ -25,8 +25,8 @@ public class CommentService {
         // set the comment issue and owner
         comment.setIssue(issue);
         comment.setOwner(owner);
-        return commentRepository.save(comment);
 
+        return commentRepository.save(comment);
     }
 
     public void deleteComment(Long issueId, Long commentId) {
