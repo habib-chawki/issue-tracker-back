@@ -34,5 +34,11 @@ public class CommentController {
 
     @DeleteMapping("/{commentId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteComment(){}
+    public void deleteComment(@PathVariable String commentId){
+        try{
+            Long parsedCommentId = Long.parseLong(commentId);
+        }catch(NumberFormatException ex){
+            throw new InvalidIdException("Invalid id");
+        }
+    }
 }
