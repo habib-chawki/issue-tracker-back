@@ -1,5 +1,7 @@
 package com.habibInc.issueTracker.comment;
 
+import com.habibInc.issueTracker.issue.Issue;
+import com.habibInc.issueTracker.issue.IssueRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,9 @@ public class CommentRepositoryTest {
 
     @Autowired
     CommentRepository commentRepository;
+
+    @Autowired
+    IssueRepository issueRepository;
 
     Comment comment;
 
@@ -57,5 +62,22 @@ public class CommentRepositoryTest {
         // then it should not be present afterwards
         Optional<Comment> after = commentRepository.findById(savedComment.getId());
         assertThat(after.isPresent()).isFalse();
+    }
+
+    @Test
+    public void itShouldFindCommentByIssueId() {
+        // create and save an issue
+        Issue issue = new Issue();
+        issue = issueRepository.save(issue);
+
+        // save the comment after setting the issue
+        comment.setIssue(issue);
+        commentRepository.save(comment);
+
+        // when attempting to find a comment by its issue id
+        Optional<Comment> issueOptional = commentRepository.findByIssueId(issue.getId());
+
+        // expect the comment to have been found successfully
+        assertThat(issueOptional.isPresent()).isTrue();
     }
 }
