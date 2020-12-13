@@ -1,5 +1,6 @@
 package com.habibInc.issueTracker.comment;
 
+import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.issue.IssueService;
 import com.habibInc.issueTracker.user.User;
@@ -34,5 +35,10 @@ public class CommentService {
         issueService.getIssue(issueId);
 
         commentRepository.deleteById(commentId);
+    }
+
+    public Comment getCommentByIssueId(Long issueId) {
+        return commentRepository.findByIssueId(issueId)
+                .orElseThrow(() -> new ResourceNotFoundException("Comment not found"));
     }
 }
