@@ -115,14 +115,27 @@ public class CommentControllerTest {
     }
 
     @Test
-    public void givenDeleteCommentById_whenIssueOrCommentDontExist_itShouldReturnResourceNotFoundError(){
+    public void givenDeleteCommentById_whenIssueOrCommentDoNotExist_itShouldReturnResourceNotFoundError(){
 
     }
 
     @Test
     public void givenDeleteCommentById_whenIdIsInvalid_itShouldReturnInvalidIdError() throws Exception {
+        // when comment id is invalid
         String baseUrl = String.format("/issues/%s/comments/%s", 100L, "invalid");
 
-        mockMvc.perform(delete(baseUrl)).andExpect(status().isBadRequest());
+        // then a 400 invalid id error should be returned
+        mockMvc.perform(delete(baseUrl))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorMessage").value("Invalid id"));
+
+        // when the issue id is invalid
+        baseUrl = String.format("/issues/%s/comments/%s", "invalid", 1L);
+
+        // then a 400 invalid id error should be returned
+        mockMvc.perform(delete(baseUrl))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorMessage").value("Invalid id"));
+
     }
 }
