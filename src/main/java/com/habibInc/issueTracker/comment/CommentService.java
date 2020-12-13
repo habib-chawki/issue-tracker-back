@@ -30,15 +30,17 @@ public class CommentService {
         return commentRepository.save(comment);
     }
 
-    public void deleteComment(Long issueId, Long commentId) {
-        // get the issue by id (throws exception)
-        issueService.getIssue(issueId);
-
-        commentRepository.deleteById(commentId);
-    }
-
     public Comment getCommentByIssueId(Long issueId) {
         return commentRepository.findByIssueId(issueId)
                 .orElseThrow(() -> new ResourceNotFoundException("Comment not found"));
     }
+
+    public void deleteComment(Long issueId, Long commentId) {
+        // find the comment by its issue's id (ensure that both the issue and comment exist)
+        getCommentByIssueId(issueId);
+
+        // delete the comment if it exists (otherwise an exception is already thrown)
+        commentRepository.deleteById(commentId);
+    }
+
 }
