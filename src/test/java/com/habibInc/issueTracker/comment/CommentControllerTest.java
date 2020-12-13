@@ -55,11 +55,11 @@ public class CommentControllerTest {
 
     @Test
     public void itShouldCreateComment() throws Exception {
-        when(commentService.createComment(eq(comment), eq(100L), any()))
+        when(commentService.createComment(eq(comment), eq(issue.getId()), any()))
                 .thenReturn(comment);
 
         // set up base url and request body
-        String baseUrl = String.format("/issues/%s/comments", 100);
+        String baseUrl = String.format("/issues/%s/comments", issue.getId());
         String requestBody = mapper.writeValueAsString(comment);
 
         // send a post request and expect the comment to be created successfully
@@ -114,7 +114,7 @@ public class CommentControllerTest {
 
     @Test
     public void itShouldDeleteCommentById() throws Exception {
-        String baseUrl = String.format("/issues/%s/comments/%s", 100L, 1L);
+        String baseUrl = String.format("/issues/%s/comments/%s", issue.getId(), comment.getId());
 
         doNothing().when(commentService).deleteComment();
 
