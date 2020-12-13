@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -88,14 +89,16 @@ public class CommentServiceTest {
     }
 
     @Test
-    public void givenDeleteComment_whenIssueDoesNotExist_itShouldReturnIssueNotFoundError() {
-        // when the issue does not exist
-        when(issueService.getIssue(404L))
-                .thenThrow(ResourceNotFoundException.class);
+    public void itShouldGetCommentByIssueId() {
+        // when commentRepository#findByIssueId is invoked then return the comment
+        when(commentRepository.findByIssueId(issue.getId()))
+                .thenReturn(Optional.of(comment));
 
-        // then a 404 issue not found error should be returned
-        assertThatExceptionOfType(ResourceNotFoundException.class)
-                .isThrownBy(() -> commentService.deleteComment(404L, comment.getId()));
+        // when attempting to fetch the comment by its issue id
+        Comment returnedComment = commentService.getCommentByIssueId(issue.getId());
+
+        // then the comment should be fetched successfully
+        assertThat(returnedComment).isEqualTo(comment);
     }
 
     @Test
@@ -105,5 +108,16 @@ public class CommentServiceTest {
         doNothing().when(commentRepository).deleteById(comment.getId());
 
         commentService.deleteComment(issue.getId(), comment.getId());
+    }
+
+    @Test
+    public void givenDeleteComment_whenIssueDoesNotExist_itShouldReturnIssueNotFoundError() {
+        // when the issue does not exist
+        when(issueService.getIssue(404L))
+                .thenThrow(ResourceNotFoundException.class);
+
+        // then a 404 issue not found error should be returned
+        assertThatExceptionOfType(ResourceNotFoundException.class)
+                .isThrownBy(() -> commentService.deleteComment(404L, comment.getId()));
     }
 }
