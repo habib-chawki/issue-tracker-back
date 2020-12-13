@@ -39,6 +39,7 @@ public class CommentController {
         try{
             Long parsedCommentId = Long.parseLong(commentId);
             Long parsedIssueId = Long.parseLong(issueId);
+            commentService.deleteComment();
         }catch(NumberFormatException ex){
             throw new InvalidIdException("Invalid id");
         }
