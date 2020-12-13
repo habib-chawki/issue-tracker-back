@@ -1,5 +1,7 @@
 package com.habibInc.issueTracker.issue;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.habibInc.issueTracker.comment.Comment;
 import com.habibInc.issueTracker.user.User;
 import lombok.AllArgsConstructor;
@@ -19,6 +21,8 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Issue {
 
     @Id
