@@ -84,4 +84,21 @@ public class IssueRepositoryTest {
         assertThat(issues).contains(savedIssue1);
         assertThat(issues).contains(savedIssue2);
     }
+
+    @Test
+    public void itShouldDeleteIssueById() {
+        // given an issue is saved
+        Issue savedIssue = issueRepository.save(issue2);
+
+        // the issue should be present before deleting
+        Optional<Issue> before = issueRepository.findById(savedIssue.getId());
+        assertThat(before.isPresent()).isTrue();
+
+        // when the issue is deleted
+        issueRepository.deleteById(savedIssue.getId());
+
+        // then it should not be present afterwards
+        Optional<Issue> after = issueRepository.findById(savedIssue.getId());
+        assertThat(after.isPresent()).isFalse();
+    }
 }

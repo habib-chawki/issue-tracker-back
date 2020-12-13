@@ -54,7 +54,7 @@ public class CommentRepositoryTest {
         // when the comment is deleted
         commentRepository.deleteById(savedComment.getId());
 
-        // then it should not be present
+        // then it should not be present afterwards
         Optional<Comment> after = commentRepository.findById(savedComment.getId());
         assertThat(after.isPresent()).isFalse();
     }
