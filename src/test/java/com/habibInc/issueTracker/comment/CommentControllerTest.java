@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -106,9 +107,20 @@ public class CommentControllerTest {
 
     @Test
     public void itShouldDeleteCommentById() throws Exception {
-        String baseUrl = String.format("/issues/%s/comments/%s", 1L, 1L);
+        String baseUrl = String.format("/issues/%s/comments/%s", 100L, 1L);
 
+        doNothing().when(commentService).deleteComment();
 
         mockMvc.perform(delete(baseUrl)).andExpect(status().isOk());
+    }
+
+    @Test
+    public void givenDeleteCommentById_whenIssueOrCommentDontExist_itShouldReturnResourceNotFoundError(){
+
+    }
+
+    @Test
+    public void givenDeleteCommentById_whenIdIsInvalid_itShouldReturnInvalidIdError() {
+
     }
 }
