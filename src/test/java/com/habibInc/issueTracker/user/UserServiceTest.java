@@ -72,8 +72,7 @@ public class UserServiceTest {
         String errorMessage = "User not found";
 
         // when an incorrect id is used to fetch a user that does not exist
-        when(userRepository.findById(10L))
-                .thenThrow(new ResourceNotFoundException(errorMessage));
+        when(userRepository.findById(10L)).thenReturn(Optional.ofNullable(null));
 
         // then a ResourceNotFoundException should be thrown
         assertThatExceptionOfType(ResourceNotFoundException.class)
@@ -95,12 +94,11 @@ public class UserServiceTest {
     @Test
     public void whenUserCanNotBeFoundByEmail_itShouldReturnUserNotFoundError() {
         // set up an error message and an invalid email
-        String errorMessage = "User can not be found by email";
+        String errorMessage = "User not found";
         String invalidEmail = "user_does_not_exist@email.com";
 
         // when an incorrect email is used and the user does not exist
-        when(userRepository.findByEmail(invalidEmail))
-                .thenThrow(new ResourceNotFoundException(errorMessage));
+        when(userRepository.findByEmail(invalidEmail)).thenReturn(Optional.ofNullable(null));
 
         // then a ResourceNotFoundException should be thrown
         assertThatExceptionOfType(ResourceNotFoundException.class)

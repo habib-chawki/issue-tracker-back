@@ -112,8 +112,7 @@ public class IssueServiceTest {
         // when the issue does not exist
         String errorMessage = "Issue not found";
 
-        when(issueRepository.findById(10L))
-                .thenThrow(new ResourceNotFoundException(errorMessage));
+        when(issueRepository.findById(10L)).thenReturn(Optional.ofNullable(null));
 
         // then an issue not found exception is thrown
         assertThatExceptionOfType(ResourceNotFoundException.class)
@@ -167,7 +166,7 @@ public class IssueServiceTest {
         String errorMessage = "Issue not found";
 
         // when trying to update an issue that does not exist
-        when(issueRepository.findById(10L)).thenThrow(new ResourceNotFoundException(errorMessage));
+        when(issueRepository.findById(10L)).thenReturn(Optional.ofNullable(null));
 
         // then a 404 issue not found error should be returned
         assertThatExceptionOfType(ResourceNotFoundException.class)
