@@ -1,5 +1,7 @@
 package com.habibInc.issueTracker.comment;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.user.User;
 import lombok.AllArgsConstructor;
@@ -16,6 +18,8 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
