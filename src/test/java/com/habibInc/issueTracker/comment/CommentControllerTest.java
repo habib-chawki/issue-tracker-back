@@ -122,11 +122,13 @@ public class CommentControllerTest {
     }
 
     @Test
-    public void givenDeleteCommentById_whenIssueOrCommentDoNotExist_itShouldReturnResourceNotFoundError(){
-        doThrow(new ResourceNotFoundException("Resource not found"))
+    public void givenDeleteCommentById_whenCommentDoNotExist_itShouldReturnResourceNotFoundError() throws Exception {
+        String baseUrl = String.format("/issues/%s/comments/%s", 100L, 404L);
+
+        doThrow(new ResourceNotFoundException("Comment not found"))
                 .when(commentService).deleteComment();
 
-
+        mockMvc.perform(delete(baseUrl)).andExpect(status().isNotFound());
     }
 
     @Test
