@@ -200,6 +200,8 @@ public class IssueControllerTest {
 
     @Test
     public void itShouldDeleteIssueById() throws Exception {
+        doNothing().when(issueService).deleteIssue(eq(2L), any());
+
         mockMvc.perform(delete("/issues/2"))
                 .andExpect(status().isOk());
     }
