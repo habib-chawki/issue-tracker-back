@@ -120,7 +120,9 @@ public class CommentControllerTest {
     }
 
     @Test
-    public void givenDeleteCommentById_whenIdIsInvalid_itShouldReturnInvalidIdError() {
+    public void givenDeleteCommentById_whenIdIsInvalid_itShouldReturnInvalidIdError() throws Exception {
+        String baseUrl = String.format("/issues/%s/comments/%s", 100L, "invalid");
 
+        mockMvc.perform(delete(baseUrl)).andExpect(status().isBadRequest());
     }
 }
