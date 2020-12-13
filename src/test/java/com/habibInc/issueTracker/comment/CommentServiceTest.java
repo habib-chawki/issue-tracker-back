@@ -3,6 +3,7 @@ package com.habibInc.issueTracker.comment;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.issue.IssueService;
+import com.habibInc.issueTracker.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -27,6 +29,7 @@ public class CommentServiceTest {
     @Mock
     IssueService issueService;
 
+    User owner;
     Issue issue;
     Comment comment;
 
@@ -38,9 +41,15 @@ public class CommentServiceTest {
 
     @BeforeEach
     public void setup() {
+        // set up an owner
+        owner = new User();
+        owner.setId(10L);
+        owner.setEmail("owner@comment.com");
+
         // set up an issue
         issue = new Issue();
         issue.setId(100L);
+        issue.setSummary("The comment issue");
 
         // set up a new comment
         comment = new Comment();
@@ -49,7 +58,6 @@ public class CommentServiceTest {
         comment.setContent("My comment");
         comment.setCreationTime(LocalDateTime.now());
         comment.setUpdateTime(LocalDateTime.now());
-        comment.setIssue(issue);
     }
 
     @Test
@@ -61,19 +69,41 @@ public class CommentServiceTest {
         when(issueService.getIssue(issue.getId())).thenReturn(issue);
 
         // when the "createComment()" service method is called
-        Comment response = commentService.createComment(comment, issue.getId(), null);
+        Comment response = commentService.createComment(comment, issue.getId(), owner);
 
-        // then the response should be the comment itself
+        // then the response should be the comment with the issue and owner both set
         assertThat(response).isEqualTo(comment);
+        assertThat(response.getIssue()).isEqualTo(issue);
+        assertThat(response.getOwner()).isEqualTo(owner);
     }
 
     @Test
-    public void itShouldReturnIssueNotFoundError() {
+    public void givenCreateComment_whenIssueDoesNotExist_itShouldReturnIssueNotFoundError() {
         // when the issue does not exist
-        when(issueService.getIssue(404L)).thenReturn(null);
+        when(issueService.getIssue(404L)).thenThrow(ResourceNotFoundException.class);
 
         // then an issue not found error should be returned
         assertThatExceptionOfType(ResourceNotFoundException.class)
                 .isThrownBy(() -> commentService.createComment(comment, 404L, null));
+    }
+
+    @Test
+    public void givenDeleteComment_whenIssueDoesNotExist_itShouldReturnIssueNotFoundError() {
+        // when the issue does not exist
+        when(issueService.getIssue(404L))
+                .thenThrow(ResourceNotFoundException.class);
+
+        // then a 404 issue not found error should be returned
+        assertThatExceptionOfType(ResourceNotFoundException.class)
+                .isThrownBy(() -> commentService.deleteComment(404L, comment.getId()));
+    }
+
+    @Test
+    public void itShouldDeleteCommentById() {
+        when(issueService.getIssue(issue.getId())).thenReturn(issue);
+
+        doNothing().when(commentRepository).deleteById(comment.getId());
+
+        commentService.deleteComment(issue.getId(), comment.getId());
     }
 }
