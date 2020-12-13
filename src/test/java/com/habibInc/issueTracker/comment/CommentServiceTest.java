@@ -40,7 +40,7 @@ public class CommentServiceTest {
     public void setup() {
         // set up an issue
         issue = new Issue();
-        issue.setId(1L);
+        issue.setId(100L);
 
         // set up a new comment
         comment = new Comment();
@@ -58,10 +58,10 @@ public class CommentServiceTest {
         when(commentRepository.save(comment)).thenReturn(comment);
 
         // given a call to the issueService "getIssue()" method
-        when(issueService.getIssue(1L)).thenReturn(issue);
+        when(issueService.getIssue(issue.getId())).thenReturn(issue);
 
         // when the "createComment()" service method is called
-        Comment response = commentService.createComment(comment, 1L, null);
+        Comment response = commentService.createComment(comment, issue.getId(), null);
 
         // then the response should be the comment itself
         assertThat(response).isEqualTo(comment);
@@ -70,10 +70,10 @@ public class CommentServiceTest {
     @Test
     public void itShouldReturnIssueNotFoundError() {
         // when the issue does not exist
-        when(issueService.getIssue(10L)).thenReturn(null);
+        when(issueService.getIssue(404L)).thenReturn(null);
 
         // then an issue not found error should be returned
         assertThatExceptionOfType(ResourceNotFoundException.class)
-                .isThrownBy(() -> commentService.createComment(comment, 10L, null));
+                .isThrownBy(() -> commentService.createComment(comment, 404L, null));
     }
 }
