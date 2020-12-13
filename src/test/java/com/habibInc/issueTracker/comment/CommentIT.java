@@ -17,6 +17,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -37,8 +38,8 @@ public class CommentIT {
     @Autowired
     JwtUtil jwtUtil;
 
-    User owner, createdOwner, authenticatedUser;
-    Issue issue, createdIssue;
+    User authenticatedUser;
+    Issue issue;
     Comment comment, comment2;
 
     String token;
@@ -52,7 +53,7 @@ public class CommentIT {
         authenticatedUser.setPassword("my_password");
 
         // save the user to pass authorization
-        userService.createUser(authenticatedUser);
+        authenticatedUser = userService.createUser(authenticatedUser);
 
         // generate an auth token signed with the user email
         token = jwtUtil.generateToken(authenticatedUser.getEmail());
@@ -71,12 +72,11 @@ public class CommentIT {
         issue.setType(IssueType.BUG);
 
         // save the issue
-        createdIssue = issueRepository.save(issue);
+        issue = issueRepository.save(issue);
 
         // set up a comment
         comment = new Comment();
 
-        comment.setIssue(createdIssue);
         comment.setContent("My comment");
         comment.setCreationTime(LocalDateTime.now());
         comment.setUpdateTime(LocalDateTime.now());
@@ -94,7 +94,7 @@ public class CommentIT {
         // set up request body and authorization header
         HttpEntity<Comment> httpEntity = new HttpEntity<>(comment, headers);
 
-        String baseUrl = String.format("/issues/%s/comments", createdIssue.getId());
+        String baseUrl = String.format("/issues/%s/comments", issue.getId().toString());
 
         // make post request to create a new comment
         ResponseEntity<Comment> response =
@@ -143,12 +143,12 @@ public class CommentIT {
     }
 
     @Test
-    public void itShouldSetLoggedInUserAsCommentOwner() {
+    public void itShouldSetTheIssueAndTheAuthenticatedUserAsOwner() {
         // set up request body and authorization header
         HttpEntity<Comment> httpEntity = new HttpEntity<>(comment, headers);
 
         // set up base url
-        String baseUrl = String.format("/issues/%s/comments", createdIssue.getId());
+        String baseUrl = String.format("/issues/%s/comments", issue.getId().toString());
 
         // when a post request is made to create a new comment
         ResponseEntity<Comment> response = restTemplate.exchange(
@@ -159,8 +159,10 @@ public class CommentIT {
         );
 
         // then the created comment's owner should be the currently logged-in user
-        assertThat(response.getBody().getOwner().getEmail())
-                .isEqualTo(authenticatedUser.getEmail());
+        assertThat(response.getBody().getOwner()).isEqualTo(authenticatedUser);
+
+        // the issue should be set
+        assertThat(response.getBody().getIssue()).isEqualTo(issue);
     }
 
     @AfterEach
