@@ -48,4 +48,10 @@ public class CommentService {
         commentRepository.deleteById(commentId);
     }
 
+    public Comment updateComment(Long commentId,
+                                 Long issueId,
+                                 String newComment,
+                                 User authenticatedUser) {
+        return null;
+    }
 }
