@@ -169,9 +169,20 @@ public class CommentControllerTest {
 
     @Test
     public void givenUpdateCommentById_whenIdIsInvalid_itShouldReturnInvalidIdError() throws Exception {
+        String errorMessage = "Invalid id";
+        // when the issue id is invalid
         String baseUrl = String.format("/issues/%s/comments/%s", "invalid_issue_id", comment.getId());
 
+        // then a 400 invalid id error should be returned
         mockMvc.perform(put(baseUrl))
-                .andExpect(jsonPath("$.errorMessage").value("Invalid id"));
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorMessage").value(errorMessage));
+
+        // when the comment id is invalid
+        baseUrl = String.format("/issues/%s/comments/%s", issue.getId(), "invalid_comment_id");
+
+        // then a 400 invalid id error should be returned
+        mockMvc.perform(put(baseUrl))
+                .andExpect(jsonPath("$.errorMessage").value(errorMessage));
     }
 }
