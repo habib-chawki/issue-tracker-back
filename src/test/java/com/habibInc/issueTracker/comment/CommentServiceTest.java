@@ -103,6 +103,29 @@ public class CommentServiceTest {
     }
 
     @Test
+    public void itShouldGetCommentById() {
+        // when commentRepository#findById is invoked then return the comment
+        when(commentRepository.findById(comment.getId())).thenReturn(Optional.of(comment));
+
+        // when attempting to fetch the comment by id
+        Comment response = commentService.getCommentById(comment.getId());
+
+        // then the comment should be fetched successfully
+        assertThat(response).isEqualTo(comment);
+    }
+
+    @Test
+    public void givenGetCommentById_whenCommentDoesNotExist_itShouldReturnCommentNotFoundError() {
+        // when the comment does not exist
+        when(commentRepository.findById(404L)).thenReturn(Optional.ofNullable(null));
+
+        // then a 404 comment not found error should be returned
+        assertThatExceptionOfType(ResourceNotFoundException.class)
+                .isThrownBy(() -> commentService.getCommentById(404L))
+                .withMessageContaining("Comment not found");
+    }
+
+    @Test
     public void givenGetCommentByIssueId_whenCommentDoesNotExist_itShouldReturnCommentNotFoundError() {
         // when the comment does not exist
         when(commentRepository.findByIssueId(404L)).thenReturn(Optional.ofNullable(null));
