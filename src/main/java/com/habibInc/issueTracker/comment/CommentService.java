@@ -55,11 +55,18 @@ public class CommentService {
 
     public Comment updateComment(Long commentId, Long issueId, String newContent,
                                  User authenticatedUser) {
-        Comment comment = getCommentByIssueId(issueId);
+        // find the comment by id
+        Comment comment = getCommentById(commentId);
 
+        // check if the authenticated user is the owner
         if(!comment.getOwner().equals(authenticatedUser))
             throw new ForbiddenOperationException("Forbidden");
 
+        // check if the issue exists
+        if(comment.getIssue().getId() != issueId)
+            throw new ResourceNotFoundException("Issue not found");
+
+        // update the content and save the comment
         comment.setContent(newContent);
         return commentRepository.save(comment);
     }
