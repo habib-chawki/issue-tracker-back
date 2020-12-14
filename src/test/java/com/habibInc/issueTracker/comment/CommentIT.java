@@ -34,9 +34,6 @@ public class CommentIT {
     UserRepository userRepository;
 
     @Autowired
-    IssueService issueService;
-
-    @Autowired
     IssueRepository issueRepository;
 
     @Autowired
@@ -178,7 +175,6 @@ public class CommentIT {
         HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
 
         // create the comment
-        issue = issueService.createIssue(issue, authenticatedUser);
         comment = commentService.createComment(comment, issue.getId(), authenticatedUser);
 
         // set base url
