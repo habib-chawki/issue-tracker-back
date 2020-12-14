@@ -3,16 +3,15 @@ package com.habibInc.issueTracker.comment;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.issue.Issue;
+import com.habibInc.issueTracker.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDateTime;
 
@@ -162,19 +161,33 @@ public class CommentControllerTest {
 
     @Test
     public void itShouldUpdateCommentById() throws Exception {
-        String baseUrl = String.format("/issues/%s/comments/%s", issue.getId(), comment.getId());
+        String baseUrl =
+                String.format("/issues/%s/comments/%s", issue.getId(), comment.getId());
 
-        mockMvc.perform(put(baseUrl)).andExpect(status().isOk());
+        // given the updated comment content
+        String requestBody = "{content: 'updated comment content'}";
+
+        // when comment service is invoked to update the comment
+        when(commentService.updateComment(
+                eq(comment.getId()), eq(issue.getId()), anyString(), any(User.class))
+        ).thenReturn(comment);
+
+        // then the update should be successful
+        mockMvc.perform(patch(baseUrl)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isOk());
     }
 
     @Test
     public void givenUpdateCommentById_whenIdIsInvalid_itShouldReturnInvalidIdError() throws Exception {
         String errorMessage = "Invalid id";
+
         // when the issue id is invalid
         String baseUrl = String.format("/issues/%s/comments/%s", "invalid_issue_id", comment.getId());
 
         // then a 400 invalid id error should be returned
-        mockMvc.perform(put(baseUrl))
+        mockMvc.perform(patch(baseUrl))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errorMessage").value(errorMessage));
 
@@ -182,7 +195,7 @@ public class CommentControllerTest {
         baseUrl = String.format("/issues/%s/comments/%s", issue.getId(), "invalid_comment_id");
 
         // then a 400 invalid id error should be returned
-        mockMvc.perform(put(baseUrl))
+        mockMvc.perform(patch(baseUrl))
                 .andExpect(jsonPath("$.errorMessage").value(errorMessage));
     }
 }
