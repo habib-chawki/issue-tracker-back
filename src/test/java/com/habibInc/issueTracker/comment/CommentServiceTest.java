@@ -133,14 +133,18 @@ public class CommentServiceTest {
 
     @Test
     public void givenDeleteComment_whenAuthenticatedUserIsNotTheOwner_itShouldReturnForbiddenError() {
+        // given a random authenticated user
         User randomUser = new User();
         randomUser.setId(666L);
         randomUser.setEmail("random.user@email.com");
 
+        // given the comment owner
         comment.setOwner(owner);
 
+        // when users attempt to delete comments that do not belong to them
         when(commentRepository.findByIssueId(issue.getId())).thenReturn(Optional.of(comment));
 
+        // then a forbidden error should be returned
         assertThatExceptionOfType(ForbiddenOperationException.class)
                 .isThrownBy(() -> commentService.deleteComment(issue.getId(), comment.getId(), randomUser))
                 .withMessageContaining("Forbidden");
