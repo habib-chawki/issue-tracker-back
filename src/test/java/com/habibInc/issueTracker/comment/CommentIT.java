@@ -165,6 +165,16 @@ public class CommentIT {
         assertThat(response.getBody().getIssue()).isEqualTo(issue);
     }
 
+    @Test
+    public void itShouldDeleteComment() {
+
+    }
+
+    @Test
+    public void givenDeleteComment_whenAuthenticatedUserIsNotTheOwner_itShouldReturnForbiddenError() {
+
+    }
+
     @AfterEach
     public void teardown() {
         issueRepository.deleteAll();
