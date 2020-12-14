@@ -191,7 +191,26 @@ public class CommentServiceTest {
         Comment response =
                 commentService.updateComment(comment.getId(), issue.getId(), updatedContent, owner);
 
+        // the comment content should be updated successfully
         assertThat(response).isEqualTo(comment);
         assertThat(response.getContent()).isEqualTo(updatedContent);
+    }
+
+    @Test
+    public void givenUpdateComment_whenIssueDoesNotExist_itShouldReturnIssueNotFoundError() {
+        comment.setOwner(owner);
+        comment.setIssue(issue);
+
+        when(commentRepository.findById(comment.getId())).thenReturn(Optional.of(comment));
+
+        assertThatExceptionOfType(ResourceNotFoundException.class)
+                .isThrownBy(() -> commentService.updateComment(
+                        comment.getId(), 404L, "new content", owner))
+                .withMessageContaining("Issue not found");
+    }
+
+    @Test
+    public void givenUpdateComment_whenAuthenticatedUserIsNotTheOwner_itShouldReturnForbiddenOperationError(){
+        fail();
     }
 }

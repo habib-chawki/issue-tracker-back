@@ -55,7 +55,7 @@ public class CommentService {
 
     public Comment updateComment(Long commentId, Long issueId, String newContent,
                                  User authenticatedUser) {
-        // find the comment by id
+        // find the comment by id (otherwise an exception is thrown)
         Comment comment = getCommentById(commentId);
 
         // check if the authenticated user is the owner
