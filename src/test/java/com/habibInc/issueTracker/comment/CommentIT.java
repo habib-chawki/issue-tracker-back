@@ -107,7 +107,7 @@ public class CommentIT {
     }
 
     @Test
-    public void whenIssueDoesNotExist_itShouldReturnIssueNotFoundError() {
+    public void givenCreateComment_whenIssueDoesNotExist_itShouldReturnIssueNotFoundError() {
         // set up request body and authorization header
         HttpEntity<Comment> httpEntity = new HttpEntity<>(comment2, headers);
 
@@ -125,7 +125,7 @@ public class CommentIT {
     }
 
     @Test
-    public void whenIssueIdIsInvalid_itShouldReturnInvalidIssueIdError() {
+    public void givenCreateComment_whenIssueIdIsInvalid_itShouldReturnInvalidIssueIdError() {
         // set up request body and authorization header
         HttpEntity<Comment> httpEntity = new HttpEntity<>(comment, headers);
 
@@ -143,7 +143,7 @@ public class CommentIT {
     }
 
     @Test
-    public void whenCommentIsCreated_itShouldSetTheIssueAndTheAuthenticatedUserAsOwner() {
+    public void givenCreateComment_itShouldSetTheIssueAndTheAuthenticatedUserAsOwner() {
         // set up request body and authorization header
         HttpEntity<Comment> httpEntity = new HttpEntity<>(comment, headers);
 
