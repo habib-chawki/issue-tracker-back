@@ -51,6 +51,7 @@ public class CommentController {
     public void updateComment(@PathVariable String commentId,
                               @PathVariable String issueId){
         try{
+            Long parsedCommentId = Long.parseLong(commentId);
             Long parsedIssueId = Long.parseLong(issueId);
         }catch(NumberFormatException ex){
             throw new InvalidIdException("Invalid id");
