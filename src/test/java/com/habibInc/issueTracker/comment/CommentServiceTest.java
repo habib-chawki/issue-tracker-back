@@ -154,4 +154,21 @@ public class CommentServiceTest {
                 .isThrownBy(() -> commentService.deleteComment(issue.getId(), comment.getId(), randomUser))
                 .withMessageContaining("Forbidden");
     }
+
+    @Test
+    public void itShouldUpdateComment(){
+        comment.setOwner(owner);
+        comment.setIssue(issue);
+
+        when(commentRepository.findByIssueId(issue.getId())).thenReturn(Optional.of(comment));
+        when(commentRepository.save(comment)).thenReturn(comment);
+
+        String updatedContent = "This is it, the new content!";
+
+        Comment response =
+                commentService.updateComment(comment.getId(), issue.getId(), updatedContent, owner);
+
+        assertThat(response).isEqualTo(comment);
+        assertThat(response.getContent()).isEqualTo(updatedContent);
+    }
 }
