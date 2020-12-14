@@ -198,11 +198,14 @@ public class CommentServiceTest {
 
     @Test
     public void givenUpdateComment_whenIssueDoesNotExist_itShouldReturnIssueNotFoundError() {
+        // set the comment owner and issue
         comment.setOwner(owner);
         comment.setIssue(issue);
 
         when(commentRepository.findById(comment.getId())).thenReturn(Optional.of(comment));
 
+        // when the issue id is incorrect
+        // then an issue not found error should be returned
         assertThatExceptionOfType(ResourceNotFoundException.class)
                 .isThrownBy(() -> commentService.updateComment(
                         comment.getId(), 404L, "new content", owner))
@@ -211,6 +214,22 @@ public class CommentServiceTest {
 
     @Test
     public void givenUpdateComment_whenAuthenticatedUserIsNotTheOwner_itShouldReturnForbiddenOperationError(){
-        fail();
+        // set the comment owner and issue
+        comment.setOwner(owner);
+        comment.setIssue(issue);
+
+        // set a random user
+        User randomUser = new User();
+        randomUser.setEmail("random.user@email.com");
+        randomUser.setId(888L);
+
+        when(commentRepository.findById(comment.getId())).thenReturn(Optional.of(comment));
+
+        // when the authenticated user is not the owner
+        // then updating the comment should be forbidden
+        assertThatExceptionOfType(ForbiddenOperationException.class)
+                .isThrownBy(() -> commentService.updateComment(
+                        comment.getId(), issue.getId(), "new content", randomUser))
+                .withMessageContaining("Forbidden");
     }
 }
