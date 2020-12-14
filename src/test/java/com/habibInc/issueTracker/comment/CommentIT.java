@@ -1,6 +1,7 @@
 package com.habibInc.issueTracker.comment;
 
 import com.habibInc.issueTracker.exceptionhandler.ApiError;
+import com.habibInc.issueTracker.exceptionhandler.ForbiddenOperationException;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.issue.IssueRepository;
@@ -196,7 +197,34 @@ public class CommentIT {
 
     @Test
     public void givenDeleteComment_whenAuthenticatedUserIsNotTheOwner_itShouldReturnForbiddenError() {
+        // set and save a random user
+        User randomUser = new User();
+        randomUser.setId(555L);
+        randomUser.setEmail("random.user@email.com");
+        randomUser.setPassword("random_pass");
 
+        randomUser = userService.createUser(randomUser);
+
+        // set authorization header
+        HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
+
+        // create the comment by the random user
+        comment = commentService.createComment(comment, issue.getId(), randomUser);
+
+        // set base url
+        String baseUrl = String.format("/issues/%s/comments/%s", issue.getId().toString(), comment.getId());
+
+        // when attempting to delete a comment that does not belong to the authenticated user
+        ResponseEntity<ApiError> response =
+                restTemplate.exchange(baseUrl, HttpMethod.DELETE, httpEntity, ApiError.class);
+
+        // then a forbidden error should be returned
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Forbidden");
+
+        assertThatExceptionOfType(ForbiddenOperationException.class)
+                .isThrownBy(() -> commentService.deleteComment(issue.getId(), comment.getId(), authenticatedUser))
+                .withMessageContaining("Forbidden");
     }
 
     @AfterEach
