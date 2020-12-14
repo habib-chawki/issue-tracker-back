@@ -118,7 +118,7 @@ public class CommentControllerTest {
         String baseUrl = String.format("/issues/%s/comments/%s", issue.getId(), comment.getId());
 
         // when deleteComment service method is invoked
-        doNothing().when(commentService).deleteComment(issue.getId(), comment.getId());
+        doNothing().when(commentService).deleteComment(eq(issue.getId()), eq(comment.getId()), any());
 
         // then the comment should be deleted successfully
         mockMvc.perform(delete(baseUrl)).andExpect(status().isOk());
@@ -130,7 +130,7 @@ public class CommentControllerTest {
 
         // when attempting to delete a comment that does not exist
         doThrow(new ResourceNotFoundException("Comment not found"))
-                .when(commentService).deleteComment(issue.getId(), 404L);
+                .when(commentService).deleteComment(eq(issue.getId()), eq(404L), any());
 
         // then a 404 error should be returned
         mockMvc.perform(delete(baseUrl)).andExpect(status().isNotFound());
