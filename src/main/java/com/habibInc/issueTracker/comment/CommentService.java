@@ -50,7 +50,7 @@ public class CommentService {
 
     public Comment updateComment(Long commentId,
                                  Long issueId,
-                                 String newComment,
+                                 String newContent,
                                  User authenticatedUser) {
         return null;
     }

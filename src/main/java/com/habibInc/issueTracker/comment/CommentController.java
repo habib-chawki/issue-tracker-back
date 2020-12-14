@@ -1,11 +1,15 @@
 package com.habibInc.issueTracker.comment;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.exceptionhandler.InvalidIdException;
 import com.habibInc.issueTracker.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/issues/{issueId}/comments")
@@ -55,12 +59,16 @@ public class CommentController {
     public void updateComment(@PathVariable String commentId,
                               @PathVariable String issueId,
                               @RequestBody String content,
-                              @AuthenticationPrincipal User authenticatedUser){
+                              @AuthenticationPrincipal User authenticatedUser) throws JsonProcessingException {
         try{
+            // get comment content from json
+            Map<String, String> map = new ObjectMapper().readValue(content, Map.class);
+            String commentContent = map.get("content");
+
             // verify ids and update comment
             Long parsedCommentId = Long.parseLong(commentId);
             Long parsedIssueId = Long.parseLong(issueId);
-            commentService.updateComment(parsedCommentId, parsedIssueId, content, authenticatedUser);
+            commentService.updateComment(parsedCommentId, parsedIssueId, commentContent, authenticatedUser);
         }catch(NumberFormatException ex){
             throw new InvalidIdException("Invalid id");
         }
