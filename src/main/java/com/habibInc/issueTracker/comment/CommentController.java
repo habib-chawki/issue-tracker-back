@@ -45,4 +45,10 @@ public class CommentController {
             throw new InvalidIdException("Invalid id");
         }
     }
+
+    @PutMapping("/{commentId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void updateComment(@PathVariable String commentId){
+
+    }
 }
