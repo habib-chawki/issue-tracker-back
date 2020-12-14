@@ -165,7 +165,7 @@ public class CommentControllerTest {
                 String.format("/issues/%s/comments/%s", issue.getId(), comment.getId());
 
         // given the updated comment content
-        String requestBody = "{content: 'updated comment content'}";
+        String requestBody = "{\"content\": \"updated comment content\"}";
 
         // when comment service is invoked to update the comment
         when(commentService.updateComment(
