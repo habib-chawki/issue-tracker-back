@@ -36,23 +36,31 @@ public class CommentController {
     @ResponseStatus(HttpStatus.OK)
     public void deleteComment(@PathVariable String commentId,
                               @PathVariable String issueId,
+                              @RequestBody Comment comment,
                               @AuthenticationPrincipal User authenticatedUser){
         try{
+            // verify issue and comment ids
             Long parsedCommentId = Long.parseLong(commentId);
             Long parsedIssueId = Long.parseLong(issueId);
+
+            // delete comment after successful verification
             commentService.deleteComment(parsedIssueId, parsedCommentId, authenticatedUser);
         }catch(NumberFormatException ex){
             throw new InvalidIdException("Invalid id");
         }
     }
 
-    @PutMapping("/{commentId}")
+    @PatchMapping("/{commentId}")
     @ResponseStatus(HttpStatus.OK)
     public void updateComment(@PathVariable String commentId,
-                              @PathVariable String issueId){
+                              @PathVariable String issueId,
+                              @RequestBody String content,
+                              @AuthenticationPrincipal User authenticatedUser){
         try{
+            // verify ids and update comment
             Long parsedCommentId = Long.parseLong(commentId);
             Long parsedIssueId = Long.parseLong(issueId);
+            commentService.updateComment(parsedCommentId, parsedIssueId, content, authenticatedUser);
         }catch(NumberFormatException ex){
             throw new InvalidIdException("Invalid id");
         }
