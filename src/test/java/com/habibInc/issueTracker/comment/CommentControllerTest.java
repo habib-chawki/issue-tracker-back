@@ -143,7 +143,7 @@ public class CommentControllerTest {
     @Test
     public void givenDeleteCommentById_whenIdIsInvalid_itShouldReturnInvalidIdError() throws Exception {
         // when comment id is invalid
-        String baseUrl = String.format("/issues/%s/comments/%s", 100L, "invalid");
+        String baseUrl = String.format("/issues/%s/comments/%s", 100L, "invalid_comment_id");
 
         // then a 400 invalid id error should be returned
         mockMvc.perform(delete(baseUrl))
@@ -151,7 +151,7 @@ public class CommentControllerTest {
                 .andExpect(jsonPath("$.errorMessage").value("Invalid id"));
 
         // when issue id is invalid
-        baseUrl = String.format("/issues/%s/comments/%s", "invalid", 1L);
+        baseUrl = String.format("/issues/%s/comments/%s", "invalid_issue_id", 1L);
 
         // then a 400 invalid id error should be returned
         mockMvc.perform(delete(baseUrl))
@@ -165,5 +165,13 @@ public class CommentControllerTest {
         String baseUrl = String.format("/issues/%s/comments/%s", issue.getId(), comment.getId());
 
         mockMvc.perform(put(baseUrl)).andExpect(status().isOk());
+    }
+
+    @Test
+    public void givenUpdateCommentById_whenIdIsInvalid_itShouldReturnInvalidIdError() throws Exception {
+        String baseUrl = String.format("/issues/%s/comments/%s", "invalid_issue_id", comment.getId());
+
+        mockMvc.perform(put(baseUrl))
+                .andExpect(jsonPath("$.errorMessage").value("Invalid id"));
     }
 }
