@@ -72,7 +72,7 @@ public class CommentControllerTest {
     }
 
     @Test
-    public void itShouldReturnIssueNotFoundError() throws Exception {
+    public void givenCreateComment_whenIssueDoesNotExist_itShouldReturnIssueNotFoundError() throws Exception {
         // given that the issue does not exist
         comment.setIssue(null);
 
@@ -96,7 +96,7 @@ public class CommentControllerTest {
     }
 
     @Test
-    public void itShouldReturnInvalidIssueIdError() throws Exception {
+    public void givenCreateComment_whenIssueIdIsInvalid_itShouldReturnInvalidIdError() throws Exception {
         // given the request body and an error message
         String requestBody = mapper.writeValueAsString(comment);
         String errorMessage = "Invalid issue id";
@@ -125,15 +125,18 @@ public class CommentControllerTest {
     }
 
     @Test
-    public void givenDeleteCommentById_whenCommentDoNotExist_itShouldReturnResourceNotFoundError() throws Exception {
+    public void givenDeleteCommentById_whenCommentDoesNotExist_itShouldReturnCommentNotFoundError() throws Exception {
         String baseUrl = String.format("/issues/%s/comments/%s", issue.getId(), 404L);
+        String errorMessage = "Comment not found";
 
         // when attempting to delete a comment that does not exist
-        doThrow(new ResourceNotFoundException("Comment not found"))
+        doThrow(new ResourceNotFoundException(errorMessage))
                 .when(commentService).deleteComment(eq(issue.getId()), eq(404L), any());
 
         // then a 404 error should be returned
-        mockMvc.perform(delete(baseUrl)).andExpect(status().isNotFound());
+        mockMvc.perform(delete(baseUrl))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.errorMessage").value(errorMessage));
     }
 
     @Test
@@ -146,7 +149,7 @@ public class CommentControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errorMessage").value("Invalid id"));
 
-        // when the issue id is invalid
+        // when issue id is invalid
         baseUrl = String.format("/issues/%s/comments/%s", "invalid", 1L);
 
         // then a 400 invalid id error should be returned
