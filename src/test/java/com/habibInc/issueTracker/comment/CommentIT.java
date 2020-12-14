@@ -3,6 +3,7 @@ package com.habibInc.issueTracker.comment;
 import com.habibInc.issueTracker.exceptionhandler.ApiError;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.issue.IssueRepository;
+import com.habibInc.issueTracker.issue.IssueService;
 import com.habibInc.issueTracker.issue.IssueType;
 import com.habibInc.issueTracker.security.JwtUtil;
 import com.habibInc.issueTracker.user.User;
@@ -33,7 +34,13 @@ public class CommentIT {
     UserRepository userRepository;
 
     @Autowired
+    IssueService issueService;
+
+    @Autowired
     IssueRepository issueRepository;
+
+    @Autowired
+    CommentService commentService;
 
     @Autowired
     JwtUtil jwtUtil;
@@ -49,7 +56,7 @@ public class CommentIT {
     public void auth() {
         // create a user to authenticate
         authenticatedUser = new User();
-        authenticatedUser.setEmail("Habib@email.com");
+        authenticatedUser.setEmail("authenticated.user@email.com");
         authenticatedUser.setPassword("my_password");
 
         // save the user to pass authorization
@@ -167,7 +174,22 @@ public class CommentIT {
 
     @Test
     public void itShouldDeleteComment() {
+        // set authorization header
+        HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
 
+        // create the comment
+        issue = issueService.createIssue(issue, authenticatedUser);
+        comment = commentService.createComment(comment, issue.getId(), authenticatedUser);
+
+        // set base url
+        String baseUrl = String.format("/issues/%s/comments/%s", issue.getId().toString(), comment.getId());
+
+        // when a delete request is made
+        ResponseEntity<Object> response =
+                restTemplate.exchange(baseUrl, HttpMethod.DELETE, httpEntity, Object.class);
+
+        // then the comment should be deleted successfully
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     @Test
