@@ -1,6 +1,7 @@
 package com.habibInc.issueTracker.comment;
 
 import com.habibInc.issueTracker.exceptionhandler.ApiError;
+import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.issue.IssueRepository;
 import com.habibInc.issueTracker.issue.IssueService;
@@ -17,10 +18,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 
+import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class CommentIT {
@@ -186,6 +189,9 @@ public class CommentIT {
 
         // then the comment should be deleted successfully
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThatExceptionOfType(ResourceNotFoundException.class)
+                .isThrownBy(() -> commentService.getCommentByIssueId(issue.getId()))
+                .withMessageContaining("Comment not found");
     }
 
     @Test
