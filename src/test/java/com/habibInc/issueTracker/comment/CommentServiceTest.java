@@ -1,5 +1,6 @@
 package com.habibInc.issueTracker.comment;
 
+import com.habibInc.issueTracker.exceptionhandler.ForbiddenOperationException;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.issue.IssueService;
@@ -102,7 +103,7 @@ public class CommentServiceTest {
     }
 
     @Test
-    public void givenGetCommentByIssueId_whenCommentDoesNotExist_itShouldReturnResourceNotFoundError() {
+    public void givenGetCommentByIssueId_whenCommentDoesNotExist_itShouldReturnCommentNotFoundError() {
         // when the comment does not exist
         when(commentRepository.findByIssueId(404L)).thenReturn(Optional.ofNullable(null));
 
@@ -116,7 +117,7 @@ public class CommentServiceTest {
     public void itShouldDeleteCommentById() {
         when(commentRepository.findByIssueId(issue.getId())).thenReturn(Optional.of(comment));
         doNothing().when(commentRepository).deleteById(comment.getId());
-        commentService.deleteComment(issue.getId(), comment.getId());
+        commentService.deleteComment(issue.getId(), comment.getId(), owner);
     }
 
     @Test
@@ -124,9 +125,24 @@ public class CommentServiceTest {
         // when the comment cannot be found by issue id (ie. the issue does not exist)
         when(commentRepository.findByIssueId(404L)).thenReturn(Optional.ofNullable(null));
 
-        // then expect a 404 resource not found exception to be raised
+        // then expect a 404 comment not found exception to be raised
         assertThatExceptionOfType(ResourceNotFoundException.class)
-                .isThrownBy(() -> commentService.deleteComment(404L, comment.getId()))
+                .isThrownBy(() -> commentService.deleteComment(404L, comment.getId(), owner))
                 .withMessageContaining("Comment not found");
+    }
+
+    @Test
+    public void givenDeleteComment_whenAuthenticatedUserIsNotTheOwner_itShouldReturnForbiddenError() {
+        User randomUser = new User();
+        randomUser.setId(666L);
+        randomUser.setEmail("random.user@email.com");
+
+        comment.setOwner(owner);
+
+        when(commentRepository.findByIssueId(issue.getId())).thenReturn(Optional.of(comment));
+
+        assertThatExceptionOfType(ForbiddenOperationException.class)
+                .isThrownBy(() -> commentService.deleteComment(issue.getId(), comment.getId(), randomUser))
+                .withMessageContaining("Forbidden");
     }
 }
