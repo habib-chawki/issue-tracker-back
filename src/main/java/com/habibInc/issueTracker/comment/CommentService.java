@@ -41,7 +41,7 @@ public class CommentService {
         Comment comment = getCommentByIssueId(issueId);
 
         // in case the owner is not the authenticated user, throw a forbidden operation error
-        if(comment.getOwner() != authenticatedUser)
+        if(!comment.getOwner().equals(authenticatedUser))
             throw new ForbiddenOperationException("Forbidden");
 
         // delete the comment if it exists, otherwise a ResourceNotFoundException is thrown
