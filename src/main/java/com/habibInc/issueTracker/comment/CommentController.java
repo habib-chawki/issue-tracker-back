@@ -48,7 +48,12 @@ public class CommentController {
 
     @PutMapping("/{commentId}")
     @ResponseStatus(HttpStatus.OK)
-    public void updateComment(@PathVariable String commentId){
-
+    public void updateComment(@PathVariable String commentId,
+                              @PathVariable String issueId){
+        try{
+            Long parsedIssueId = Long.parseLong(issueId);
+        }catch(NumberFormatException ex){
+            throw new InvalidIdException("Invalid id");
+        }
     }
 }
