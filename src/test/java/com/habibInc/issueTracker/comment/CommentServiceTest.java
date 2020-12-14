@@ -183,7 +183,7 @@ public class CommentServiceTest {
         comment.setOwner(owner);
         comment.setIssue(issue);
 
-        when(commentRepository.findByIssueId(issue.getId())).thenReturn(Optional.of(comment));
+        when(commentRepository.findById(comment.getId())).thenReturn(Optional.of(comment));
         when(commentRepository.save(comment)).thenReturn(comment);
 
         String updatedContent = "This is it, the new content!";
