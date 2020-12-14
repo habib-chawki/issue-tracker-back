@@ -87,7 +87,7 @@ public class UserIT {
     }
 
     @Test
-    public void itShouldReturnUserNotFoundError() {
+    public void givenGetUserById_whenUserDoesNotExist_itShouldReturnUserNotFoundError() {
 
         // save the user to pass the authorization filter successfully
         userService.createUser(user);
@@ -100,7 +100,7 @@ public class UserIT {
 
         // when a post request with a user id that does not exist is made
         ResponseEntity<ApiError> response = restTemplate.exchange(
-                "/users/10",
+                "/users/404",
                 HttpMethod.GET,
                 httpEntity,
                 ApiError.class
@@ -113,7 +113,7 @@ public class UserIT {
     }
 
     @Test
-    public void itShouldReturnInvalidUserIdError() {
+    public void givenGetUserById_whenIdIsInvalid_itShouldReturnInvalidUserIdError() {
 
         // save the user to pass the authorization filter successfully
         userService.createUser(user);
