@@ -120,7 +120,7 @@ public class CommentServiceTest {
     }
 
     @Test
-    public void givenDeleteComment_whenIssueDoesNotExist_itShouldReturnIssueNotFoundError() {
+    public void givenDeleteComment_whenCommentIsNotFoundByIssueId_itShouldReturnCommentNotFoundError() {
         // when the comment cannot be found by issue id (ie. the issue does not exist)
         when(commentRepository.findByIssueId(404L)).thenReturn(Optional.ofNullable(null));
 
