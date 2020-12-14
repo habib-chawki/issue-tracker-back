@@ -36,6 +36,11 @@ public class CommentService {
                 .orElseThrow(() -> new ResourceNotFoundException("Comment not found"));
     }
 
+    public Comment getCommentById(Long commentId) {
+        return commentRepository.findById(commentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Comment not found"));
+    }
+
     public void deleteComment(Long issueId, Long commentId, User authenticatedUser) {
         // find the comment by its issue's id (ensure that both the issue and comment exist)
         Comment comment = getCommentByIssueId(issueId);
