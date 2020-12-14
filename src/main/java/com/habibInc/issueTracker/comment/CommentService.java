@@ -1,5 +1,6 @@
 package com.habibInc.issueTracker.comment;
 
+import com.habibInc.issueTracker.exceptionhandler.ForbiddenOperationException;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.issue.IssueService;
@@ -35,11 +36,15 @@ public class CommentService {
                 .orElseThrow(() -> new ResourceNotFoundException("Comment not found"));
     }
 
-    public void deleteComment(Long issueId, Long commentId) {
+    public void deleteComment(Long issueId, Long commentId, User authenticatedUser) {
         // find the comment by its issue's id (ensure that both the issue and comment exist)
-        getCommentByIssueId(issueId);
+        Comment comment = getCommentByIssueId(issueId);
 
-        // delete the comment if it exists (otherwise an exception is already thrown)
+        // in case the owner is not the authenticated user, throw a forbidden operation error
+        if(comment.getOwner() != authenticatedUser)
+            throw new ForbiddenOperationException("Forbidden");
+
+        // delete the comment if it exists, otherwise a ResourceNotFoundException is thrown
         commentRepository.deleteById(commentId);
     }
 
