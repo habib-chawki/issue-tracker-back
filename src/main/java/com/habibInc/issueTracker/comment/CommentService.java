@@ -48,10 +48,14 @@ public class CommentService {
         commentRepository.deleteById(commentId);
     }
 
-    public Comment updateComment(Long commentId,
-                                 Long issueId,
-                                 String newContent,
+    public Comment updateComment(Long commentId, Long issueId, String newContent,
                                  User authenticatedUser) {
-        return null;
+        Comment comment = getCommentByIssueId(issueId);
+
+        if(!comment.getOwner().equals(authenticatedUser))
+            throw new ForbiddenOperationException("Forbidden");
+
+        comment.setContent(newContent);
+        return commentRepository.save(comment);
     }
 }
