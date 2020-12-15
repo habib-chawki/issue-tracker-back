@@ -65,19 +65,14 @@ public class CommentRepositoryTest {
     }
 
     @Test
-    public void itShouldFindCommentByIssueId() {
-        // create and save an issue
-        Issue issue = new Issue();
-        issue = issueRepository.save(issue);
-
-        // save the comment after setting the issue
-        comment.setIssue(issue);
+    public void itShouldFindCommentById() {
+        // save the comment
         commentRepository.save(comment);
 
-        // when attempting to find a comment by its issue id
-        Optional<Comment> issueOptional = commentRepository.findByIssueId(issue.getId());
+        // when attempting to find a comment by id
+        Optional<Comment> commentOptional = commentRepository.findById(comment.getId());
 
         // expect the comment to have been found successfully
-        assertThat(issueOptional.isPresent()).isTrue();
+        assertThat(commentOptional.isPresent()).isTrue();
     }
 }
