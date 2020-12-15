@@ -37,17 +37,18 @@ public class CommentService {
     }
 
     public void deleteComment(Long issueId, Long commentId, User authenticatedUser) {
-        // find the comment by its issue's id (ensure that both the issue and comment exist)
+        // find the comment by id, otherwise a ResourceNotFoundException is already thrown
         Comment comment = getCommentById(commentId);
 
         // in case the owner is not the authenticated user, throw a forbidden operation error
         if(!comment.getOwner().equals(authenticatedUser))
             throw new ForbiddenOperationException("Forbidden");
 
+        // in case the issue id is incorrect, throw an issue not found error
         if(comment.getIssue().getId() != issueId)
             throw new ResourceNotFoundException("Issue not found");
 
-        // delete the comment if it exists, otherwise a ResourceNotFoundException is thrown
+        // delete the comment
         commentRepository.deleteById(commentId);
     }
 
