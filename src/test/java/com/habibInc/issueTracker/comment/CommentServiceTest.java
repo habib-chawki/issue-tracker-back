@@ -213,7 +213,7 @@ public class CommentServiceTest {
     }
 
     @Test
-    public void givenUpdateComment_whenAuthenticatedUserIsNotTheOwner_itShouldReturnForbiddenOperationError(){
+    public void givenUpdateComment_whenAuthenticatedUserIsNotTheOwner_itShouldReturnForbiddenError(){
         // set the comment owner and issue
         comment.setOwner(owner);
         comment.setIssue(issue);
