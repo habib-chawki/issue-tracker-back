@@ -182,12 +182,16 @@ public class CommentControllerTest {
     @Test
     public void givenUpdateCommentById_whenIdIsInvalid_itShouldReturnInvalidIdError() throws Exception {
         String errorMessage = "Invalid id";
+        String newCommentContent = "{\"content\": \"updated comment content\"}";
 
         // when the issue id is invalid
         String baseUrl = String.format("/issues/%s/comments/%s", "invalid_issue_id", comment.getId());
 
         // then a 400 invalid id error should be returned
-        mockMvc.perform(patch(baseUrl))
+        mockMvc.perform(patch(baseUrl)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(newCommentContent))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errorMessage").value(errorMessage));
 
@@ -195,7 +199,10 @@ public class CommentControllerTest {
         baseUrl = String.format("/issues/%s/comments/%s", issue.getId(), "invalid_comment_id");
 
         // then a 400 invalid id error should be returned
-        mockMvc.perform(patch(baseUrl))
+        mockMvc.perform(patch(baseUrl)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(newCommentContent))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.errorMessage").value(errorMessage));
     }
 }
