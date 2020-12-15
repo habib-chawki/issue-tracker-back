@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class CommentIT {
@@ -204,6 +205,37 @@ public class CommentIT {
         assertThatExceptionOfType(ForbiddenOperationException.class)
                 .isThrownBy(() -> commentService.deleteComment(issue.getId(), comment.getId(), authenticatedUser))
                 .withMessageContaining("Forbidden");
+    }
+
+    @Test
+    public void itShouldUpdateComment() {
+        // given a comment created by the authenticated user
+        comment = commentService.createComment(comment, issue.getId(), authenticatedUser);
+
+        // given the new comment content
+        String content = "new and improved updated content";
+        String newCommentContent = String.format("{\"content\" : \"%s\"}", content);
+
+        // given the authorization header
+        HttpEntity<String> httpEntity = new HttpEntity<>(newCommentContent, headers);
+
+        // given the update comment url
+        String baseUrl = String.format("/issues/%s/comments/%s", issue.getId(), comment.getId());
+
+        // when a request to update the comment is made
+        ResponseEntity<Object> response =
+                restTemplate.exchange(baseUrl, HttpMethod.PATCH, httpEntity, Object.class);
+
+        // then the comment content should be updated
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        Comment updatedComment = commentService.getCommentById(comment.getId());
+        assertThat(updatedComment.getContent()).isEqualTo(content);
+    }
+
+    @Test
+    public void givenUpdateComment_whenAuthenticatedUserIsNotTheOwner_itShouldReturnForbiddenError() {
+        fail();
     }
 
     @AfterEach
