@@ -186,6 +186,17 @@ public class CommentServiceTest {
     }
 
     @Test
+    public void givenUpdateComment_whenCommentIsNotFoundById_itShouldReturnCommentNotFoundError() {
+        // when the comment cannot be found by issue id (ie. the issue does not exist)
+        when(commentRepository.findById(404L)).thenReturn(Optional.ofNullable(null));
+
+        // then expect a 404 comment not found exception to be raised
+        assertThatExceptionOfType(ResourceNotFoundException.class)
+                .isThrownBy(() -> commentService.updateComment(404L, issue.getId(), "new content", owner))
+                .withMessageContaining("Comment not found");
+    }
+
+    @Test
     public void givenUpdateComment_whenIssueIdIsIncorrect_itShouldReturnIssueNotFoundError() {
         // set the comment owner and issue
         comment.setOwner(owner);
