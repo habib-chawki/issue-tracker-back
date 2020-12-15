@@ -5,7 +5,6 @@ import com.habibInc.issueTracker.exceptionhandler.ForbiddenOperationException;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.issue.IssueRepository;
-import com.habibInc.issueTracker.issue.IssueService;
 import com.habibInc.issueTracker.issue.IssueType;
 import com.habibInc.issueTracker.security.JwtUtil;
 import com.habibInc.issueTracker.user.User;
@@ -19,9 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 
-import javax.annotation.Resource;
 import java.time.LocalDateTime;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -115,42 +112,6 @@ public class CommentIT {
     }
 
     @Test
-    public void givenCreateComment_whenIssueDoesNotExist_itShouldReturnIssueNotFoundError() {
-        // set up request body and authorization header
-        HttpEntity<Comment> httpEntity = new HttpEntity<>(comment2, headers);
-
-        // given an issue that does not exist
-        String baseUrl = String.format("/issues/%s/comments", 10L);
-
-        // when a post request is made to add a new comment with an incorrect issue id
-        ResponseEntity<ApiError> response =
-                restTemplate.postForEntity(baseUrl, httpEntity, ApiError.class);
-
-        // then a 404 'issue not found' error should be returned
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Issue not found");
-        assertThat(response.getBody().getTimestamp()).isNotNull();
-    }
-
-    @Test
-    public void givenCreateComment_whenIssueIdIsInvalid_itShouldReturnInvalidIssueIdError() {
-        // set up request body and authorization header
-        HttpEntity<Comment> httpEntity = new HttpEntity<>(comment, headers);
-
-        // given an issue with an invalid id
-        String baseUrl = "/issues/invalid/comments";
-
-        // when a post request is received with an invalid issue id
-        ResponseEntity<ApiError> response =
-                restTemplate.postForEntity(baseUrl, httpEntity, ApiError.class);
-
-        // then a 400 'invalid issue id' error should be returned
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Invalid issue id");
-        assertThat(response.getBody().getTimestamp()).isNotNull();
-    }
-
-    @Test
     public void givenCreateComment_itShouldSetTheIssueAndTheAuthenticatedUserAsOwner() {
         // set up request body and authorization header
         HttpEntity<Comment> httpEntity = new HttpEntity<>(comment, headers);
@@ -171,6 +132,24 @@ public class CommentIT {
 
         // the issue should be set
         assertThat(response.getBody().getIssue()).isEqualTo(issue);
+    }
+
+    @Test
+    public void givenCreateComment_whenIssueDoesNotExist_itShouldReturnIssueNotFoundError() {
+        // set up request body and authorization header
+        HttpEntity<Comment> httpEntity = new HttpEntity<>(comment2, headers);
+
+        // given an issue that does not exist
+        String baseUrl = String.format("/issues/%s/comments", 10L);
+
+        // when a post request is made to add a new comment with an incorrect issue id
+        ResponseEntity<ApiError> response =
+                restTemplate.postForEntity(baseUrl, httpEntity, ApiError.class);
+
+        // then a 404 'issue not found' error should be returned
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Issue not found");
+        assertThat(response.getBody().getTimestamp()).isNotNull();
     }
 
     @Test
