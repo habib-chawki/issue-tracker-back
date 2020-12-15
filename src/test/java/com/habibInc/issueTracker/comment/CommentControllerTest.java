@@ -156,7 +156,6 @@ public class CommentControllerTest {
         mockMvc.perform(delete(baseUrl))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errorMessage").value("Invalid id"));
-
     }
 
     @Test
@@ -203,6 +202,7 @@ public class CommentControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(newCommentContent))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errorMessage").value(errorMessage));
     }
 }
