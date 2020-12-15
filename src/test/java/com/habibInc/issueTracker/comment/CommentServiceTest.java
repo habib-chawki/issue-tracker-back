@@ -90,19 +90,6 @@ public class CommentServiceTest {
     }
 
     @Test
-    public void itShouldGetCommentByIssueId() {
-        // when commentRepository#findByIssueId is invoked then return the comment
-        when(commentRepository.findByIssueId(issue.getId()))
-                .thenReturn(Optional.of(comment));
-
-        // when attempting to fetch the comment by its issue id
-        Comment returnedComment = commentService.getCommentByIssueId(issue.getId());
-
-        // then the comment should be fetched successfully
-        assertThat(returnedComment).isEqualTo(comment);
-    }
-
-    @Test
     public void itShouldGetCommentById() {
         // when commentRepository#findById is invoked then return the comment
         when(commentRepository.findById(comment.getId())).thenReturn(Optional.of(comment));
@@ -126,22 +113,11 @@ public class CommentServiceTest {
     }
 
     @Test
-    public void givenGetCommentByIssueId_whenCommentDoesNotExist_itShouldReturnCommentNotFoundError() {
-        // when the comment does not exist
-        when(commentRepository.findByIssueId(404L)).thenReturn(Optional.ofNullable(null));
-
-        // then a 404 comment not found error should be returned
-        assertThatExceptionOfType(ResourceNotFoundException.class)
-                .isThrownBy(() -> commentService.getCommentByIssueId(404L))
-                .withMessageContaining("Comment not found");
-    }
-
-    @Test
     public void itShouldDeleteCommentById() {
         // set the comment owner
         comment.setOwner(owner);
 
-        when(commentRepository.findByIssueId(issue.getId())).thenReturn(Optional.of(comment));
+        when(commentRepository.findById(comment.getId())).thenReturn(Optional.of(comment));
         doNothing().when(commentRepository).deleteById(comment.getId());
 
         // comment should be deleted successfully
