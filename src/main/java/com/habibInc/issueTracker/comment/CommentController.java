@@ -40,7 +40,6 @@ public class CommentController {
     @ResponseStatus(HttpStatus.OK)
     public void deleteComment(@PathVariable String commentId,
                               @PathVariable String issueId,
-                              @RequestBody Comment comment,
                               @AuthenticationPrincipal User authenticatedUser){
         try{
             // verify issue and comment ids
