@@ -114,8 +114,9 @@ public class CommentServiceTest {
 
     @Test
     public void itShouldDeleteCommentById() {
-        // set the comment owner
+        // set the comment owner and issue
         comment.setOwner(owner);
+        comment.setIssue(issue);
 
         when(commentRepository.findById(comment.getId())).thenReturn(Optional.of(comment));
         doNothing().when(commentRepository).deleteById(comment.getId());
