@@ -191,7 +191,7 @@ public class CommentIT {
         // then the comment should be deleted successfully
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThatExceptionOfType(ResourceNotFoundException.class)
-                .isThrownBy(() -> commentService.getCommentByIssueId(issue.getId()))
+                .isThrownBy(() -> commentService.getCommentById(issue.getId()))
                 .withMessageContaining("Comment not found");
     }
 
