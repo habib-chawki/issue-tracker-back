@@ -235,7 +235,35 @@ public class CommentIT {
 
     @Test
     public void givenUpdateComment_whenAuthenticatedUserIsNotTheOwner_itShouldReturnForbiddenError() {
-        fail();
+        // given a random user
+        User randomUser = new User();
+        randomUser.setId(555L);
+        randomUser.setEmail("random.user@email.com");
+        randomUser.setPassword("random_pass");
+
+        randomUser = userService.createUser(randomUser);
+
+        // given a comment created by the random user
+        comment = commentService.createComment(comment, issue.getId(), randomUser);
+
+        // given the new comment content
+        String content = "new and improved updated content";
+        String newCommentContent = String.format("{\"content\" : \"%s\"}", content);
+
+        // given the authorization header
+        HttpEntity<String> httpEntity = new HttpEntity<>(newCommentContent, headers);
+
+        // given the update comment url
+        String baseUrl = String.format("/issues/%s/comments/%s", issue.getId(), comment.getId());
+
+        // when a request to update someone else's comment is made
+        ResponseEntity<ApiError> response =
+                restTemplate.exchange(baseUrl, HttpMethod.PATCH, httpEntity, ApiError.class);
+
+        // then a forbidden error should be returned
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Forbidden");
+        assertThat(response.getBody().getTimestamp()).isNotNull();
     }
 
     @AfterEach
