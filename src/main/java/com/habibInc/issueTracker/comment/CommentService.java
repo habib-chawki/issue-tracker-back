@@ -31,11 +31,6 @@ public class CommentService {
         return commentRepository.save(comment);
     }
 
-    public Comment getCommentByIssueId(Long issueId) {
-        return commentRepository.findByIssueId(issueId)
-                .orElseThrow(() -> new ResourceNotFoundException("Comment not found"));
-    }
-
     public Comment getCommentById(Long commentId) {
         return commentRepository.findById(commentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Comment not found"));
@@ -43,7 +38,7 @@ public class CommentService {
 
     public void deleteComment(Long issueId, Long commentId, User authenticatedUser) {
         // find the comment by its issue's id (ensure that both the issue and comment exist)
-        Comment comment = getCommentByIssueId(issueId);
+        Comment comment = getCommentById(issueId);
 
         // in case the owner is not the authenticated user, throw a forbidden operation error
         if(!comment.getOwner().equals(authenticatedUser))
