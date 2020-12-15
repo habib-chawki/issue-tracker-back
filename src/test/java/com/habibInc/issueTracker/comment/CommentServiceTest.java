@@ -125,9 +125,9 @@ public class CommentServiceTest {
     }
 
     @Test
-    public void givenDeleteComment_whenCommentIsNotFoundByIssueId_itShouldReturnCommentNotFoundError() {
+    public void givenDeleteComment_whenCommentIsNotFoundById_itShouldReturnCommentNotFoundError() {
         // when the comment cannot be found by issue id (ie. the issue does not exist)
-        when(commentRepository.findByIssueId(404L)).thenReturn(Optional.ofNullable(null));
+        when(commentRepository.findById(404L)).thenReturn(Optional.ofNullable(null));
 
         // then expect a 404 comment not found exception to be raised
         assertThatExceptionOfType(ResourceNotFoundException.class)
@@ -146,12 +146,24 @@ public class CommentServiceTest {
         comment.setOwner(owner);
 
         // when users attempt to delete comments that do not belong to them
-        when(commentRepository.findByIssueId(issue.getId())).thenReturn(Optional.of(comment));
+        when(commentRepository.findById(comment.getId())).thenReturn(Optional.of(comment));
 
         // then a forbidden error should be returned
         assertThatExceptionOfType(ForbiddenOperationException.class)
                 .isThrownBy(() -> commentService.deleteComment(issue.getId(), comment.getId(), randomUser))
                 .withMessageContaining("Forbidden");
+    }
+
+    @Test
+    public void givenDeleteComment_whenIssueIdIsIncorrect_itShouldReturnIssueNotFoundError() {
+        comment.setOwner(owner);
+        comment.setIssue(issue);
+
+        when(commentRepository.findById(comment.getId())).thenReturn(Optional.of(comment));
+
+        assertThatExceptionOfType(ResourceNotFoundException.class)
+                .isThrownBy(() -> commentService.deleteComment(404L, comment.getId(), owner))
+                .withMessageContaining("Issue not found");
     }
 
     @Test
@@ -173,7 +185,7 @@ public class CommentServiceTest {
     }
 
     @Test
-    public void givenUpdateComment_whenIssueDoesNotExist_itShouldReturnIssueNotFoundError() {
+    public void givenUpdateComment_whenIssueIdIsIncorrect_itShouldReturnIssueNotFoundError() {
         // set the comment owner and issue
         comment.setOwner(owner);
         comment.setIssue(issue);
