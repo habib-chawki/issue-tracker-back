@@ -32,14 +32,14 @@ public class UserControllerTest {
 
     @BeforeEach
     public void setup() {
-        user = new User();
-
-        user.setId(1L);
-        user.setFirstName("first");
-        user.setLastName("last");
-        user.setUserName("my_username");
-        user.setEmail("my_email@email.com");
-        user.setPassword("this is it");
+        user = User.builder()
+                .id(1L)
+                .firstName("first")
+                .lastName("last")
+                .userName("my_username")
+                .email("my_email@email.com")
+                .password("this is it")
+                .build();
     }
 
     @Test
