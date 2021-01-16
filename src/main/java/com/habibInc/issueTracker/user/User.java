@@ -2,20 +2,21 @@ package com.habibInc.issueTracker.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.habibInc.issueTracker.issue.Issue;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+
+@Builder
+
 @JsonIgnoreProperties(value = {"assignedIssues", "reportedIssues"})
 public class User {
     @Id
