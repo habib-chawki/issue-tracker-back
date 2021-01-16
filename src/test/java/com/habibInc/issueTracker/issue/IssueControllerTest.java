@@ -3,7 +3,6 @@ package com.habibInc.issueTracker.issue;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.user.UserService;
-import org.apache.http.client.methods.RequestBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,29 +42,28 @@ public class IssueControllerTest {
 
     @BeforeEach
     public void init() {
-        // create issue
-        issue1 = new Issue();
-        issue2 = new Issue();
+        // set up issues
+        issue1 = Issue.builder()
+                .id(1L)
+                .summary("Issue 1 summary")
+                .description("Issue 1 description")
+                .type(IssueType.STORY)
+                .resolution(IssueResolution.DONE)
+                .creationTime(LocalDateTime.now())
+                .updateTime(LocalDateTime.now())
+                .estimate(LocalTime.of(2, 0))
+                .build();
 
-        // set up issue1 properties
-        issue1.setId(1L);
-        issue1.setSummary("Issue 1 summary");
-        issue1.setDescription("Issue 1 description");
-        issue1.setType(IssueType.STORY);
-        issue1.setResolution(IssueResolution.DONE);
-        issue1.setCreationTime(LocalDateTime.now());
-        issue1.setUpdateTime(LocalDateTime.now());
-        issue1.setEstimate(LocalTime.of(2, 0));
-
-        // set up issue2 properties
-        issue2.setId(2L);
-        issue2.setSummary("Issue 2 summary");
-        issue2.setDescription("Issue 2 description");
-        issue2.setType(IssueType.TASK);
-        issue2.setResolution(IssueResolution.DUPLICATE);
-        issue2.setCreationTime(LocalDateTime.now());
-        issue2.setUpdateTime(LocalDateTime.now());
-        issue2.setEstimate(LocalTime.of(6, 15));
+        issue2 = Issue.builder()
+                .id(2L)
+                .summary("Issue 2 summary")
+                .description("Issue 2 description")
+                .type(IssueType.TASK)
+                .resolution(IssueResolution.DUPLICATE)
+                .creationTime(LocalDateTime.now())
+                .updateTime(LocalDateTime.now())
+                .estimate(LocalTime.of(6, 15))
+                .build();
     }
 
     @Test
