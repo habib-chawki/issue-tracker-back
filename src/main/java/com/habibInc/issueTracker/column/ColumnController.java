@@ -11,6 +11,6 @@ public class ColumnController {
     @ResponseStatus(HttpStatus.CREATED)
 
     public Column createColumn(@RequestBody Column column){
-        return null;
+        return column;
     }
 }
