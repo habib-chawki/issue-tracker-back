@@ -1,6 +1,7 @@
 package com.habibInc.issueTracker.column;
 
 import com.habibInc.issueTracker.exceptionhandler.InvalidIdException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,6 +12,7 @@ public class ColumnController {
 
     private ColumnService columnService;
 
+    @Autowired
     public ColumnController(ColumnService columnService) {
         this.columnService = columnService;
     }
