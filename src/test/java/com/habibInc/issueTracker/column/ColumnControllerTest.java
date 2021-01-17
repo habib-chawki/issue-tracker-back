@@ -34,7 +34,7 @@ public class ColumnControllerTest {
     public void setup(){
         // set up a column
         column = new Column();
-        column.setName("To do");
+        column.setTitle("To do");
     }
 
     @Test

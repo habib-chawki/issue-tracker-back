@@ -2,10 +2,7 @@ package com.habibInc.issueTracker.column;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 
@@ -14,11 +11,13 @@ import javax.persistence.Id;
 @Setter
 @Getter
 @Builder
+
+@Table(name = "`column`")
 public class Column {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private String name;
+    private String title;
 }

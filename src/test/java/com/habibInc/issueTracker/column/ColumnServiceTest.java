@@ -27,7 +27,7 @@ public class ColumnServiceTest {
     public void setup() {
         column = new Column();
         column.setId(1L);
-        column.setName("In progress");
+        column.setTitle("In progress");
     }
 
     @Test

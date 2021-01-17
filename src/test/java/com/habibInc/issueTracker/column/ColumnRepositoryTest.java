@@ -20,7 +20,7 @@ public class ColumnRepositoryTest {
     @BeforeEach
     public void setup() {
         column = new Column();
-        column.setName("Done");
+        column.setTitle("Done");
     }
 
     @Test

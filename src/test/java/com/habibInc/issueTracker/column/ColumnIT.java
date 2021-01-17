@@ -55,7 +55,7 @@ public class ColumnIT {
     @BeforeEach
     public void setup(){
         column = new Column();
-        column.setName("To do");
+        column.setTitle("To do");
     }
 
     @Test
