@@ -63,11 +63,13 @@ public class ColumnControllerTest {
 
         // given the request body
         String requestBody = mapper.writeValueAsString(column);
+        String errorMessage = "Invalid board id";
 
         // when the board id is invalid then a 400 bad request error should be returned
         mockMvc.perform(post(url)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorMessage").value(errorMessage));
     }
 }
