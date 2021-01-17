@@ -1,5 +1,6 @@
 package com.habibInc.issueTracker.user;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,5 +61,10 @@ public class UserRepositoryTest {
 
         // then the proper userEntity should be returned
         assertThat(response.get()).isEqualTo(savedUserEntity);
+    }
+
+    @AfterEach
+    public void teardown() {
+        userRepository.deleteAll();
     }
 }
