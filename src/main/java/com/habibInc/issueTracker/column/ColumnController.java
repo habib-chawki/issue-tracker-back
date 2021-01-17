@@ -1,5 +1,6 @@
 package com.habibInc.issueTracker.column;
 
+import com.habibInc.issueTracker.exceptionhandler.InvalidIdException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +18,12 @@ public class ColumnController {
     @PostMapping({"", "/"})
     @ResponseStatus(HttpStatus.CREATED)
 
-    public Column createColumn(@RequestBody Column column){
-        return columnService.createColumn(column);
+    public Column createColumn(@RequestBody Column column, @PathVariable String boardId){
+        try{
+            Long parsedBoardId = Long.parseLong(boardId);
+            return columnService.createColumn(column, parsedBoardId);
+        }catch(NumberFormatException ex){
+            throw new InvalidIdException("Invalid board id");
+        }
     }
 }
