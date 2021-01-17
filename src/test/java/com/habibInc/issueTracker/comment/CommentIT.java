@@ -22,7 +22,6 @@ import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assertions.fail;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class CommentIT {
@@ -66,7 +65,7 @@ public class CommentIT {
 
         // set up the authorization header with the auth token
         headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + token);
+        headers.add(JwtUtil.HEADER, JwtUtil.TOKEN_PREFIX + token);
     }
 
     @BeforeEach
