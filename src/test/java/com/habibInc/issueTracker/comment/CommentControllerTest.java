@@ -104,7 +104,7 @@ public class CommentControllerTest {
         // when the request is made with an invalid issue id
         String baseUrl = String.format("/issues/%s/comments", "invalid_id");
 
-        // then a 404 "Invalid issue id" error should be returned
+        // then a 400 "Invalid issue id" error should be returned
         mockMvc.perform(post(baseUrl)
                 .content(requestBody)
                 .contentType(MediaType.APPLICATION_JSON))

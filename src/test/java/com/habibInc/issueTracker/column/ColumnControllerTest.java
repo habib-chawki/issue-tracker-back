@@ -3,7 +3,6 @@ package com.habibInc.issueTracker.column;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -40,10 +39,11 @@ public class ColumnControllerTest {
 
     @Test
     public void itShouldCreateColumn() throws Exception {
-        // when column service is invoked then return the created column
-        when(columnService.createColumn(any(Column.class))).thenReturn(column);
+        Long boardId = 100L;
+        String url = String.format("/boards/%s/columns", boardId);
 
-        String url = String.format("/boards/%s/columns", 100L);
+        // when column service is invoked then return the created column
+        when(columnService.createColumn(any(Column.class), eq(boardId))).thenReturn(column);
 
         // given the request body
         String requestBody = mapper.writeValueAsString(column);
@@ -55,5 +55,19 @@ public class ColumnControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(requestBody));
+    }
+
+    @Test
+    public void whenBoardIdIsInvalid_itShouldReturnInvalidIdError() throws Exception {
+        String url = String.format("/boards/%s/columns", "invalid_id");
+
+        // given the request body
+        String requestBody = mapper.writeValueAsString(column);
+
+        // when the board id is invalid then a 400 bad request error should be returned
+        mockMvc.perform(post(url)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isBadRequest());
     }
 }
