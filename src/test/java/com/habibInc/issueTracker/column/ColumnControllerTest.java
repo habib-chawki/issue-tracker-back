@@ -58,7 +58,7 @@ public class ColumnControllerTest {
     }
 
     @Test
-    public void whenBoardIdIsInvalid_itShouldReturnInvalidIdError() throws Exception {
+    public void givenCreateColumn_whenBoardIdIsInvalid_itShouldReturnInvalidIdError() throws Exception {
         String url = String.format("/boards/%s/columns", "invalid_id");
 
         // given the request body

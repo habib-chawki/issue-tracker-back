@@ -18,10 +18,10 @@ public class ColumnController {
     @PostMapping({"", "/"})
     @ResponseStatus(HttpStatus.CREATED)
 
-    public Column createColumn(@RequestBody Column column, @PathVariable String boardId){
+    public Column createColumn(@RequestBody Column column, @PathVariable("boardId") String id){
         try{
-            Long parsedBoardId = Long.parseLong(boardId);
-            return columnService.createColumn(column, parsedBoardId);
+            Long boardId = Long.parseLong(id);
+            return columnService.createColumn(column, boardId);
         }catch(NumberFormatException ex){
             throw new InvalidIdException("Invalid board id");
         }
