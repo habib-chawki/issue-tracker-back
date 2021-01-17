@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ColumnService {
-    public Column createColumn(Column column) {
+    public Column createColumn(Column column, Long boardId) {
         return null;
     }
 }
