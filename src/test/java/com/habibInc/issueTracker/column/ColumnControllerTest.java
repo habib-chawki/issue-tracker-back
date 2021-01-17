@@ -3,13 +3,15 @@ package com.habibInc.issueTracker.column;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -24,6 +26,9 @@ public class ColumnControllerTest {
     @Autowired
     ObjectMapper mapper;
 
+    @MockBean
+    ColumnService columnService;
+
     Column column;
 
     @BeforeEach
@@ -35,6 +40,9 @@ public class ColumnControllerTest {
 
     @Test
     public void itShouldCreateColumn() throws Exception {
+        // when column service is invoked then return the created column
+        when(columnService.createColumn(any(Column.class))).thenReturn(column);
+
         String url = String.format("/boards/%s/columns", 100L);
 
         // given the request body
