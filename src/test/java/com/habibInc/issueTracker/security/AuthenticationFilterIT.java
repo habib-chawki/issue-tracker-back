@@ -1,12 +1,16 @@
 package com.habibInc.issueTracker.security;
 
 import com.habibInc.issueTracker.user.User;
+import com.habibInc.issueTracker.user.UserRepository;
 import com.habibInc.issueTracker.user.UserService;
+import org.aspectj.lang.annotation.After;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -17,6 +21,9 @@ import static org.springframework.boot.test.context.SpringBootTest.*;
 public class AuthenticationFilterIT {
     @Autowired
     UserService userService;
+
+    @Autowired
+    UserRepository userRepository;
 
     @Autowired
     TestRestTemplate restTemplate;
@@ -50,5 +57,10 @@ public class AuthenticationFilterIT {
         );
 
         assertThat(res.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @AfterEach
+    public void teardown() {
+        userRepository.deleteAll();
     }
 }
