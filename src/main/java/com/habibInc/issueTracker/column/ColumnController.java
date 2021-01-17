@@ -7,10 +7,17 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/boards/{boardId}/columns")
 
 public class ColumnController {
+
+    private ColumnService columnService;
+
+    public ColumnController(ColumnService columnService) {
+        this.columnService = columnService;
+    }
+
     @PostMapping({"", "/"})
     @ResponseStatus(HttpStatus.CREATED)
 
     public Column createColumn(@RequestBody Column column){
-        return column;
+        return columnService.createColumn(column);
     }
 }
