@@ -7,7 +7,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 public class BoardServiceTest {
@@ -32,8 +32,8 @@ public class BoardServiceTest {
 
     @Test
     public void itShouldCreateBoard() {
-        // given the board repository's "save()" method
-        when(boardRepository.save(any(Board.class))).thenReturn(board);
+        // given the board repository "save()" method
+        when(boardRepository.save(board)).thenReturn(board);
 
         // when "createBoard()" service method is invoked
         Board createdBoard = boardService.createBoard(board);
