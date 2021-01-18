@@ -2,6 +2,9 @@ package com.habibInc.issueTracker.board;
 
 import com.habibInc.issueTracker.security.JwtUtil;
 import com.habibInc.issueTracker.user.User;
+import com.habibInc.issueTracker.user.UserRepository;
+import com.habibInc.issueTracker.user.UserService;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,12 @@ public class BoardIT {
     @Autowired
     JwtUtil jwtUtil;
 
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    UserRepository userRepository;
+
     User authenticatedUser;
     HttpHeaders httpHeaders;
 
@@ -33,6 +42,9 @@ public class BoardIT {
                 .email("authenticated@user.in")
                 .password("auth_pass")
                 .build();
+
+        // save the user to pass the authorization filter
+        userService.createUser(authenticatedUser);
 
         // generate an auth token for the authenticated user
         String token = jwtUtil.generateToken(authenticatedUser.getEmail());
@@ -62,5 +74,10 @@ public class BoardIT {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response).isEqualToComparingOnlyGivenFields(board);
         assertThat(response.getBody().getId()).isNotNull().isPositive();
+    }
+
+    @AfterEach
+    public void teardown() {
+        userRepository.deleteAll();
     }
 }
