@@ -3,7 +3,6 @@ package com.habibInc.issueTracker.board;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -41,11 +40,11 @@ public class BoardControllerTest {
         // given the board service
         when(boardService.createBoard(any(Board.class))).thenReturn(board);
 
-        // given the url and request body
+        // when a request to create a board is made
         String url = "/boards";
         String requestBody = mapper.writeValueAsString(board);
 
-        // the response should be the created board
+        // then the response should be the created board
         mockMvc.perform(post(url)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))
