@@ -33,9 +33,14 @@ public class ColumnController {
 
     @GetMapping(path = "{columnId}/issues", params = {"page", "size"})
     @ResponseStatus(HttpStatus.OK)
-    public List<Issue> getPaginatedListOfIssues(@PathVariable Long columnId,
+    public List<Issue> getPaginatedListOfIssues(@PathVariable("columnId") String id,
                                                 @RequestParam int page,
                                                 @RequestParam int size){
-        return columnService.getPaginatedListOfIssues(columnId, page, size);
+        try{
+            Long columnId = Long.parseLong(id);
+            return columnService.getPaginatedListOfIssues(columnId, page, size);
+        }catch(NumberFormatException ex){
+            throw new InvalidIdException("Invalid id");
+        }
     }
 }
