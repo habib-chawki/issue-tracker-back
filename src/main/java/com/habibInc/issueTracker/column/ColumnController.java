@@ -19,7 +19,6 @@ public class ColumnController {
 
     @PostMapping({"", "/"})
     @ResponseStatus(HttpStatus.CREATED)
-
     public Column createColumn(@RequestBody Column column, @PathVariable("boardId") String id){
         try{
             Long boardId = Long.parseLong(id);
@@ -27,5 +26,11 @@ public class ColumnController {
         }catch(NumberFormatException ex){
             throw new InvalidIdException("Invalid board id");
         }
+    }
+
+    @GetMapping({"/issues"})
+    @ResponseStatus(HttpStatus.OK)
+    public void getPaginatedListOfIssues(){
+
     }
 }
