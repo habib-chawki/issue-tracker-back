@@ -2,6 +2,8 @@ package com.habibInc.issueTracker.column;
 
 import com.habibInc.issueTracker.issue.Issue;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,6 +23,7 @@ public class ColumnService {
     }
 
     public List<Issue> getPaginatedListOfIssues(int page, int size) {
-        return null;
+        Pageable pageable = PageRequest.of(page, size);
+        return columnRepository.findAllIssues(pageable);
     }
 }
