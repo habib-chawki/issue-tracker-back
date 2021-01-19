@@ -1,14 +1,11 @@
 package com.habibInc.issueTracker.column;
 
 import com.habibInc.issueTracker.issue.Issue;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
@@ -50,6 +47,9 @@ public class ColumnServiceTest {
 
     @Test
     public void itShouldGetPaginatedListOfIssues() {
+        // given the board id
+        Long boardId = 100L;
+
         // given a list of issues
         List<Issue> issues = new ArrayList<>(List.of(
                 Issue.builder().id(1L).build(),
@@ -66,7 +66,7 @@ public class ColumnServiceTest {
 
         when(columnRepository.findAllIssues(pageable)).thenReturn(issues);
 
-        List<Issue> response = columnService.getPaginatedListOfIssues(column.getId(), page, size);
+        List<Issue> response = columnService.getPaginatedListOfIssues(boardId, column.getId(), page, size);
 
         assertThat(response).isEqualTo(issues);
     }
