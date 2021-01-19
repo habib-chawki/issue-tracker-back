@@ -22,7 +22,7 @@ public class ColumnService {
         return columnRepository.save(column);
     }
 
-    public List<Issue> getPaginatedListOfIssues(int page, int size) {
+    public List<Issue> getPaginatedListOfIssues(Long columnId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return columnRepository.findAllIssues(pageable);
     }
