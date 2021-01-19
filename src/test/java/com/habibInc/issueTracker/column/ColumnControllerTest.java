@@ -18,7 +18,6 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ColumnController.class)
 @WithMockUser
@@ -36,7 +35,7 @@ public class ColumnControllerTest {
     Column column;
 
     @BeforeEach
-    public void setup(){
+    public void setup() {
         // set up a column
         column = new Column();
         column.setId(1L);
@@ -103,7 +102,8 @@ public class ColumnControllerTest {
         String response = mapper.writeValueAsString(issues);
 
         // given the column service returns a list of issues
-        when(columnService.getPaginatedListOfIssues(eq(column.getId()), eq(page), eq(size))).thenReturn(issues);
+        when(columnService.getPaginatedListOfIssues(eq(100L), eq(column.getId()),
+                eq(page), eq(size))).thenReturn(issues);
 
         // expect the response to be the paginated list of issues
         mockMvc.perform(get(url)
@@ -119,7 +119,15 @@ public class ColumnControllerTest {
         // given an invalid column id
         String url = String.format("/boards/%s/columns/%s/issues", 100L, "invalid_column_id");
 
-        // when a request is made with and invalid column id
+        // when a request is made with the invalid column id
+        mockMvc.perform(get(url))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorMessage").value("Invalid id"));
+
+        // given an invalid board id
+        url = String.format("/boards/%s/columns/%s/issues", "invalid_board_id", column.getId());
+
+        // when a request is made with the invalid board id
         mockMvc.perform(get(url))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errorMessage").value("Invalid id"));
