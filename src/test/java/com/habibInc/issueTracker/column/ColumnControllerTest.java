@@ -113,4 +113,21 @@ public class ColumnControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(response));
     }
+
+    @Test
+    public void givenGetPaginatedListOfIssues_whenIdIsInvalid_itShouldReturnInvalidIdError() throws Exception {
+        Integer page = 0;
+        Integer size = 4;
+
+        // given the get paginated issues list, url endpoint
+        String url = String.format(
+                "/boards/%s/columns/%s/issues?page=%s&size=%s",
+                100L, "invalid_column_id", page, size
+        );
+
+        // when a request is made with and invalid column id
+        mockMvc.perform(get(url))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorMessage").value("Invalid id"));
+    }
 }
