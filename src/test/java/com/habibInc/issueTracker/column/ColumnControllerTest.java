@@ -84,6 +84,7 @@ public class ColumnControllerTest {
         Integer page = 0;
         Integer size = 4;
 
+        // given the get paginated issues list, url endpoint
         String url = String.format("/boards/%s/columns/issues?page=%s&size=%s", boardId, page, size);
 
         // given a list of issues
@@ -96,8 +97,10 @@ public class ColumnControllerTest {
 
         String response = mapper.writeValueAsString(issues);
 
+        // given the column service returns a list of issues
         when(columnService.getPaginatedListOfIssues(eq(page), eq(size))).thenReturn(issues);
 
+        // expect the response to be the paginated list of issues
         mockMvc.perform(get(url)
                 .param("page", page.toString())
                 .param("size", size.toString()))
