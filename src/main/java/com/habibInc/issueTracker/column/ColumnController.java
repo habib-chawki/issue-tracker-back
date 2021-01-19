@@ -31,9 +31,11 @@ public class ColumnController {
         }
     }
 
-    @GetMapping(path = "/issues", params = {"page", "size"})
+    @GetMapping(path = "{columnId}/issues", params = {"page", "size"})
     @ResponseStatus(HttpStatus.OK)
-    public List<Issue> getPaginatedListOfIssues(@RequestParam int page, @RequestParam int size){
-        return columnService.getPaginatedListOfIssues(page, size);
+    public List<Issue> getPaginatedListOfIssues(@PathVariable Long columnId,
+                                                @RequestParam int page,
+                                                @RequestParam int size){
+        return columnService.getPaginatedListOfIssues(columnId, page, size);
     }
 }
