@@ -31,11 +31,11 @@ public class ColumnController {
         }
     }
 
-    @GetMapping(path = "{columnId}/issues", params = {"page", "size"})
+    @GetMapping(path = "{columnId}/issues")
     @ResponseStatus(HttpStatus.OK)
     public List<Issue> getPaginatedListOfIssues(@PathVariable("columnId") String id,
-                                                @RequestParam int page,
-                                                @RequestParam int size){
+                                                @RequestParam(defaultValue = "0") int page,
+                                                @RequestParam(defaultValue = "10") int size){
         try{
             Long columnId = Long.parseLong(id);
             return columnService.getPaginatedListOfIssues(columnId, page, size);
