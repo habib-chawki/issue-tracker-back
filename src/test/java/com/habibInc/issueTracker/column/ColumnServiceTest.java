@@ -66,7 +66,7 @@ public class ColumnServiceTest {
 
         when(columnRepository.findAllIssues(pageable)).thenReturn(issues);
 
-        List<Issue> response = columnService.getPaginatedListOfIssues(page, size);
+        List<Issue> response = columnService.getPaginatedListOfIssues(column.getId(), page, size);
 
         assertThat(response).isEqualTo(issues);
     }

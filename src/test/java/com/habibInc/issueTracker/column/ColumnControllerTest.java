@@ -39,6 +39,7 @@ public class ColumnControllerTest {
     public void setup(){
         // set up a column
         column = new Column();
+        column.setId(1L);
         column.setTitle("To do");
     }
 
@@ -81,11 +82,15 @@ public class ColumnControllerTest {
     @Test
     public void itShouldGetPaginatedListOfIssues() throws Exception {
         Long boardId = 100L;
+
         Integer page = 0;
         Integer size = 4;
 
         // given the get paginated issues list, url endpoint
-        String url = String.format("/boards/%s/columns/issues?page=%s&size=%s", boardId, page, size);
+        String url = String.format(
+                "/boards/%s/columns/%s/issues?page=%s&size=%s",
+                boardId, column.getId(), page, size
+        );
 
         // given a list of issues
         List<Issue> issues = new ArrayList<>(List.of(
@@ -98,7 +103,7 @@ public class ColumnControllerTest {
         String response = mapper.writeValueAsString(issues);
 
         // given the column service returns a list of issues
-        when(columnService.getPaginatedListOfIssues(eq(page), eq(size))).thenReturn(issues);
+        when(columnService.getPaginatedListOfIssues(eq(column.getId()), eq(page), eq(size))).thenReturn(issues);
 
         // expect the response to be the paginated list of issues
         mockMvc.perform(get(url)
