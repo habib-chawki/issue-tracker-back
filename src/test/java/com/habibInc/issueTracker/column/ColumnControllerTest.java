@@ -1,6 +1,7 @@
 package com.habibInc.issueTracker.column;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.habibInc.issueTracker.issue.Issue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -78,10 +82,27 @@ public class ColumnControllerTest {
     public void itShouldGetPaginatedListOfIssues() throws Exception {
         Long boardId = 100L;
         Integer page = 0;
-        Integer size = 5;
+        Integer size = 4;
 
         String url = String.format("/boards/%s/columns/issues?page=%s&size=%s", boardId, page, size);
 
-        mockMvc.perform(get(url)).andExpect(status().isOk());
+        // given a list of issues
+        List<Issue> issues = new ArrayList<>(List.of(
+                Issue.builder().id(1L).build(),
+                Issue.builder().id(2L).build(),
+                Issue.builder().id(3L).build(),
+                Issue.builder().id(4L).build())
+        );
+
+        String response = mapper.writeValueAsString(issues);
+
+        when(columnService.getPaginatedListOfIssues(eq(page), eq(size))).thenReturn(issues);
+
+        mockMvc.perform(get(url)
+                .param("page", page.toString())
+                .param("size", size.toString()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(response));
     }
 }
