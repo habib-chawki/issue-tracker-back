@@ -1,9 +1,12 @@
 package com.habibInc.issueTracker.column;
 
 import com.habibInc.issueTracker.exceptionhandler.InvalidIdException;
+import com.habibInc.issueTracker.issue.Issue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/boards/{boardId}/columns")
@@ -28,9 +31,9 @@ public class ColumnController {
         }
     }
 
-    @GetMapping({"/issues"})
+    @GetMapping(path = "/issues", params = {"page", "size"})
     @ResponseStatus(HttpStatus.OK)
-    public void getPaginatedListOfIssues(){
-
+    public List<Issue> getPaginatedListOfIssues(@RequestParam int page, @RequestParam int size){
+        return columnService.getPaginatedListOfIssues(page, size);
     }
 }
