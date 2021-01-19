@@ -11,6 +11,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -71,5 +72,16 @@ public class ColumnControllerTest {
                 .content(requestBody))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errorMessage").value(errorMessage));
+    }
+
+    @Test
+    public void itShouldGetPaginatedListOfIssues() throws Exception {
+        Long boardId = 100L;
+        Integer page = 0;
+        Integer size = 5;
+
+        String url = String.format("/boards/%s/columns/issues?page=%s&size=%s", boardId, page, size);
+
+        mockMvc.perform(get(url)).andExpect(status().isOk());
     }
 }
