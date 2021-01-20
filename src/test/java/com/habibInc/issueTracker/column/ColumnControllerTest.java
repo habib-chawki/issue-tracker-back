@@ -83,6 +83,8 @@ public class ColumnControllerTest {
         Long boardId = 100L;
         String url = String.format("/boards/%s/columns/%s", boardId, column.getId());
 
+        when(columnService.getColumnById(boardId, column.getId())).thenReturn(column);
+
         mockMvc.perform(get(url)).andExpect(status().isOk());
     }
 
