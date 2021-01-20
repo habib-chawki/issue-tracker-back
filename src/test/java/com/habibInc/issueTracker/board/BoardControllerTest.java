@@ -11,6 +11,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -32,6 +33,8 @@ public class BoardControllerTest {
     @BeforeEach
     public void setup() {
         board = new Board();
+
+        board.setId(1L);
         board.setName("Scrum");
     }
 
@@ -51,5 +54,19 @@ public class BoardControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(requestBody));
+    }
+
+    @Test
+    public void itShouldGetBoardById() throws Exception {
+        // given the board service
+        when(boardService.getBoardById(board.getId())).thenReturn(board);
+
+        // given the get board by id endpoint
+        String url = "/boards/" + board.getId();
+
+        // expect the response to be the retrieved board by id
+        mockMvc.perform(get(url)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 }

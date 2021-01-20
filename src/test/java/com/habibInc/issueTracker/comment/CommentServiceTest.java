@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -68,7 +67,7 @@ public class CommentServiceTest {
         when(commentRepository.save(comment)).thenReturn(comment);
 
         // given a call to the issueService "getIssue()" method
-        when(issueService.getIssue(issue.getId())).thenReturn(issue);
+        when(issueService.getIssueById(issue.getId())).thenReturn(issue);
 
         // when the "createComment()" service method is called
         Comment response = commentService.createComment(comment, issue.getId(), owner);
@@ -82,7 +81,7 @@ public class CommentServiceTest {
     @Test
     public void givenCreateComment_whenIssueDoesNotExist_itShouldReturnIssueNotFoundError() {
         // when the issue does not exist
-        when(issueService.getIssue(404L)).thenThrow(ResourceNotFoundException.class);
+        when(issueService.getIssueById(404L)).thenThrow(ResourceNotFoundException.class);
 
         // then an issue not found error should be returned
         assertThatExceptionOfType(ResourceNotFoundException.class)
