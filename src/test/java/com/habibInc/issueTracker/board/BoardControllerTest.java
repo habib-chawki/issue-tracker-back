@@ -69,4 +69,15 @@ public class BoardControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    public void givenGetBoardById_whenBoardIdIsInvalid_itShouldReturnInvalidIdError() throws Exception {
+        // given an invalid board id
+        String url = "/boards/invalid_id";
+
+        // expect an invalid board id error
+        mockMvc.perform(get(url))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorMessage").value("Invalid board id"));
+    }
 }
