@@ -16,7 +16,7 @@ public class IssueService {
         this.issueRepository = issueRepository;
     }
 
-    public Issue getIssue(Long id) {
+    public Issue getIssueById(Long id) {
         return issueRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Issue not found"));
     }
@@ -32,7 +32,7 @@ public class IssueService {
 
     public Issue updateIssue(Long issueId, Issue issue, User authenticatedUser) {
         // make sure the issue already exists, otherwise an exception is thrown
-        Issue issueToUpdate = getIssue(issueId);
+        Issue issueToUpdate = getIssueById(issueId);
 
         // save the issue only if authenticated user is the reporter
         if (issueToUpdate.getReporter().equals(authenticatedUser))
@@ -43,7 +43,7 @@ public class IssueService {
     }
 
     public void deleteIssue(Long issueId, User authenticatedUser) {
-        Issue issueToDelete = getIssue(issueId);
+        Issue issueToDelete = getIssueById(issueId);
 
         // in case the authenticated user is not the reporter, throw a forbidden error
         if (issueToDelete.getReporter().equals(authenticatedUser))

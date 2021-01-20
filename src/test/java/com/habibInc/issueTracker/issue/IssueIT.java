@@ -337,7 +337,7 @@ public class IssueIT {
         // then the issue should have been deleted successfully
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThatExceptionOfType(ResourceNotFoundException.class)
-                .isThrownBy(() -> issueService.getIssue(issue.getId()))
+                .isThrownBy(() -> issueService.getIssueById(issue.getId()))
                 .withMessageContaining("Issue not found");
     }
 

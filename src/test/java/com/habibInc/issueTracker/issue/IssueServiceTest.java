@@ -101,7 +101,7 @@ public class IssueServiceTest {
         when(issueRepository.findById(2L)).thenReturn(Optional.of(issue2));
 
         // get the issue by id
-        Issue returnedIssue = issueService.getIssue(2L);
+        Issue returnedIssue = issueService.getIssueById(2L);
 
         // expect the proper issue to have been retrieved
         assertThat(returnedIssue).isEqualTo(issue2);
@@ -116,7 +116,7 @@ public class IssueServiceTest {
 
         // then an issue not found exception is thrown
         assertThatExceptionOfType(ResourceNotFoundException.class)
-                .isThrownBy(() -> issueService.getIssue(10L))
+                .isThrownBy(() -> issueService.getIssueById(10L))
                 .withMessage(errorMessage);
     }
 

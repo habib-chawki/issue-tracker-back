@@ -1,13 +1,11 @@
 package com.habibInc.issueTracker.issue;
 
 import com.habibInc.issueTracker.exceptionhandler.InvalidIdException;
-import com.habibInc.issueTracker.security.CustomUserDetails;
 import com.habibInc.issueTracker.user.User;
 import com.habibInc.issueTracker.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -34,7 +32,7 @@ public class IssueController {
     public Issue getIssue(@PathVariable String id){
         try {
             Long issueId = Long.parseLong(id);
-            return issueService.getIssue(issueId);
+            return issueService.getIssueById(issueId);
         }catch(NumberFormatException ex){
             throw new InvalidIdException("Invalid issue id");
         }

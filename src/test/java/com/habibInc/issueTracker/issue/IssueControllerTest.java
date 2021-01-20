@@ -87,7 +87,7 @@ public class IssueControllerTest {
     @Test
     public void itShouldGetIssueById() throws Exception {
         // return an issue when getIssue service method is invoked
-        when(issueService.getIssue(2L)).thenReturn(issue2);
+        when(issueService.getIssueById(2L)).thenReturn(issue2);
 
         // the response body is expected to contain the returned issue
         String responseBody = mapper.writeValueAsString(issue2);
@@ -105,7 +105,7 @@ public class IssueControllerTest {
         String errorMessage = "Issue not found";
 
         // when the "getIssue()" service method throws a resource not found exception
-        when(issueService.getIssue(3L))
+        when(issueService.getIssueById(3L))
                 .thenThrow(new ResourceNotFoundException(errorMessage));
 
         // then an error message with a status code of 404 should be returned
