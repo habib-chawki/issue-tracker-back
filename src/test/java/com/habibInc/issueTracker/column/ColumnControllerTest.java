@@ -85,7 +85,7 @@ public class ColumnControllerTest {
         Integer page = 0;
         Integer size = 4;
 
-        // given the get paginated issues list, url endpoint
+        // given the endpoint url
         String url = String.format(
                 "/boards/%s/columns/%s/issues?page=%s&size=%s",
                 boardId, column.getId(), page, size
