@@ -6,6 +6,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -26,6 +28,8 @@ public class BoardServiceTest {
     @BeforeEach
     public void setup() {
         board = new Board();
+
+        board.setId(1L);
         board.setName("Kanban");
     }
 
@@ -39,5 +43,17 @@ public class BoardServiceTest {
 
         // then the response should be the successfully created board
         assertThat(createdBoard).isEqualTo(board);
+    }
+
+    @Test
+    public void itShouldGetBoardById() {
+        // given the board repository
+        when(boardRepository.findById(board.getId())).thenReturn(Optional.of(board));
+
+        // when "getBoardById()" service method is invoked
+        Board retrievedBoard = boardService.getBoardById(board.getId());
+
+        // then the board should be retrieved successfully
+        assertThat(retrievedBoard).isEqualTo(board);
     }
 }
