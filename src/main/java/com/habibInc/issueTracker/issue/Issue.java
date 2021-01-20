@@ -2,6 +2,7 @@ package com.habibInc.issueTracker.issue;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.habibInc.issueTracker.column.Column;
 import com.habibInc.issueTracker.comment.Comment;
 import com.habibInc.issueTracker.user.User;
 import lombok.*;
@@ -52,6 +53,9 @@ public class Issue {
     private LocalDateTime creationTime;
     private LocalDateTime updateTime;
     private LocalTime estimate;
+
+    @ManyToOne
+    private Column column;
 
     // equals and hashCode
     @Override
