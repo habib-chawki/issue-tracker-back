@@ -13,6 +13,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.*;
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ColumnIT {
 
@@ -21,6 +25,9 @@ public class ColumnIT {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    ColumnRepository columnRepository;
 
     @Autowired
     TestRestTemplate restTemplate;
@@ -74,7 +81,26 @@ public class ColumnIT {
         );
 
         // then the column should be created successfully
-        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    }
+
+    @Test
+    public void itShouldGetColumnById() {
+        // given a column is saved
+        Column savedColumn = columnRepository.save(column);
+
+        // given the url and request body
+        String url = String.format("/boards/%s/columns/%s", 100L, column.getId());
+        HttpEntity<Column> httpEntity = new HttpEntity<>(httpHeaders);
+
+        // when a GET request is made to retrieve the column by id
+        ResponseEntity<Column> response =
+                restTemplate.exchange(url, HttpMethod.GET, httpEntity, Column.class);
+
+        // then expect the column to have been retrieved successfully
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isEqualTo(savedColumn);
+        assertThat(response.getBody().getId()).isNotNull().isPositive();
     }
 
     @AfterEach
