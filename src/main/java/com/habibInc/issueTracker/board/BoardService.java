@@ -1,5 +1,6 @@
 package com.habibInc.issueTracker.board;
 
+import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +18,8 @@ public class BoardService {
         return boardRepository.save(board);
     }
 
-    public Board getBoardById(Long id) {
-        return null;
+    public Board getBoardById(Long boardId) {
+        return boardRepository.findById(boardId)
+                .orElseThrow(() -> new ResourceNotFoundException("Board not found"));
     }
 }
