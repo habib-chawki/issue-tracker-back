@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -47,6 +48,15 @@ public class ColumnServiceTest {
         Column response = columnService.createColumn(column, 100L);
 
         assertThat(response).isEqualTo(column);
+    }
+
+    @Test
+    public void itShouldGetColumnById() {
+        when(columnRepository.findById(column.getId())).thenReturn(Optional.of(column));
+
+        Column retrievedColumn = columnService.getColumnById(100L, column.getId());
+
+        assertThat(retrievedColumn).isEqualTo(column);
     }
 
     @Test
