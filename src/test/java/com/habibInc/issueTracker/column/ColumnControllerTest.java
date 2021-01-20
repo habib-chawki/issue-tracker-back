@@ -85,7 +85,30 @@ public class ColumnControllerTest {
 
         when(columnService.getColumnById(boardId, column.getId())).thenReturn(column);
 
+        // expect the column to have been retrieved successfully
         mockMvc.perform(get(url)).andExpect(status().isOk());
+    }
+
+    @Test
+    public void givenGetColumnById_whenIdIsInvalid_itShouldReturnInvalidIdError() throws Exception {
+        // given an invalid board id
+        String url = String.format("/boards/%s/columns/%s", "invalid_board_id", column.getId());
+
+        // given the error message
+        String errorMessage = "Invalid id";
+
+        // when the board id is invalid then a 400 bad request error should be returned
+        mockMvc.perform(get(url))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorMessage").value(errorMessage));
+
+        // given an invalid column id
+        url = String.format("/boards/%s/columns/%s", 100L, "invalid_column_id");
+
+        // when the column id is invalid then a 400 bad request error should be returned
+        mockMvc.perform(get(url))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorMessage").value(errorMessage));
     }
 
     @Test
