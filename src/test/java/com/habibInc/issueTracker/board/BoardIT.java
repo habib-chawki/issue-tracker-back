@@ -24,6 +24,12 @@ public class BoardIT {
     JwtUtil jwtUtil;
 
     @Autowired
+    BoardService boardService;
+
+    @Autowired
+    BoardRepository boardRepository;
+
+    @Autowired
     UserService userService;
 
     @Autowired
@@ -76,8 +82,28 @@ public class BoardIT {
         assertThat(response.getBody().getId()).isNotNull().isPositive();
     }
 
+    @Test
+    public void itShouldGetBoardById() {
+        // given a board is created
+        Board createdBoard = boardService.createBoard(board);
+
+        // given the request
+        String url = "/boards/" + createdBoard.getId();
+        HttpEntity<Board> httpEntity = new HttpEntity<>(httpHeaders);
+
+        // when a get request is made to fetch the board by id
+        ResponseEntity<Board> response =
+                restTemplate.exchange(url, HttpMethod.GET, httpEntity, Board.class);
+
+        // then the board should be retrieved successfully
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().getId()).isNotNull().isPositive();
+        assertThat(response.getBody()).isEqualTo(createdBoard);
+    }
+
     @AfterEach
     public void teardown() {
         userRepository.deleteAll();
+        boardRepository.deleteAll();
     }
 }
