@@ -29,4 +29,8 @@ public class ColumnService {
         Pageable pageable = PageRequest.of(page, size);
         return issueRepository.findByColumnId(columnId, pageable);
     }
+
+    public Column getColumnById(Long boardId, Long column) {
+        return null;
+    }
 }
