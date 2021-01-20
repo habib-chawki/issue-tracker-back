@@ -1,6 +1,7 @@
 package com.habibInc.issueTracker.column;
 
 import com.habibInc.issueTracker.issue.Issue;
+import com.habibInc.issueTracker.issue.IssueRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -21,6 +22,9 @@ public class ColumnServiceTest {
 
     @Mock
     ColumnRepository columnRepository;
+
+    @Mock
+    IssueRepository issueRepository;
 
     Column column;
 
@@ -64,10 +68,13 @@ public class ColumnServiceTest {
         // given the pageable object
         Pageable pageable = PageRequest.of(page, size);
 
-        when(columnRepository.findAllIssues(pageable)).thenReturn(issues);
+        // given the issue repository returns a list of issues
+        when(issueRepository.findByColumnId(eq(column.getId()), eq(pageable))).thenReturn(issues);
 
+        // when the column service is invoked
         List<Issue> response = columnService.getPaginatedListOfIssues(boardId, column.getId(), page, size);
 
+        // then the response should be the paginated list of issues
         assertThat(response).isEqualTo(issues);
     }
 }
