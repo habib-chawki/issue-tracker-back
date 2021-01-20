@@ -21,4 +21,10 @@ public class BoardController {
         return boardService.createBoard(board);
     }
 
+    @GetMapping("/{boardId}")
+    @ResponseStatus(HttpStatus.OK)
+    public Board getBoard(@PathVariable Long boardId) {
+        return boardService.getBoardById(boardId);
+    }
+
 }

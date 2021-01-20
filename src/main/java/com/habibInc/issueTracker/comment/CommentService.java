@@ -22,7 +22,7 @@ public class CommentService {
 
     public Comment createComment(Comment comment, Long issueId, User owner) {
         // delegate call to issueService to get the issue by id (throws exception)
-        Issue issue = issueService.getIssue(issueId);
+        Issue issue = issueService.getIssueById(issueId);
 
         // set the comment issue and owner
         comment.setIssue(issue);
