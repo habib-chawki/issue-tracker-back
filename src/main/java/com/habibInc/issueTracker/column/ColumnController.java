@@ -31,6 +31,12 @@ public class ColumnController {
         }
     }
 
+    @GetMapping("/{columnId}")
+    @ResponseStatus(HttpStatus.OK)
+    public Column getColumnById(@PathVariable String boardId, @PathVariable String columnId) {
+        return  null;
+    }
+
     @GetMapping(path = "{columnId}/issues")
     @ResponseStatus(HttpStatus.OK)
     public List<Issue> getPaginatedListOfIssues(@PathVariable String columnId,
