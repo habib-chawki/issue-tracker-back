@@ -33,8 +33,14 @@ public class ColumnController {
 
     @GetMapping("/{columnId}")
     @ResponseStatus(HttpStatus.OK)
-    public Column getColumnById(@PathVariable Long boardId, @PathVariable Long columnId) {
-        return  columnService.getColumnById(boardId, columnId);
+    public Column getColumnById(@PathVariable String boardId, @PathVariable String columnId) {
+        try {
+            Long parsedBoardId = Long.parseLong(boardId);
+            Long parsedColumnId = Long.parseLong(columnId);
+            return columnService.getColumnById(parsedBoardId, parsedColumnId);
+        }catch(NumberFormatException ex){
+            throw new InvalidIdException("Invalid id");
+        }
     }
 
     @GetMapping(path = "{columnId}/issues")
