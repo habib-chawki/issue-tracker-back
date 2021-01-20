@@ -60,12 +60,13 @@ public class BoardServiceTest {
     }
 
     @Test
-    public void givenGetBoardById_whenBoardIsNotFound_itShouldReturnNotFoundError() {
+    public void givenGetBoardById_whenBoardDoesNotExist_itShouldReturnNotFoundError() {
         // when the board is not found
         when(boardRepository.findById(404L)).thenReturn(Optional.ofNullable(null));
 
         // then a 404 not found error should be returned
         assertThatExceptionOfType(ResourceNotFoundException.class)
-                .isThrownBy(() -> boardService.getBoardById(404L));
+                .isThrownBy(() -> boardService.getBoardById(404L))
+                .withMessageContaining("Board not found");
     }
 }
