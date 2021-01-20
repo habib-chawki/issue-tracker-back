@@ -1,5 +1,6 @@
 package com.habibInc.issueTracker.board;
 
+import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -9,6 +10,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.when;
 
 public class BoardServiceTest {
@@ -55,5 +57,15 @@ public class BoardServiceTest {
 
         // then the board should be retrieved successfully
         assertThat(retrievedBoard).isEqualTo(board);
+    }
+
+    @Test
+    public void givenGetBoardById_whenBoardIsNotFound_itShouldReturnNotFoundError() {
+        // when the board is not found
+        when(boardRepository.findById(404L)).thenReturn(Optional.ofNullable(null));
+
+        // then a 404 not found error should be returned
+        assertThatExceptionOfType(ResourceNotFoundException.class)
+                .isThrownBy(() -> boardService.getBoardById(404L));
     }
 }
