@@ -33,8 +33,8 @@ public class ColumnController {
 
     @GetMapping("/{columnId}")
     @ResponseStatus(HttpStatus.OK)
-    public Column getColumnById(@PathVariable String boardId, @PathVariable String columnId) {
-        return  null;
+    public Column getColumnById(@PathVariable Long boardId, @PathVariable Long columnId) {
+        return  columnService.getColumnById(boardId, columnId);
     }
 
     @GetMapping(path = "{columnId}/issues")
