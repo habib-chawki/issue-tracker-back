@@ -1,5 +1,6 @@
 package com.habibInc.issueTracker.column;
 
+import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.issue.IssueRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,8 @@ public class ColumnService {
         return issueRepository.findByColumnId(columnId, pageable);
     }
 
-    public Column getColumnById(Long boardId, Long column) {
-        return null;
+    public Column getColumnById(Long boardId, Long columnId) {
+        return columnRepository.findById(columnId)
+                .orElseThrow(() -> new ResourceNotFoundException("Column not found"));
     }
 }
