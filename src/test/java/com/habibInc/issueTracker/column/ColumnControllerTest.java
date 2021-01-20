@@ -79,6 +79,14 @@ public class ColumnControllerTest {
     }
 
     @Test
+    public void itShouldGetColumnById() throws Exception {
+        Long boardId = 100L;
+        String url = String.format("/boards/%s/columns/%s", boardId, column.getId());
+
+        mockMvc.perform(get(url)).andExpect(status().isOk());
+    }
+
+    @Test
     public void itShouldGetPaginatedListOfIssues() throws Exception {
         Long boardId = 100L;
 
