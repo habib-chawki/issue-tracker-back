@@ -1,5 +1,6 @@
 package com.habibInc.issueTracker.board;
 
+import com.habibInc.issueTracker.exceptionhandler.InvalidIdException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -23,8 +24,13 @@ public class BoardController {
 
     @GetMapping("/{boardId}")
     @ResponseStatus(HttpStatus.OK)
-    public Board getBoard(@PathVariable Long boardId) {
-        return boardService.getBoardById(boardId);
+    public Board getBoard(@PathVariable("boardId") String id) {
+        try{
+            Long boardId = Long.parseLong(id);
+            return boardService.getBoardById(boardId);
+        }catch(NumberFormatException ex){
+            throw new InvalidIdException("Invalid board id");
+        }
     }
 
 }
