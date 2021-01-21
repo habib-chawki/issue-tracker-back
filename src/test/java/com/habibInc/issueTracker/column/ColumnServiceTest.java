@@ -2,6 +2,7 @@ package com.habibInc.issueTracker.column;
 
 import com.habibInc.issueTracker.board.Board;
 import com.habibInc.issueTracker.board.BoardService;
+import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.issue.IssueRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.*;
 
 public class ColumnServiceTest {
@@ -68,11 +70,27 @@ public class ColumnServiceTest {
 
     @Test
     public void itShouldGetColumnById() {
+        // given the column board
+        column.setBoard(board);
+
         when(columnRepository.findById(column.getId())).thenReturn(Optional.of(column));
 
-        Column retrievedColumn = columnService.getColumnById(100L, column.getId());
+        Column retrievedColumn = columnService.getColumnById(board.getId(), column.getId());
 
         assertThat(retrievedColumn).isEqualTo(column);
+    }
+
+    @Test
+    public void givenGetColumnById_whenColumnDoesNotExist_itShouldReturnColumnNotFoundError() {
+        when(columnRepository.findById(column.getId())).thenReturn(Optional.ofNullable(null));
+
+        assertThatExceptionOfType(ResourceNotFoundException.class)
+                .isThrownBy(() -> columnService.getColumnById(404L, column.getId()));
+    }
+
+    @Test
+    public void givenGetColumnById_whenBoardIdIsIncorrect_itShouldReturnBoardNotFoundError () {
+
     }
 
     @Test

@@ -108,7 +108,7 @@ public class ColumnIT {
         // given the board does not exist
         String url = String.format("/boards/%s/columns", 404L);
 
-        // given the create column post request
+        // given the create column POST request
         HttpEntity<Column> httpEntity = new HttpEntity<>(column, httpHeaders);
 
         // when the request is received
