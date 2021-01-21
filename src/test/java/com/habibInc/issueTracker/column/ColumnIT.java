@@ -166,5 +166,7 @@ public class ColumnIT {
     @AfterEach
     public void teardown() {
         userRepository.deleteAll();
+        columnRepository.deleteAll();
+        boardRepository.deleteAll();
     }
 }
