@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
@@ -134,7 +133,7 @@ public class IssueRepositoryTest {
         int size = 3;
         Pageable pageable = PageRequest.of(page, size);
 
-        // when find by column id is invoked
+        // when findByColumnId() is invoked
         List<Issue> paginatedIssuesList =
                 issueRepository.findByColumnId(column.getId(), pageable);
 

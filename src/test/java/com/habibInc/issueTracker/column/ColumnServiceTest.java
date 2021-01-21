@@ -131,4 +131,18 @@ public class ColumnServiceTest {
         // then the response should be the paginated list of issues
         assertThat(response).isEqualTo(issues);
     }
+
+    @Test
+    public void givenGetPaginatedListOfIssues_whenColumnDoesNotExist_itShouldReturnColumnNotFoundError() {
+        // given the column board
+        column.setBoard(board);
+
+        // when the column is not found
+        when(columnRepository.findById(column.getId())).thenReturn(Optional.ofNullable(null));
+
+        // then a 404 column not found error should be returned
+        assertThatExceptionOfType(ResourceNotFoundException.class)
+                .isThrownBy(() -> columnService.getPaginatedListOfIssues(column.getBoard().getId(), column.getId(), 0, 3))
+                .withMessageContaining("Column not found");
+    }
 }
