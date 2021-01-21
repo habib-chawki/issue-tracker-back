@@ -50,6 +50,10 @@ public class ColumnService {
     }
 
     public List<Issue> getPaginatedListOfIssues(Long boardId, Long columnId, int page, int size) {
+        // fetch the column by id (throws either column or board not found exception)
+        getColumnById(boardId, columnId);
+
+        // when both the column and board exist, fetch the paginated list of issues
         Pageable pageable = PageRequest.of(page, size);
         return issueRepository.findByColumnId(columnId, pageable);
     }
