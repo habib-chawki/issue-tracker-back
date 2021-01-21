@@ -1,10 +1,12 @@
 package com.habibInc.issueTracker.column;
 
+import com.habibInc.issueTracker.board.Board;
+import com.habibInc.issueTracker.board.BoardRepository;
+import com.habibInc.issueTracker.board.BoardService;
 import com.habibInc.issueTracker.security.JwtUtil;
 import com.habibInc.issueTracker.user.User;
 import com.habibInc.issueTracker.user.UserRepository;
 import com.habibInc.issueTracker.user.UserService;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,8 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
-
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -25,6 +25,12 @@ public class ColumnIT {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    BoardService boardService;
+
+    @Autowired
+    BoardRepository boardRepository;
 
     @Autowired
     ColumnRepository columnRepository;
@@ -39,6 +45,7 @@ public class ColumnIT {
 
     User authenticatedUser;
     Column column;
+    Board board;
 
     @BeforeEach
     public void auth() {
@@ -61,14 +68,20 @@ public class ColumnIT {
 
     @BeforeEach
     public void setup(){
+        // create and save a board
+        board = new Board();
+        board.setName("column_board");
+
+        board = boardService.createBoard(board);
+
+        // set up a column
         column = new Column();
         column.setTitle("To do");
     }
 
     @Test
     public void itShouldCreateColumn() {
-        Long boardId = 100L;
-        String url = String.format("/boards/%s/columns", boardId);
+        String url = String.format("/boards/%s/columns", board.getId());
 
         // given the create column post request
         HttpEntity<Column> httpEntity = new HttpEntity<>(column, httpHeaders);
@@ -82,6 +95,11 @@ public class ColumnIT {
 
         // then the column should be created successfully
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(response.getBody()).isEqualToComparingOnlyGivenFields(column);
+
+        // the id and board should be set
+        assertThat(response.getBody().getBoard()).isEqualTo(board);
+        assertThat(response.getBody().getId()).isNotNull().isPositive();
     }
 
     @Test
