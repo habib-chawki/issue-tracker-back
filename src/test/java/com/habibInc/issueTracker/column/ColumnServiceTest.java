@@ -1,5 +1,7 @@
 package com.habibInc.issueTracker.column;
 
+import com.habibInc.issueTracker.board.Board;
+import com.habibInc.issueTracker.board.BoardService;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.issue.IssueRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +29,11 @@ public class ColumnServiceTest {
     @Mock
     IssueRepository issueRepository;
 
+    @Mock
+    BoardService boardService;
+
     Column column;
+    Board board;
 
     @BeforeEach
     public void init() {
@@ -36,6 +42,12 @@ public class ColumnServiceTest {
 
     @BeforeEach
     public void setup() {
+        // set up a board
+        board = new Board();
+        board.setId(100L);
+        board.setName("column_board");
+
+        // set up a column
         column = new Column();
         column.setId(1L);
         column.setTitle("In progress");
@@ -43,10 +55,14 @@ public class ColumnServiceTest {
 
     @Test
     public void itShouldCreateColumn() {
+        when(boardService.getBoardById(board.getId())).thenReturn(board);
         when(columnRepository.save(column)).thenReturn(column);
 
+        // when the column is created
         Column response = columnService.createColumn(column, 100L);
 
+        // then expect the response to be the created column with the board property set
+        assertThat(response.getBoard()).isEqualTo(board);
         assertThat(response).isEqualTo(column);
     }
 
