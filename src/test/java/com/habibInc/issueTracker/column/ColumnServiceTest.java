@@ -145,4 +145,19 @@ public class ColumnServiceTest {
                 .isThrownBy(() -> columnService.getPaginatedListOfIssues(column.getBoard().getId(), column.getId(), 0, 3))
                 .withMessageContaining("Column not found");
     }
+
+    @Test
+    public void givenGetPaginatedListOfIssues_whenBoardDoesNotExist_itShouldReturnBoardNotFoundError() {
+        // given the column board
+        column.setBoard(board);
+
+        // given the column is found by id
+        when(columnRepository.findById(column.getId())).thenReturn(Optional.of(column));
+
+        // when the board id is incorrect, then a 404 board not found error should returned
+        assertThatExceptionOfType(ResourceNotFoundException.class)
+                .isThrownBy(() -> columnService.getPaginatedListOfIssues(404L, column.getId(), 0, 3))
+                .withMessageContaining("Board not found");
+
+    }
 }
