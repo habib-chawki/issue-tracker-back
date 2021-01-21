@@ -41,16 +41,16 @@ public class ColumnService {
         Column column = columnRepository.findById(columnId)
                 .orElseThrow(() -> new ResourceNotFoundException("Column not found"));
 
-        if(column.getBoard().getId() == boardId)
-            return column;
-        else
+        // check if the column belongs to the board specified by id
+        if (column.getBoard().getId() != boardId) {
             throw new ResourceNotFoundException("Board not found");
+        } else {
+            return column;
+        }
     }
 
     public List<Issue> getPaginatedListOfIssues(Long boardId, Long columnId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return issueRepository.findByColumnId(columnId, pageable);
     }
-
-
 }

@@ -37,6 +37,9 @@ public class ColumnIT {
     ColumnRepository columnRepository;
 
     @Autowired
+    ColumnService columnService;
+
+    @Autowired
     TestRestTemplate restTemplate;
 
     @Autowired
@@ -104,7 +107,7 @@ public class ColumnIT {
     }
 
     @Test
-    public void givenCreateColumn_whenBoardDoesNotExist_itShouldReturnNotFoundError() {
+    public void givenCreateColumn_whenBoardDoesNotExist_itShouldReturnBoardNotFoundError() {
         // given the board does not exist
         String url = String.format("/boards/%s/columns", 404L);
 
@@ -125,11 +128,11 @@ public class ColumnIT {
 
     @Test
     public void itShouldGetColumnById() {
-        // given a column is saved
-        Column savedColumn = columnRepository.save(column);
+        // given the column is created
+        Column savedColumn = columnService.createColumn(column, board.getId());
 
         // given the url and request body
-        String url = String.format("/boards/%s/columns/%s", 100L, column.getId());
+        String url = String.format("/boards/%s/columns/%s", board.getId(), column.getId());
         HttpEntity<Column> httpEntity = new HttpEntity<>(httpHeaders);
 
         // when a GET request is made to retrieve the column by id
