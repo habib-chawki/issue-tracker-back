@@ -38,8 +38,13 @@ public class ColumnService {
     }
 
     public Column getColumnById(Long boardId, Long columnId) {
-        return columnRepository.findById(columnId)
+        Column column = columnRepository.findById(columnId)
                 .orElseThrow(() -> new ResourceNotFoundException("Column not found"));
+
+        if(column.getBoard().getId() == boardId)
+            return column;
+        else
+            throw new ResourceNotFoundException("Board not found");
     }
 
     public List<Issue> getPaginatedListOfIssues(Long boardId, Long columnId, int page, int size) {
