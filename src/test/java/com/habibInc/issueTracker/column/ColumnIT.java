@@ -187,7 +187,7 @@ public class ColumnIT {
         );
 
         // save the list of issues
-        issues = (List<Issue>) issueRepository.saveAll(issues);
+//        issueRepository.saveAll(issues);
 
         // given a GET request to fetch a paginated list of issues
         int page = 0;

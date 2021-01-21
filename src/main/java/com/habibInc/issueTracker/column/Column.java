@@ -1,9 +1,11 @@
 package com.habibInc.issueTracker.column;
 
 import com.habibInc.issueTracker.board.Board;
+import com.habibInc.issueTracker.issue.Issue;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -25,6 +27,9 @@ public class Column {
 
     @ManyToOne
     private Board board;
+
+    @OneToMany(mappedBy = "column")
+    List<Issue> issues;
 
     @Override
     public boolean equals(Object o) {
