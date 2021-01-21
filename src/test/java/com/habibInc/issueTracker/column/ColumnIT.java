@@ -145,6 +145,24 @@ public class ColumnIT {
         assertThat(response.getBody().getId()).isNotNull().isPositive();
     }
 
+    @Test
+    public void givenGetColumnById_whenBoardIdIsIncorrect_itShouldReturnBoardNotFoundError() {
+        // given the column is created
+        Column savedColumn = columnService.createColumn(column, board.getId());
+
+        // given an incorrect board id
+        String url = String.format("/boards/%s/columns/%s", 404L, column.getId());
+        HttpEntity<Column> httpEntity = new HttpEntity<>(httpHeaders);
+
+        // when a GET request is made to retrieve the column by id, with an incorrect board id
+        ResponseEntity<ApiError> response =
+                restTemplate.exchange(url, HttpMethod.GET, httpEntity, ApiError.class);
+
+        // then expect a 404 board not found error to be returned
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Board not found");
+    }
+
     @AfterEach
     public void teardown() {
         userRepository.deleteAll();
