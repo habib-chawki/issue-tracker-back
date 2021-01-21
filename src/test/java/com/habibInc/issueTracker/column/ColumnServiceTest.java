@@ -82,15 +82,25 @@ public class ColumnServiceTest {
 
     @Test
     public void givenGetColumnById_whenColumnDoesNotExist_itShouldReturnColumnNotFoundError() {
+        // given the column board
+        column.setBoard(board);
         when(columnRepository.findById(column.getId())).thenReturn(Optional.ofNullable(null));
 
         assertThatExceptionOfType(ResourceNotFoundException.class)
-                .isThrownBy(() -> columnService.getColumnById(404L, column.getId()));
+                .isThrownBy(() -> columnService.getColumnById(board.getId(), 404L))
+                .withMessageContaining("Column not found");
     }
 
     @Test
     public void givenGetColumnById_whenBoardIdIsIncorrect_itShouldReturnBoardNotFoundError () {
+        // given the column board
+        column.setBoard(board);
+        when(columnRepository.findById(column.getId())).thenReturn(Optional.of(column));
 
+        // when the board id does not exist, then expect a board not found error to be returned
+        assertThatExceptionOfType(ResourceNotFoundException.class)
+                .isThrownBy(() -> columnService.getColumnById(404L, column.getId()))
+                .withMessageContaining("Board not found");
     }
 
     @Test
