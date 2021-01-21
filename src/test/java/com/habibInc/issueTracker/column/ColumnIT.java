@@ -3,6 +3,7 @@ package com.habibInc.issueTracker.column;
 import com.habibInc.issueTracker.board.Board;
 import com.habibInc.issueTracker.board.BoardRepository;
 import com.habibInc.issueTracker.board.BoardService;
+import com.habibInc.issueTracker.exceptionhandler.ApiError;
 import com.habibInc.issueTracker.security.JwtUtil;
 import com.habibInc.issueTracker.user.User;
 import com.habibInc.issueTracker.user.UserRepository;
@@ -100,6 +101,26 @@ public class ColumnIT {
         // the id and board should be set
         assertThat(response.getBody().getBoard()).isEqualTo(board);
         assertThat(response.getBody().getId()).isNotNull().isPositive();
+    }
+
+    @Test
+    public void givenCreateColumn_whenBoardDoesNotExist_itShouldReturnNotFoundError() {
+        // given the board does not exist
+        String url = String.format("/boards/%s/columns", 404L);
+
+        // given the create column post request
+        HttpEntity<Column> httpEntity = new HttpEntity<>(column, httpHeaders);
+
+        // when the request is received
+        ResponseEntity<ApiError> response = restTemplate.exchange(url,
+                HttpMethod.POST,
+                httpEntity,
+                ApiError.class
+        );
+
+        // then a 404 board not found error should be returned
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Board not found");
     }
 
     @Test
