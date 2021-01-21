@@ -1,13 +1,19 @@
 package com.habibInc.issueTracker.issue;
 
+import com.habibInc.issueTracker.column.Column;
+import com.habibInc.issueTracker.column.ColumnRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,6 +25,9 @@ public class IssueRepositoryTest {
 
     @Autowired
     IssueRepository issueRepository;
+
+    @Autowired
+    ColumnRepository columnRepository;
 
     Issue issue1, issue2;
 
@@ -100,5 +109,37 @@ public class IssueRepositoryTest {
         // then it should not be present afterwards
         Optional<Issue> after = issueRepository.findById(savedIssue.getId());
         assertThat(after.isPresent()).isFalse();
+    }
+
+    @Test
+    public void itShouldFindPaginatedListOfIssuesByColumnId () {
+        // given a column
+        Column column = new Column();
+        column.setTitle("Issues column");
+
+        column = columnRepository.save(column);
+
+        // given a list of issues
+        Issue issue1 = Issue.builder().column(column).summary("issue 1").build();
+        Issue issue2 = Issue.builder().column(column).summary("issue 2").build();
+        Issue issue3 = Issue.builder().column(column).summary("issue 3").build();
+        Issue issue4 = Issue.builder().column(column).summary("issue 4").build();
+        Issue issue5 = Issue.builder().column(column).summary("issue 5").build();
+
+        List<Issue> issues = List.of(issue1, issue2, issue3, issue4, issue5);
+        issueRepository.saveAll(issues);
+
+        // given a Pageable
+        int page = 0;
+        int size = 3;
+        Pageable pageable = PageRequest.of(page, size);
+
+        // when find by column id is invoked
+        List<Issue> paginatedIssuesList =
+                issueRepository.findByColumnId(column.getId(), pageable);
+
+        // then expect the paginated list of issues to be returned
+        assertThat(paginatedIssuesList.size()).isEqualTo(size);
+        assertThat(paginatedIssuesList).isEqualTo(issues.subList(0, size));
     }
 }
