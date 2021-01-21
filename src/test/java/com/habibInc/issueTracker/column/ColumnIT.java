@@ -4,6 +4,8 @@ import com.habibInc.issueTracker.board.Board;
 import com.habibInc.issueTracker.board.BoardRepository;
 import com.habibInc.issueTracker.board.BoardService;
 import com.habibInc.issueTracker.exceptionhandler.ApiError;
+import com.habibInc.issueTracker.issue.Issue;
+import com.habibInc.issueTracker.issue.IssueRepository;
 import com.habibInc.issueTracker.security.JwtUtil;
 import com.habibInc.issueTracker.user.User;
 import com.habibInc.issueTracker.user.UserRepository;
@@ -14,7 +16,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.*;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -38,6 +44,9 @@ public class ColumnIT {
 
     @Autowired
     ColumnService columnService;
+
+    @Autowired
+    IssueRepository issueRepository;
 
     @Autowired
     TestRestTemplate restTemplate;
@@ -148,7 +157,7 @@ public class ColumnIT {
     @Test
     public void givenGetColumnById_whenBoardIdIsIncorrect_itShouldReturnBoardNotFoundError() {
         // given the column is created
-        Column savedColumn = columnService.createColumn(column, board.getId());
+        columnService.createColumn(column, board.getId());
 
         // given an incorrect board id
         String url = String.format("/boards/%s/columns/%s", 404L, column.getId());
@@ -163,10 +172,46 @@ public class ColumnIT {
         assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Board not found");
     }
 
+    @Test
+    public void itShouldGetPaginatedListOfIssues() {
+        // given a created column
+        Column createdColumn = columnService.createColumn(column, board.getId());
+
+        // given a list of issues
+        List<Issue> issues = List.of(
+                Issue.builder().summary("issue 1").column(createdColumn).build(),
+                Issue.builder().summary("issue 2").column(createdColumn).build(),
+                Issue.builder().summary("issue 3").column(createdColumn).build(),
+                Issue.builder().summary("issue 4").column(createdColumn).build(),
+                Issue.builder().summary("issue 5").column(createdColumn).build()
+        );
+
+        // save the list of issues
+        issues = (List<Issue>) issueRepository.saveAll(issues);
+
+        // given a GET request to fetch a paginated list of issues
+        int page = 0;
+        int size = 3;
+
+        HttpEntity<List<Issue>> httpEntity = new HttpEntity<>(httpHeaders);
+        String url = String.format(
+                "/boards/%s/columns/%s/issues?page=%s&size=%s",
+                board.getId(), createdColumn.getId(), page, size
+        );
+
+        // when the request is made
+        ResponseEntity<List> response =
+                restTemplate.exchange(url, HttpMethod.GET, httpEntity, List.class);
+
+        // then expect to get a paginated list of issues
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
     @AfterEach
     public void teardown() {
         userRepository.deleteAll();
         columnRepository.deleteAll();
         boardRepository.deleteAll();
+        issueRepository.deleteAll();
     }
 }
