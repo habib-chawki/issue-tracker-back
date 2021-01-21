@@ -1,5 +1,6 @@
 package com.habibInc.issueTracker.column;
 
+import com.habibInc.issueTracker.board.Board;
 import lombok.*;
 
 import javax.persistence.*;
@@ -21,6 +22,9 @@ public class Column {
     private Long id;
 
     private String title;
+
+    @ManyToOne
+    private Board board;
 
     @Override
     public boolean equals(Object o) {
