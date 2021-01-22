@@ -1,11 +1,10 @@
 package com.habibInc.issueTracker.board;
 
+import com.habibInc.issueTracker.column.Column;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -22,6 +21,9 @@ public class Board {
     private Long id;
 
     private String name;
+
+    @OneToMany
+    private List<Column> columns;
 
     @Override
     public boolean equals(Object o) {
