@@ -18,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
@@ -185,7 +186,7 @@ public class ColumnIT {
         );
 
         // save the list of issues
-        issueRepository.saveAll(issues);
+        issues = (List<Issue>) issueRepository.saveAll(issues);
 
         // given a GET request to fetch a paginated list of issues
         int page = 0;
@@ -198,11 +199,12 @@ public class ColumnIT {
         );
 
         // when the request is made
-        ResponseEntity<List> response =
-                restTemplate.exchange(url, HttpMethod.GET, httpEntity, List.class);
+        ResponseEntity<Issue[]> response =
+                restTemplate.exchange(url, HttpMethod.GET, httpEntity, Issue[].class);
 
         // then expect to get a paginated list of issues
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).containsAll(issues.subList(0, size));
     }
 
     @AfterEach
