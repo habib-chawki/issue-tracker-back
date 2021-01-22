@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -53,6 +54,9 @@ public class ColumnServiceTest {
         column = new Column();
         column.setId(1L);
         column.setTitle("In progress");
+
+        // set the board
+        column.setBoard(board);
     }
 
     @Test
@@ -61,7 +65,7 @@ public class ColumnServiceTest {
         when(columnRepository.save(column)).thenReturn(column);
 
         // when the column is created
-        Column response = columnService.createColumn(column, 100L);
+        Column response = columnService.createColumn(column, board.getId());
 
         // then expect the response to be the created column with the board property set
         assertThat(response.getBoard()).isEqualTo(board);
@@ -70,9 +74,6 @@ public class ColumnServiceTest {
 
     @Test
     public void itShouldGetColumnById() {
-        // given the column board
-        column.setBoard(board);
-
         when(columnRepository.findById(column.getId())).thenReturn(Optional.of(column));
 
         Column retrievedColumn = columnService.getColumnById(board.getId(), column.getId());
@@ -82,8 +83,6 @@ public class ColumnServiceTest {
 
     @Test
     public void givenGetColumnById_whenColumnDoesNotExist_itShouldReturnColumnNotFoundError() {
-        // given the column board
-        column.setBoard(board);
         when(columnRepository.findById(column.getId())).thenReturn(Optional.ofNullable(null));
 
         assertThatExceptionOfType(ResourceNotFoundException.class)
@@ -93,8 +92,6 @@ public class ColumnServiceTest {
 
     @Test
     public void givenGetColumnById_whenBoardIdIsIncorrect_itShouldReturnBoardNotFoundError () {
-        // given the column board
-        column.setBoard(board);
         when(columnRepository.findById(column.getId())).thenReturn(Optional.of(column));
 
         // when the board id does not exist, then expect a board not found error to be returned
@@ -105,8 +102,8 @@ public class ColumnServiceTest {
 
     @Test
     public void itShouldGetPaginatedListOfIssues() {
-        // given the board id
-        Long boardId = 100L;
+        // given the column exists
+        when(columnRepository.findById(column.getId())).thenReturn(Optional.of(column));
 
         // given a list of issues
         List<Issue> issues = new ArrayList<>(List.of(
@@ -116,17 +113,16 @@ public class ColumnServiceTest {
                 Issue.builder().id(4L).build())
         );
 
+        // given the pageable object
         int page = 0;
         int size = 4;
-
-        // given the pageable object
         Pageable pageable = PageRequest.of(page, size);
 
         // given the issue repository returns a list of issues
         when(issueRepository.findByColumnId(eq(column.getId()), eq(pageable))).thenReturn(issues);
 
-        // when the column service is invoked
-        List<Issue> response = columnService.getPaginatedListOfIssues(boardId, column.getId(), page, size);
+        // when the column service is invoked to get a paginated list of issues
+        List<Issue> response = columnService.getPaginatedListOfIssues(board.getId(), column.getId(), page, size);
 
         // then the response should be the paginated list of issues
         assertThat(response).isEqualTo(issues);
@@ -134,10 +130,7 @@ public class ColumnServiceTest {
 
     @Test
     public void givenGetPaginatedListOfIssues_whenColumnDoesNotExist_itShouldReturnColumnNotFoundError() {
-        // given the column board
-        column.setBoard(board);
-
-        // when the column is not found
+       // when the column is not found
         when(columnRepository.findById(column.getId())).thenReturn(Optional.ofNullable(null));
 
         // then a 404 column not found error should be returned
@@ -148,9 +141,6 @@ public class ColumnServiceTest {
 
     @Test
     public void givenGetPaginatedListOfIssues_whenBoardDoesNotExist_itShouldReturnBoardNotFoundError() {
-        // given the column board
-        column.setBoard(board);
-
         // given the column is found by id
         when(columnRepository.findById(column.getId())).thenReturn(Optional.of(column));
 
