@@ -1,6 +1,7 @@
 package com.habibInc.issueTracker.issue;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.habibInc.issueTracker.column.Column;
 import com.habibInc.issueTracker.comment.Comment;
@@ -24,6 +25,7 @@ import java.util.Objects;
 
 
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@JsonIgnoreProperties(value = {"column"})
 public class Issue {
 
     @Id
