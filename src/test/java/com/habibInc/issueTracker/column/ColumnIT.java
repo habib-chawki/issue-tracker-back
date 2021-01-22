@@ -207,6 +207,59 @@ public class ColumnIT {
         assertThat(response.getBody()).containsAll(issues.subList(0, size));
     }
 
+    @Test
+    public void givenGetPaginatedListOfIssues_itShouldNotReturnIssuesBelongingToOtherColumns() {
+        // given distinct columns
+        Column targetedColumn, anotherColumn;
+
+        targetedColumn = new Column();
+        targetedColumn.setTitle("Target");
+        targetedColumn.setBoard(board);
+
+        anotherColumn = new Column();
+        anotherColumn.setTitle("Other");
+        anotherColumn.setBoard(board);
+
+        columnRepository.saveAll(List.of(targetedColumn, anotherColumn));
+
+        // given a list of issues belonging to the targeted column
+        List<Issue> targetedColumnIssues = List.of(
+                Issue.builder().summary("issue 1").column(targetedColumn).build(),
+                Issue.builder().summary("issue 4").column(targetedColumn).build()
+        );
+
+        // given a list of issues belonging to another column
+        List<Issue> anotherColumnIssues = List.of(
+                Issue.builder().summary("issue 2").column(anotherColumn).build(),
+                Issue.builder().summary("issue 3").column(anotherColumn).build(),
+                Issue.builder().summary("issue 5").column(anotherColumn).build()
+        );
+
+        // save the list of issues
+        targetedColumnIssues = (List<Issue>) issueRepository.saveAll(targetedColumnIssues);
+        anotherColumnIssues = (List<Issue>) issueRepository.saveAll(anotherColumnIssues);
+
+        // given a GET request to fetch a paginated list of issues of the targeted column
+        int page = 0;
+        int size = 3;
+
+        HttpEntity<List<Issue>> httpEntity = new HttpEntity<>(httpHeaders);
+        String url = String.format(
+                "/boards/%s/columns/%s/issues?page=%s&size=%s",
+                board.getId(), targetedColumn.getId(), page, size
+        );
+
+        // when the request is made
+        ResponseEntity<Issue[]> response =
+                restTemplate.exchange(url, HttpMethod.GET, httpEntity, Issue[].class);
+
+        // then expect the list of issues to belong to the targeted column only
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().length).isEqualTo(targetedColumnIssues.size());
+        assertThat(response.getBody()).containsAll(targetedColumnIssues);
+        assertThat(response.getBody()).doesNotContainAnyElementsOf(anotherColumnIssues);
+    }
+
     @AfterEach
     public void teardown() {
         userRepository.deleteAll();
