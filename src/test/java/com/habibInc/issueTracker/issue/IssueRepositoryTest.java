@@ -119,13 +119,14 @@ public class IssueRepositoryTest {
         column = columnRepository.save(column);
 
         // given a list of issues
-        Issue issue1 = Issue.builder().column(column).summary("issue 1").build();
-        Issue issue2 = Issue.builder().column(column).summary("issue 2").build();
-        Issue issue3 = Issue.builder().column(column).summary("issue 3").build();
-        Issue issue4 = Issue.builder().column(column).summary("issue 4").build();
-        Issue issue5 = Issue.builder().column(column).summary("issue 5").build();
+        List<Issue> issues = List.of(
+                Issue.builder().column(column).summary("issue 1").build(),
+                Issue.builder().column(column).summary("issue 2").build(),
+                Issue.builder().column(column).summary("issue 3").build(),
+                Issue.builder().column(column).summary("issue 4").build(),
+                Issue.builder().column(column).summary("issue 5").build()
+        );
 
-        List<Issue> issues = List.of(issue1, issue2, issue3, issue4, issue5);
         issueRepository.saveAll(issues);
 
         // given a Pageable
