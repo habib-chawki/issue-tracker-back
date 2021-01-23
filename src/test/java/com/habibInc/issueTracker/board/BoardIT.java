@@ -1,5 +1,7 @@
 package com.habibInc.issueTracker.board;
 
+import com.habibInc.issueTracker.column.Column;
+import com.habibInc.issueTracker.column.ColumnRepository;
 import com.habibInc.issueTracker.security.JwtUtil;
 import com.habibInc.issueTracker.user.User;
 import com.habibInc.issueTracker.user.UserRepository;
@@ -11,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -34,6 +38,9 @@ public class BoardIT {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    ColumnRepository columnRepository;
 
     User authenticatedUser;
     HttpHeaders httpHeaders;
@@ -99,6 +106,34 @@ public class BoardIT {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().getId()).isNotNull().isPositive();
         assertThat(response.getBody()).isEqualTo(createdBoard);
+    }
+
+    @Test
+    public void givenGetBoardById_itShouldGetListOfColumns() {
+        // given a board
+        Board createdBoard = boardService.createBoard(board);
+
+        // given a list of columns
+        List<Column> columns = List.of(
+                Column.builder().title("column 1").board(board).build(),
+                Column.builder().title("column 2").board(board).build(),
+                Column.builder().title("column 3").board(board).build(),
+                Column.builder().title("column 4").board(board).build()
+        );
+
+        columns = (List<Column>) columnRepository.saveAll(columns);
+
+        // given the request
+        String url = "/boards/" + createdBoard.getId();
+        HttpEntity<Board> httpEntity = new HttpEntity<>(httpHeaders);
+
+        // when a GET request is made to fetch the board by id
+        ResponseEntity<Board> response =
+                restTemplate.exchange(url, HttpMethod.GET, httpEntity, Board.class);
+
+        // then the board should be retrieved along with a list of columns
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().getColumns()).isEqualTo(columns);
     }
 
     @AfterEach
