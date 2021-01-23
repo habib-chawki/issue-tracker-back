@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/boards/{boardId}/columns")
+@RequestMapping("/boards/{boardId}")
 
 public class ColumnController {
 
@@ -20,7 +20,7 @@ public class ColumnController {
         this.columnService = columnService;
     }
 
-    @PostMapping({"", "/"})
+    @PostMapping({"/column"})
     @ResponseStatus(HttpStatus.CREATED)
     public Column createColumn(@RequestBody Column column, @PathVariable("boardId") String id){
         try{
@@ -31,7 +31,7 @@ public class ColumnController {
         }
     }
 
-    @GetMapping("/{columnId}")
+    @GetMapping("/columns/{columnId}")
     @ResponseStatus(HttpStatus.OK)
     public Column getColumnById(@PathVariable String boardId, @PathVariable String columnId) {
         try {
@@ -43,7 +43,7 @@ public class ColumnController {
         }
     }
 
-    @GetMapping(path = "{columnId}/issues")
+    @GetMapping(path = "/columns/{columnId}/issues")
     @ResponseStatus(HttpStatus.OK)
     public List<Issue> getPaginatedListOfIssues(@PathVariable String columnId,
                                                 @PathVariable String boardId,
