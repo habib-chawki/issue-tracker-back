@@ -22,8 +22,9 @@ public class ColumnController {
 
     @PostMapping("/column")
     @ResponseStatus(HttpStatus.CREATED)
-    public Column createColumn(@RequestBody Column column,
-                               @PathVariable("boardId") String id){
+    public Column createColumn(@PathVariable("boardId") String id,
+                               @RequestBody Column column
+                               ){
         try{
             Long boardId = Long.parseLong(id);
             return columnService.createColumn(boardId, column);

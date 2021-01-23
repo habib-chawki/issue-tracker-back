@@ -46,4 +46,9 @@ public class ColumnRepositoryTest {
         // then the column should be retrieved successfully
         assertThat(response.get()).isEqualTo(createdColumn);
     }
+
+    @Test
+    public void itShouldSaveAllColumns() {
+        fail("");
+    }
 }

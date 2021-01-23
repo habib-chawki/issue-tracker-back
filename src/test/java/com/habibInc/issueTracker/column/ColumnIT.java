@@ -259,6 +259,11 @@ public class ColumnIT {
         assertThat(response.getBody()).doesNotContainAnyElementsOf(anotherColumnIssues);
     }
 
+    @Test
+    public void itShouldCreateColumnsList() {
+        fail("");
+    }
+
     @AfterEach
     public void teardown() {
         userRepository.deleteAll();

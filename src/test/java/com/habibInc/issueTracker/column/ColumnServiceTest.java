@@ -5,6 +5,7 @@ import com.habibInc.issueTracker.board.BoardService;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.issue.IssueRepository;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -17,8 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class ColumnServiceTest {
@@ -148,5 +148,10 @@ public class ColumnServiceTest {
                 .isThrownBy(() -> columnService.getPaginatedListOfIssues(404L, column.getId(), 0, 3))
                 .withMessageContaining("Board not found");
 
+    }
+
+    @Test
+    public void itShouldCreateColumnsList() {
+        Assertions.fail("");
     }
 }
