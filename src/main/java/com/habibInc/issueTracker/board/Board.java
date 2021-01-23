@@ -1,5 +1,7 @@
 package com.habibInc.issueTracker.board;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.habibInc.issueTracker.column.Column;
 import lombok.*;
 
@@ -14,6 +16,8 @@ import java.util.Objects;
 @Setter
 @Getter
 @Builder
+
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Board {
 
     @Id
@@ -22,7 +26,7 @@ public class Board {
 
     private String name;
 
-    @OneToMany
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
     private List<Column> columns;
 
     @Override

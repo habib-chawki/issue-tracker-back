@@ -32,5 +32,4 @@ public class BoardController {
             throw new InvalidIdException("Invalid board id");
         }
     }
-
 }
