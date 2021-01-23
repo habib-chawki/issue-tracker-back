@@ -92,7 +92,7 @@ public class ColumnIT {
 
     @Test
     public void itShouldCreateColumn() {
-        String url = String.format("/boards/%s/columns", board.getId());
+        String url = String.format("/boards/%s/column", board.getId());
 
         // given the create column post request
         HttpEntity<Column> httpEntity = new HttpEntity<>(column, httpHeaders);
@@ -116,7 +116,7 @@ public class ColumnIT {
     @Test
     public void givenCreateColumn_whenBoardDoesNotExist_itShouldReturnBoardNotFoundError() {
         // given the board does not exist
-        String url = String.format("/boards/%s/columns", 404L);
+        String url = String.format("/boards/%s/column", 404L);
 
         // given the create column POST request
         HttpEntity<Column> httpEntity = new HttpEntity<>(column, httpHeaders);
