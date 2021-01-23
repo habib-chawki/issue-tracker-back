@@ -1,5 +1,6 @@
 package com.habibInc.issueTracker.column;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.issue.Issue;
 import org.junit.jupiter.api.BeforeEach;
@@ -164,5 +165,30 @@ public class ColumnControllerTest {
         mockMvc.perform(get(url))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errorMessage").value("Invalid id"));
+    }
+
+    @Test
+    public void itShouldCreateListOfColumns() throws Exception {
+        Long boardId = 100L;
+        String url = String.format("/boards/%s/columns", boardId);
+
+        // given a list of columns
+        List<Column> columnsList = List.of(
+                Column.builder().id(1L).title("Column 1").build(),
+                Column.builder().id(2L).title("Column 2").build(),
+                Column.builder().id(3L).title("Column 3").build()
+        );
+
+        // given the request body
+        String requestBody = mapper.writeValueAsString(columnsList);
+
+        // when a POST request is made to create the list of columns
+        // then the response should be a 201 CREATED
+        mockMvc.perform(post(url)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(requestBody));
     }
 }
