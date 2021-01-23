@@ -22,7 +22,8 @@ public class ColumnController {
 
     @PostMapping("/column")
     @ResponseStatus(HttpStatus.CREATED)
-    public Column createColumn(@RequestBody Column column, @PathVariable("boardId") String id){
+    public Column createColumn(@RequestBody Column column,
+                               @PathVariable("boardId") String id){
         try{
             Long boardId = Long.parseLong(id);
             return columnService.createColumn(column, boardId);
@@ -33,8 +34,14 @@ public class ColumnController {
 
     @PostMapping("/columns")
     @ResponseStatus(HttpStatus.CREATED)
-    public List<Column> createColumns(@RequestBody List<Column> columns){
-        return columnService.createColumns(columns);
+    public List<Column> createColumns(@PathVariable("boardId") String id,
+                                      @RequestBody List<Column> columns){
+        try{
+            Long boardId = Long.parseLong(id);
+            return columnService.createColumns(boardId, columns);
+        }catch(NumberFormatException ex){
+            throw new InvalidIdException("Invalid board id");
+        }
     }
 
     @GetMapping("/columns/{columnId}")
