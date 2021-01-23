@@ -209,7 +209,7 @@ public class ColumnIT {
 
     @Test
     public void givenGetPaginatedListOfIssues_itShouldNotReturnIssuesBelongingToOtherColumns() {
-        // given distinct columns
+        // given two distinct columns
         Column targetedColumn, anotherColumn;
 
         targetedColumn = new Column();
@@ -253,7 +253,7 @@ public class ColumnIT {
         ResponseEntity<Issue[]> response =
                 restTemplate.exchange(url, HttpMethod.GET, httpEntity, Issue[].class);
 
-        // then expect the list of issues to belong to the targeted column only
+        // then expect the retrieved issues to belong to the targeted column only
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().length).isEqualTo(targetedColumnIssues.size());
         assertThat(response.getBody()).containsAll(targetedColumnIssues);
@@ -264,7 +264,6 @@ public class ColumnIT {
     public void teardown() {
         userRepository.deleteAll();
         issueRepository.deleteAll();
-        columnRepository.deleteAll();
         boardRepository.deleteAll();
     }
 }
