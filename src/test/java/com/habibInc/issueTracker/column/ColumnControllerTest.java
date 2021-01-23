@@ -180,7 +180,7 @@ public class ColumnControllerTest {
         );
 
         // given the column service returns the created list of columns
-        when(columnService.createColumns(columnsList)).thenReturn(columnsList);
+        when(columnService.createColumns(boardId, columnsList)).thenReturn(columnsList);
 
         // given the request body
         String requestBody = mapper.writeValueAsString(columnsList);
@@ -193,5 +193,28 @@ public class ColumnControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(requestBody));
+    }
+
+    @Test
+    public void givenCreateColumns_whenBoardIdIsInvalid_itShouldReturnInvalidIdError() throws Exception {
+        String url = String.format("/boards/%s/columns", "invalid_board_id");
+
+        // given a list of columns
+        List<Column> columnsList = List.of(
+                Column.builder().id(1L).title("Column 1").build(),
+                Column.builder().id(2L).title("Column 2").build(),
+                Column.builder().id(3L).title("Column 3").build()
+        );
+
+        // given the request body
+        String requestBody = mapper.writeValueAsString(columnsList);
+
+        // when the board id is invalid then a 400 error should be returned
+        mockMvc.perform(post(url)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorMessage")
+                        .value("Invalid board id"));
     }
 }
