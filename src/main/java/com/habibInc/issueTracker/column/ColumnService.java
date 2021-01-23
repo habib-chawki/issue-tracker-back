@@ -57,4 +57,8 @@ public class ColumnService {
         Pageable pageable = PageRequest.of(page, size);
         return issueRepository.findByColumnId(columnId, pageable);
     }
+
+    public List<Column> createColumns(List<Column> columns) {
+        return null;
+    }
 }
