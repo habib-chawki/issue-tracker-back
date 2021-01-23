@@ -136,7 +136,7 @@ public class ColumnIT {
     @Test
     public void itShouldGetColumnById() {
         // given the column is created
-        Column savedColumn = columnService.createColumn(column, board.getId());
+        Column savedColumn = columnService.createColumn(board.getId(), column);
 
         // given the url and request body
         String url = String.format("/boards/%s/columns/%s", board.getId(), column.getId());
@@ -155,7 +155,7 @@ public class ColumnIT {
     @Test
     public void givenGetColumnById_whenBoardIdIsIncorrect_itShouldReturnBoardNotFoundError() {
         // given the column is created
-        columnService.createColumn(column, board.getId());
+        columnService.createColumn(board.getId(), column);
 
         // given an incorrect board id
         String url = String.format("/boards/%s/columns/%s", 404L, column.getId());
@@ -173,7 +173,7 @@ public class ColumnIT {
     @Test
     public void itShouldGetPaginatedListOfIssues() {
         // given a created column
-        Column createdColumn = columnService.createColumn(column, board.getId());
+        Column createdColumn = columnService.createColumn(board.getId(), column);
 
         // given a list of issues
         List<Issue> issues = List.of(

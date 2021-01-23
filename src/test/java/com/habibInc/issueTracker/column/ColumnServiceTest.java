@@ -64,7 +64,7 @@ public class ColumnServiceTest {
         when(columnRepository.save(column)).thenReturn(column);
 
         // when the column is created
-        Column response = columnService.createColumn(column, board.getId());
+        Column response = columnService.createColumn(board.getId(), column);
 
         // then expect the response to be the created column with the board property set
         assertThat(response.getBoard()).isEqualTo(board);

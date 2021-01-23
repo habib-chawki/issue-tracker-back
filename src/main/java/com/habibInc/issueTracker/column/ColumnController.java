@@ -26,7 +26,7 @@ public class ColumnController {
                                @PathVariable("boardId") String id){
         try{
             Long boardId = Long.parseLong(id);
-            return columnService.createColumn(column, boardId);
+            return columnService.createColumn(boardId, column);
         }catch(NumberFormatException ex){
             throw new InvalidIdException("Invalid board id");
         }

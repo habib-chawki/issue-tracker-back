@@ -26,7 +26,7 @@ public class ColumnService {
         this.boardService = boardService;
     }
 
-    public Column createColumn(Column column, Long boardId) {
+    public Column createColumn(Long boardId, Column column) {
         // invoke board service to fetch the board by id (throws an exception)
         Board board = boardService.getBoardById(boardId);
 
@@ -35,6 +35,10 @@ public class ColumnService {
 
         // save the column
         return columnRepository.save(column);
+    }
+
+    public List<Column> createColumns(Long boardId, List<Column> columns) {
+        return null;
     }
 
     public Column getColumnById(Long boardId, Long columnId) {
@@ -56,9 +60,5 @@ public class ColumnService {
         // when both the column and board exist, fetch the paginated list of issues
         Pageable pageable = PageRequest.of(page, size);
         return issueRepository.findByColumnId(columnId, pageable);
-    }
-
-    public List<Column> createColumns(Long boardId, List<Column> columns) {
-        return null;
     }
 }

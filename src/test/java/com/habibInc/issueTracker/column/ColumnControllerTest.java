@@ -49,7 +49,7 @@ public class ColumnControllerTest {
         String url = String.format("/boards/%s/column", boardId);
 
         // when column service is invoked then return the created column
-        when(columnService.createColumn(any(Column.class), eq(boardId))).thenReturn(column);
+        when(columnService.createColumn(eq(boardId), any(Column.class))).thenReturn(column);
 
         // given the request body
         String requestBody = mapper.writeValueAsString(column);
