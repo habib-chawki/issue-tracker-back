@@ -34,7 +34,7 @@ public class ColumnController {
     @PostMapping("/columns")
     @ResponseStatus(HttpStatus.CREATED)
     public List<Column> createColumns(@RequestBody List<Column> columns){
-        return columns;
+        return columnService.createColumns(columns);
     }
 
     @GetMapping("/columns/{columnId}")
