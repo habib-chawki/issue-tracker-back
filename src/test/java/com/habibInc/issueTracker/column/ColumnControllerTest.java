@@ -179,6 +179,9 @@ public class ColumnControllerTest {
                 Column.builder().id(3L).title("Column 3").build()
         );
 
+        // given the column service returns the created list of columns
+        when(columnService.createColumns(columnsList)).thenReturn(columnsList);
+
         // given the request body
         String requestBody = mapper.writeValueAsString(columnsList);
 
