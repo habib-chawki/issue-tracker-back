@@ -45,7 +45,7 @@ public class ColumnControllerTest {
     @Test
     public void itShouldCreateColumn() throws Exception {
         Long boardId = 100L;
-        String url = String.format("/boards/%s/columns", boardId);
+        String url = String.format("/boards/%s/column", boardId);
 
         // when column service is invoked then return the created column
         when(columnService.createColumn(any(Column.class), eq(boardId))).thenReturn(column);
@@ -64,7 +64,7 @@ public class ColumnControllerTest {
 
     @Test
     public void givenCreateColumn_whenBoardIdIsInvalid_itShouldReturnInvalidIdError() throws Exception {
-        String url = String.format("/boards/%s/columns", "invalid_id");
+        String url = String.format("/boards/%s/column", "invalid_id");
 
         // given the request body
         String requestBody = mapper.writeValueAsString(column);

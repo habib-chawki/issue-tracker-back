@@ -20,7 +20,7 @@ public class ColumnController {
         this.columnService = columnService;
     }
 
-    @PostMapping({"/column"})
+    @PostMapping("/column")
     @ResponseStatus(HttpStatus.CREATED)
     public Column createColumn(@RequestBody Column column, @PathVariable("boardId") String id){
         try{
