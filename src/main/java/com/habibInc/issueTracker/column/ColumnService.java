@@ -58,7 +58,7 @@ public class ColumnService {
         return issueRepository.findByColumnId(columnId, pageable);
     }
 
-    public List<Column> createColumns(List<Column> columns) {
+    public List<Column> createColumns(Long boardId, List<Column> columns) {
         return null;
     }
 }
