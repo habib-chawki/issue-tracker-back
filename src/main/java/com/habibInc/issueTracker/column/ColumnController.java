@@ -31,6 +31,12 @@ public class ColumnController {
         }
     }
 
+    @PostMapping("/columns")
+    @ResponseStatus(HttpStatus.CREATED)
+    public List<Column> createColumns(@RequestBody List<Column> columns){
+        return columns;
+    }
+
     @GetMapping("/columns/{columnId}")
     @ResponseStatus(HttpStatus.OK)
     public Column getColumnById(@PathVariable String boardId, @PathVariable String columnId) {
