@@ -169,4 +169,22 @@ public class ColumnServiceTest {
         // then the response should be the list of saved columns
         assertThat(response).isEqualTo(columns);
     }
+
+    @Test
+    public void givenCreateColumns_whenBoardDoesNotExist_itShouldReturnBoardNotFoundError() {
+        // given a list of columns
+        List<Column> columns = List.of(
+                Column.builder().id(1L).title("column 1").board(board).build(),
+                Column.builder().id(2L).title("column 2").board(board).build(),
+                Column.builder().id(3L).title("column 3").board(board).build(),
+                Column.builder().id(4L).title("column 4").board(board).build()
+        );
+
+        when(boardService.getBoardById(404L))
+                .thenThrow(new ResourceNotFoundException("Board not found"));
+
+        assertThatExceptionOfType(ResourceNotFoundException.class)
+                .isThrownBy(() -> columnService.createColumns(404L, columns))
+                .withMessageContaining("Board not found");
+    }
 }
