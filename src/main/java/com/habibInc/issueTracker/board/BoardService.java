@@ -16,6 +16,7 @@ public class BoardService {
     }
 
     public Board createBoard(Board board, User owner){
+        board.setOwner(owner);
         return boardRepository.save(board);
     }
 
