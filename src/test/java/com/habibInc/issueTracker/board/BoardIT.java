@@ -92,7 +92,7 @@ public class BoardIT {
     @Test
     public void itShouldGetBoardById() {
         // given a board is created
-        Board createdBoard = boardService.createBoard(board);
+        Board createdBoard = boardService.createBoard(board, authenticatedUser);
 
         // given the request
         String url = "/boards/" + createdBoard.getId();
@@ -111,7 +111,7 @@ public class BoardIT {
     @Test
     public void givenGetBoardById_itShouldGetListOfColumns() {
         // given a board
-        Board createdBoard = boardService.createBoard(board);
+        Board createdBoard = boardService.createBoard(board, authenticatedUser);
 
         // given a list of columns
         List<Column> columns = List.of(

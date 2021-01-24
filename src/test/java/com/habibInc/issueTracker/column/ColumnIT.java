@@ -85,7 +85,7 @@ public class ColumnIT {
         board = new Board();
         board.setName("column_board");
 
-        board = boardService.createBoard(board);
+        board = boardService.createBoard(board, authenticatedUser);
 
         // set up a column
         column = new Column();

@@ -1,6 +1,7 @@
 package com.habibInc.issueTracker.board;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.habibInc.issueTracker.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,7 @@ public class BoardControllerTest {
     @Test
     public void itShouldCreateBoard() throws Exception {
         // given the board service
-        when(boardService.createBoard(any(Board.class))).thenReturn(board);
+        when(boardService.createBoard(any(Board.class), any(User.class))).thenReturn(board);
 
         // when a request to create a board is made
         String url = "/boards";
