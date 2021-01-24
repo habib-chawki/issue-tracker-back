@@ -87,6 +87,9 @@ public class BoardIT {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response).isEqualToComparingOnlyGivenFields(board);
         assertThat(response.getBody().getId()).isNotNull().isPositive();
+
+        // the authenticated user should be set as board owner
+        assertThat(response.getBody().getOwner()).isEqualTo(authenticatedUser);
     }
 
     @Test
@@ -138,7 +141,7 @@ public class BoardIT {
 
     @AfterEach
     public void teardown() {
-        userRepository.deleteAll();
         boardRepository.deleteAll();
+        userRepository.deleteAll();
     }
 }
