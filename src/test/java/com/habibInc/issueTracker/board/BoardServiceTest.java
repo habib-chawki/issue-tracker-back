@@ -1,6 +1,7 @@
 package com.habibInc.issueTracker.board;
 
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
+import com.habibInc.issueTracker.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -21,6 +22,7 @@ public class BoardServiceTest {
     BoardRepository boardRepository;
 
     Board board;
+    User owner;
 
     @BeforeEach
     public void init(){
@@ -33,6 +35,9 @@ public class BoardServiceTest {
 
         board.setId(1L);
         board.setName("Kanban");
+
+        // set board owner
+        owner = User.builder().id(100L).email("board@owner.me").password("0Wn3R").build();
     }
 
     @Test
@@ -41,10 +46,19 @@ public class BoardServiceTest {
         when(boardRepository.save(board)).thenReturn(board);
 
         // when "createBoard()" service method is invoked
-        Board createdBoard = boardService.createBoard(board);
+        Board createdBoard = boardService.createBoard(board, owner);
 
         // then the response should be the successfully created board
         assertThat(createdBoard).isEqualTo(board);
+    }
+
+    @Test
+    public void givenCreateBoard_itShouldSetBoardOwner() {
+        // when "createBoard()" is invoked
+        Board createdBoard = boardService.createBoard(board, owner);
+
+        // then the owner should be set
+        assertThat(createdBoard.getOwner()).isEqualTo(owner);
     }
 
     @Test
