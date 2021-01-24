@@ -24,4 +24,8 @@ public class BoardService {
         return boardRepository.findById(boardId)
                 .orElseThrow(() -> new ResourceNotFoundException("Board not found"));
     }
+
+    public void deleteBoardById(Long board) {
+
+    }
 }
