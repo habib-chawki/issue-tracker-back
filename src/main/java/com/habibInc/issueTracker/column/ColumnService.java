@@ -38,6 +38,9 @@ public class ColumnService {
     }
 
     public List<Column> createColumns(Long boardId, List<Column> columns) {
+        // fetch the board by id (throws not found exception)
+        Board board = boardService.getBoardById(boardId);
+
         return (List<Column>) columnRepository.saveAll(columns);
     }
 
