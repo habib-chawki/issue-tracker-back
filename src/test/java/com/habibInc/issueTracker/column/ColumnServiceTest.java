@@ -154,11 +154,14 @@ public class ColumnServiceTest {
     public void itShouldCreateColumnsList() {
         // given a list of columns
         List<Column> columns = List.of(
-                Column.builder().id(1L).title("column 1").board(board).build(),
-                Column.builder().id(2L).title("column 2").board(board).build(),
-                Column.builder().id(3L).title("column 3").board(board).build(),
-                Column.builder().id(4L).title("column 4").board(board).build()
+                Column.builder().id(1L).title("column 1").build(),
+                Column.builder().id(2L).title("column 2").build(),
+                Column.builder().id(3L).title("column 3").build(),
+                Column.builder().id(4L).title("column 4").build()
         );
+
+        // given the board is found by id
+        when(boardService.getBoardById(board.getId())).thenReturn(board);
 
         // given the column repository returns the list of saved columns
         when(columnRepository.saveAll(columns)).thenReturn(columns);
@@ -174,10 +177,10 @@ public class ColumnServiceTest {
     public void givenCreateColumns_whenBoardDoesNotExist_itShouldReturnBoardNotFoundError() {
         // given a list of columns
         List<Column> columns = List.of(
-                Column.builder().id(1L).title("column 1").board(board).build(),
-                Column.builder().id(2L).title("column 2").board(board).build(),
-                Column.builder().id(3L).title("column 3").board(board).build(),
-                Column.builder().id(4L).title("column 4").board(board).build()
+                Column.builder().id(1L).title("column 1").build(),
+                Column.builder().id(2L).title("column 2").build(),
+                Column.builder().id(3L).title("column 3").build(),
+                Column.builder().id(4L).title("column 4").build()
         );
 
         when(boardService.getBoardById(404L))
@@ -186,5 +189,25 @@ public class ColumnServiceTest {
         assertThatExceptionOfType(ResourceNotFoundException.class)
                 .isThrownBy(() -> columnService.createColumns(404L, columns))
                 .withMessageContaining("Board not found");
+    }
+
+    @Test
+    public void givenCrateColumns_itShouldSetBoardForEachColumn() {
+        // given a list of columns
+        List<Column> columns = List.of(
+                Column.builder().id(1L).title("column 1").build(),
+                Column.builder().id(2L).title("column 2").build(),
+                Column.builder().id(3L).title("column 3").build()
+        );
+
+        // given the board is found by id
+        when(boardService.getBoardById(board.getId())).thenReturn(board);
+
+        // when createColumns() is invoked
+        columnService.createColumns(board.getId(), columns);
+
+        // then expect the board to have been set for each column
+        columns.stream()
+                .forEach((column) -> assertThat(column.getBoard()).isEqualTo(board));
     }
 }
