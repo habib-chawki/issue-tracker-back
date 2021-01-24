@@ -42,7 +42,7 @@ public class BoardControllerTest {
     @Test
     public void itShouldCreateBoard() throws Exception {
         // given the board service
-        when(boardService.createBoard(any(Board.class), any(User.class))).thenReturn(board);
+        when(boardService.createBoard(eq(board), any())).thenReturn(board);
 
         // when a request to create a board is made
         String url = "/boards";
