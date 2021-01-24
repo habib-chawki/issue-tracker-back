@@ -294,6 +294,32 @@ public class ColumnIT {
         );
     }
 
+    @Test
+    public void givenCreateColumns_whenBoardDoesNotExist_itShouldReturnBoardNotFoundError() {
+        // given a list of columns
+        List<Column> columnsList = List.of(
+                Column.builder().title("Column 1").build(),
+                Column.builder().title("Column 2").build(),
+                Column.builder().title("Column 3").build(),
+                Column.builder().title("Column 4").build(),
+                Column.builder().title("Column 5").build()
+        );
+
+        // given an incorrect board id
+        String url = String.format("/boards/%s/columns", 404L);
+
+        // given the request
+        HttpEntity<List<Column>> httpEntity = new HttpEntity<>(columnsList, httpHeaders);
+
+        // when a POST request is made with an incorrect board id
+        ResponseEntity<ApiError> response =
+                restTemplate.exchange(url, HttpMethod.POST, httpEntity, ApiError.class);
+
+        // then expect a board not found error
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(response.getBody().getErrorMessage()).contains("Board not found");
+    }
+
     @AfterEach
     public void teardown() {
         userRepository.deleteAll();
