@@ -41,6 +41,9 @@ public class ColumnService {
         // fetch the board by id (throws not found exception)
         Board board = boardService.getBoardById(boardId);
 
+        // set the board for each column
+        columns.stream().forEach((column) -> column.setBoard(board));
+
         return (List<Column>) columnRepository.saveAll(columns);
     }
 
