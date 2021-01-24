@@ -3,6 +3,7 @@ package com.habibInc.issueTracker.board;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.habibInc.issueTracker.column.Column;
+import com.habibInc.issueTracker.user.User;
 import lombok.*;
 
 import javax.persistence.*;
@@ -28,6 +29,9 @@ public class Board {
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
     private List<Column> columns;
+
+    @OneToOne
+    private User owner;
 
     @Override
     public boolean equals(Object o) {
