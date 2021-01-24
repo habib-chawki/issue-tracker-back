@@ -152,6 +152,21 @@ public class ColumnServiceTest {
 
     @Test
     public void itShouldCreateColumnsList() {
-        Assertions.fail("");
+        // given a list of columns
+        List<Column> columns = List.of(
+                Column.builder().id(1L).title("column 1").board(board).build(),
+                Column.builder().id(2L).title("column 2").board(board).build(),
+                Column.builder().id(3L).title("column 3").board(board).build(),
+                Column.builder().id(4L).title("column 4").board(board).build()
+        );
+
+        // given the column repository returns the list of saved columns
+        when(columnRepository.saveAll(columns)).thenReturn(columns);
+
+        // when createColumns() is invoked
+        List<Column> response = columnService.createColumns(board.getId(), columns);
+
+        // then the response should be the list of saved columns
+        assertThat(response).isEqualTo(columns);
     }
 }
