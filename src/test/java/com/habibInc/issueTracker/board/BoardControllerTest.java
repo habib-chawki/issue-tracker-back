@@ -83,6 +83,8 @@ public class BoardControllerTest {
 
     @Test
     public void itShouldDeleteBoard() throws Exception {
+        doNothing().when(boardService).deleteBoardById(board.getId());
+
         // given the delete endpoint
         String url = "/boards/" + board.getId();
 
