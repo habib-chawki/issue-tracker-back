@@ -10,6 +10,7 @@ import com.habibInc.issueTracker.security.JwtUtil;
 import com.habibInc.issueTracker.user.User;
 import com.habibInc.issueTracker.user.UserRepository;
 import com.habibInc.issueTracker.user.UserService;
+import org.hibernate.annotations.Columns;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
@@ -241,7 +243,6 @@ public class ColumnIT {
         // given a GET request to fetch a paginated list of issues of the targeted column
         int page = 0;
         int size = 3;
-
         HttpEntity<List<Issue>> httpEntity = new HttpEntity<>(httpHeaders);
         String url = String.format(
                 "/boards/%s/columns/%s/issues?page=%s&size=%s",
@@ -261,7 +262,32 @@ public class ColumnIT {
 
     @Test
     public void itShouldCreateColumnsList() {
-        fail("");
+        // given a list of columns
+        List<Column> columnsList = List.of(
+                Column.builder().title("Column 1").build(),
+                Column.builder().title("Column 2").build(),
+                Column.builder().title("Column 3").build(),
+                Column.builder().title("Column 4").build(),
+                Column.builder().title("Column 5").build()
+        );
+
+        // given the url
+        String url = String.format("/boards/%s/columns", board.getId());
+
+        // given the request
+        HttpEntity<List<Column>> httpEntity = new HttpEntity<>(columnsList, httpHeaders);
+
+        // when a POST request to create a list of columns is made
+        ResponseEntity<Column[]> response =
+                restTemplate.exchange(url, HttpMethod.POST, httpEntity, Column[].class);
+
+        // expect the response to be the list of created columns
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        // expect the board to have been set for all columns
+        Arrays.asList(response.getBody()).stream().forEach(
+                (column) -> assertThat(column.getBoard()).isEqualTo(board)
+        );
     }
 
     @AfterEach
