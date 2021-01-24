@@ -55,10 +55,10 @@ public class BoardServiceTest {
     @Test
     public void givenCreateBoard_itShouldSetBoardOwner() {
         // when "createBoard()" is invoked
-        Board createdBoard = boardService.createBoard(board, owner);
+        boardService.createBoard(board, owner);
 
         // then the owner should be set
-        assertThat(createdBoard.getOwner()).isEqualTo(owner);
+        assertThat(board.getOwner()).isEqualTo(owner);
     }
 
     @Test
