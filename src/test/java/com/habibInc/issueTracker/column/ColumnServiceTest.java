@@ -192,7 +192,7 @@ public class ColumnServiceTest {
     }
 
     @Test
-    public void givenCrateColumns_itShouldSetBoardForEachColumn() {
+    public void givenCreateColumns_itShouldSetBoardForEachColumn() {
         // given a list of columns
         List<Column> columns = List.of(
                 Column.builder().id(1L).title("column 1").build(),
