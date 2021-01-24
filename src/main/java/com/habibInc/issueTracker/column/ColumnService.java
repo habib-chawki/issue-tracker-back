@@ -38,7 +38,7 @@ public class ColumnService {
     }
 
     public List<Column> createColumns(Long boardId, List<Column> columns) {
-        return null;
+        return (List<Column>) columnRepository.saveAll(columns);
     }
 
     public Column getColumnById(Long boardId, Long columnId) {
