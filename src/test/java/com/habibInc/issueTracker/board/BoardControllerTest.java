@@ -92,4 +92,15 @@ public class BoardControllerTest {
         mockMvc.perform(delete(url))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    public void givenDeleteBoard_whenBoardIdIsInvalid_itShouldReturnInvalidIdError() throws Exception {
+        // given an invalid board id
+        String url = "/boards/invalid_id";
+
+        // expect an invalid board id error
+        mockMvc.perform(delete(url))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorMessage").value("Invalid board id"));
+    }
 }
