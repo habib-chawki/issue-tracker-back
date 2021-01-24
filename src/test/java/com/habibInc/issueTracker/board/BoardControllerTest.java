@@ -12,8 +12,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(BoardController.class)
@@ -80,5 +79,15 @@ public class BoardControllerTest {
         mockMvc.perform(get(url))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errorMessage").value("Invalid board id"));
+    }
+
+    @Test
+    public void itShouldDeleteBoard() throws Exception {
+        // given the delete endpoint
+        String url = "/boards/" + board.getId();
+
+        // expect the board to have been deleted successfully
+        mockMvc.perform(delete(url))
+                .andExpect(status().isOk());
     }
 }
