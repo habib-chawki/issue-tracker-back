@@ -35,4 +35,10 @@ public class BoardController {
             throw new InvalidIdException("Invalid board id");
         }
     }
+
+    @DeleteMapping("/{boardId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteBoard() {
+
+    }
 }
