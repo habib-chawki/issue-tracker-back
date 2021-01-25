@@ -2,6 +2,7 @@ package com.habibInc.issueTracker.board;
 
 import com.habibInc.issueTracker.column.Column;
 import com.habibInc.issueTracker.column.ColumnRepository;
+import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.security.JwtUtil;
 import com.habibInc.issueTracker.user.User;
 import com.habibInc.issueTracker.user.UserRepository;
@@ -144,16 +145,6 @@ public class BoardIT {
         // given a board
         Board createdBoard = boardService.createBoard(board, authenticatedUser);
 
-        // given a list of columns
-        List<Column> columns = List.of(
-                Column.builder().title("column 1").board(board).build(),
-                Column.builder().title("column 2").board(board).build(),
-                Column.builder().title("column 3").board(board).build(),
-                Column.builder().title("column 4").board(board).build()
-        );
-
-        columns = (List<Column>) columnRepository.saveAll(columns);
-
         // given the request
         String url = "/boards/" + createdBoard.getId();
         HttpEntity<Board> httpEntity = new HttpEntity<>(httpHeaders);
@@ -164,6 +155,10 @@ public class BoardIT {
 
         // then the board should be deleted successfully
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        assertThatExceptionOfType(ResourceNotFoundException.class)
+                .isThrownBy(() -> boardService.getBoardById(createdBoard.getId()))
+                .withMessageContaining("Board not found");
     }
 
     @AfterEach
