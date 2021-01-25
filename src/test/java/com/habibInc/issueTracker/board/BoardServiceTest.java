@@ -1,5 +1,6 @@
 package com.habibInc.issueTracker.board;
 
+import com.habibInc.issueTracker.exceptionhandler.ForbiddenOperationException;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.user.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -90,7 +91,7 @@ public class BoardServiceTest {
         when(boardRepository.findById(board.getId())).thenReturn(Optional.of(board));
 
         // when delete board by id service method is invoked
-        boardService.deleteBoardById(board.getId());
+        boardService.deleteBoardById(board.getId(), owner);
 
         // then expect the board repository to have been invoked
         verify(boardRepository, times(1)).deleteById(board.getId());
@@ -101,7 +102,24 @@ public class BoardServiceTest {
         // when attempting to delete a board that does not exists
         // then a board not found error should be returned
         assertThatExceptionOfType(ResourceNotFoundException.class)
-                .isThrownBy(() -> boardService.deleteBoardById(404L))
+                .isThrownBy(() -> boardService.deleteBoardById(404L, owner))
                 .withMessageContaining("Board not found");
+    }
+
+    @Test
+    public void givenDeleteBoardById_whenAuthenticatedUserIsNotTheBoardOwner_itShouldReturnForbiddenOperationError() {
+        // given the board owner
+        board.setOwner(owner);
+
+        // given the board exists
+        when(boardRepository.findById(board.getId())).thenReturn(Optional.of(board));
+
+        // when the authenticated user is not the board owner
+        User notBoardOwner = User.builder().id(666L).email("not@owner.board").build();
+
+        // then expect a 403 forbidden operation error
+        assertThatExceptionOfType(ForbiddenOperationException.class)
+                .isThrownBy(() -> boardService.deleteBoardById(board.getId(), notBoardOwner))
+                .withMessageContaining("Forbidden");
     }
 }
