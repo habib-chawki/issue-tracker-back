@@ -139,6 +139,33 @@ public class BoardIT {
         assertThat(response.getBody().getColumns()).isEqualTo(columns);
     }
 
+    @Test
+    public void itShouldDeleteBoardById() {
+        // given a board
+        Board createdBoard = boardService.createBoard(board, authenticatedUser);
+
+        // given a list of columns
+        List<Column> columns = List.of(
+                Column.builder().title("column 1").board(board).build(),
+                Column.builder().title("column 2").board(board).build(),
+                Column.builder().title("column 3").board(board).build(),
+                Column.builder().title("column 4").board(board).build()
+        );
+
+        columns = (List<Column>) columnRepository.saveAll(columns);
+
+        // given the request
+        String url = "/boards/" + createdBoard.getId();
+        HttpEntity<Board> httpEntity = new HttpEntity<>(httpHeaders);
+
+        // when a DELETE request is made to delete the board by id
+        ResponseEntity<String> response =
+                restTemplate.exchange(url, HttpMethod.DELETE, httpEntity, String.class);
+
+        // then the board should be deleted successfully
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
     @AfterEach
     public void teardown() {
         boardRepository.deleteAll();
