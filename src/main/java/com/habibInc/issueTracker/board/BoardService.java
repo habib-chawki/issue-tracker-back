@@ -1,5 +1,6 @@
 package com.habibInc.issueTracker.board;
 
+import com.habibInc.issueTracker.exceptionhandler.ForbiddenOperationException;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +26,14 @@ public class BoardService {
                 .orElseThrow(() -> new ResourceNotFoundException("Board not found"));
     }
 
-    public void deleteBoardById(Long boardId) {
+    public void deleteBoardById(Long boardId, User authenticatedUser) {
         // find board by id (throws board not found exception)
         Board board = this.getBoardById(boardId);
+
+        // check whether the authenticated user is the board owner or not
+        if(!board.getOwner().equals(authenticatedUser)){
+            throw new ForbiddenOperationException("Forbidden operation");
+        }
 
         boardRepository.deleteById(boardId);
     }
