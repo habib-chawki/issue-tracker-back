@@ -2,6 +2,7 @@ package com.habibInc.issueTracker.board;
 
 import com.habibInc.issueTracker.column.Column;
 import com.habibInc.issueTracker.column.ColumnRepository;
+import com.habibInc.issueTracker.exceptionhandler.ApiError;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.security.JwtUtil;
 import com.habibInc.issueTracker.user.User;
@@ -191,6 +192,30 @@ public class BoardIT {
         // then expect the board's list of columns to have been deleted
         columns = columnRepository.findAll();
         assertThat(columns).isEmpty();
+    }
+
+    @Test
+    public void givenDeleteBoardById_whenAuthenticatedUserIsNotTheBoardOwner_itShouldReturnForbiddenOperationError() {
+        // given a random user
+        User notAuthenticatedUser = User.builder().email("not@authenticated.user").password("forbid").build();
+
+        // save the random user
+        notAuthenticatedUser = userService.createUser(notAuthenticatedUser);
+
+        // given a board that belongs to a user other than the authenticated user
+        board = boardService.createBoard(board, notAuthenticatedUser);
+
+        // given the DELETE request
+        String url = "/boards/" + board.getId();
+        HttpEntity<Board> httpEntity = new HttpEntity<>(httpHeaders);
+
+        // when the request is made to delete the board by id
+        ResponseEntity<ApiError> response =
+                restTemplate.exchange(url, HttpMethod.DELETE, httpEntity, ApiError.class);
+
+        // then expect a 403 forbidden operation error
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat(response.getBody().getErrorMessage()).contains("Forbidden operation");
     }
 
     @AfterEach
