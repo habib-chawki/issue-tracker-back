@@ -86,6 +86,9 @@ public class BoardServiceTest {
 
     @Test
     public void itShouldDeleteBoardById() {
+        // given the board exists
+        when(boardRepository.findById(board.getId())).thenReturn(Optional.of(board));
+
         // when delete board by id service method is invoked
         boardService.deleteBoardById(board.getId());
 
