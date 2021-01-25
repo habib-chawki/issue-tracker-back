@@ -25,7 +25,7 @@ public class BoardService {
                 .orElseThrow(() -> new ResourceNotFoundException("Board not found"));
     }
 
-    public void deleteBoardById(Long board) {
-
+    public void deleteBoardById(Long boardId) {
+        boardRepository.deleteById(boardId);
     }
 }
