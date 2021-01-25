@@ -90,6 +90,15 @@ public class BoardServiceTest {
         boardService.deleteBoardById(board.getId());
 
         // then expect the board repository to have been invoked
-        verify(boardRepository).deleteById(board.getId());
+        verify(boardRepository, times(1)).deleteById(board.getId());
+    }
+
+    @Test
+    public void givenDeleteBoardById_whenBoardDoesNotExist_itShouldReturnBoardNotFoundError() {
+        // when attempting to delete a board that does not exists
+        // then a board not found error should be returned
+        assertThatExceptionOfType(ResourceNotFoundException.class)
+                .isThrownBy(() -> boardService.deleteBoardById(404L))
+                .withMessageContaining("Board not found");
     }
 }
