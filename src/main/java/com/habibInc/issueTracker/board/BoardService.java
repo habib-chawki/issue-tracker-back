@@ -26,6 +26,9 @@ public class BoardService {
     }
 
     public void deleteBoardById(Long boardId) {
+        // find board by id (throws board not found exception)
+        Board board = getBoardById(boardId);
+
         boardRepository.deleteById(boardId);
     }
 }
