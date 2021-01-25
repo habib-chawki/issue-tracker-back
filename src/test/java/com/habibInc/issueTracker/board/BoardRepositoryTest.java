@@ -52,6 +52,24 @@ public class BoardRepositoryTest {
         assertThat(response.get()).isEqualTo(savedBoard);
     }
 
+    @Test
+    void itShouldDeleteBoardById() {
+        // given the board is saved
+        board = boardRepository.save(board);
+
+        // expect the board to have been saved successfully
+        Optional<Board> response = boardRepository.findById(board.getId());
+        assertThat(response.isPresent()).isTrue();
+        assertThat(response.get()).isEqualTo(board);
+
+        // when deleteById() is invoked
+        boardRepository.deleteById(board.getId());
+
+        // then expect the board to have been deleted successfully
+        response = boardRepository.findById(board.getId());
+        assertThat(response.isPresent()).isFalse();
+    }
+
     @AfterEach
     public void teardown() {
         boardRepository.deleteAll();
