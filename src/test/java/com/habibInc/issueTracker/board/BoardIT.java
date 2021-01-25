@@ -17,7 +17,8 @@ import org.springframework.http.*;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class BoardIT {
@@ -115,7 +116,7 @@ public class BoardIT {
     @Test
     public void givenGetBoardById_itShouldGetListOfColumns() {
         // given a board
-        Board createdBoard = boardService.createBoard(board, authenticatedUser);
+        board = boardService.createBoard(board, authenticatedUser);
 
         // given a list of columns
         List<Column> columns = List.of(
@@ -128,7 +129,7 @@ public class BoardIT {
         columns = (List<Column>) columnRepository.saveAll(columns);
 
         // given the request
-        String url = "/boards/" + createdBoard.getId();
+        String url = "/boards/" + board.getId();
         HttpEntity<Board> httpEntity = new HttpEntity<>(httpHeaders);
 
         // when a GET request is made to fetch the board by id
@@ -143,10 +144,10 @@ public class BoardIT {
     @Test
     public void itShouldDeleteBoardById() {
         // given a board
-        Board createdBoard = boardService.createBoard(board, authenticatedUser);
+        board = boardService.createBoard(board, authenticatedUser);
 
         // given the request
-        String url = "/boards/" + createdBoard.getId();
+        String url = "/boards/" + board.getId();
         HttpEntity<Board> httpEntity = new HttpEntity<>(httpHeaders);
 
         // when a DELETE request is made to delete the board by id
@@ -157,8 +158,39 @@ public class BoardIT {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         assertThatExceptionOfType(ResourceNotFoundException.class)
-                .isThrownBy(() -> boardService.getBoardById(createdBoard.getId()))
+                .isThrownBy(() -> boardService.getBoardById(board.getId()))
                 .withMessageContaining("Board not found");
+    }
+
+    @Test
+    public void whenBoardIsDeletedById_itShouldDeleteAllItsColumns() {
+        // given the board is created
+        board = boardService.createBoard(board, authenticatedUser);
+
+        // given a list of columns belonging to the board
+        columnRepository.saveAll(
+                List.of(
+                        Column.builder().title("column 1").board(board).build(),
+                        Column.builder().title("column 2").board(board).build(),
+                        Column.builder().title("column 3").board(board).build(),
+                        Column.builder().title("column 4").board(board).build()
+                )
+        );
+
+        // expect the columns to have been saved
+        Iterable<Column> columns = columnRepository.findAll();
+        assertThat(columns).isNotEmpty();
+
+        // given the DELETE request
+        String url = "/boards/" + board.getId();
+        HttpEntity<Board> httpEntity = new HttpEntity<>(httpHeaders);
+
+        // when the request is made to delete the board by id
+        restTemplate.exchange(url, HttpMethod.DELETE, httpEntity, String.class);
+
+        // then expect the board's list of columns to have been deleted
+        columns = columnRepository.findAll();
+        assertThat(columns).isEmpty();
     }
 
     @AfterEach
