@@ -12,7 +12,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class BoardServiceTest {
     @InjectMocks
@@ -82,5 +82,14 @@ public class BoardServiceTest {
         assertThatExceptionOfType(ResourceNotFoundException.class)
                 .isThrownBy(() -> boardService.getBoardById(404L))
                 .withMessageContaining("Board not found");
+    }
+
+    @Test
+    public void itShouldDeleteBoardById() {
+        // when delete board by id service method is invoked
+        boardService.deleteBoardById(board.getId());
+
+        // then expect the board repository to have been invoked
+        verify(boardRepository).deleteById(board.getId());
     }
 }
