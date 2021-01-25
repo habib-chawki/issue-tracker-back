@@ -16,8 +16,8 @@ public class BoardService {
         this.boardRepository = boardRepository;
     }
 
-    public Board createBoard(Board board, User owner){
-        board.setOwner(owner);
+    public Board createBoard(Board board, User authenticatedUser){
+        board.setOwner(authenticatedUser);
         return boardRepository.save(board);
     }
 
