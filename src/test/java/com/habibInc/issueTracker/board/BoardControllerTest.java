@@ -1,7 +1,6 @@
 package com.habibInc.issueTracker.board;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.habibInc.issueTracker.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,22 +84,17 @@ public class BoardControllerTest {
     public void itShouldDeleteBoard() throws Exception {
         doNothing().when(boardService).deleteBoardById(board.getId());
 
-        // given the delete endpoint
-        String url = "/boards/" + board.getId();
-
-        // expect the board to have been deleted successfully
-        mockMvc.perform(delete(url))
+        // when a DELETE request is made then expect the board to have been deleted successfully
+        mockMvc.perform(delete("/boards/" + board.getId()))
                 .andExpect(status().isOk());
     }
 
     @Test
     public void givenDeleteBoard_whenBoardIdIsInvalid_itShouldReturnInvalidIdError() throws Exception {
-        // given an invalid board id
-        String url = "/boards/invalid_id";
-
-        // expect an invalid board id error
-        mockMvc.perform(delete(url))
+        // when the board id is invalid then expect an invalid board id error
+        mockMvc.perform(delete("/boards/invalid_id"))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorMessage").value("Invalid board id"));
+                .andExpect(jsonPath("$.errorMessage")
+                        .value("Invalid board id"));
     }
 }
