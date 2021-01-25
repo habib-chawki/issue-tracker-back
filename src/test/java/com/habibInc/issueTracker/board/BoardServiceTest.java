@@ -87,6 +87,9 @@ public class BoardServiceTest {
 
     @Test
     public void itShouldDeleteBoardById() {
+        // given the board owner
+        board.setOwner(owner);
+
         // given the board exists
         when(boardRepository.findById(board.getId())).thenReturn(Optional.of(board));
 
