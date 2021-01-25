@@ -1,6 +1,7 @@
 package com.habibInc.issueTracker.board;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.habibInc.issueTracker.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,7 +83,7 @@ public class BoardControllerTest {
 
     @Test
     public void itShouldDeleteBoard() throws Exception {
-        doNothing().when(boardService).deleteBoardById(board.getId());
+        doNothing().when(boardService).deleteBoardById(eq(board.getId()), any(User.class));
 
         // when a DELETE request is made then expect the board to have been deleted successfully
         mockMvc.perform(delete("/boards/" + board.getId()))

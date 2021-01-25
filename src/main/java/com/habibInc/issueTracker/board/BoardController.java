@@ -38,10 +38,11 @@ public class BoardController {
 
     @DeleteMapping("/{boardId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteBoard(@PathVariable("boardId") String id) {
+    public void deleteBoard(@PathVariable("boardId") String id,
+                            @AuthenticationPrincipal User authenticatedUser) {
         try{
             Long boardId = Long.parseLong(id);
-            boardService.deleteBoardById(boardId);
+            boardService.deleteBoardById(boardId, authenticatedUser);
         }catch (NumberFormatException ex){
             throw new InvalidIdException("Invalid board id");
         }
