@@ -69,7 +69,10 @@ public class ColumnService {
     }
 
     public void deleteColumnById(Long boardId, Long columnId) {
-        // fetch column by id
+        // fetch column by id (throws board / column not found error)
         Column column = getColumnById(boardId, columnId);
+
+        // delete column by id
+        columnRepository.deleteById(column.getId());
     }
 }
