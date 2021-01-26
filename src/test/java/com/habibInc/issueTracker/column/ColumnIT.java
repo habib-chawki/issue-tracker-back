@@ -365,6 +365,8 @@ public class ColumnIT {
 
         // then expect the response to be the column with the updated title
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isEqualToComparingOnlyGivenFields(column);
+        assertThat(response.getBody().getTitle()).isEqualTo(newTitle);
     }
 
     @AfterEach
