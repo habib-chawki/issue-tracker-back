@@ -254,4 +254,19 @@ public class ColumnControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errorMessage").value("Invalid id"));
     }
+
+    @Test
+    public void itShouldUpdateColumnTitle() throws Exception {
+        Long boardId = 100L;
+        String url = String.format("/boards/%s/columns/%s", boardId, column.getId());
+
+        String requestBody = String.format("{%s: %s}", "title", "new column title");
+
+        String responseBody = mapper.writeValueAsString(column);
+
+        mockMvc.perform(patch(url)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isOk());
+    }
 }
