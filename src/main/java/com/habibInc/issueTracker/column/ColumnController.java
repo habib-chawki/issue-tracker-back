@@ -1,5 +1,7 @@
 package com.habibInc.issueTracker.column;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.exceptionhandler.InvalidIdException;
 import com.habibInc.issueTracker.issue.Issue;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/boards/{boardId}")
@@ -92,10 +95,13 @@ public class ColumnController {
 
     @PatchMapping(path = "/columns/{columnId}")
     @ResponseStatus(HttpStatus.OK)
-    public Column updateColumnTitle(@RequestBody String title,
+    public Column updateColumnTitle(@RequestBody String request,
                                     @PathVariable String boardId,
-                                    @PathVariable String columnId){
+                                    @PathVariable String columnId) throws JsonProcessingException {
         try{
+            Map<String, String> requestBody = new ObjectMapper().readValue(request, Map.class);
+            String title = requestBody.get("title");
+
             Long parsedBoardId = Long.parseLong(boardId);
             Long parsedColumnId = Long.parseLong(columnId);
 
