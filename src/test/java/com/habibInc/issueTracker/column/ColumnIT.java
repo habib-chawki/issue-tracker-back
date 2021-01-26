@@ -331,7 +331,7 @@ public class ColumnIT {
         String url = String.format("/boards/%s/columns/%s", board.getId(), column.getId());
 
         // given the request
-        HttpEntity<List<Column>> httpEntity = new HttpEntity<>(httpHeaders);
+        HttpEntity<Void> httpEntity = new HttpEntity<>(httpHeaders);
 
         // when a DELETE request is made
         ResponseEntity<Void> response =
@@ -339,6 +339,31 @@ public class ColumnIT {
 
         // then expect the column to have been deleted successfully
         assertThat(columnRepository.findById(column.getId()).isPresent()).isFalse();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    public void itShouldUpdateColumnTitle() {
+        // given a created column
+        column = columnService.createColumn(board.getId(), column);
+
+        // given the PATCH url endpoint
+        String url = String.format("/boards/%s/columns/%s", board.getId(), column.getId());
+
+        // given the updated title
+        String newTitle = "updated title";
+
+        // given the request body
+        String requestBody = String.format("{\"title\": \"updated title\"}");
+
+        // given the request
+        HttpEntity<String> httpEntity = new HttpEntity<>(requestBody, httpHeaders);
+
+        // when a PATCH request is made to update column title
+        ResponseEntity<Column> response =
+                restTemplate.exchange(url, HttpMethod.PATCH, httpEntity, Column.class);
+
+        // then expect the response to be the column with the updated title
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
