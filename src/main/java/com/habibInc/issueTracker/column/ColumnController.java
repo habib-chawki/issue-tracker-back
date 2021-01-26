@@ -86,4 +86,10 @@ public class ColumnController {
             throw new InvalidIdException("Invalid id");
         }
     }
+
+    @PatchMapping(path = "/columns/{columnId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void updateColumnTitle(@RequestBody String title){
+
+    }
 }
