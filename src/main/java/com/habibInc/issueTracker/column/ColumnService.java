@@ -61,11 +61,11 @@ public class ColumnService {
 
     public List<Issue> getPaginatedListOfIssues(Long boardId, Long columnId, int page, int size) {
         // fetch the column by id (throws either column or board not found exception)
-        getColumnById(boardId, columnId);
+        Column column = getColumnById(boardId, columnId);
 
         // when both the column and board exist, fetch the paginated list of issues
         Pageable pageable = PageRequest.of(page, size);
-        return issueRepository.findByColumnId(columnId, pageable);
+        return issueRepository.findByColumnId(column.getId(), pageable);
     }
 
     public void deleteColumnById(Long boardId, Long columnId) {
@@ -76,7 +76,14 @@ public class ColumnService {
         columnRepository.deleteById(column.getId());
     }
 
-    public Column updateTitle(String updatedTitle) {
-        return null;
+    public Column updateTitle(Long boardId, Long columnId, String updatedTitle) {
+        // fetch the column by id (handles column / board not found errors)
+        Column column = getColumnById(boardId, columnId);
+
+        // update the title
+        column.setTitle(updatedTitle);
+
+        // save and return
+        return columnRepository.save(column);
     }
 }
