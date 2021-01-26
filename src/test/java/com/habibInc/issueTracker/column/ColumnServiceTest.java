@@ -5,7 +5,6 @@ import com.habibInc.issueTracker.board.BoardService;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.issue.IssueRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -209,5 +208,20 @@ public class ColumnServiceTest {
         // then expect the board to have been set for each column
         columns.stream()
                 .forEach((column) -> assertThat(column.getBoard()).isEqualTo(board));
+    }
+
+    @Test
+    public void itShouldDeleteColumnById() {
+
+    }
+
+    @Test
+    public void givenDeleteColumnById_whenColumnDoesNotExist_itShouldReturnColumnNotFoundError() {
+
+    }
+
+    @Test
+    public void givenDeleteColumnById_whenBoardDoesNotExist_itShouldReturnBoardNotFoundError() {
+
     }
 }
