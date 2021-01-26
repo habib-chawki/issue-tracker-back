@@ -72,4 +72,10 @@ public class ColumnController {
             throw new InvalidIdException("Invalid id");
         }
     }
+
+    @DeleteMapping(path = "/columns/{columnId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteColumnById() {
+
+    }
 }
