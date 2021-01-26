@@ -89,7 +89,7 @@ public class ColumnController {
 
     @PatchMapping(path = "/columns/{columnId}")
     @ResponseStatus(HttpStatus.OK)
-    public void updateColumnTitle(@RequestBody String title){
-
+    public Column updateColumnTitle(@RequestBody String title){
+        return columnService.updateTitle(title);
     }
 }
