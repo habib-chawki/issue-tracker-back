@@ -67,4 +67,8 @@ public class ColumnService {
         Pageable pageable = PageRequest.of(page, size);
         return issueRepository.findByColumnId(columnId, pageable);
     }
+
+    public void deleteColumnById(Long id) {
+
+    }
 }
