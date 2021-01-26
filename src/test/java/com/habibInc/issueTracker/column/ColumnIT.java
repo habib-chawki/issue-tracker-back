@@ -319,6 +319,29 @@ public class ColumnIT {
         assertThat(response.getBody().getErrorMessage()).contains("Board not found");
     }
 
+    @Test
+    public void itShouldDeleteColumnById() {
+        // given a created column
+        column = columnService.createColumn(board.getId(), column);
+
+        // expect the column to have been saved
+        assertThat(columnRepository.findById(column.getId()).isPresent()).isTrue();
+
+        // given the DELETE url endpoint
+        String url = String.format("/boards/%s/columns/%s", board.getId(), column.getId());
+
+        // given the request
+        HttpEntity<List<Column>> httpEntity = new HttpEntity<>(httpHeaders);
+
+        // when a DELETE request is made
+        ResponseEntity<Void> response =
+                restTemplate.exchange(url, HttpMethod.DELETE, httpEntity, Void.class);
+
+        // then expect the column to have been deleted successfully
+        assertThat(columnRepository.findById(column.getId()).isPresent()).isFalse();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
     @AfterEach
     public void teardown() {
         issueRepository.deleteAll();
