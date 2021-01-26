@@ -226,5 +226,8 @@ public class ColumnControllerTest {
         // when a DELETE request is made then expect to get a 200 OK response
         mockMvc.perform(delete(url))
                 .andExpect(status().isOk());
+
+        // expect column service to have been invoked
+        verify(columnService, times(1)).deleteColumnById(column.getId());
     }
 }
