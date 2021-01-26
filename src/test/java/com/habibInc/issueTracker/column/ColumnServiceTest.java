@@ -275,6 +275,13 @@ public class ColumnServiceTest {
 
     @Test
     public void givenUpdateColumnTitle_whenBoardDoesNotExists_itShouldReturnBoardNotFoundError() {
+        // given the column does not exist
+        when(columnRepository.findById(column.getId())).thenReturn(Optional.of(column));
 
+        // expect a column not found error to be returned
+        assertThatExceptionOfType(ResourceNotFoundException.class)
+                .isThrownBy(() -> columnService.updateTitle(
+                        404L, column.getId(), "new title"))
+                .withMessageContaining("Board not found");
     }
 }
