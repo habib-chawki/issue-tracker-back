@@ -99,7 +99,7 @@ public class ColumnController {
             Long parsedBoardId = Long.parseLong(boardId);
             Long parsedColumnId = Long.parseLong(columnId);
 
-            return columnService.updateTitle(title);
+            return columnService.updateTitle(parsedBoardId, parsedColumnId, title);
         }catch(NumberFormatException ex){
             throw new InvalidIdException("Invalid id");
         }
