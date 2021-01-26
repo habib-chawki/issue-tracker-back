@@ -270,11 +270,35 @@ public class ColumnControllerTest {
         // given the request body
         String requestBody = String.format("{\"title\": \"%s\"}", updatedTitle);
 
-
         // when the PATCH request is made then the response should be the updated column
         mockMvc.perform(patch(url)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    public void givenUpdateColumnTitle_whenIdIsInvalid_itShouldReturnInvalidIdError() throws Exception {
+        String baseUrl = "/boards/%s/columns/%s";
+
+        // given the request body
+        String requestBody = String.format("{\"title\": \"updated title\"}");
+
+        // given an invalid column id
+        String url = String.format(baseUrl, 100L, "invalid_column_id");
+
+        // when a PATCH request is made with the invalid column id
+        mockMvc.perform(patch(url).content(requestBody))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorMessage").value("Invalid id"));
+
+        // given an invalid board id
+        url = String.format(baseUrl, "invalid_board_id", column.getId());
+
+        // when a PATCH request is made with the invalid board id
+        mockMvc.perform(get(url).content(requestBody))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorMessage").value("Invalid id"));
+    }
+
 }
