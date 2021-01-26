@@ -75,4 +75,8 @@ public class ColumnService {
         // delete column by id
         columnRepository.deleteById(column.getId());
     }
+
+    public Column updateTitle(String updatedTitle) {
+        return null;
+    }
 }
