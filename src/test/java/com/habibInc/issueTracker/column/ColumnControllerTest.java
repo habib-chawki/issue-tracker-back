@@ -219,15 +219,39 @@ public class ColumnControllerTest {
 
     @Test
     public void itShouldDeleteColumnById() throws Exception {
-        doNothing().when(columnService).deleteColumnById(column.getId());
+        // given the board id
+        Long boardId = 100L;
 
-        String url = String.format("/boards/%s/columns/%s", 100L, column.getId());
+        doNothing().when(columnService).deleteColumnById(boardId, column.getId());
+
+        String url = String.format("/boards/%s/columns/%s", boardId, column.getId());
 
         // when a DELETE request is made then expect to get a 200 OK response
         mockMvc.perform(delete(url))
                 .andExpect(status().isOk());
 
         // expect column service to have been invoked
-        verify(columnService, times(1)).deleteColumnById(column.getId());
+        verify(columnService, times(1)).deleteColumnById(boardId, column.getId());
+    }
+
+    @Test
+    public void givenDeleteColumnById_whenIdIsInvalid_itShouldReturnInvalidIdError() throws Exception {
+        String baseUrl = "/boards/%s/columns/%s";
+
+        // given an invalid column id
+        String url = String.format(baseUrl, 100L, "invalid_column_id");
+
+        // when a DELETE request is made with the invalid column id
+        mockMvc.perform(delete(url))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorMessage").value("Invalid id"));
+
+        // given an invalid board id
+        url = String.format(baseUrl, "invalid_board_id", column.getId());
+
+        // when a DELETE request is made with the invalid board id
+        mockMvc.perform(get(url))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorMessage").value("Invalid id"));
     }
 }
