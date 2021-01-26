@@ -68,7 +68,7 @@ public class ColumnService {
         return issueRepository.findByColumnId(columnId, pageable);
     }
 
-    public void deleteColumnById(Long id) {
+    public void deleteColumnById(Long boardId, Long columnId) {
 
     }
 }

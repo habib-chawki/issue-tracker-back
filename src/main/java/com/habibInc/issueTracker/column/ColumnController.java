@@ -75,7 +75,15 @@ public class ColumnController {
 
     @DeleteMapping(path = "/columns/{columnId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteColumnById() {
+    public void deleteColumnById(@PathVariable String boardId,
+                                 @PathVariable String columnId) {
+        try{
+            Long parsedBoardId = Long.parseLong(boardId);
+            Long parsedColumnId = Long.parseLong(columnId);
 
+            columnService.deleteColumnById(parsedBoardId, parsedColumnId);
+        }catch(NumberFormatException ex){
+            throw new InvalidIdException("Invalid id");
+        }
     }
 }
