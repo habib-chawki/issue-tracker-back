@@ -243,4 +243,21 @@ public class ColumnServiceTest {
                 .isThrownBy(() -> columnService.deleteColumnById(404L, column.getId()))
                 .withMessageContaining("Board not found");
     }
+
+    @Test
+    public void itShouldUpdateColumnTitle() {
+        // given the new column title
+        String newTitle = "update column title";
+
+        // given the column repository response
+        when(columnRepository.findById(column.getId())).thenReturn(Optional.of(column));
+        when(columnRepository.save(column)).thenReturn(column);
+
+        // when updateTitle() is called
+        Column response =
+                columnService.updateTitle(this.column.getBoard().getId(), this.column.getId(), newTitle);
+
+        // then the response should be the column with the updated title
+        assertThat(response.getTitle()).isEqualTo(newTitle);
+    }
 }
