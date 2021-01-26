@@ -228,6 +228,12 @@ public class ColumnServiceTest {
 
     @Test
     public void givenDeleteColumnById_whenBoardDoesNotExist_itShouldReturnBoardNotFoundError() {
+        // given the column exists
+        when(columnRepository.findById(column.getId())).thenReturn(Optional.of(column));
 
+        // given the board does not exist
+        assertThatExceptionOfType(ResourceNotFoundException.class)
+                .isThrownBy(() -> columnService.deleteColumnById(404L, column.getId()))
+                .withMessageContaining("Board not found");
     }
 }
