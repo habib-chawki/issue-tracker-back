@@ -68,4 +68,19 @@ public class ColumnRepositoryTest {
                 (column) -> assertThat(column.getId()).isNotNull().isPositive()
         );
     }
+
+    @Test
+    public void itShouldDeleteColumnById() {
+        // given the column
+        column = columnRepository.save(column);
+
+        // expect the column to have been saved
+        assertThat(columnRepository.findById(column.getId()).isPresent()).isTrue();
+
+        // when deleteById() is invoked
+        columnRepository.deleteById(column.getId());
+
+        // then expect the column to have been deleted successfully
+        assertThat(columnRepository.findById(column.getId()).isPresent()).isFalse();
+    }
 }
