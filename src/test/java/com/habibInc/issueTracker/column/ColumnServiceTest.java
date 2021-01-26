@@ -212,7 +212,14 @@ public class ColumnServiceTest {
 
     @Test
     public void itShouldDeleteColumnById() {
+        // given the column exists
+        when(columnRepository.findById(column.getId())).thenReturn(Optional.of(column));
 
+        // when deleteColumnById() is called
+        columnService.deleteColumnById(column.getBoard().getId(), column.getId());
+
+        // then expect column repository to have been invoked
+        verify(columnRepository, times(1)).deleteById(column.getId());
     }
 
     @Test
