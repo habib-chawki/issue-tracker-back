@@ -222,14 +222,13 @@ public class CommentIT {
         String baseUrl = String.format("/issues/%s/comments/%s", issue.getId(), comment.getId());
 
         // when a request to update the comment is made
-        ResponseEntity<Object> response =
-                restTemplate.exchange(baseUrl, HttpMethod.PATCH, httpEntity, Object.class);
+        ResponseEntity<Comment> response =
+                restTemplate.exchange(baseUrl, HttpMethod.PATCH, httpEntity, Comment.class);
 
         // then the comment content should be updated
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-
-        Comment updatedComment = commentService.getCommentById(comment.getId());
-        assertThat(updatedComment.getContent()).isEqualTo(content);
+        assertThat(response.getBody().getContent()).isEqualTo(content);
+        assertThat(response).isEqualToComparingOnlyGivenFields(comment);
     }
 
     @Test
