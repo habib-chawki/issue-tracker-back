@@ -16,8 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(ColumnController.class)
@@ -216,5 +215,16 @@ public class ColumnControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errorMessage")
                         .value("Invalid board id"));
+    }
+
+    @Test
+    public void itShouldDeleteColumnById() throws Exception {
+        doNothing().when(columnService).deleteColumnById(column.getId());
+
+        String url = String.format("/boards/%s/columns/%s", 100L, column.getId());
+
+        // when a DELETE request is made then expect to get a 200 OK response
+        mockMvc.perform(delete(url))
+                .andExpect(status().isOk());
     }
 }
