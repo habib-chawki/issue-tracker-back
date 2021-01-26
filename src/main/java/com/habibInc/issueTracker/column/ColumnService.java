@@ -69,6 +69,7 @@ public class ColumnService {
     }
 
     public void deleteColumnById(Long boardId, Long columnId) {
-
+        // fetch column by id
+        Column column = getColumnById(boardId, columnId);
     }
 }
