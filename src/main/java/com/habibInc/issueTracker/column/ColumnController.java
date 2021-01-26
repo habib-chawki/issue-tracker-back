@@ -27,6 +27,7 @@ public class ColumnController {
                                ){
         try{
             Long boardId = Long.parseLong(id);
+
             return columnService.createColumn(boardId, column);
         }catch(NumberFormatException ex){
             throw new InvalidIdException("Invalid board id");
@@ -39,6 +40,7 @@ public class ColumnController {
                                       @RequestBody List<Column> columns){
         try{
             Long boardId = Long.parseLong(id);
+
             return columnService.createColumns(boardId, columns);
         }catch(NumberFormatException ex){
             throw new InvalidIdException("Invalid board id");
@@ -51,6 +53,7 @@ public class ColumnController {
         try {
             Long parsedBoardId = Long.parseLong(boardId);
             Long parsedColumnId = Long.parseLong(columnId);
+
             return columnService.getColumnById(parsedBoardId, parsedColumnId);
         }catch(NumberFormatException ex){
             throw new InvalidIdException("Invalid id");
@@ -89,7 +92,16 @@ public class ColumnController {
 
     @PatchMapping(path = "/columns/{columnId}")
     @ResponseStatus(HttpStatus.OK)
-    public Column updateColumnTitle(@RequestBody String title){
-        return columnService.updateTitle(title);
+    public Column updateColumnTitle(@RequestBody String title,
+                                    @PathVariable String boardId,
+                                    @PathVariable String columnId){
+        try{
+            Long parsedBoardId = Long.parseLong(boardId);
+            Long parsedColumnId = Long.parseLong(columnId);
+
+            return columnService.updateTitle(title);
+        }catch(NumberFormatException ex){
+            throw new InvalidIdException("Invalid id");
+        }
     }
 }
