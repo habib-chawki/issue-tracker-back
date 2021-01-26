@@ -260,4 +260,21 @@ public class ColumnServiceTest {
         // then the response should be the column with the updated title
         assertThat(response.getTitle()).isEqualTo(newTitle);
     }
+
+    @Test
+    public void givenUpdateColumnTitle_whenColumnDoesNotExist_itShouldReturnColumnNotFoundError() {
+        // given the column does not exist
+        when(columnRepository.findById(column.getId())).thenReturn(Optional.ofNullable(null));
+
+        // expect a column not found error to be returned
+        assertThatExceptionOfType(ResourceNotFoundException.class)
+                .isThrownBy(() -> columnService.updateTitle(
+                                column.getBoard().getId(), column.getId(), "new title"))
+                .withMessageContaining("Column not found");
+    }
+
+    @Test
+    public void givenUpdateColumnTitle_whenBoardDoesNotExists_itShouldReturnBoardNotFoundError() {
+
+    }
 }
