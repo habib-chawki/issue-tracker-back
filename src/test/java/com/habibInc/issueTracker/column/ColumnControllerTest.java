@@ -257,13 +257,21 @@ public class ColumnControllerTest {
 
     @Test
     public void itShouldUpdateColumnTitle() throws Exception {
+        // given the PATCH endpoint url
         Long boardId = 100L;
         String url = String.format("/boards/%s/columns/%s", boardId, column.getId());
 
-        String requestBody = String.format("{%s: %s}", "title", "new column title");
+        // given the updated column title
+        String updatedTitle = "new column title";
 
-        String responseBody = mapper.writeValueAsString(column);
+        // given the column service response
+        when(columnService.updateTitle(updatedTitle)).thenReturn(column);
 
+        // given the request body
+        String requestBody = String.format("{\"title\": \"%s\"}", updatedTitle);
+
+
+        // when the PATCH request is made then the response should be the updated column
         mockMvc.perform(patch(url)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))
