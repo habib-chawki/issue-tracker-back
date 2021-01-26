@@ -55,7 +55,7 @@ public class CommentController {
 
     @PatchMapping("/{commentId}")
     @ResponseStatus(HttpStatus.OK)
-    public void updateComment(@PathVariable String commentId,
+    public Comment updateComment(@PathVariable String commentId,
                               @PathVariable String issueId,
                               @RequestBody String content,
                               @AuthenticationPrincipal User authenticatedUser) throws JsonProcessingException {
@@ -67,7 +67,7 @@ public class CommentController {
             // verify ids and update comment
             Long parsedCommentId = Long.parseLong(commentId);
             Long parsedIssueId = Long.parseLong(issueId);
-            commentService.updateComment(parsedCommentId, parsedIssueId, commentContent, authenticatedUser);
+            return commentService.updateComment(parsedCommentId, parsedIssueId, commentContent, authenticatedUser);
         }catch(NumberFormatException ex){
             throw new InvalidIdException("Invalid id");
         }
