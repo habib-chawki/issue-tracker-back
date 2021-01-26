@@ -185,11 +185,14 @@ public class IssueServiceTest {
 
     @Test
     public void itShouldDeleteIssue() {
-        doNothing().when(issueRepository).deleteById(1L);
+        // given the issue exists
+        when(issueRepository.findById(issue1.getId())).thenReturn(Optional.of(issue1));
 
-        when(issueRepository.findById(1L)).thenReturn(Optional.of(issue1));
+        // when deleteIssue() is called
+        issueService.deleteIssue(issue1.getId(), authenticatedUser);
 
-        issueService.deleteIssue(1L, authenticatedUser);
+        // then expect the issue repository to have been invoked
+        verify(issueRepository).deleteById(issue1.getId());
     }
 
     @Test
