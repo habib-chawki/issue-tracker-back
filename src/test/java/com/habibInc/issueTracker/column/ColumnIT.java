@@ -345,7 +345,7 @@ public class ColumnIT {
 
     @Test
     public void givenDeleteColumnById_whenAuthenticatedUserIsNotTheBoardOwner_itShouldReturnForbiddenOperationError() {
-        // given a random user set as board owner
+        // given a random user
         User randomUser = User.builder().id(666L).email("not.authenticated@user.random").password("!authenticated").build();
         randomUser = userService.createUser(randomUser);
 
@@ -383,7 +383,7 @@ public class ColumnIT {
         String newTitle = "updated title";
 
         // given the request body
-        String requestBody = String.format("{\"title\": \"updated title\"}");
+        String requestBody = String.format("{\"title\": \""+newTitle+"\"}");
 
         // given the request
         HttpEntity<String> httpEntity = new HttpEntity<>(requestBody, httpHeaders);
@@ -396,6 +396,37 @@ public class ColumnIT {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualToComparingOnlyGivenFields(column);
         assertThat(response.getBody().getTitle()).isEqualTo(newTitle);
+    }
+
+    @Test
+    public void givenUpdateColumnTitle_whenAuthenticatedUserIsNotTheBoardOwner_itShouldReturnForbiddenOperationError() {
+        // given a random user
+        User randomUser = User.builder().id(666L).email("not.authenticated@user.random").password("!authenticated").build();
+        randomUser = userService.createUser(randomUser);
+
+        // given the random user set as board owner
+        board.setOwner(randomUser);
+        board = boardRepository.save(board);
+
+        // given a created column
+        column = columnService.createColumn(board.getId(), column);
+
+        // given the PATCH url endpoint
+        String url = String.format("/boards/%s/columns/%s", board.getId(), column.getId());
+
+        // given the request body
+        String requestBody = String.format("{\"title\": \" new updated title \"}");
+
+        // given the request
+        HttpEntity<String> httpEntity = new HttpEntity<>(requestBody, httpHeaders);
+
+        // when a PATCH request is made and the authenticated user is not the board owner
+        ResponseEntity<ApiError> response =
+                restTemplate.exchange(url, HttpMethod.PATCH, httpEntity, ApiError.class);
+
+        // then expect a 403 forbidden operation error
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat(response.getBody().getErrorMessage()).contains("Forbidden");
     }
 
     @AfterEach
