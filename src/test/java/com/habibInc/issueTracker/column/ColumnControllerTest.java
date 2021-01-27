@@ -223,7 +223,7 @@ public class ColumnControllerTest {
         // given the board id
         Long boardId = 100L;
 
-        doNothing().when(columnService).deleteColumnById(eq(boardId), eq(column.getId()), any(User.class));
+        doNothing().when(columnService).deleteColumnById(eq(boardId), eq(column.getId()), any());
 
         String url = String.format("/boards/%s/columns/%s", boardId, column.getId());
 
@@ -232,7 +232,7 @@ public class ColumnControllerTest {
                 .andExpect(status().isOk());
 
         // expect column service to have been invoked
-        verify(columnService, times(1)).deleteColumnById(eq(boardId), eq(column.getId()), any(User.class));
+        verify(columnService, times(1)).deleteColumnById(eq(boardId), eq(column.getId()), any());
     }
 
     @Test

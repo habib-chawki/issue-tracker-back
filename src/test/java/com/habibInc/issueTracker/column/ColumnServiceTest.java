@@ -233,7 +233,7 @@ public class ColumnServiceTest {
     }
 
     @Test
-    public void givenDeleteColumnById_whenAuthenticatedUserIsNotBoardOwner_itShouldReturnForbiddenOperationError() {
+    public void givenDeleteColumnById_whenAuthenticatedUserIsNotTheBoardOwner_itShouldReturnForbiddenOperationError() {
         // given a random user
         User notOwner = User.builder().id(666L).email("not@column.owner").password("!owner").build();
 
