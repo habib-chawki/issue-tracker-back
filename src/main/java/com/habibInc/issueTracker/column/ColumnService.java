@@ -5,6 +5,7 @@ import com.habibInc.issueTracker.board.BoardService;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.issue.IssueRepository;
+import com.habibInc.issueTracker.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,7 +27,7 @@ public class ColumnService {
         this.boardService = boardService;
     }
 
-    public Column createColumn(Long boardId, Column column) {
+    public Column createColumn(Long boardId, Column column, User authenticatedUser) {
         // invoke board service to fetch the board by id (throws an exception)
         Board board = boardService.getBoardById(boardId);
 
