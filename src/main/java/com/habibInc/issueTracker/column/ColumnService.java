@@ -2,6 +2,7 @@ package com.habibInc.issueTracker.column;
 
 import com.habibInc.issueTracker.board.Board;
 import com.habibInc.issueTracker.board.BoardService;
+import com.habibInc.issueTracker.exceptionhandler.ForbiddenOperationException;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.issue.IssueRepository;
@@ -27,7 +28,7 @@ public class ColumnService {
         this.boardService = boardService;
     }
 
-    public Column createColumn(Long boardId, Column column, User authenticatedUser) {
+    public Column createColumn(Long boardId, Column column) {
         // invoke board service to fetch the board by id (throws an exception)
         Board board = boardService.getBoardById(boardId);
 
@@ -69,9 +70,13 @@ public class ColumnService {
         return issueRepository.findByColumnId(column.getId(), pageable);
     }
 
-    public void deleteColumnById(Long boardId, Long columnId) {
+    public void deleteColumnById(Long boardId, Long columnId, User authenticatedUser) {
         // fetch column by id (throws board / column not found error)
         Column column = getColumnById(boardId, columnId);
+
+        // check whether authenticated user is allowed to delete column
+        if(!column.getBoard().getOwner().equals(authenticatedUser))
+            throw new ForbiddenOperationException("Forbidden operation");
 
         // delete column by id
         columnRepository.deleteById(column.getId());
