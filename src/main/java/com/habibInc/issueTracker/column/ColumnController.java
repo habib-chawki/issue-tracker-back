@@ -28,13 +28,12 @@ public class ColumnController {
     @PostMapping("/column")
     @ResponseStatus(HttpStatus.CREATED)
     public Column createColumn(@PathVariable("boardId") String id,
-                               @RequestBody Column column,
-                               @AuthenticationPrincipal User authenticatedUser
+                               @RequestBody Column column
                                ){
         try{
             Long boardId = Long.parseLong(id);
 
-            return columnService.createColumn(boardId, column, authenticatedUser);
+            return columnService.createColumn(boardId, column);
         }catch(NumberFormatException ex){
             throw new InvalidIdException("Invalid board id");
         }
@@ -85,12 +84,13 @@ public class ColumnController {
     @DeleteMapping(path = "/columns/{columnId}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteColumnById(@PathVariable String boardId,
-                                 @PathVariable String columnId) {
+                                 @PathVariable String columnId,
+                                 @AuthenticationPrincipal User authenticatedUser) {
         try{
             Long parsedBoardId = Long.parseLong(boardId);
             Long parsedColumnId = Long.parseLong(columnId);
 
-            columnService.deleteColumnById(parsedBoardId, parsedColumnId);
+            columnService.deleteColumnById(parsedBoardId, parsedColumnId, authenticatedUser);
         }catch(NumberFormatException ex){
             throw new InvalidIdException("Invalid id");
         }
