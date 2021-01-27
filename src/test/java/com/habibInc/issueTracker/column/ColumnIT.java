@@ -80,10 +80,11 @@ public class ColumnIT {
 
     @BeforeEach
     public void setup(){
-        // create and save a board
+        // set up a board
         board = new Board();
         board.setName("column_board");
 
+        // save the board with the authenticated user set as owner
         board = boardService.createBoard(board, authenticatedUser);
 
         // set up a column
@@ -340,6 +341,33 @@ public class ColumnIT {
         // then expect the column to have been deleted successfully
         assertThat(columnRepository.findById(column.getId()).isPresent()).isFalse();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    public void givenDeleteColumnById_whenAuthenticatedUserIsNotTheBoardOwner_itShouldReturnForbiddenOperationError() {
+        // given a random user set as board owner
+        User randomUser = User.builder().id(666L).email("not.authenticated@user.random").password("!authenticated").build();
+        randomUser = userService.createUser(randomUser);
+
+        // given the random user set as board owner
+        board.setOwner(randomUser);
+        board = boardRepository.save(board);
+
+        // given a created column
+        column = columnService.createColumn(board.getId(), column);
+
+        // given the DELETE url endpoint
+        String url = String.format("/boards/%s/columns/%s", board.getId(), column.getId());
+
+        // given the request
+        HttpEntity<Void> httpEntity = new HttpEntity<>(httpHeaders);
+
+        // when the board owner is not the authenticated user and a DELETE request is made
+        ResponseEntity<ApiError> response =
+                restTemplate.exchange(url, HttpMethod.DELETE, httpEntity, ApiError.class);
+
+        // then expect a 403 forbidden operation error
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     }
 
     @Test
