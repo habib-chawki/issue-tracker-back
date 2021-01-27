@@ -5,6 +5,7 @@ import com.habibInc.issueTracker.board.BoardService;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.issue.IssueRepository;
+import com.habibInc.issueTracker.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -35,6 +36,7 @@ public class ColumnServiceTest {
 
     Column column;
     Board board;
+    User boardOwner;
 
     @BeforeEach
     public void init() {
@@ -43,10 +45,17 @@ public class ColumnServiceTest {
 
     @BeforeEach
     public void setup() {
+        // set a board owner
+        boardOwner = new User();
+        boardOwner.setId(200L);
+        boardOwner.setEmail("board@owner.me");
+        boardOwner.setPassword("mYb0@Rd");
+
         // set up a board
         board = new Board();
         board.setId(100L);
         board.setName("column_board");
+        board.setOwner(boardOwner);
 
         // set up a column
         column = new Column();
@@ -63,7 +72,7 @@ public class ColumnServiceTest {
         when(columnRepository.save(column)).thenReturn(column);
 
         // when the column is created
-        Column response = columnService.createColumn(board.getId(), column);
+        Column response = columnService.createColumn(board.getId(), column, boardOwner);
 
         // then expect the response to be the created column with the board property set
         assertThat(response.getBoard()).isEqualTo(board);
