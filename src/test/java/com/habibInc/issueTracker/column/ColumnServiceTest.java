@@ -2,6 +2,7 @@ package com.habibInc.issueTracker.column;
 
 import com.habibInc.issueTracker.board.Board;
 import com.habibInc.issueTracker.board.BoardService;
+import com.habibInc.issueTracker.exceptionhandler.ForbiddenOperationException;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.issue.IssueRepository;
@@ -72,7 +73,7 @@ public class ColumnServiceTest {
         when(columnRepository.save(column)).thenReturn(column);
 
         // when the column is created
-        Column response = columnService.createColumn(board.getId(), column, boardOwner);
+        Column response = columnService.createColumn(board.getId(), column);
 
         // then expect the response to be the created column with the board property set
         assertThat(response.getBoard()).isEqualTo(board);
@@ -225,10 +226,26 @@ public class ColumnServiceTest {
         when(columnRepository.findById(column.getId())).thenReturn(Optional.of(column));
 
         // when deleteColumnById() is called
-        columnService.deleteColumnById(column.getBoard().getId(), column.getId());
+        columnService.deleteColumnById(column.getBoard().getId(), column.getId(), boardOwner);
 
         // then expect column repository to have been invoked
         verify(columnRepository, times(1)).deleteById(column.getId());
+    }
+
+    @Test
+    public void givenDeleteColumnById_whenAuthenticatedUserIsNotBoardOwner_itShouldReturnForbiddenOperationError() {
+        // given a random user
+        User notOwner = User.builder().id(666L).email("not@column.owner").password("!owner").build();
+
+        when(columnRepository.findById(column.getId())).thenReturn(Optional.of(column));
+        doNothing().when(columnRepository).deleteById(column.getId());
+
+        // when deleteColumnById() is called and the authenticated user is not the board owner
+        // then expect a forbidden operation error
+        assertThatExceptionOfType(ForbiddenOperationException.class)
+                .isThrownBy(
+                        () -> columnService.deleteColumnById(column.getBoard().getId(), column.getId(), notOwner)
+                ).withMessageContaining("Forbidden operation");
     }
 
     @Test
@@ -238,7 +255,7 @@ public class ColumnServiceTest {
 
         // expect a column not found error to be returned
         assertThatExceptionOfType(ResourceNotFoundException.class)
-                .isThrownBy(() -> columnService.deleteColumnById(column.getBoard().getId(), column.getId()))
+                .isThrownBy(() -> columnService.deleteColumnById(column.getBoard().getId(), column.getId(), boardOwner))
                 .withMessageContaining("Column not found");
     }
 
@@ -249,7 +266,7 @@ public class ColumnServiceTest {
 
         // given the board does not exist
         assertThatExceptionOfType(ResourceNotFoundException.class)
-                .isThrownBy(() -> columnService.deleteColumnById(404L, column.getId()))
+                .isThrownBy(() -> columnService.deleteColumnById(404L, column.getId(), boardOwner))
                 .withMessageContaining("Board not found");
     }
 
