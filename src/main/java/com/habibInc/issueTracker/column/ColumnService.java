@@ -82,9 +82,13 @@ public class ColumnService {
         columnRepository.deleteById(column.getId());
     }
 
-    public Column updateTitle(Long boardId, Long columnId, String updatedTitle) {
+    public Column updateTitle(Long boardId, Long columnId, String updatedTitle, User authenticatedUser) {
         // fetch the column by id (handles column / board not found errors)
         Column column = getColumnById(boardId, columnId);
+
+        // check whether authenticated user is the board owner and allowed to delete column
+        if(!column.getBoard().getOwner().equals(authenticatedUser))
+            throw new ForbiddenOperationException("Forbidden operation");
 
         // update the title
         column.setTitle(updatedTitle);
