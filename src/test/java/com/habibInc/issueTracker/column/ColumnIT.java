@@ -368,6 +368,7 @@ public class ColumnIT {
 
         // then expect a 403 forbidden operation error
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat(response.getBody().getErrorMessage()).contains("Forbidden");
     }
 
     @Test
