@@ -100,7 +100,8 @@ public class ColumnController {
     @ResponseStatus(HttpStatus.OK)
     public Column updateColumnTitle(@RequestBody String request,
                                     @PathVariable String boardId,
-                                    @PathVariable String columnId) throws JsonProcessingException {
+                                    @PathVariable String columnId,
+                                    @AuthenticationPrincipal User authenticatedUser) throws JsonProcessingException {
         try{
             Map<String, String> requestBody = new ObjectMapper().readValue(request, Map.class);
             String title = requestBody.get("title");
@@ -108,7 +109,7 @@ public class ColumnController {
             Long parsedBoardId = Long.parseLong(boardId);
             Long parsedColumnId = Long.parseLong(columnId);
 
-            return columnService.updateTitle(parsedBoardId, parsedColumnId, title);
+            return columnService.updateTitle(parsedBoardId, parsedColumnId, title, authenticatedUser);
         }catch(NumberFormatException ex){
             throw new InvalidIdException("Invalid id");
         }
