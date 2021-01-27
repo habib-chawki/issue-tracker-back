@@ -281,10 +281,26 @@ public class ColumnServiceTest {
 
         // when updateTitle() is called
         Column response =
-                columnService.updateTitle(this.column.getBoard().getId(), this.column.getId(), newTitle);
+                columnService.updateTitle(this.column.getBoard().getId(), this.column.getId(), newTitle, boardOwner);
 
         // then the response should be the column with the updated title
         assertThat(response.getTitle()).isEqualTo(newTitle);
+    }
+
+    @Test
+    public void givenUpdateColumnTitle_whenAuthenticatedUserIsNotTheBoardOwner_itShouldReturnForbiddenOperationError() {
+        when(columnRepository.findById(column.getId())).thenReturn(Optional.of(column));
+        when(columnRepository.save(column)).thenReturn(column);
+
+        // given a random user
+        User notOwner = User.builder().id(666L).email("not@column.owner").password("!owner").build();
+
+        // when updateTitle() is called and the authenticated user is not the board owner
+        // then expect a forbidden operation error
+        assertThatExceptionOfType(ForbiddenOperationException.class)
+                .isThrownBy(
+                        () -> columnService.updateTitle(column.getBoard().getId(), column.getId(), "Updated title", notOwner)
+                ).withMessageContaining("Forbidden operation");
     }
 
     @Test
@@ -295,7 +311,7 @@ public class ColumnServiceTest {
         // expect a column not found error to be returned
         assertThatExceptionOfType(ResourceNotFoundException.class)
                 .isThrownBy(() -> columnService.updateTitle(
-                                column.getBoard().getId(), column.getId(), "new title"))
+                                column.getBoard().getId(), column.getId(), "new title", boardOwner))
                 .withMessageContaining("Column not found");
     }
 
@@ -307,7 +323,7 @@ public class ColumnServiceTest {
         // expect a column not found error to be returned
         assertThatExceptionOfType(ResourceNotFoundException.class)
                 .isThrownBy(() -> columnService.updateTitle(
-                        404L, column.getId(), "new title"))
+                        404L, column.getId(), "new title", boardOwner))
                 .withMessageContaining("Board not found");
     }
 }
