@@ -49,17 +49,18 @@ public class ColumnControllerTest {
         String url = String.format("/boards/%s/column", boardId);
 
         // when column service is invoked then return the created column
-        when(columnService.createColumn(eq(boardId), any(Column.class), any(User.class)))
-                .thenReturn(column);
+        when(columnService.createColumn(eq(boardId), any(Column.class))).thenReturn(column);
 
         // given the request body
         String requestBody = mapper.writeValueAsString(column);
 
         // when a post request is made then the column should to be created successfully
         mockMvc.perform(post(url)
-                .content(requestBody)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(requestBody));
     }
 
     @Test
@@ -222,7 +223,7 @@ public class ColumnControllerTest {
         // given the board id
         Long boardId = 100L;
 
-        doNothing().when(columnService).deleteColumnById(boardId, column.getId());
+        doNothing().when(columnService).deleteColumnById(eq(boardId), eq(column.getId()), any(User.class));
 
         String url = String.format("/boards/%s/columns/%s", boardId, column.getId());
 
@@ -231,7 +232,7 @@ public class ColumnControllerTest {
                 .andExpect(status().isOk());
 
         // expect column service to have been invoked
-        verify(columnService, times(1)).deleteColumnById(boardId, column.getId());
+        verify(columnService, times(1)).deleteColumnById(eq(boardId), eq(column.getId()), any(User.class));
     }
 
     @Test

@@ -21,8 +21,8 @@ public class IssueService {
                 .orElseThrow(() -> new ResourceNotFoundException("Issue not found"));
     }
 
-    public Issue createIssue(Issue issue, User reporter) {
-        issue.setReporter(reporter);
+    public Issue createIssue(Issue issue, User authenticatedUser) {
+        issue.setReporter(authenticatedUser);
         return issueRepository.save(issue);
     }
 
