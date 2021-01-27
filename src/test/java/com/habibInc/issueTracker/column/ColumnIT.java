@@ -137,7 +137,7 @@ public class ColumnIT {
     @Test
     public void itShouldGetColumnById() {
         // given the column is created
-        Column savedColumn = columnService.createColumn(board.getId(), column);
+        Column savedColumn = columnService.createColumn(board.getId(), column, authenticatedUser);
 
         // given the url and request body
         String url = String.format("/boards/%s/columns/%s", board.getId(), column.getId());
@@ -156,7 +156,7 @@ public class ColumnIT {
     @Test
     public void givenGetColumnById_whenBoardIdIsIncorrect_itShouldReturnBoardNotFoundError() {
         // given the column is created
-        columnService.createColumn(board.getId(), column);
+        columnService.createColumn(board.getId(), column, authenticatedUser);
 
         // given an incorrect board id
         String url = String.format("/boards/%s/columns/%s", 404L, column.getId());
@@ -174,7 +174,7 @@ public class ColumnIT {
     @Test
     public void itShouldGetPaginatedListOfIssues() {
         // given a created column
-        Column createdColumn = columnService.createColumn(board.getId(), column);
+        Column createdColumn = columnService.createColumn(board.getId(), column, authenticatedUser);
 
         // given a list of issues
         List<Issue> issues = List.of(
@@ -322,7 +322,7 @@ public class ColumnIT {
     @Test
     public void itShouldDeleteColumnById() {
         // given a created column
-        column = columnService.createColumn(board.getId(), column);
+        column = columnService.createColumn(board.getId(), column, authenticatedUser);
 
         // expect the column to have been saved
         assertThat(columnRepository.findById(column.getId()).isPresent()).isTrue();
@@ -345,7 +345,7 @@ public class ColumnIT {
     @Test
     public void itShouldUpdateColumnTitle() {
         // given a created column
-        column = columnService.createColumn(board.getId(), column);
+        column = columnService.createColumn(board.getId(), column, authenticatedUser);
 
         // given the PATCH url endpoint
         String url = String.format("/boards/%s/columns/%s", board.getId(), column.getId());

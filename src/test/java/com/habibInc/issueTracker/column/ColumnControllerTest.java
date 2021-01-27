@@ -3,6 +3,7 @@ package com.habibInc.issueTracker.column;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.issue.Issue;
+import com.habibInc.issueTracker.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,18 +49,17 @@ public class ColumnControllerTest {
         String url = String.format("/boards/%s/column", boardId);
 
         // when column service is invoked then return the created column
-        when(columnService.createColumn(eq(boardId), any(Column.class))).thenReturn(column);
+        when(columnService.createColumn(eq(boardId), any(Column.class), any(User.class)))
+                .thenReturn(column);
 
         // given the request body
         String requestBody = mapper.writeValueAsString(column);
 
         // when a post request is made then the column should to be created successfully
         mockMvc.perform(post(url)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
-                .andExpect(status().isCreated())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(requestBody));
+                .content(requestBody)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
     }
 
     @Test
