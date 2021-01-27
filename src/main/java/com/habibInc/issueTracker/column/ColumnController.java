@@ -4,8 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.exceptionhandler.InvalidIdException;
 import com.habibInc.issueTracker.issue.Issue;
+import com.habibInc.issueTracker.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,12 +28,13 @@ public class ColumnController {
     @PostMapping("/column")
     @ResponseStatus(HttpStatus.CREATED)
     public Column createColumn(@PathVariable("boardId") String id,
-                               @RequestBody Column column
+                               @RequestBody Column column,
+                               @AuthenticationPrincipal User authenticatedUser
                                ){
         try{
             Long boardId = Long.parseLong(id);
 
-            return columnService.createColumn(boardId, column);
+            return columnService.createColumn(boardId, column, authenticatedUser);
         }catch(NumberFormatException ex){
             throw new InvalidIdException("Invalid board id");
         }
