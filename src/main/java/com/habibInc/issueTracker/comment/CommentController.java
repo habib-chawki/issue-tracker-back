@@ -60,9 +60,9 @@ public class CommentController {
                               @RequestBody String content,
                               @AuthenticationPrincipal User authenticatedUser) throws JsonProcessingException {
         try{
-            // get comment content from json
-            Map<String, String> map = new ObjectMapper().readValue(content, Map.class);
-            String commentContent = map.get("content");
+            // extract comment content from request body
+            Map<String, String> requestBody = new ObjectMapper().readValue(content, Map.class);
+            String commentContent = requestBody.get("content");
 
             // verify ids and update comment
             Long parsedCommentId = Long.parseLong(commentId);
