@@ -10,9 +10,7 @@ import com.habibInc.issueTracker.security.JwtUtil;
 import com.habibInc.issueTracker.user.User;
 import com.habibInc.issueTracker.user.UserRepository;
 import com.habibInc.issueTracker.user.UserService;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -92,48 +90,57 @@ public class ColumnIT {
         column.setTitle("To do");
     }
 
-    @Test
-    public void itShouldCreateColumn() {
-        String url = String.format("/boards/%s/column", board.getId());
+    @Nested
+    @DisplayName("POST")
+    class Post{
 
-        // given the create column post request
-        HttpEntity<Column> httpEntity = new HttpEntity<>(column, httpHeaders);
+        String baseUrl = "/boards/%s/column";
+        HttpEntity<Column> httpEntity;
 
-        // when the request is received
-        ResponseEntity<Column> response = restTemplate.exchange(url,
-                HttpMethod.POST,
-                httpEntity,
-                Column.class
-        );
+        @BeforeEach
+        public void setup() {
+            // given the create column post request
+            httpEntity = new HttpEntity<>(column, httpHeaders);
+        }
 
-        // then the column should be created successfully
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(response.getBody()).isEqualToComparingOnlyGivenFields(column);
+        @Test
+        public void itShouldCreateColumn() {
+            String url = String.format(baseUrl, board.getId());
 
-        // the id and board should be set
-        assertThat(response.getBody().getBoard()).isEqualTo(board);
-        assertThat(response.getBody().getId()).isNotNull().isPositive();
+            // when the request is received
+            ResponseEntity<Column> response = restTemplate.exchange(url,
+                    HttpMethod.POST,
+                    httpEntity,
+                    Column.class
+            );
+
+            // then the column should be created successfully
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+            assertThat(response.getBody()).isEqualToComparingOnlyGivenFields(column);
+
+            // the id and board should be set
+            assertThat(response.getBody().getBoard()).isEqualTo(board);
+            assertThat(response.getBody().getId()).isNotNull().isPositive();
+        }
+
+        @Test
+        public void givenCreateColumn_whenBoardDoesNotExist_itShouldReturnBoardNotFoundError() {
+            // given the board does not exist
+            String url = String.format(baseUrl, 404L);
+
+            // when the request is received
+            ResponseEntity<ApiError> response = restTemplate.exchange(url,
+                    HttpMethod.POST,
+                    httpEntity,
+                    ApiError.class
+            );
+
+            // then a 404 board not found error should be returned
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+            assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Board not found");
+        }
     }
 
-    @Test
-    public void givenCreateColumn_whenBoardDoesNotExist_itShouldReturnBoardNotFoundError() {
-        // given the board does not exist
-        String url = String.format("/boards/%s/column", 404L);
-
-        // given the create column POST request
-        HttpEntity<Column> httpEntity = new HttpEntity<>(column, httpHeaders);
-
-        // when the request is received
-        ResponseEntity<ApiError> response = restTemplate.exchange(url,
-                HttpMethod.POST,
-                httpEntity,
-                ApiError.class
-        );
-
-        // then a 404 board not found error should be returned
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Board not found");
-    }
 
     @Test
     public void itShouldGetColumnById() {
