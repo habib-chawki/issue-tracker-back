@@ -22,6 +22,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ColumnIT {
 
     @Autowired
@@ -57,8 +58,8 @@ public class ColumnIT {
     Column column;
     Board board;
 
-    @BeforeEach
-    public void auth() {
+    @BeforeAll
+    public void authSetup() {
         // save the authenticated user
         authenticatedUser = User.builder()
                 .email("authorizedr@user.in")
@@ -441,6 +442,10 @@ public class ColumnIT {
         issueRepository.deleteAll();
         columnRepository.deleteAll();
         boardRepository.deleteAll();
+    }
+
+    @AfterAll
+    public void authTeardown() {
         userRepository.deleteAll();
     }
 }
