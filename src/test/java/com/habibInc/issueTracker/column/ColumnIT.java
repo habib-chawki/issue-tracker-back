@@ -211,130 +211,145 @@ public class ColumnIT {
     @DisplayName("GET")
     class Get {
 
-        @Test
-        public void itShouldGetColumnById() {
-            // given the column is created
-            Column savedColumn = columnService.createColumn(board.getId(), column);
+        @Nested
+        @DisplayName("Get a column by id")
+        class GetColumn {
 
-            // given the url and request body
-            String url = String.format("/boards/%s/columns/%s", board.getId(), column.getId());
-            HttpEntity<Column> httpEntity = new HttpEntity<>(httpHeaders);
+            String baseUrl = "/boards/%s/columns/%s";
+            HttpEntity<Column> httpEntity;
 
-            // when a GET request is made to retrieve the column by id
-            ResponseEntity<Column> response =
-                    restTemplate.exchange(url, HttpMethod.GET, httpEntity, Column.class);
+            @BeforeEach
+            public void setup() {
+                // given the request
+                httpEntity = new HttpEntity<>(httpHeaders);
 
-            // then expect the column to have been retrieved successfully
-            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-            assertThat(response.getBody()).isEqualTo(savedColumn);
-            assertThat(response.getBody().getId()).isNotNull().isPositive();
+                // given the column is created
+                columnService.createColumn(board.getId(), column);
+            }
+
+            @Test
+            public void itShouldGetColumnById() {
+                // given the url
+                String url = String.format(baseUrl, board.getId(), column.getId());
+
+                // when a GET request is made to retrieve the column by id
+                ResponseEntity<Column> response =
+                        restTemplate.exchange(url, HttpMethod.GET, httpEntity, Column.class);
+
+                // then expect the column to have been retrieved successfully
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+                assertThat(response.getBody()).isEqualTo(column);
+                assertThat(response.getBody().getId()).isNotNull().isPositive();
+            }
+
+            @Test
+            public void givenGetColumnById_whenBoardIdIsIncorrect_itShouldReturnBoardNotFoundError() {
+                // given an incorrect board id
+                String url = String.format(baseUrl, 404L, column.getId());
+
+                // when a GET request is made to retrieve the column by id while the board id is incorrect
+                ResponseEntity<ApiError> response =
+                        restTemplate.exchange(url, HttpMethod.GET, httpEntity, ApiError.class);
+
+                // then expect a 404 board not found error to be returned
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+                assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Board not found");
+            }
         }
 
-        @Test
-        public void givenGetColumnById_whenBoardIdIsIncorrect_itShouldReturnBoardNotFoundError() {
-            // given the column is created
-            columnService.createColumn(board.getId(), column);
+        @Nested
+        @DisplayName("Get a column's paginated list of issues")
+        class GetColumnIssues {
 
-            // given an incorrect board id
-            String url = String.format("/boards/%s/columns/%s", 404L, column.getId());
-            HttpEntity<Column> httpEntity = new HttpEntity<>(httpHeaders);
+            @Test
+            public void itShouldGetPaginatedListOfIssues() {
+                // given a created column
+                Column createdColumn = columnService.createColumn(board.getId(), column);
 
-            // when a GET request is made to retrieve the column by id, with an incorrect board id
-            ResponseEntity<ApiError> response =
-                    restTemplate.exchange(url, HttpMethod.GET, httpEntity, ApiError.class);
+                // given a list of issues
+                List<Issue> issues = List.of(
+                        Issue.builder().summary("issue 1").column(createdColumn).build(),
+                        Issue.builder().summary("issue 2").column(createdColumn).build(),
+                        Issue.builder().summary("issue 3").column(createdColumn).build(),
+                        Issue.builder().summary("issue 4").column(createdColumn).build(),
+                        Issue.builder().summary("issue 5").column(createdColumn).build()
+                );
 
-            // then expect a 404 board not found error to be returned
-            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-            assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Board not found");
+                // save the list of issues
+                issues = (List<Issue>) issueRepository.saveAll(issues);
+
+                // given a GET request to fetch a paginated list of issues
+                int page = 0;
+                int size = 3;
+
+                HttpEntity<List<Issue>> httpEntity = new HttpEntity<>(httpHeaders);
+                String url = String.format(
+                        "/boards/%s/columns/%s/issues?page=%s&size=%s",
+                        board.getId(), createdColumn.getId(), page, size
+                );
+
+                // when the request is made
+                ResponseEntity<Issue[]> response =
+                        restTemplate.exchange(url, HttpMethod.GET, httpEntity, Issue[].class);
+
+                // then expect to get a paginated list of issues
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+                assertThat(response.getBody()).containsAll(issues.subList(0, size));
+            }
+
+            @Test
+            public void givenGetPaginatedListOfIssues_itShouldNotReturnIssuesBelongingToOtherColumns() {
+                // given two distinct columns
+                Column targetedColumn, anotherColumn;
+
+                targetedColumn = new Column();
+                targetedColumn.setTitle("Target");
+                targetedColumn.setBoard(board);
+
+                anotherColumn = new Column();
+                anotherColumn.setTitle("Other");
+                anotherColumn.setBoard(board);
+
+                columnRepository.saveAll(List.of(targetedColumn, anotherColumn));
+
+                // given a list of issues belonging to the targeted column
+                List<Issue> targetedColumnIssues = List.of(
+                        Issue.builder().summary("issue 1").column(targetedColumn).build(),
+                        Issue.builder().summary("issue 4").column(targetedColumn).build()
+                );
+
+                // given a list of issues belonging to another column
+                List<Issue> anotherColumnIssues = List.of(
+                        Issue.builder().summary("issue 2").column(anotherColumn).build(),
+                        Issue.builder().summary("issue 3").column(anotherColumn).build(),
+                        Issue.builder().summary("issue 5").column(anotherColumn).build()
+                );
+
+                // save the list of issues
+                targetedColumnIssues = (List<Issue>) issueRepository.saveAll(targetedColumnIssues);
+                anotherColumnIssues = (List<Issue>) issueRepository.saveAll(anotherColumnIssues);
+
+                // given a GET request to fetch a paginated list of issues of the targeted column
+                int page = 0;
+                int size = 3;
+                HttpEntity<List<Issue>> httpEntity = new HttpEntity<>(httpHeaders);
+                String url = String.format(
+                        "/boards/%s/columns/%s/issues?page=%s&size=%s",
+                        board.getId(), targetedColumn.getId(), page, size
+                );
+
+                // when the request is made
+                ResponseEntity<Issue[]> response =
+                        restTemplate.exchange(url, HttpMethod.GET, httpEntity, Issue[].class);
+
+                // then expect the retrieved issues to belong to the targeted column only
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+                assertThat(response.getBody().length).isEqualTo(targetedColumnIssues.size());
+                assertThat(response.getBody()).containsAll(targetedColumnIssues);
+                assertThat(response.getBody()).doesNotContainAnyElementsOf(anotherColumnIssues);
+            }
+
         }
-    }
-
-    @Test
-    public void itShouldGetPaginatedListOfIssues() {
-        // given a created column
-        Column createdColumn = columnService.createColumn(board.getId(), column);
-
-        // given a list of issues
-        List<Issue> issues = List.of(
-                Issue.builder().summary("issue 1").column(createdColumn).build(),
-                Issue.builder().summary("issue 2").column(createdColumn).build(),
-                Issue.builder().summary("issue 3").column(createdColumn).build(),
-                Issue.builder().summary("issue 4").column(createdColumn).build(),
-                Issue.builder().summary("issue 5").column(createdColumn).build()
-        );
-
-        // save the list of issues
-        issues = (List<Issue>) issueRepository.saveAll(issues);
-
-        // given a GET request to fetch a paginated list of issues
-        int page = 0;
-        int size = 3;
-
-        HttpEntity<List<Issue>> httpEntity = new HttpEntity<>(httpHeaders);
-        String url = String.format(
-                "/boards/%s/columns/%s/issues?page=%s&size=%s",
-                board.getId(), createdColumn.getId(), page, size
-        );
-
-        // when the request is made
-        ResponseEntity<Issue[]> response =
-                restTemplate.exchange(url, HttpMethod.GET, httpEntity, Issue[].class);
-
-        // then expect to get a paginated list of issues
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).containsAll(issues.subList(0, size));
-    }
-
-    @Test
-    public void givenGetPaginatedListOfIssues_itShouldNotReturnIssuesBelongingToOtherColumns() {
-        // given two distinct columns
-        Column targetedColumn, anotherColumn;
-
-        targetedColumn = new Column();
-        targetedColumn.setTitle("Target");
-        targetedColumn.setBoard(board);
-
-        anotherColumn = new Column();
-        anotherColumn.setTitle("Other");
-        anotherColumn.setBoard(board);
-
-        columnRepository.saveAll(List.of(targetedColumn, anotherColumn));
-
-        // given a list of issues belonging to the targeted column
-        List<Issue> targetedColumnIssues = List.of(
-                Issue.builder().summary("issue 1").column(targetedColumn).build(),
-                Issue.builder().summary("issue 4").column(targetedColumn).build()
-        );
-
-        // given a list of issues belonging to another column
-        List<Issue> anotherColumnIssues = List.of(
-                Issue.builder().summary("issue 2").column(anotherColumn).build(),
-                Issue.builder().summary("issue 3").column(anotherColumn).build(),
-                Issue.builder().summary("issue 5").column(anotherColumn).build()
-        );
-
-        // save the list of issues
-        targetedColumnIssues = (List<Issue>) issueRepository.saveAll(targetedColumnIssues);
-        anotherColumnIssues = (List<Issue>) issueRepository.saveAll(anotherColumnIssues);
-
-        // given a GET request to fetch a paginated list of issues of the targeted column
-        int page = 0;
-        int size = 3;
-        HttpEntity<List<Issue>> httpEntity = new HttpEntity<>(httpHeaders);
-        String url = String.format(
-                "/boards/%s/columns/%s/issues?page=%s&size=%s",
-                board.getId(), targetedColumn.getId(), page, size
-        );
-
-        // when the request is made
-        ResponseEntity<Issue[]> response =
-                restTemplate.exchange(url, HttpMethod.GET, httpEntity, Issue[].class);
-
-        // then expect the retrieved issues to belong to the targeted column only
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().length).isEqualTo(targetedColumnIssues.size());
-        assertThat(response.getBody()).containsAll(targetedColumnIssues);
-        assertThat(response.getBody()).doesNotContainAnyElementsOf(anotherColumnIssues);
     }
 
     @Test
