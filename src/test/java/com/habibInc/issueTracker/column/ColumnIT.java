@@ -207,42 +207,46 @@ public class ColumnIT {
         }
     }
 
+    @Nested
+    @DisplayName("GET")
+    class Get {
 
-    @Test
-    public void itShouldGetColumnById() {
-        // given the column is created
-        Column savedColumn = columnService.createColumn(board.getId(), column);
+        @Test
+        public void itShouldGetColumnById() {
+            // given the column is created
+            Column savedColumn = columnService.createColumn(board.getId(), column);
 
-        // given the url and request body
-        String url = String.format("/boards/%s/columns/%s", board.getId(), column.getId());
-        HttpEntity<Column> httpEntity = new HttpEntity<>(httpHeaders);
+            // given the url and request body
+            String url = String.format("/boards/%s/columns/%s", board.getId(), column.getId());
+            HttpEntity<Column> httpEntity = new HttpEntity<>(httpHeaders);
 
-        // when a GET request is made to retrieve the column by id
-        ResponseEntity<Column> response =
-                restTemplate.exchange(url, HttpMethod.GET, httpEntity, Column.class);
+            // when a GET request is made to retrieve the column by id
+            ResponseEntity<Column> response =
+                    restTemplate.exchange(url, HttpMethod.GET, httpEntity, Column.class);
 
-        // then expect the column to have been retrieved successfully
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isEqualTo(savedColumn);
-        assertThat(response.getBody().getId()).isNotNull().isPositive();
-    }
+            // then expect the column to have been retrieved successfully
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody()).isEqualTo(savedColumn);
+            assertThat(response.getBody().getId()).isNotNull().isPositive();
+        }
 
-    @Test
-    public void givenGetColumnById_whenBoardIdIsIncorrect_itShouldReturnBoardNotFoundError() {
-        // given the column is created
-        columnService.createColumn(board.getId(), column);
+        @Test
+        public void givenGetColumnById_whenBoardIdIsIncorrect_itShouldReturnBoardNotFoundError() {
+            // given the column is created
+            columnService.createColumn(board.getId(), column);
 
-        // given an incorrect board id
-        String url = String.format("/boards/%s/columns/%s", 404L, column.getId());
-        HttpEntity<Column> httpEntity = new HttpEntity<>(httpHeaders);
+            // given an incorrect board id
+            String url = String.format("/boards/%s/columns/%s", 404L, column.getId());
+            HttpEntity<Column> httpEntity = new HttpEntity<>(httpHeaders);
 
-        // when a GET request is made to retrieve the column by id, with an incorrect board id
-        ResponseEntity<ApiError> response =
-                restTemplate.exchange(url, HttpMethod.GET, httpEntity, ApiError.class);
+            // when a GET request is made to retrieve the column by id, with an incorrect board id
+            ResponseEntity<ApiError> response =
+                    restTemplate.exchange(url, HttpMethod.GET, httpEntity, ApiError.class);
 
-        // then expect a 404 board not found error to be returned
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Board not found");
+            // then expect a 404 board not found error to be returned
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+            assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Board not found");
+        }
     }
 
     @Test
