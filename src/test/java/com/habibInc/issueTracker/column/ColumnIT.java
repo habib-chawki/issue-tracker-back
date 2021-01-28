@@ -149,10 +149,15 @@ public class ColumnIT {
         @DisplayName("Create a list of columns")
         class CreateColumns {
 
-            @Test
-            public void itShouldCreateColumnsList() {
+            String baseUrl = "/boards/%s/columns";
+
+            List<Column> columnsList;
+            HttpEntity<List<Column>> httpEntity;
+
+            @BeforeEach
+            public void setup() {
                 // given a list of columns
-                List<Column> columnsList = List.of(
+                columnsList = List.of(
                         Column.builder().title("Column 1").build(),
                         Column.builder().title("Column 2").build(),
                         Column.builder().title("Column 3").build(),
@@ -160,11 +165,14 @@ public class ColumnIT {
                         Column.builder().title("Column 5").build()
                 );
 
-                // given the url
-                String url = String.format("/boards/%s/columns", board.getId());
-
                 // given the request
-                HttpEntity<List<Column>> httpEntity = new HttpEntity<>(columnsList, httpHeaders);
+                httpEntity = new HttpEntity<>(columnsList, httpHeaders);
+            }
+
+            @Test
+            public void itShouldCreateColumnsList() {
+                // given the url
+                String url = String.format(baseUrl, board.getId());
 
                 // when a POST request to create a list of columns is made
                 ResponseEntity<Column[]> response =
@@ -185,20 +193,8 @@ public class ColumnIT {
 
             @Test
             public void givenCreateColumns_whenBoardDoesNotExist_itShouldReturnBoardNotFoundError() {
-                // given a list of columns
-                List<Column> columnsList = List.of(
-                        Column.builder().title("Column 1").build(),
-                        Column.builder().title("Column 2").build(),
-                        Column.builder().title("Column 3").build(),
-                        Column.builder().title("Column 4").build(),
-                        Column.builder().title("Column 5").build()
-                );
-
                 // given an incorrect board id
-                String url = String.format("/boards/%s/columns", 404L);
-
-                // given the request
-                HttpEntity<List<Column>> httpEntity = new HttpEntity<>(columnsList, httpHeaders);
+                String url = String.format(baseUrl, 404L);
 
                 // when a POST request is made with an incorrect board id
                 ResponseEntity<ApiError> response =
