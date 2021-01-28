@@ -19,7 +19,7 @@ import org.springframework.http.*;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -78,7 +78,7 @@ public class ColumnIT {
     }
 
     @BeforeEach
-    public void setup(){
+    public void setup() {
         // set up a board
         board = new Board();
         board.setName("column_board");
@@ -93,52 +93,121 @@ public class ColumnIT {
 
     @Nested
     @DisplayName("POST")
-    class Post{
+    class Post {
 
-        String baseUrl = "/boards/%s/column";
-        HttpEntity<Column> httpEntity;
+        @Nested
+        @DisplayName("Create a column")
+        class CreateColumn {
+            String baseUrl = "/boards/%s/column";
+            HttpEntity<Column> httpEntity;
 
-        @BeforeEach
-        public void setup() {
-            // given the create column post request
-            httpEntity = new HttpEntity<>(column, httpHeaders);
+            @BeforeEach
+            public void setup() {
+                // given the create column post request
+                httpEntity = new HttpEntity<>(column, httpHeaders);
+            }
+
+            @Test
+            public void itShouldCreateColumn() {
+                String url = String.format(baseUrl, board.getId());
+
+                // when the request is received
+                ResponseEntity<Column> response = restTemplate.exchange(url,
+                        HttpMethod.POST,
+                        httpEntity,
+                        Column.class
+                );
+
+                // then the column should be created successfully
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+                assertThat(response.getBody()).isEqualToComparingOnlyGivenFields(column);
+
+                // the id and board should be set
+                assertThat(response.getBody().getBoard()).isEqualTo(board);
+                assertThat(response.getBody().getId()).isNotNull().isPositive();
+            }
+
+            @Test
+            public void givenCreateColumn_whenBoardDoesNotExist_itShouldReturnBoardNotFoundError() {
+                // given the board does not exist
+                String url = String.format(baseUrl, 404L);
+
+                // when the request is received
+                ResponseEntity<ApiError> response = restTemplate.exchange(url,
+                        HttpMethod.POST,
+                        httpEntity,
+                        ApiError.class
+                );
+
+                // then a 404 board not found error should be returned
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+                assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Board not found");
+            }
         }
 
-        @Test
-        public void itShouldCreateColumn() {
-            String url = String.format(baseUrl, board.getId());
+        @Nested
+        @DisplayName("Create a list of columns")
+        class CreateColumns {
 
-            // when the request is received
-            ResponseEntity<Column> response = restTemplate.exchange(url,
-                    HttpMethod.POST,
-                    httpEntity,
-                    Column.class
-            );
+            @Test
+            public void itShouldCreateColumnsList() {
+                // given a list of columns
+                List<Column> columnsList = List.of(
+                        Column.builder().title("Column 1").build(),
+                        Column.builder().title("Column 2").build(),
+                        Column.builder().title("Column 3").build(),
+                        Column.builder().title("Column 4").build(),
+                        Column.builder().title("Column 5").build()
+                );
 
-            // then the column should be created successfully
-            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-            assertThat(response.getBody()).isEqualToComparingOnlyGivenFields(column);
+                // given the url
+                String url = String.format("/boards/%s/columns", board.getId());
 
-            // the id and board should be set
-            assertThat(response.getBody().getBoard()).isEqualTo(board);
-            assertThat(response.getBody().getId()).isNotNull().isPositive();
-        }
+                // given the request
+                HttpEntity<List<Column>> httpEntity = new HttpEntity<>(columnsList, httpHeaders);
 
-        @Test
-        public void givenCreateColumn_whenBoardDoesNotExist_itShouldReturnBoardNotFoundError() {
-            // given the board does not exist
-            String url = String.format(baseUrl, 404L);
+                // when a POST request to create a list of columns is made
+                ResponseEntity<Column[]> response =
+                        restTemplate.exchange(url, HttpMethod.POST, httpEntity, Column[].class);
 
-            // when the request is received
-            ResponseEntity<ApiError> response = restTemplate.exchange(url,
-                    HttpMethod.POST,
-                    httpEntity,
-                    ApiError.class
-            );
+                // expect the columns to have been created successfully
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
-            // then a 404 board not found error should be returned
-            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-            assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Board not found");
+                // expect the board to have been set for all columns
+                // expect each column to have been saved with an autogenerated id
+                Arrays.asList(response.getBody()).stream().forEach(
+                        (column) -> {
+                            assertThat(column.getBoard()).isEqualTo(board);
+                            assertThat(column.getId()).isNotNull().isPositive();
+                        }
+                );
+            }
+
+            @Test
+            public void givenCreateColumns_whenBoardDoesNotExist_itShouldReturnBoardNotFoundError() {
+                // given a list of columns
+                List<Column> columnsList = List.of(
+                        Column.builder().title("Column 1").build(),
+                        Column.builder().title("Column 2").build(),
+                        Column.builder().title("Column 3").build(),
+                        Column.builder().title("Column 4").build(),
+                        Column.builder().title("Column 5").build()
+                );
+
+                // given an incorrect board id
+                String url = String.format("/boards/%s/columns", 404L);
+
+                // given the request
+                HttpEntity<List<Column>> httpEntity = new HttpEntity<>(columnsList, httpHeaders);
+
+                // when a POST request is made with an incorrect board id
+                ResponseEntity<ApiError> response =
+                        restTemplate.exchange(url, HttpMethod.POST, httpEntity, ApiError.class);
+
+                // then expect a board not found error
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+                assertThat(response.getBody().getErrorMessage()).contains("Board not found");
+            }
         }
     }
 
@@ -269,66 +338,6 @@ public class ColumnIT {
     }
 
     @Test
-    public void itShouldCreateColumnsList() {
-        // given a list of columns
-        List<Column> columnsList = List.of(
-                Column.builder().title("Column 1").build(),
-                Column.builder().title("Column 2").build(),
-                Column.builder().title("Column 3").build(),
-                Column.builder().title("Column 4").build(),
-                Column.builder().title("Column 5").build()
-        );
-
-        // given the url
-        String url = String.format("/boards/%s/columns", board.getId());
-
-        // given the request
-        HttpEntity<List<Column>> httpEntity = new HttpEntity<>(columnsList, httpHeaders);
-
-        // when a POST request to create a list of columns is made
-        ResponseEntity<Column[]> response =
-                restTemplate.exchange(url, HttpMethod.POST, httpEntity, Column[].class);
-
-        // expect the columns to have been created successfully
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-
-        // expect the board to have been set for all columns
-        // expect each column to have been saved with an autogenerated id
-        Arrays.asList(response.getBody()).stream().forEach(
-                (column) -> {
-                    assertThat(column.getBoard()).isEqualTo(board);
-                    assertThat(column.getId()).isNotNull().isPositive();
-                }
-        );
-    }
-
-    @Test
-    public void givenCreateColumns_whenBoardDoesNotExist_itShouldReturnBoardNotFoundError() {
-        // given a list of columns
-        List<Column> columnsList = List.of(
-                Column.builder().title("Column 1").build(),
-                Column.builder().title("Column 2").build(),
-                Column.builder().title("Column 3").build(),
-                Column.builder().title("Column 4").build(),
-                Column.builder().title("Column 5").build()
-        );
-
-        // given an incorrect board id
-        String url = String.format("/boards/%s/columns", 404L);
-
-        // given the request
-        HttpEntity<List<Column>> httpEntity = new HttpEntity<>(columnsList, httpHeaders);
-
-        // when a POST request is made with an incorrect board id
-        ResponseEntity<ApiError> response =
-                restTemplate.exchange(url, HttpMethod.POST, httpEntity, ApiError.class);
-
-        // then expect a board not found error
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(response.getBody().getErrorMessage()).contains("Board not found");
-    }
-
-    @Test
     public void itShouldDeleteColumnById() {
         // given a created column
         column = columnService.createColumn(board.getId(), column);
@@ -391,7 +400,7 @@ public class ColumnIT {
         String newTitle = "updated title";
 
         // given the request body
-        String requestBody = String.format("{\"title\": \""+newTitle+"\"}");
+        String requestBody = String.format("{\"title\": \"" + newTitle + "\"}");
 
         // given the request
         HttpEntity<String> httpEntity = new HttpEntity<>(requestBody, httpHeaders);
