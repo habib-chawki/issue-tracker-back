@@ -352,55 +352,59 @@ public class ColumnIT {
         }
     }
 
-    @Test
-    public void itShouldDeleteColumnById() {
-        // given a created column
-        column = columnService.createColumn(board.getId(), column);
+    @Nested
+    @DisplayName("DELETE")
+    class Delete {
+        @Test
+        public void itShouldDeleteColumnById() {
+            // given a created column
+            column = columnService.createColumn(board.getId(), column);
 
-        // expect the column to have been saved
-        assertThat(columnRepository.findById(column.getId()).isPresent()).isTrue();
+            // expect the column to have been saved
+            assertThat(columnRepository.findById(column.getId()).isPresent()).isTrue();
 
-        // given the DELETE url endpoint
-        String url = String.format("/boards/%s/columns/%s", board.getId(), column.getId());
+            // given the DELETE url endpoint
+            String url = String.format("/boards/%s/columns/%s", board.getId(), column.getId());
 
-        // given the request
-        HttpEntity<Void> httpEntity = new HttpEntity<>(httpHeaders);
+            // given the request
+            HttpEntity<Void> httpEntity = new HttpEntity<>(httpHeaders);
 
-        // when a DELETE request is made
-        ResponseEntity<Void> response =
-                restTemplate.exchange(url, HttpMethod.DELETE, httpEntity, Void.class);
+            // when a DELETE request is made
+            ResponseEntity<Void> response =
+                    restTemplate.exchange(url, HttpMethod.DELETE, httpEntity, Void.class);
 
-        // then expect the column to have been deleted successfully
-        assertThat(columnRepository.findById(column.getId()).isPresent()).isFalse();
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-    }
+            // then expect the column to have been deleted successfully
+            assertThat(columnRepository.findById(column.getId()).isPresent()).isFalse();
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        }
 
-    @Test
-    public void givenDeleteColumnById_whenAuthenticatedUserIsNotTheBoardOwner_itShouldReturnForbiddenOperationError() {
-        // given a random user
-        User randomUser = User.builder().id(666L).email("not.authenticated@user.random").password("!authenticated").build();
-        randomUser = userService.createUser(randomUser);
+        @Test
+        public void givenDeleteColumnById_whenAuthenticatedUserIsNotTheBoardOwner_itShouldReturnForbiddenOperationError() {
+            // given a random user
+            User randomUser = User.builder().id(666L).email("not.authenticated@user.random").password("!authenticated").build();
+            randomUser = userService.createUser(randomUser);
 
-        // given the random user set as board owner
-        board.setOwner(randomUser);
-        board = boardRepository.save(board);
+            // given the random user set as board owner
+            board.setOwner(randomUser);
+            board = boardRepository.save(board);
 
-        // given a created column
-        column = columnService.createColumn(board.getId(), column);
+            // given a created column
+            column = columnService.createColumn(board.getId(), column);
 
-        // given the DELETE url endpoint
-        String url = String.format("/boards/%s/columns/%s", board.getId(), column.getId());
+            // given the DELETE url endpoint
+            String url = String.format("/boards/%s/columns/%s", board.getId(), column.getId());
 
-        // given the request
-        HttpEntity<Void> httpEntity = new HttpEntity<>(httpHeaders);
+            // given the request
+            HttpEntity<Void> httpEntity = new HttpEntity<>(httpHeaders);
 
-        // when the board owner is not the authenticated user and a DELETE request is made
-        ResponseEntity<ApiError> response =
-                restTemplate.exchange(url, HttpMethod.DELETE, httpEntity, ApiError.class);
+            // when the board owner is not the authenticated user and a DELETE request is made
+            ResponseEntity<ApiError> response =
+                    restTemplate.exchange(url, HttpMethod.DELETE, httpEntity, ApiError.class);
 
-        // then expect a 403 forbidden operation error
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
-        assertThat(response.getBody().getErrorMessage()).contains("Forbidden");
+            // then expect a 403 forbidden operation error
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+            assertThat(response.getBody().getErrorMessage()).contains("Forbidden");
+        }
     }
 
     @Test
