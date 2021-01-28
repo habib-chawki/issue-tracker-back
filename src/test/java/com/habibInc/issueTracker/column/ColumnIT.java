@@ -411,22 +411,24 @@ public class ColumnIT {
     @DisplayName("PATCH")
     class Update{
 
+        String baseUrl = "/boards/%s/columns/%s";
+
+        // given the updated title
+        String newTitle = "updated title";
+
+        // given the request body
+        String requestBody = String.format("{\"title\": \"" + newTitle + "\"}");
+
+        // given the request
+        HttpEntity<String> httpEntity = new HttpEntity<>(requestBody, httpHeaders);
+
         @Test
         public void itShouldUpdateColumnTitle() {
             // given a created column
             column = columnService.createColumn(board.getId(), column);
 
             // given the PATCH url endpoint
-            String url = String.format("/boards/%s/columns/%s", board.getId(), column.getId());
-
-            // given the updated title
-            String newTitle = "updated title";
-
-            // given the request body
-            String requestBody = String.format("{\"title\": \"" + newTitle + "\"}");
-
-            // given the request
-            HttpEntity<String> httpEntity = new HttpEntity<>(requestBody, httpHeaders);
+            String url = String.format(baseUrl, board.getId(), column.getId());
 
             // when a PATCH request is made to update column title
             ResponseEntity<Column> response =
@@ -452,13 +454,7 @@ public class ColumnIT {
             column = columnService.createColumn(board.getId(), column);
 
             // given the PATCH url endpoint
-            String url = String.format("/boards/%s/columns/%s", board.getId(), column.getId());
-
-            // given the request body
-            String requestBody = String.format("{\"title\": \" new updated title \"}");
-
-            // given the request
-            HttpEntity<String> httpEntity = new HttpEntity<>(requestBody, httpHeaders);
+            String url = String.format(baseUrl, board.getId(), column.getId());
 
             // when a PATCH request is made and the authenticated user is not the board owner
             ResponseEntity<ApiError> response =
