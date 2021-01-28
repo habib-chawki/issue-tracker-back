@@ -407,62 +407,67 @@ public class ColumnIT {
         }
     }
 
-    @Test
-    public void itShouldUpdateColumnTitle() {
-        // given a created column
-        column = columnService.createColumn(board.getId(), column);
+    @Nested
+    @DisplayName("PATCH")
+    class Update{
 
-        // given the PATCH url endpoint
-        String url = String.format("/boards/%s/columns/%s", board.getId(), column.getId());
+        @Test
+        public void itShouldUpdateColumnTitle() {
+            // given a created column
+            column = columnService.createColumn(board.getId(), column);
 
-        // given the updated title
-        String newTitle = "updated title";
+            // given the PATCH url endpoint
+            String url = String.format("/boards/%s/columns/%s", board.getId(), column.getId());
 
-        // given the request body
-        String requestBody = String.format("{\"title\": \"" + newTitle + "\"}");
+            // given the updated title
+            String newTitle = "updated title";
 
-        // given the request
-        HttpEntity<String> httpEntity = new HttpEntity<>(requestBody, httpHeaders);
+            // given the request body
+            String requestBody = String.format("{\"title\": \"" + newTitle + "\"}");
 
-        // when a PATCH request is made to update column title
-        ResponseEntity<Column> response =
-                restTemplate.exchange(url, HttpMethod.PATCH, httpEntity, Column.class);
+            // given the request
+            HttpEntity<String> httpEntity = new HttpEntity<>(requestBody, httpHeaders);
 
-        // then expect the response to be the column with the updated title
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isEqualToComparingOnlyGivenFields(column);
-        assertThat(response.getBody().getTitle()).isEqualTo(newTitle);
-    }
+            // when a PATCH request is made to update column title
+            ResponseEntity<Column> response =
+                    restTemplate.exchange(url, HttpMethod.PATCH, httpEntity, Column.class);
 
-    @Test
-    public void givenUpdateColumnTitle_whenAuthenticatedUserIsNotTheBoardOwner_itShouldReturnForbiddenOperationError() {
-        // given a random user
-        User randomUser = User.builder().id(666L).email("not.authenticated@user.random").password("!authenticated").build();
-        randomUser = userService.createUser(randomUser);
+            // then expect the response to be the column with the updated title
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody()).isEqualToComparingOnlyGivenFields(column);
+            assertThat(response.getBody().getTitle()).isEqualTo(newTitle);
+        }
 
-        // given the random user set as board owner
-        board.setOwner(randomUser);
-        board = boardRepository.save(board);
+        @Test
+        public void givenUpdateColumnTitle_whenAuthenticatedUserIsNotTheBoardOwner_itShouldReturnForbiddenOperationError() {
+            // given a random user
+            User randomUser = User.builder().id(666L).email("not.authenticated@user.random").password("!authenticated").build();
+            randomUser = userService.createUser(randomUser);
 
-        // given a created column
-        column = columnService.createColumn(board.getId(), column);
+            // given the random user set as board owner
+            board.setOwner(randomUser);
+            board = boardRepository.save(board);
 
-        // given the PATCH url endpoint
-        String url = String.format("/boards/%s/columns/%s", board.getId(), column.getId());
+            // given a created column
+            column = columnService.createColumn(board.getId(), column);
 
-        // given the request body
-        String requestBody = String.format("{\"title\": \" new updated title \"}");
+            // given the PATCH url endpoint
+            String url = String.format("/boards/%s/columns/%s", board.getId(), column.getId());
 
-        // given the request
-        HttpEntity<String> httpEntity = new HttpEntity<>(requestBody, httpHeaders);
+            // given the request body
+            String requestBody = String.format("{\"title\": \" new updated title \"}");
 
-        // when a PATCH request is made and the authenticated user is not the board owner
-        ResponseEntity<ApiError> response =
-                restTemplate.exchange(url, HttpMethod.PATCH, httpEntity, ApiError.class);
+            // given the request
+            HttpEntity<String> httpEntity = new HttpEntity<>(requestBody, httpHeaders);
 
-        // then expect a 403 forbidden operation error
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
-        assertThat(response.getBody().getErrorMessage()).contains("Forbidden");
+            // when a PATCH request is made and the authenticated user is not the board owner
+            ResponseEntity<ApiError> response =
+                    restTemplate.exchange(url, HttpMethod.PATCH, httpEntity, ApiError.class);
+
+            // then expect a 403 forbidden operation error
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+            assertThat(response.getBody().getErrorMessage()).contains("Forbidden");
+        }
     }
 
     @AfterEach
