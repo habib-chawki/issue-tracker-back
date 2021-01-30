@@ -102,19 +102,39 @@ public class IssueIT {
     }
 
     @Nested
+    @DisplayName("POST")
     class Post {
-        @Test
-        public void itShouldCreateIssue() {
-            // set up request body and authorization header
-            HttpEntity<Issue> httpEntity = new HttpEntity<>(issue1, headers);
+        HttpEntity<Issue> httpEntity;
 
+        @BeforeEach
+        public void setup() {
+            httpEntity = new HttpEntity<>(issue1, headers);
+
+        }
+
+        @Test
+        @DisplayName("Create issue")
+        public void itShouldCreateIssue() {
+            // when a POST request to create an issue is received
             ResponseEntity<Issue> response =
                     restTemplate.postForEntity("/issues", httpEntity, Issue.class);
 
-            // expect issue to have been created successfully
+            // then expect the issue to have been created successfully
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
             assertThat(response.getBody().getId()).isNotNull().isPositive();
             assertThat(response.getBody()).isEqualToComparingOnlyGivenFields(issue1);
+        }
+
+        @Test
+        @DisplayName("Set the authenticated user as issue reporter")
+        public void whenIssueIsCreated_itShouldSetTheAuthenticatedUserAsReporter() {
+            // when an issue is created after a POST request
+            ResponseEntity<Issue> response =
+                    restTemplate.postForEntity("/issues", httpEntity, Issue.class);
+
+            // then the created issue's reporter should be the authenticated user
+            assertThat(response.getBody().getReporter().getEmail())
+                    .isEqualTo(authenticatedUser.getEmail());
         }
     }
 
@@ -201,20 +221,6 @@ public class IssueIT {
         // expect all issues to have been retrieved
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseBody).isEqualTo(issues);
-    }
-
-    @Test
-    public void itShouldSetTheCurrentLoggedInUserAsTheIssueReporter() {
-        // set up the request body and the authorization header
-        HttpEntity<Issue> httpEntity = new HttpEntity<>(issue1, headers);
-
-        // when a post request to create an issue is received
-        ResponseEntity<Issue> response =
-                restTemplate.postForEntity("/issues", httpEntity, Issue.class);
-
-        // then the created issue should have the current logged-in user as a reporter
-        assertThat(response.getBody().getReporter().getEmail())
-                .isEqualTo(authenticatedUser.getEmail());
     }
 
     @Test
