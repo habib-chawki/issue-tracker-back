@@ -138,89 +138,93 @@ public class IssueIT {
         }
     }
 
-    @Test
-    public void itShouldGetIssueById() {
-        // save issue2
-        issueRepository.save(issue2);
+    @Nested
+    @DisplayName("GET")
+    class Get {
+        @Test
+        public void itShouldGetIssueById() {
+            // save issue2
+            issueRepository.save(issue2);
 
-        // set up authorization header
-        HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
+            // set up authorization header
+            HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
 
-        // make get request to retrieve an issue by id
-        ResponseEntity<Issue> response = restTemplate.exchange(
-                "/issues/" + issue2.getId(),
-                HttpMethod.GET,
-                httpEntity,
-                Issue.class
-        );
+            // make get request to retrieve an issue by id
+            ResponseEntity<Issue> response = restTemplate.exchange(
+                    "/issues/" + issue2.getId(),
+                    HttpMethod.GET,
+                    httpEntity,
+                    Issue.class
+            );
 
-        // expect the proper issue to have been retrieved
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().getId()).isPositive();
-        assertThat(response.getBody()).isEqualTo(issue2);
-    }
+            // expect the proper issue to have been retrieved
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody().getId()).isPositive();
+            assertThat(response.getBody()).isEqualTo(issue2);
+        }
 
-    @Test
-    public void whenIssueCannotBeFoundById_itShouldReturnIssueNotFoundError() {
-        // set up authorization header
-        HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
+        @Test
+        public void whenIssueCannotBeFoundById_itShouldReturnIssueNotFoundError() {
+            // set up authorization header
+            HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
 
-        // when a request for an issue that does not exist is received
-        ResponseEntity<ApiError> response = restTemplate.exchange(
-                "/issues/" + 3L,
-                HttpMethod.GET,
-                httpEntity,
-                ApiError.class
-        );
+            // when a request for an issue that does not exist is received
+            ResponseEntity<ApiError> response = restTemplate.exchange(
+                    "/issues/" + 3L,
+                    HttpMethod.GET,
+                    httpEntity,
+                    ApiError.class
+            );
 
-        // then the response should be a 404 error with an 'issue not found' message
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Issue not found");
-        assertThat(response.getBody().getTimestamp()).isNotNull();
-    }
+            // then the response should be a 404 error with an 'issue not found' message
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+            assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Issue not found");
+            assertThat(response.getBody().getTimestamp()).isNotNull();
+        }
 
-    @Test
-    public void whenIssueIdIsInvalid_itShouldReturnInvalidIssueIdError() {
-        // set up authorization header
-        HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
+        @Test
+        public void whenIssueIdIsInvalid_itShouldReturnInvalidIssueIdError() {
+            // set up authorization header
+            HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
 
-        // when a request with an invalid issue id is received
-        ResponseEntity<ApiError> response = restTemplate.exchange(
-                "/issues/invalid",
-                HttpMethod.GET,
-                httpEntity,
-                ApiError.class
-        );
+            // when a request with an invalid issue id is received
+            ResponseEntity<ApiError> response = restTemplate.exchange(
+                    "/issues/invalid",
+                    HttpMethod.GET,
+                    httpEntity,
+                    ApiError.class
+            );
 
-        // then the response should be a 400 error with an 'invalid issue id' message
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Invalid issue id");
-        assertThat(response.getBody().getTimestamp()).isNotNull();
-    }
+            // then the response should be a 400 error with an 'invalid issue id' message
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+            assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Invalid issue id");
+            assertThat(response.getBody().getTimestamp()).isNotNull();
+        }
 
-    @Test
-    public void itShouldGetAllIssues() {
-        // set up authorization header
-        HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
+        @Test
+        public void itShouldGetAllIssues() {
+            // set up authorization header
+            HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
 
-        // given a list of issues
-        List<Issue> issues = Arrays.asList(issue1, issue2);
-        issueRepository.saveAll(issues);
+            // given a list of issues
+            List<Issue> issues = Arrays.asList(issue1, issue2);
+            issueRepository.saveAll(issues);
 
-        // fetch the list of all issues
-        ResponseEntity<Issue[]> response = restTemplate.exchange(
-                "/issues",
-                HttpMethod.GET,
-                httpEntity,
-                Issue[].class
-        );
+            // fetch the list of all issues
+            ResponseEntity<Issue[]> response = restTemplate.exchange(
+                    "/issues",
+                    HttpMethod.GET,
+                    httpEntity,
+                    Issue[].class
+            );
 
-        // convert the response issues array to list
-        List<Issue> responseBody = Arrays.asList(response.getBody());
+            // convert the response issues array to list
+            List<Issue> responseBody = Arrays.asList(response.getBody());
 
-        // expect all issues to have been retrieved
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseBody).isEqualTo(issues);
+            // expect all issues to have been retrieved
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(responseBody).isEqualTo(issues);
+        }
     }
 
     @Test
