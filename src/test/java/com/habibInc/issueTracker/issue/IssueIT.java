@@ -216,7 +216,7 @@ public class IssueIT {
             // create the issue
             Issue issue = issueService.createIssue(issue1, authenticatedUser);
 
-            // copy and update the issue
+            // set up an updated issue
             String issueJson = mapper.writeValueAsString(issue);
             Issue updatedIssue = mapper.readValue(issueJson, Issue.class);
 
@@ -249,7 +249,7 @@ public class IssueIT {
 
             // when a put request is made with an id of an issue that does not exist
             ResponseEntity<ApiError> response = restTemplate.exchange(
-                    "/issues/100",
+                    "/issues/" + 404L,
                     HttpMethod.PUT,
                     httpEntity,
                     ApiError.class
@@ -315,95 +315,100 @@ public class IssueIT {
         }
     }
 
-    @Test
-    public void itShouldDeleteIssueById() {
-        // create the issue
-        Issue issue = issueService.createIssue(issue1, authenticatedUser);
+    @Nested
+    @DisplayName("DELETE")
+    class Delete {
 
-        // set the authorization header
-        HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
+        @Test
+        public void itShouldDeleteIssueById() {
+            // create the issue
+            Issue issue = issueService.createIssue(issue1, authenticatedUser);
 
-        // when a delete request is made
-        ResponseEntity<Object> response = restTemplate.exchange(
-                "/issues/" + issue.getId(),
-                HttpMethod.DELETE,
-                httpEntity,
-                Object.class
-        );
+            // set the authorization header
+            HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
 
-        // then the issue should have been deleted successfully
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThatExceptionOfType(ResourceNotFoundException.class)
-                .isThrownBy(() -> issueService.getIssueById(issue.getId()))
-                .withMessageContaining("Issue not found");
-    }
+            // when a delete request is made
+            ResponseEntity<Object> response = restTemplate.exchange(
+                    "/issues/" + issue.getId(),
+                    HttpMethod.DELETE,
+                    httpEntity,
+                    Object.class
+            );
 
-    @Test
-    public void givenDeleteIssue_whenIssueDoesNotExist_itShouldReturnIssueNotFoundError() {
-        String errorMessage = "Issue not found";
+            // then the issue should have been deleted successfully
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThatExceptionOfType(ResourceNotFoundException.class)
+                    .isThrownBy(() -> issueService.getIssueById(issue.getId()))
+                    .withMessageContaining("Issue not found");
+        }
 
-        // set the authorization header
-        HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
+        @Test
+        public void givenDeleteIssue_whenIssueDoesNotExist_itShouldReturnIssueNotFoundError() {
+            String errorMessage = "Issue not found";
 
-        // when attempting to delete an issue that does not exist
-        ResponseEntity<ApiError> response = restTemplate.exchange(
-                "/issues/404",
-                HttpMethod.DELETE,
-                httpEntity,
-                ApiError.class
-        );
+            // set the authorization header
+            HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
 
-        // then a 404 issue not found error should be returned
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(response.getBody().getErrorMessage()).contains(errorMessage);
-    }
+            // when attempting to delete an issue that does not exist
+            ResponseEntity<ApiError> response = restTemplate.exchange(
+                    "/issues/404",
+                    HttpMethod.DELETE,
+                    httpEntity,
+                    ApiError.class
+            );
 
-    @Test
-    public void givenDeleteIssue_whenIssueIdIsInvalid_itShouldReturnInvalidIdError() {
-        String errorMessage = "Invalid issue id";
+            // then a 404 issue not found error should be returned
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+            assertThat(response.getBody().getErrorMessage()).contains(errorMessage);
+        }
 
-        // set the authorization header
-        HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
+        @Test
+        public void givenDeleteIssue_whenIssueIdIsInvalid_itShouldReturnInvalidIdError() {
+            String errorMessage = "Invalid issue id";
 
-        // when the issue id is invalid
-        ResponseEntity<ApiError> response = restTemplate.exchange(
-                "/issues/invalid",
-                HttpMethod.DELETE,
-                httpEntity,
-                ApiError.class
-        );
+            // set the authorization header
+            HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
 
-        // then a 400 invalid issue id error should be returned
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(response.getBody().getErrorMessage()).contains(errorMessage);
-    }
+            // when the issue id is invalid
+            ResponseEntity<ApiError> response = restTemplate.exchange(
+                    "/issues/invalid",
+                    HttpMethod.DELETE,
+                    httpEntity,
+                    ApiError.class
+            );
 
-    @Test
-    public void whenAuthenticatedUserIsNotTheReporter_itShouldNotAllowDeleteIssue() {
-        // given a random reporter
-        User randomReporter = new User();
-        randomReporter.setEmail("not.the.authenticated.user@email.com");
-        randomReporter.setPassword("bla_bla_bla");
+            // then a 400 invalid issue id error should be returned
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+            assertThat(response.getBody().getErrorMessage()).contains(errorMessage);
+        }
 
-        userService.createUser(randomReporter);
+        @Test
+        public void whenAuthenticatedUserIsNotTheReporter_itShouldNotAllowDeleteIssue() {
+            // given a random reporter
+            User randomReporter = new User();
+            randomReporter.setEmail("not.the.authenticated.user@email.com");
+            randomReporter.setPassword("bla_bla_bla");
 
-        // given an issue created by the random reporter
-        Issue issue = issueService.createIssue(issue1, randomReporter);
+            userService.createUser(randomReporter);
 
-        // given the authorization header
-        HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
+            // given an issue created by the random reporter
+            Issue issue = issueService.createIssue(issue1, randomReporter);
 
-        // when an attempt is made to delete someone else's issue
-        ResponseEntity<ApiError> response = restTemplate.exchange(
-                "/issues/" + issue.getId(),
-                HttpMethod.DELETE,
-                httpEntity,
-                ApiError.class
-        );
+            // given the authorization header
+            HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
 
-        // then the operation should be forbidden
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
-        assertThat(response.getBody().getErrorMessage()).contains("Forbidden");
+            // when an attempt is made to delete someone else's issue
+            ResponseEntity<ApiError> response = restTemplate.exchange(
+                    "/issues/" + issue.getId(),
+                    HttpMethod.DELETE,
+                    httpEntity,
+                    ApiError.class
+            );
+
+            // then the operation should be forbidden
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+            assertThat(response.getBody().getErrorMessage()).contains("Forbidden");
+        }
     }
 
     @AfterEach
