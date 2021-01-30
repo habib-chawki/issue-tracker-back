@@ -154,14 +154,21 @@ public class BoardIT {
     @Nested
     @DisplayName("DELETE")
     class Delete {
+        HttpEntity<Board> httpEntity;
+
+        @BeforeEach
+        public void setup() {
+            httpEntity = new HttpEntity<>(httpHeaders);
+        }
+
         @Test
+        @DisplayName("Delete board by id")
         public void itShouldDeleteBoardById() {
             // given a board
             board = boardService.createBoard(board, authenticatedUser);
 
             // given the request
             String url = "/boards/" + board.getId();
-            HttpEntity<Board> httpEntity = new HttpEntity<>(httpHeaders);
 
             // when a DELETE request is made to delete the board by id
             ResponseEntity<String> response =
@@ -176,7 +183,8 @@ public class BoardIT {
         }
 
         @Test
-        public void whenBoardIsDeletedById_itShouldDeleteAllItsColumns() {
+        @DisplayName("Delete board along with its columns")
+        public void itShouldDeleteBoardByIdAlongWithAllOfItsColumns() {
             // given the board is created
             board = boardService.createBoard(board, authenticatedUser);
 
@@ -196,10 +204,9 @@ public class BoardIT {
 
             // given the DELETE request
             String url = "/boards/" + board.getId();
-            HttpEntity<Board> httpEntity = new HttpEntity<>(httpHeaders);
 
             // when the request is made to delete the board by id
-            restTemplate.exchange(url, HttpMethod.DELETE, httpEntity, String.class);
+            restTemplate.exchange(url, HttpMethod.DELETE, httpEntity, Void.class);
 
             // then expect the board's list of columns to have been deleted
             columns = columnRepository.findAll();
@@ -207,6 +214,7 @@ public class BoardIT {
         }
 
         @Test
+        @DisplayName("Disallow deleting boards owned by other users")
         public void givenDeleteBoardById_whenAuthenticatedUserIsNotTheBoardOwner_itShouldReturnForbiddenOperationError() {
             // given a random user
             User notAuthenticatedUser = User.builder().email("not@authenticated.user").password("forbid").build();
@@ -219,7 +227,6 @@ public class BoardIT {
 
             // given the DELETE request
             String url = "/boards/" + board.getId();
-            HttpEntity<Board> httpEntity = new HttpEntity<>(httpHeaders);
 
             // when the request is made to delete the board by id
             ResponseEntity<ApiError> response =
