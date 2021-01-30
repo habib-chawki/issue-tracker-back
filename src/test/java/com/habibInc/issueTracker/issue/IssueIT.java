@@ -101,18 +101,21 @@ public class IssueIT {
         issue2.setEstimate(LocalTime.of(6, 15));
     }
 
-    @Test
-    public void itShouldCreateIssue() {
-        // set up request body and authorization header
-        HttpEntity<Issue> httpEntity = new HttpEntity<>(issue1, headers);
+    @Nested
+    class Post {
+        @Test
+        public void itShouldCreateIssue() {
+            // set up request body and authorization header
+            HttpEntity<Issue> httpEntity = new HttpEntity<>(issue1, headers);
 
-        ResponseEntity<Issue> response =
-                restTemplate.postForEntity("/issues", httpEntity, Issue.class);
+            ResponseEntity<Issue> response =
+                    restTemplate.postForEntity("/issues", httpEntity, Issue.class);
 
-        // expect issue to have been created successfully
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(response.getBody().getId()).isNotNull().isPositive();
-        assertThat(response.getBody()).isEqualToComparingOnlyGivenFields(issue1);
+            // expect issue to have been created successfully
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+            assertThat(response.getBody().getId()).isNotNull().isPositive();
+            assertThat(response.getBody()).isEqualToComparingOnlyGivenFields(issue1);
+        }
     }
 
     @Test
