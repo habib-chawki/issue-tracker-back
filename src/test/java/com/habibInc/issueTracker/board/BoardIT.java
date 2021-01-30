@@ -149,81 +149,84 @@ public class BoardIT {
         }
     }
 
+    @Nested
+    @DisplayName("DELETE")
+    class Delete{
+        @Test
+        public void itShouldDeleteBoardById() {
+            // given a board
+            board = boardService.createBoard(board, authenticatedUser);
 
-    @Test
-    public void itShouldDeleteBoardById() {
-        // given a board
-        board = boardService.createBoard(board, authenticatedUser);
+            // given the request
+            String url = "/boards/" + board.getId();
+            HttpEntity<Board> httpEntity = new HttpEntity<>(httpHeaders);
 
-        // given the request
-        String url = "/boards/" + board.getId();
-        HttpEntity<Board> httpEntity = new HttpEntity<>(httpHeaders);
+            // when a DELETE request is made to delete the board by id
+            ResponseEntity<String> response =
+                    restTemplate.exchange(url, HttpMethod.DELETE, httpEntity, String.class);
 
-        // when a DELETE request is made to delete the board by id
-        ResponseEntity<String> response =
-                restTemplate.exchange(url, HttpMethod.DELETE, httpEntity, String.class);
+            // then the board should be deleted successfully
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-        // then the board should be deleted successfully
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThatExceptionOfType(ResourceNotFoundException.class)
+                    .isThrownBy(() -> boardService.getBoardById(board.getId()))
+                    .withMessageContaining("Board not found");
+        }
 
-        assertThatExceptionOfType(ResourceNotFoundException.class)
-                .isThrownBy(() -> boardService.getBoardById(board.getId()))
-                .withMessageContaining("Board not found");
-    }
+        @Test
+        public void whenBoardIsDeletedById_itShouldDeleteAllItsColumns() {
+            // given the board is created
+            board = boardService.createBoard(board, authenticatedUser);
 
-    @Test
-    public void whenBoardIsDeletedById_itShouldDeleteAllItsColumns() {
-        // given the board is created
-        board = boardService.createBoard(board, authenticatedUser);
+            // given a list of columns belonging to the board
+            columnRepository.saveAll(
+                    List.of(
+                            Column.builder().title("column 1").board(board).build(),
+                            Column.builder().title("column 2").board(board).build(),
+                            Column.builder().title("column 3").board(board).build(),
+                            Column.builder().title("column 4").board(board).build()
+                    )
+            );
 
-        // given a list of columns belonging to the board
-        columnRepository.saveAll(
-                List.of(
-                        Column.builder().title("column 1").board(board).build(),
-                        Column.builder().title("column 2").board(board).build(),
-                        Column.builder().title("column 3").board(board).build(),
-                        Column.builder().title("column 4").board(board).build()
-                )
-        );
+            // expect the columns to have been saved
+            Iterable<Column> columns = columnRepository.findAll();
+            assertThat(columns).isNotEmpty();
 
-        // expect the columns to have been saved
-        Iterable<Column> columns = columnRepository.findAll();
-        assertThat(columns).isNotEmpty();
+            // given the DELETE request
+            String url = "/boards/" + board.getId();
+            HttpEntity<Board> httpEntity = new HttpEntity<>(httpHeaders);
 
-        // given the DELETE request
-        String url = "/boards/" + board.getId();
-        HttpEntity<Board> httpEntity = new HttpEntity<>(httpHeaders);
+            // when the request is made to delete the board by id
+            restTemplate.exchange(url, HttpMethod.DELETE, httpEntity, String.class);
 
-        // when the request is made to delete the board by id
-        restTemplate.exchange(url, HttpMethod.DELETE, httpEntity, String.class);
+            // then expect the board's list of columns to have been deleted
+            columns = columnRepository.findAll();
+            assertThat(columns).isEmpty();
+        }
 
-        // then expect the board's list of columns to have been deleted
-        columns = columnRepository.findAll();
-        assertThat(columns).isEmpty();
-    }
+        @Test
+        public void givenDeleteBoardById_whenAuthenticatedUserIsNotTheBoardOwner_itShouldReturnForbiddenOperationError() {
+            // given a random user
+            User notAuthenticatedUser = User.builder().email("not@authenticated.user").password("forbid").build();
 
-    @Test
-    public void givenDeleteBoardById_whenAuthenticatedUserIsNotTheBoardOwner_itShouldReturnForbiddenOperationError() {
-        // given a random user
-        User notAuthenticatedUser = User.builder().email("not@authenticated.user").password("forbid").build();
+            // save the random user
+            notAuthenticatedUser = userService.createUser(notAuthenticatedUser);
 
-        // save the random user
-        notAuthenticatedUser = userService.createUser(notAuthenticatedUser);
+            // given a board that belongs to a user other than the authenticated user
+            board = boardService.createBoard(board, notAuthenticatedUser);
 
-        // given a board that belongs to a user other than the authenticated user
-        board = boardService.createBoard(board, notAuthenticatedUser);
+            // given the DELETE request
+            String url = "/boards/" + board.getId();
+            HttpEntity<Board> httpEntity = new HttpEntity<>(httpHeaders);
 
-        // given the DELETE request
-        String url = "/boards/" + board.getId();
-        HttpEntity<Board> httpEntity = new HttpEntity<>(httpHeaders);
+            // when the request is made to delete the board by id
+            ResponseEntity<ApiError> response =
+                    restTemplate.exchange(url, HttpMethod.DELETE, httpEntity, ApiError.class);
 
-        // when the request is made to delete the board by id
-        ResponseEntity<ApiError> response =
-                restTemplate.exchange(url, HttpMethod.DELETE, httpEntity, ApiError.class);
-
-        // then expect a 403 forbidden operation error
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
-        assertThat(response.getBody().getErrorMessage()).contains("Forbidden operation");
+            // then expect a 403 forbidden operation error
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+            assertThat(response.getBody().getErrorMessage()).contains("Forbidden operation");
+        }
     }
 
     @AfterEach
