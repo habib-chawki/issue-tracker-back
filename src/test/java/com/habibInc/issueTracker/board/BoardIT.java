@@ -98,53 +98,57 @@ public class BoardIT {
         }
     }
 
+    @Nested
+    @DisplayName("GET")
+    class Get {
+        @Test
+        public void itShouldGetBoardById() {
+            // given a board is created
+            Board createdBoard = boardService.createBoard(board, authenticatedUser);
 
-    @Test
-    public void itShouldGetBoardById() {
-        // given a board is created
-        Board createdBoard = boardService.createBoard(board, authenticatedUser);
+            // given the request
+            String url = "/boards/" + createdBoard.getId();
+            HttpEntity<Board> httpEntity = new HttpEntity<>(httpHeaders);
 
-        // given the request
-        String url = "/boards/" + createdBoard.getId();
-        HttpEntity<Board> httpEntity = new HttpEntity<>(httpHeaders);
+            // when a get request is made to fetch the board by id
+            ResponseEntity<Board> response =
+                    restTemplate.exchange(url, HttpMethod.GET, httpEntity, Board.class);
 
-        // when a get request is made to fetch the board by id
-        ResponseEntity<Board> response =
-                restTemplate.exchange(url, HttpMethod.GET, httpEntity, Board.class);
+            // then the board should be retrieved successfully
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody().getId()).isNotNull().isPositive();
+            assertThat(response.getBody()).isEqualTo(createdBoard);
+        }
 
-        // then the board should be retrieved successfully
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().getId()).isNotNull().isPositive();
-        assertThat(response.getBody()).isEqualTo(createdBoard);
+        @Test
+        public void givenGetBoardById_itShouldGetListOfColumns() {
+            // given a board
+            board = boardService.createBoard(board, authenticatedUser);
+
+            // given a list of columns
+            List<Column> columns = List.of(
+                    Column.builder().title("column 1").board(board).build(),
+                    Column.builder().title("column 2").board(board).build(),
+                    Column.builder().title("column 3").board(board).build(),
+                    Column.builder().title("column 4").board(board).build()
+            );
+
+            columns = (List<Column>) columnRepository.saveAll(columns);
+
+            // given the request
+            String url = "/boards/" + board.getId();
+            HttpEntity<Board> httpEntity = new HttpEntity<>(httpHeaders);
+
+            // when a GET request is made to fetch the board by id
+            ResponseEntity<Board> response =
+                    restTemplate.exchange(url, HttpMethod.GET, httpEntity, Board.class);
+
+            // then the board should be retrieved along with a list of columns
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody().getColumns()).isEqualTo(columns);
+        }
     }
 
-    @Test
-    public void givenGetBoardById_itShouldGetListOfColumns() {
-        // given a board
-        board = boardService.createBoard(board, authenticatedUser);
-
-        // given a list of columns
-        List<Column> columns = List.of(
-                Column.builder().title("column 1").board(board).build(),
-                Column.builder().title("column 2").board(board).build(),
-                Column.builder().title("column 3").board(board).build(),
-                Column.builder().title("column 4").board(board).build()
-        );
-
-        columns = (List<Column>) columnRepository.saveAll(columns);
-
-        // given the request
-        String url = "/boards/" + board.getId();
-        HttpEntity<Board> httpEntity = new HttpEntity<>(httpHeaders);
-
-        // when a GET request is made to fetch the board by id
-        ResponseEntity<Board> response =
-                restTemplate.exchange(url, HttpMethod.GET, httpEntity, Board.class);
-
-        // then the board should be retrieved along with a list of columns
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().getColumns()).isEqualTo(columns);
-    }
 
     @Test
     public void itShouldDeleteBoardById() {
