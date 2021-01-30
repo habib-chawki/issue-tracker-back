@@ -103,7 +103,7 @@ public class BoardIT {
     class Get {
 
         String url;
-        HttpEntity<Board> httpEntity;
+        HttpEntity<Void> httpEntity;
 
         @BeforeEach
         public void setup() {
@@ -154,7 +154,7 @@ public class BoardIT {
     @Nested
     @DisplayName("DELETE")
     class Delete {
-        HttpEntity<Board> httpEntity;
+        HttpEntity<Void> httpEntity;
 
         @BeforeEach
         public void setup() {
