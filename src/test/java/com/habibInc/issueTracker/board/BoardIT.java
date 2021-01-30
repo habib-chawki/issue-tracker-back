@@ -101,30 +101,36 @@ public class BoardIT {
     @Nested
     @DisplayName("GET")
     class Get {
+
+        String url;
+        HttpEntity<Board> httpEntity;
+
+        @BeforeEach
+        public void setup() {
+            // create the board
+            board = boardService.createBoard(board, authenticatedUser);
+
+            // set up the request
+            url = "/boards/" + board.getId();
+            httpEntity = new HttpEntity<>(httpHeaders);
+        }
+
         @Test
+        @DisplayName("Get the board by id")
         public void itShouldGetBoardById() {
-            // given a board is created
-            Board createdBoard = boardService.createBoard(board, authenticatedUser);
-
-            // given the request
-            String url = "/boards/" + createdBoard.getId();
-            HttpEntity<Board> httpEntity = new HttpEntity<>(httpHeaders);
-
-            // when a get request is made to fetch the board by id
+            // when a GET request is made to fetch the board by id
             ResponseEntity<Board> response =
                     restTemplate.exchange(url, HttpMethod.GET, httpEntity, Board.class);
 
             // then the board should be retrieved successfully
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody().getId()).isNotNull().isPositive();
-            assertThat(response.getBody()).isEqualTo(createdBoard);
+            assertThat(response.getBody()).isEqualTo(board);
         }
 
         @Test
-        public void givenGetBoardById_itShouldGetListOfColumns() {
-            // given a board
-            board = boardService.createBoard(board, authenticatedUser);
-
+        @DisplayName("Get the board by id along with the list of its column")
+        public void itShouldGetBoardByIdAlongWithItsColumns() {
             // given a list of columns
             List<Column> columns = List.of(
                     Column.builder().title("column 1").board(board).build(),
@@ -134,10 +140,6 @@ public class BoardIT {
             );
 
             columns = (List<Column>) columnRepository.saveAll(columns);
-
-            // given the request
-            String url = "/boards/" + board.getId();
-            HttpEntity<Board> httpEntity = new HttpEntity<>(httpHeaders);
 
             // when a GET request is made to fetch the board by id
             ResponseEntity<Board> response =
@@ -151,7 +153,7 @@ public class BoardIT {
 
     @Nested
     @DisplayName("DELETE")
-    class Delete{
+    class Delete {
         @Test
         public void itShouldDeleteBoardById() {
             // given a board
