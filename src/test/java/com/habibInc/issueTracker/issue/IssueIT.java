@@ -152,10 +152,10 @@ public class IssueIT {
 
         @Test
         public void itShouldGetIssueById() {
-            // save issue2
-            issueRepository.save(issue2);
+            // given the issue is created
+            issue2 = issueService.createIssue(issue2, authenticatedUser);
 
-            // make get request to retrieve an issue by id
+            // when a GET request is made to retrieve an issue by id
             ResponseEntity<Issue> response = restTemplate.exchange(
                     "/issues/" + issue2.getId(),
                     HttpMethod.GET,
@@ -163,41 +163,25 @@ public class IssueIT {
                     Issue.class
             );
 
-            // expect the proper issue to have been retrieved
+            // then expect the proper issue to have been retrieved
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody().getId()).isPositive();
             assertThat(response.getBody()).isEqualTo(issue2);
         }
 
         @Test
-        public void whenIssueCannotBeFoundById_itShouldReturnIssueNotFoundError() {
+        public void whenIssueDoesNotExist_itShouldReturnIssueNotFoundError() {
             // when a request for an issue that does not exist is received
             ResponseEntity<ApiError> response = restTemplate.exchange(
-                    "/issues/" + 3L,
+                    "/issues/" + 404L,
                     HttpMethod.GET,
                     httpEntity,
                     ApiError.class
             );
 
-            // then the response should be a 404 error with an 'issue not found' message
+            // then the response should be a 404 issue not found error
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
             assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Issue not found");
-            assertThat(response.getBody().getTimestamp()).isNotNull();
-        }
-
-        @Test
-        public void whenIssueIdIsInvalid_itShouldReturnInvalidIssueIdError() {
-            // when a request with an invalid issue id is received
-            ResponseEntity<ApiError> response = restTemplate.exchange(
-                    "/issues/invalid",
-                    HttpMethod.GET,
-                    httpEntity,
-                    ApiError.class
-            );
-
-            // then the response should be a 400 error with an 'invalid issue id' message
-            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-            assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Invalid issue id");
             assertThat(response.getBody().getTimestamp()).isNotNull();
         }
 
@@ -207,7 +191,7 @@ public class IssueIT {
             List<Issue> issues = Arrays.asList(issue1, issue2);
             issueRepository.saveAll(issues);
 
-            // fetch the list of all issues
+            // when a GET request to fetch the list of all issues is made
             ResponseEntity<Issue[]> response = restTemplate.exchange(
                     "/issues",
                     HttpMethod.GET,
@@ -215,10 +199,9 @@ public class IssueIT {
                     Issue[].class
             );
 
-            // convert the response issues array to list
             List<Issue> responseBody = Arrays.asList(response.getBody());
 
-            // expect all issues to have been retrieved
+            // then expect all issues to have been retrieved
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(responseBody).isEqualTo(issues);
         }
