@@ -141,13 +141,19 @@ public class IssueIT {
     @Nested
     @DisplayName("GET")
     class Get {
+
+        HttpEntity<Void> httpEntity;
+
+        @BeforeEach
+        public void setup(){
+            // set up authorization header
+            httpEntity = new HttpEntity<>(headers);
+        }
+
         @Test
         public void itShouldGetIssueById() {
             // save issue2
             issueRepository.save(issue2);
-
-            // set up authorization header
-            HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
 
             // make get request to retrieve an issue by id
             ResponseEntity<Issue> response = restTemplate.exchange(
@@ -165,9 +171,6 @@ public class IssueIT {
 
         @Test
         public void whenIssueCannotBeFoundById_itShouldReturnIssueNotFoundError() {
-            // set up authorization header
-            HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
-
             // when a request for an issue that does not exist is received
             ResponseEntity<ApiError> response = restTemplate.exchange(
                     "/issues/" + 3L,
@@ -184,9 +187,6 @@ public class IssueIT {
 
         @Test
         public void whenIssueIdIsInvalid_itShouldReturnInvalidIssueIdError() {
-            // set up authorization header
-            HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
-
             // when a request with an invalid issue id is received
             ResponseEntity<ApiError> response = restTemplate.exchange(
                     "/issues/invalid",
@@ -203,9 +203,6 @@ public class IssueIT {
 
         @Test
         public void itShouldGetAllIssues() {
-            // set up authorization header
-            HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
-
             // given a list of issues
             List<Issue> issues = Arrays.asList(issue1, issue2);
             issueRepository.saveAll(issues);
