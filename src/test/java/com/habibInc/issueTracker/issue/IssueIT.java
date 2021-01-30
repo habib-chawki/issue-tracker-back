@@ -207,107 +207,112 @@ public class IssueIT {
         }
     }
 
-    @Test
-    public void itShouldUpdateIssue() throws JsonProcessingException {
-        // create the issue
-        Issue issue = issueService.createIssue(issue1, authenticatedUser);
+    @Nested
+    @DisplayName("PUT")
+    class Update {
 
-        // copy and update the issue
-        String issueJson = mapper.writeValueAsString(issue);
-        Issue updatedIssue = mapper.readValue(issueJson, Issue.class);
+        @Test
+        public void itShouldUpdateIssue() throws JsonProcessingException {
+            // create the issue
+            Issue issue = issueService.createIssue(issue1, authenticatedUser);
 
-        updatedIssue.setSummary("updated");
-        updatedIssue.setType(IssueType.BUG);
+            // copy and update the issue
+            String issueJson = mapper.writeValueAsString(issue);
+            Issue updatedIssue = mapper.readValue(issueJson, Issue.class);
 
-        // set up the request body and headers
-        HttpEntity<Issue> httpEntity = new HttpEntity<>(updatedIssue, headers);
+            updatedIssue.setSummary("updated");
+            updatedIssue.setType(IssueType.BUG);
 
-        // when a put request is made with a valid id of an issue that exists
-        ResponseEntity<Issue> response = restTemplate.exchange(
-                "/issues/" + issue.getId(),
-                HttpMethod.PUT,
-                httpEntity,
-                Issue.class
-        );
+            // set up the request body and headers
+            HttpEntity<Issue> httpEntity = new HttpEntity<>(updatedIssue, headers);
 
-        // then the issue should be updated
-        assertThat(issueRepository.findById(issue.getId()).get()).isEqualTo(updatedIssue);
+            // when a put request is made with a valid id of an issue that exists
+            ResponseEntity<Issue> response = restTemplate.exchange(
+                    "/issues/" + issue.getId(),
+                    HttpMethod.PUT,
+                    httpEntity,
+                    Issue.class
+            );
 
-        // the response body should be the updated issue
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isEqualTo(updatedIssue);
-    }
+            // then the issue should be updated
+            assertThat(issueRepository.findById(issue.getId()).get()).isEqualTo(updatedIssue);
 
-    @Test
-    public void givenUpdateIssue_whenIssueDoesNotExist_itShouldReturnIssueNotFoundError() {
-        // set up the request body and headers
-        HttpEntity<Issue> httpEntity = new HttpEntity<>(issue1, headers);
+            // the response body should be the updated issue
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody()).isEqualTo(updatedIssue);
+        }
 
-        // when a put request is made with an id of an issue that does not exist
-        ResponseEntity<ApiError> response = restTemplate.exchange(
-                "/issues/100",
-                HttpMethod.PUT,
-                httpEntity,
-                ApiError.class
-        );
+        @Test
+        public void givenUpdateIssue_whenIssueDoesNotExist_itShouldReturnIssueNotFoundError() {
+            // set up the request body and headers
+            HttpEntity<Issue> httpEntity = new HttpEntity<>(issue1, headers);
 
-        // then the response should be a 404 issue not found error
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Issue not found");
-    }
+            // when a put request is made with an id of an issue that does not exist
+            ResponseEntity<ApiError> response = restTemplate.exchange(
+                    "/issues/100",
+                    HttpMethod.PUT,
+                    httpEntity,
+                    ApiError.class
+            );
 
-    @Test
-    public void givenUpdateIssue_whenIssueIdIsInvalid_itShouldReturnInvalidIssueIdError() {
-        // set up the request body and headers
-        HttpEntity<Issue> httpEntity = new HttpEntity<>(issue1, headers);
+            // then the response should be a 404 issue not found error
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+            assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Issue not found");
+        }
 
-        // when a put request is made with an invalid issue id
-        ResponseEntity<ApiError> response = restTemplate.exchange(
-                "/issues/invalid",
-                HttpMethod.PUT,
-                httpEntity,
-                ApiError.class
-        );
+        @Test
+        public void givenUpdateIssue_whenIssueIdIsInvalid_itShouldReturnInvalidIssueIdError() {
+            // set up the request body and headers
+            HttpEntity<Issue> httpEntity = new HttpEntity<>(issue1, headers);
 
-        // then the response should be a 400 bad request error
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Invalid issue id");
-    }
+            // when a put request is made with an invalid issue id
+            ResponseEntity<ApiError> response = restTemplate.exchange(
+                    "/issues/invalid",
+                    HttpMethod.PUT,
+                    httpEntity,
+                    ApiError.class
+            );
 
-    @Test
-    public void whenAuthenticatedUserIsNotTheReporter_itShouldNotAllowIssueUpdate() throws JsonProcessingException {
-        // given a random reporter who's not the authenticated user
-        User randomReporter = new User();
+            // then the response should be a 400 bad request error
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+            assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Invalid issue id");
+        }
 
-        randomReporter.setEmail("not.the.authenticated.user@email.com");
-        randomReporter.setPassword("bla_bla_bla");
+        @Test
+        public void whenAuthenticatedUserIsNotTheReporter_itShouldNotAllowIssueUpdate() throws JsonProcessingException {
+            // given a random reporter who's not the authenticated user
+            User randomReporter = new User();
 
-        userService.createUser(randomReporter);
+            randomReporter.setEmail("not.the.authenticated.user@email.com");
+            randomReporter.setPassword("bla_bla_bla");
 
-        // given an issue created by the random reporter
-        Issue issue = issueService.createIssue(issue1, randomReporter);
+            userService.createUser(randomReporter);
 
-        // copy and update the issue
-        String issueJson = mapper.writeValueAsString(issue);
-        Issue updatedIssue = mapper.readValue(issueJson, Issue.class);
+            // given an issue created by the random reporter
+            Issue issue = issueService.createIssue(issue1, randomReporter);
 
-        updatedIssue.setSummary("updated");
-        updatedIssue.setType(IssueType.BUG);
+            // copy and update the issue
+            String issueJson = mapper.writeValueAsString(issue);
+            Issue updatedIssue = mapper.readValue(issueJson, Issue.class);
 
-        // given the request body and headers
-        HttpEntity<Issue> httpEntity = new HttpEntity<>(updatedIssue, headers);
+            updatedIssue.setSummary("updated");
+            updatedIssue.setType(IssueType.BUG);
 
-        // when a put request is made to update an issue that belongs to someone else
-        ResponseEntity<ApiError> response = restTemplate.exchange(
-                "/issues/" + issue.getId(),
-                HttpMethod.PUT,
-                httpEntity,
-                ApiError.class
-        );
+            // given the request body and headers
+            HttpEntity<Issue> httpEntity = new HttpEntity<>(updatedIssue, headers);
 
-        // then the response should be an unauthorized error
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
-        assertThat(response.getBody().getErrorMessage()).contains("Forbidden");
+            // when a put request is made to update an issue that belongs to someone else
+            ResponseEntity<ApiError> response = restTemplate.exchange(
+                    "/issues/" + issue.getId(),
+                    HttpMethod.PUT,
+                    httpEntity,
+                    ApiError.class
+            );
+
+            // then the response should be an unauthorized error
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+            assertThat(response.getBody().getErrorMessage()).contains("Forbidden");
+        }
     }
 
     @Test
