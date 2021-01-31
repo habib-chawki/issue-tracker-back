@@ -97,12 +97,13 @@ public class CommentIT {
     @DisplayName("POST")
     class Post {
 
-        String baseUrl;
+        final String baseUrl = "/issues/%s/comments";
+
         HttpEntity<Comment> httpEntity;
 
         @BeforeEach
         public void setup() {
-            baseUrl = "/issues/%s/comments";
+
             httpEntity  = new HttpEntity<>(comment, headers);
         }
 
@@ -162,7 +163,13 @@ public class CommentIT {
     class Delete {
 
         final String baseUrl = "/issues/%s/comments/%s";
-        final HttpEntity<Void> httpEntity = new HttpEntity<>(headers);
+
+        HttpEntity<Void> httpEntity;
+
+        @BeforeEach
+        public void setup() {
+            httpEntity = new HttpEntity<>(headers);
+        }
 
         @Test
         public void itShouldDeleteComment() {
@@ -221,7 +228,12 @@ public class CommentIT {
         final String updatedContent = "updated comment content";
         final String requestBody = String.format("{\"content\" : \"%s\"}", updatedContent);
 
-        final HttpEntity<String> httpEntity = new HttpEntity<>(requestBody, headers);
+        HttpEntity<String> httpEntity;
+
+        @BeforeEach
+        public void setup() {
+            httpEntity = new HttpEntity<>(requestBody, headers);
+        }
 
         @Test
         public void itShouldUpdateComment() {
