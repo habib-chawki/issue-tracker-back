@@ -160,6 +160,7 @@ public class CommentIT {
     @DisplayName("DELETE")
     class Delete {
 
+        String baseUrl = "/issues/%s/comments/%s";
         HttpEntity<Void> httpEntity;
 
         @BeforeEach
@@ -174,11 +175,11 @@ public class CommentIT {
             comment = commentService.createComment(comment, issue.getId(), authenticatedUser);
 
             // set base url
-            String baseUrl = String.format("/issues/%s/comments/%s", issue.getId().toString(), comment.getId());
+            String url = String.format(baseUrl, issue.getId().toString(), comment.getId());
 
             // when a delete request is made
             ResponseEntity<Object> response =
-                    restTemplate.exchange(baseUrl, HttpMethod.DELETE, httpEntity, Object.class);
+                    restTemplate.exchange(url, HttpMethod.DELETE, httpEntity, Object.class);
 
             // then the comment should be deleted successfully
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -201,11 +202,11 @@ public class CommentIT {
             comment = commentService.createComment(comment, issue.getId(), randomUser);
 
             // set base url
-            String baseUrl = String.format("/issues/%s/comments/%s", issue.getId().toString(), comment.getId());
+            String url = String.format(baseUrl, issue.getId().toString(), comment.getId());
 
             // when attempting to delete a comment that does not belong to the authenticated user
             ResponseEntity<ApiError> response =
-                    restTemplate.exchange(baseUrl, HttpMethod.DELETE, httpEntity, ApiError.class);
+                    restTemplate.exchange(url, HttpMethod.DELETE, httpEntity, ApiError.class);
 
             // then a forbidden error should be returned
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
