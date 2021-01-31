@@ -96,11 +96,16 @@ public class CommentIT {
     @Nested
     @DisplayName("POST")
     class Post {
+        HttpEntity<Comment> httpEntity;
+
+        @BeforeEach
+        public void setup() {
+            // set up request body and authorization header
+            httpEntity = new HttpEntity<>(comment, headers);
+        }
+
         @Test
         public void itShouldCreateComment() {
-            // set up request body and authorization header
-            HttpEntity<Comment> httpEntity = new HttpEntity<>(comment, headers);
-
             String baseUrl = String.format("/issues/%s/comments", issue.getId().toString());
 
             // make post request to create a new comment
@@ -115,9 +120,6 @@ public class CommentIT {
 
         @Test
         public void givenCreateComment_itShouldSetTheIssueAndTheAuthenticatedUserAsOwner() {
-            // set up request body and authorization header
-            HttpEntity<Comment> httpEntity = new HttpEntity<>(comment, headers);
-
             // set up base url
             String baseUrl = String.format("/issues/%s/comments", issue.getId().toString());
 
@@ -138,9 +140,6 @@ public class CommentIT {
 
         @Test
         public void givenCreateComment_whenIssueDoesNotExist_itShouldReturnIssueNotFoundError() {
-            // set up request body and authorization header
-            HttpEntity<Comment> httpEntity = new HttpEntity<>(comment2, headers);
-
             // given an issue that does not exist
             String baseUrl = String.format("/issues/%s/comments", 10L);
 
