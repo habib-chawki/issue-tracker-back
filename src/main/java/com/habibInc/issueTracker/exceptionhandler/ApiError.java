@@ -1,5 +1,6 @@
 package com.habibInc.issueTracker.exceptionhandler;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,6 +14,8 @@ import java.time.LocalDateTime;
 public class ApiError {
     private String errorMessage;
     private HttpStatus status;
+
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime timestamp;
 
     public ApiError(String errorMessage, LocalDateTime timestamp) {
