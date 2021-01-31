@@ -10,9 +10,7 @@ import com.habibInc.issueTracker.security.JwtUtil;
 import com.habibInc.issueTracker.user.User;
 import com.habibInc.issueTracker.user.UserRepository;
 import com.habibInc.issueTracker.user.UserService;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -24,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class CommentIT {
     @Autowired
     TestRestTemplate restTemplate;
@@ -50,8 +49,8 @@ public class CommentIT {
     String token;
     HttpHeaders headers;
 
-    @BeforeEach
-    public void auth() {
+    @BeforeAll
+    public void authSetup() {
         // create a user to authenticate
         authenticatedUser = new User();
         authenticatedUser.setEmail("authenticated.user@email.com");
@@ -267,6 +266,10 @@ public class CommentIT {
     @AfterEach
     public void teardown() {
         issueRepository.deleteAll();
+    }
+
+    @AfterAll
+    public void authTeardown() {
         userRepository.deleteAll();
     }
 }
