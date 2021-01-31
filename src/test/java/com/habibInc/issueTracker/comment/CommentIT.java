@@ -214,62 +214,67 @@ public class CommentIT {
         }
     }
 
-    @Test
-    public void itShouldUpdateComment() {
-        // given a comment created by the authenticated user
-        comment = commentService.createComment(comment, issue.getId(), authenticatedUser);
+    @Nested
+    @DisplayName("PATCH")
+    class Patch {
 
-        // given the new comment content
-        String content = "new and improved updated content";
-        String newCommentContent = String.format("{\"content\" : \"%s\"}", content);
+        @Test
+        public void itShouldUpdateComment() {
+            // given a comment created by the authenticated user
+            comment = commentService.createComment(comment, issue.getId(), authenticatedUser);
 
-        // given the authorization header
-        HttpEntity<String> httpEntity = new HttpEntity<>(newCommentContent, headers);
+            // given the new comment content
+            String content = "new and improved updated content";
+            String newCommentContent = String.format("{\"content\" : \"%s\"}", content);
 
-        // given the update comment url
-        String baseUrl = String.format("/issues/%s/comments/%s", issue.getId(), comment.getId());
+            // given the authorization header
+            HttpEntity<String> httpEntity = new HttpEntity<>(newCommentContent, headers);
 
-        // when a request to update the comment is made
-        ResponseEntity<Comment> response =
-                restTemplate.exchange(baseUrl, HttpMethod.PATCH, httpEntity, Comment.class);
+            // given the update comment url
+            String baseUrl = String.format("/issues/%s/comments/%s", issue.getId(), comment.getId());
 
-        // then the comment content should be updated
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().getContent()).isEqualTo(content);
-        assertThat(response).isEqualToComparingOnlyGivenFields(comment);
-    }
+            // when a request to update the comment is made
+            ResponseEntity<Comment> response =
+                    restTemplate.exchange(baseUrl, HttpMethod.PATCH, httpEntity, Comment.class);
 
-    @Test
-    public void givenUpdateComment_whenAuthenticatedUserIsNotTheOwner_itShouldReturnForbiddenError() {
-        // given a random user
-        User randomUser = new User();
-        randomUser.setId(555L);
-        randomUser.setEmail("random.user@email.com");
-        randomUser.setPassword("random_pass");
+            // then the comment content should be updated
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody().getContent()).isEqualTo(content);
+            assertThat(response).isEqualToComparingOnlyGivenFields(comment);
+        }
 
-        randomUser = userService.createUser(randomUser);
+        @Test
+        public void givenUpdateComment_whenAuthenticatedUserIsNotTheOwner_itShouldReturnForbiddenError() {
+            // given a random user
+            User randomUser = new User();
+            randomUser.setId(555L);
+            randomUser.setEmail("random.user@email.com");
+            randomUser.setPassword("random_pass");
 
-        // given a comment created by the random user
-        comment = commentService.createComment(comment, issue.getId(), randomUser);
+            randomUser = userService.createUser(randomUser);
 
-        // given the new comment content
-        String content = "new and improved updated content";
-        String newCommentContent = String.format("{\"content\" : \"%s\"}", content);
+            // given a comment created by the random user
+            comment = commentService.createComment(comment, issue.getId(), randomUser);
 
-        // given the authorization header
-        HttpEntity<String> httpEntity = new HttpEntity<>(newCommentContent, headers);
+            // given the new comment content
+            String content = "new and improved updated content";
+            String newCommentContent = String.format("{\"content\" : \"%s\"}", content);
 
-        // given the update comment url
-        String baseUrl = String.format("/issues/%s/comments/%s", issue.getId(), comment.getId());
+            // given the authorization header
+            HttpEntity<String> httpEntity = new HttpEntity<>(newCommentContent, headers);
 
-        // when a request to update someone else's comment is made
-        ResponseEntity<ApiError> response =
-                restTemplate.exchange(baseUrl, HttpMethod.PATCH, httpEntity, ApiError.class);
+            // given the update comment url
+            String baseUrl = String.format("/issues/%s/comments/%s", issue.getId(), comment.getId());
 
-        // then a forbidden error should be returned
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
-        assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Forbidden");
-        assertThat(response.getBody().getTimestamp()).isNotNull();
+            // when a request to update someone else's comment is made
+            ResponseEntity<ApiError> response =
+                    restTemplate.exchange(baseUrl, HttpMethod.PATCH, httpEntity, ApiError.class);
+
+            // then a forbidden error should be returned
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+            assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Forbidden");
+            assertThat(response.getBody().getTimestamp()).isNotNull();
+        }
     }
 
     @AfterEach
