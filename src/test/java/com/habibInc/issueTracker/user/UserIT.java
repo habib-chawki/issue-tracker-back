@@ -113,32 +113,6 @@ public class UserIT {
     }
 
     @Test
-    public void givenGetUserById_whenIdIsInvalid_itShouldReturnInvalidUserIdError() {
-
-        // save the user to pass the authorization filter successfully
-        userService.createUser(user);
-
-        // set up authorization header
-        HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
-
-        // given an error message
-        String errorMessage = "Invalid user id";
-
-        // when a get request with an invalid user id is made
-        ResponseEntity<ApiError> response = restTemplate.exchange(
-                "/users/invalid",
-                HttpMethod.GET,
-                httpEntity,
-                ApiError.class
-        );
-
-        // then a 400 invalid user id error should be returned
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(response.getBody().getErrorMessage()).isEqualToIgnoringCase(errorMessage);
-        assertThat(response.getBody().getTimestamp()).isNotNull();
-    }
-
-    @Test
     public void itShouldHashUserPassword() {
         // set up authorization header
         HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
