@@ -223,18 +223,15 @@ public class CommentIT {
     class Patch {
 
         String baseUrl = "/issues/%s/comments/%s";
+        String updatedContent = "updated comment content";
+        String requestBody = String.format("{\"content\" : \"%s\"}", updatedContent);
+
+        HttpEntity<String> httpEntity = new HttpEntity<>(requestBody, headers);
 
         @Test
         public void itShouldUpdateComment() {
             // given a comment created by the authenticated user
             comment = commentService.createComment(comment, issue.getId(), authenticatedUser);
-
-            // given the new comment content
-            String content = "new and improved updated content";
-            String newCommentContent = String.format("{\"content\" : \"%s\"}", content);
-
-            // given the authorization header
-            HttpEntity<String> httpEntity = new HttpEntity<>(newCommentContent, headers);
 
             // given the update comment url
             String url = String.format(baseUrl, issue.getId(), comment.getId());
@@ -245,7 +242,7 @@ public class CommentIT {
 
             // then the comment content should be updated
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-            assertThat(response.getBody().getContent()).isEqualTo(content);
+            assertThat(response.getBody().getContent()).isEqualTo(updatedContent);
             assertThat(response).isEqualToComparingOnlyGivenFields(comment);
         }
 
@@ -261,13 +258,6 @@ public class CommentIT {
 
             // given a comment created by the random user
             comment = commentService.createComment(comment, issue.getId(), randomUser);
-
-            // given the new comment content
-            String content = "new and improved updated content";
-            String newCommentContent = String.format("{\"content\" : \"%s\"}", content);
-
-            // given the authorization header
-            HttpEntity<String> httpEntity = new HttpEntity<>(newCommentContent, headers);
 
             // given the update comment url
             String url = String.format(baseUrl, issue.getId(), comment.getId());
