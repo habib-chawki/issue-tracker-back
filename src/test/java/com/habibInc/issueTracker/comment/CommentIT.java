@@ -160,11 +160,16 @@ public class CommentIT {
     @DisplayName("DELETE")
     class Delete {
 
+        HttpEntity<Void> httpEntity;
+
+        @BeforeEach
+        public void setup() {
+            // set authorization header
+            httpEntity = new HttpEntity<>(headers);
+        }
+
         @Test
         public void itShouldDeleteComment() {
-            // set authorization header
-            HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
-
             // create the comment
             comment = commentService.createComment(comment, issue.getId(), authenticatedUser);
 
@@ -191,9 +196,6 @@ public class CommentIT {
             randomUser.setPassword("random_pass");
 
             randomUser = userService.createUser(randomUser);
-
-            // set authorization header
-            HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
 
             // create the comment by the random user
             comment = commentService.createComment(comment, issue.getId(), randomUser);
