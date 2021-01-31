@@ -155,58 +155,63 @@ public class CommentIT {
         }
     }
 
-    @Test
-    public void itShouldDeleteComment() {
-        // set authorization header
-        HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
+    @Nested
+    @DisplayName("DELETE")
+    class Delete {
 
-        // create the comment
-        comment = commentService.createComment(comment, issue.getId(), authenticatedUser);
+        @Test
+        public void itShouldDeleteComment() {
+            // set authorization header
+            HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
 
-        // set base url
-        String baseUrl = String.format("/issues/%s/comments/%s", issue.getId().toString(), comment.getId());
+            // create the comment
+            comment = commentService.createComment(comment, issue.getId(), authenticatedUser);
 
-        // when a delete request is made
-        ResponseEntity<Object> response =
-                restTemplate.exchange(baseUrl, HttpMethod.DELETE, httpEntity, Object.class);
+            // set base url
+            String baseUrl = String.format("/issues/%s/comments/%s", issue.getId().toString(), comment.getId());
 
-        // then the comment should be deleted successfully
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThatExceptionOfType(ResourceNotFoundException.class)
-                .isThrownBy(() -> commentService.getCommentById(issue.getId()))
-                .withMessageContaining("Comment not found");
-    }
+            // when a delete request is made
+            ResponseEntity<Object> response =
+                    restTemplate.exchange(baseUrl, HttpMethod.DELETE, httpEntity, Object.class);
 
-    @Test
-    public void givenDeleteComment_whenAuthenticatedUserIsNotTheOwner_itShouldReturnForbiddenError() {
-        // set and save a random user
-        User randomUser = new User();
-        randomUser.setId(555L);
-        randomUser.setEmail("random.user@email.com");
-        randomUser.setPassword("random_pass");
+            // then the comment should be deleted successfully
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThatExceptionOfType(ResourceNotFoundException.class)
+                    .isThrownBy(() -> commentService.getCommentById(issue.getId()))
+                    .withMessageContaining("Comment not found");
+        }
 
-        randomUser = userService.createUser(randomUser);
+        @Test
+        public void givenDeleteComment_whenAuthenticatedUserIsNotTheOwner_itShouldReturnForbiddenError() {
+            // set and save a random user
+            User randomUser = new User();
+            randomUser.setId(555L);
+            randomUser.setEmail("random.user@email.com");
+            randomUser.setPassword("random_pass");
 
-        // set authorization header
-        HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
+            randomUser = userService.createUser(randomUser);
 
-        // create the comment by the random user
-        comment = commentService.createComment(comment, issue.getId(), randomUser);
+            // set authorization header
+            HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
 
-        // set base url
-        String baseUrl = String.format("/issues/%s/comments/%s", issue.getId().toString(), comment.getId());
+            // create the comment by the random user
+            comment = commentService.createComment(comment, issue.getId(), randomUser);
 
-        // when attempting to delete a comment that does not belong to the authenticated user
-        ResponseEntity<ApiError> response =
-                restTemplate.exchange(baseUrl, HttpMethod.DELETE, httpEntity, ApiError.class);
+            // set base url
+            String baseUrl = String.format("/issues/%s/comments/%s", issue.getId().toString(), comment.getId());
 
-        // then a forbidden error should be returned
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
-        assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Forbidden");
+            // when attempting to delete a comment that does not belong to the authenticated user
+            ResponseEntity<ApiError> response =
+                    restTemplate.exchange(baseUrl, HttpMethod.DELETE, httpEntity, ApiError.class);
 
-        assertThatExceptionOfType(ForbiddenOperationException.class)
-                .isThrownBy(() -> commentService.deleteComment(issue.getId(), comment.getId(), authenticatedUser))
-                .withMessageContaining("Forbidden");
+            // then a forbidden error should be returned
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+            assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Forbidden");
+
+            assertThatExceptionOfType(ForbiddenOperationException.class)
+                    .isThrownBy(() -> commentService.deleteComment(issue.getId(), comment.getId(), authenticatedUser))
+                    .withMessageContaining("Forbidden");
+        }
     }
 
     @Test
