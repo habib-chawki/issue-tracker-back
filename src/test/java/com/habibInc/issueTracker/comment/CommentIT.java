@@ -178,8 +178,8 @@ public class CommentIT {
             String url = String.format(baseUrl, issue.getId().toString(), comment.getId());
 
             // when a delete request is made
-            ResponseEntity<Object> response =
-                    restTemplate.exchange(url, HttpMethod.DELETE, httpEntity, Object.class);
+            ResponseEntity<Void> response =
+                    restTemplate.exchange(url, HttpMethod.DELETE, httpEntity, Void.class);
 
             // then the comment should be deleted successfully
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -222,6 +222,8 @@ public class CommentIT {
     @DisplayName("PATCH")
     class Patch {
 
+        String baseUrl = "/issues/%s/comments/%s";
+
         @Test
         public void itShouldUpdateComment() {
             // given a comment created by the authenticated user
@@ -235,11 +237,11 @@ public class CommentIT {
             HttpEntity<String> httpEntity = new HttpEntity<>(newCommentContent, headers);
 
             // given the update comment url
-            String baseUrl = String.format("/issues/%s/comments/%s", issue.getId(), comment.getId());
+            String url = String.format(baseUrl, issue.getId(), comment.getId());
 
             // when a request to update the comment is made
             ResponseEntity<Comment> response =
-                    restTemplate.exchange(baseUrl, HttpMethod.PATCH, httpEntity, Comment.class);
+                    restTemplate.exchange(url, HttpMethod.PATCH, httpEntity, Comment.class);
 
             // then the comment content should be updated
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -268,11 +270,11 @@ public class CommentIT {
             HttpEntity<String> httpEntity = new HttpEntity<>(newCommentContent, headers);
 
             // given the update comment url
-            String baseUrl = String.format("/issues/%s/comments/%s", issue.getId(), comment.getId());
+            String url = String.format(baseUrl, issue.getId(), comment.getId());
 
             // when a request to update someone else's comment is made
             ResponseEntity<ApiError> response =
-                    restTemplate.exchange(baseUrl, HttpMethod.PATCH, httpEntity, ApiError.class);
+                    restTemplate.exchange(url, HttpMethod.PATCH, httpEntity, ApiError.class);
 
             // then a forbidden error should be returned
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
