@@ -98,7 +98,9 @@ public class ColumnIT {
         @Nested
         @DisplayName("Create a column")
         class CreateColumn {
-            String baseUrl = "/boards/%s/column";
+
+            final String baseUrl = "/boards/%s/column";
+
             HttpEntity<Column> httpEntity;
 
             @BeforeEach
@@ -149,7 +151,7 @@ public class ColumnIT {
         @DisplayName("Create a list of columns")
         class CreateColumns {
 
-            String baseUrl = "/boards/%s/columns";
+            final String baseUrl = "/boards/%s/columns";
 
             List<Column> columnsList;
             HttpEntity<List<Column>> httpEntity;
@@ -215,7 +217,8 @@ public class ColumnIT {
         @DisplayName("Get a column by id")
         class GetColumn {
 
-            String baseUrl = "/boards/%s/columns/%s";
+            final String baseUrl = "/boards/%s/columns/%s";
+
             HttpEntity<Column> httpEntity;
 
             @BeforeEach
@@ -355,6 +358,9 @@ public class ColumnIT {
     @Nested
     @DisplayName("DELETE")
     class Delete {
+
+        final String baseUrl = "/boards/%s/columns/%s";
+
         @Test
         public void itShouldDeleteColumnById() {
             // given a created column
@@ -364,7 +370,7 @@ public class ColumnIT {
             assertThat(columnRepository.findById(column.getId()).isPresent()).isTrue();
 
             // given the DELETE url endpoint
-            String url = String.format("/boards/%s/columns/%s", board.getId(), column.getId());
+            String url = String.format(baseUrl, board.getId(), column.getId());
 
             // given the request
             HttpEntity<Void> httpEntity = new HttpEntity<>(httpHeaders);
@@ -392,7 +398,7 @@ public class ColumnIT {
             column = columnService.createColumn(board.getId(), column);
 
             // given the DELETE url endpoint
-            String url = String.format("/boards/%s/columns/%s", board.getId(), column.getId());
+            String url = String.format(baseUrl, board.getId(), column.getId());
 
             // given the request
             HttpEntity<Void> httpEntity = new HttpEntity<>(httpHeaders);
@@ -411,16 +417,16 @@ public class ColumnIT {
     @DisplayName("PATCH")
     class Update{
 
-        String baseUrl = "/boards/%s/columns/%s";
+        final String baseUrl = "/boards/%s/columns/%s";
+        final String updatedTitle = "updated title";
+        final String requestBody = String.format("{\"title\": \"" + updatedTitle + "\"}");
 
-        // given the updated title
-        String newTitle = "updated title";
+        HttpEntity<String> httpEntity;
 
-        // given the request body
-        String requestBody = String.format("{\"title\": \"" + newTitle + "\"}");
-
-        // given the request
-        HttpEntity<String> httpEntity = new HttpEntity<>(requestBody, httpHeaders);
+        @BeforeEach
+        public void setup() {
+            httpEntity = new HttpEntity<>(requestBody, httpHeaders);
+        }
 
         @Test
         public void itShouldUpdateColumnTitle() {
@@ -437,7 +443,7 @@ public class ColumnIT {
             // then expect the response to be the column with the updated title
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isEqualToComparingOnlyGivenFields(column);
-            assertThat(response.getBody().getTitle()).isEqualTo(newTitle);
+            assertThat(response.getBody().getTitle()).isEqualTo(updatedTitle);
         }
 
         @Test
