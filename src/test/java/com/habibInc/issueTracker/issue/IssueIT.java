@@ -109,7 +109,6 @@ public class IssueIT {
         @BeforeEach
         public void setup() {
             httpEntity = new HttpEntity<>(issue1, headers);
-
         }
 
         @Test
@@ -261,24 +260,6 @@ public class IssueIT {
         }
 
         @Test
-        public void givenUpdateIssue_whenIssueIdIsInvalid_itShouldReturnInvalidIssueIdError() {
-            // set up the request body and headers
-            HttpEntity<Issue> httpEntity = new HttpEntity<>(issue1, headers);
-
-            // when a put request is made with an invalid issue id
-            ResponseEntity<ApiError> response = restTemplate.exchange(
-                    "/issues/invalid",
-                    HttpMethod.PUT,
-                    httpEntity,
-                    ApiError.class
-            );
-
-            // then the response should be a 400 bad request error
-            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-            assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Invalid issue id");
-        }
-
-        @Test
         public void whenAuthenticatedUserIsNotTheReporter_itShouldNotAllowIssueUpdate() throws JsonProcessingException {
             // given a random reporter who's not the authenticated user
             User randomReporter = new User();
@@ -359,26 +340,6 @@ public class IssueIT {
 
             // then a 404 issue not found error should be returned
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-            assertThat(response.getBody().getErrorMessage()).contains(errorMessage);
-        }
-
-        @Test
-        public void givenDeleteIssue_whenIssueIdIsInvalid_itShouldReturnInvalidIdError() {
-            String errorMessage = "Invalid issue id";
-
-            // set the authorization header
-            HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
-
-            // when the issue id is invalid
-            ResponseEntity<ApiError> response = restTemplate.exchange(
-                    "/issues/invalid",
-                    HttpMethod.DELETE,
-                    httpEntity,
-                    ApiError.class
-            );
-
-            // then a 400 invalid issue id error should be returned
-            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
             assertThat(response.getBody().getErrorMessage()).contains(errorMessage);
         }
 
