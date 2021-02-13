@@ -113,14 +113,14 @@ public class UserControllerTest {
 
     @Test
     @WithMockUser
-    public void itShouldReturnUserNotFoundError() throws Exception {
-        // given an error message
-        String errorMessage = "UserEntity not found";
+    public void givenGetUserById_whenUserDoesNotExist_itShouldReturnUserNotFoundError() throws Exception {
+        // given the expected error message
+        String errorMessage = "User not found";
 
-        // when the userEntity does not exist
+        // when the user does not exist
         when(userService.getUserById(10L)).thenThrow(new ResourceNotFoundException(errorMessage));
 
-        // then the response should be a 404 userEntity not found error
+        // then the response should be a 404 user not found error
         mockMvc.perform(get("/users/10")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -130,11 +130,11 @@ public class UserControllerTest {
 
     @Test
     @WithMockUser
-    public void itShouldReturnInvalidUserIdError() throws Exception {
-        // given an error message
+    public void givenGetUserById_whenIdIsInvalid_itShouldReturnInvalidUserIdError() throws Exception {
+        // given the expected error message
         String errorMessage = "Invalid user id";
 
-        // when a get request with an invalid userEntity id is received
+        // when a GET request with an invalid user id is made
         // then a 400 error should be returned
         mockMvc.perform(get("/users/invalid")
                 .contentType(MediaType.APPLICATION_JSON))
