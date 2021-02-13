@@ -70,7 +70,9 @@ public class UserControllerTest {
         mockMvc.perform(post("/users/signup")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorMessage")
+                        .value("Email should be valid"));
     }
 
     @Test
