@@ -65,6 +65,14 @@ public class UserIT {
     }
 
     @Test
+    public void whenUserIsSignedUp_itShouldResponseWithAuthTokenHeader() {
+        ResponseEntity<User> response =
+                restTemplate.postForEntity("/users/signup", user, User.class);
+
+        assertThat(response.getHeaders().get(JwtUtil.HEADER)).isNotNull();
+    }
+
+    @Test
     public void itShouldGetUserById() {
         // set up authorization header
         HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
