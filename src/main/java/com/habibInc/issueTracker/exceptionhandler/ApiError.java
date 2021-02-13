@@ -18,8 +18,9 @@ public class ApiError {
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime timestamp;
 
-    public ApiError(String errorMessage, LocalDateTime timestamp) {
+    public ApiError(String errorMessage, HttpStatus status, LocalDateTime timestamp) {
         this.errorMessage = errorMessage;
+        this.status = status;
         this.timestamp = timestamp;
     }
 }
