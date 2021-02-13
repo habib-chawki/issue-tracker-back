@@ -1,6 +1,5 @@
 package com.habibInc.issueTracker.user;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.security.JwtUtil;
@@ -43,13 +42,14 @@ public class UserControllerTest {
                 .lastName("last")
                 .userName("my_username")
                 .email("my_email@email.com")
-                .password("this is it")
+                .password("user_password")
                 .build();
     }
 
     @Test
     public void itShouldSignUpUser() throws Exception {
-        when(userService.createUser(any(User.class))).thenReturn(user);
+        when(userService.createUser(user)).thenReturn(user);
+        when(jwtUtil.generateToken(user.getEmail())).thenReturn("auth_token");
 
         String requestBody = mapper.writeValueAsString(user);
 
@@ -62,7 +62,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void whenUserIsSignedUp_itShouldReturnResponseWithAuthorizationTokenHeader() throws Exception {
+    public void whenUserIsSignedUp_itShouldRespondWithAuthorizationTokenHeader() throws Exception {
         // given the expected auth token
         String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbiI6InNvbWV0b2tlbiJ9.evnBwUTlQE0U2-hqZ3dUsrOoeb0y56sx_K9O0SbCs7Y";
 
@@ -71,7 +71,7 @@ public class UserControllerTest {
 
         String requestBody = mapper.writeValueAsString(user);
 
-        // when a user is signed up then expect an auth token header in the response
+        // when a user is signed up then expect the response to contain an auth token header
         mockMvc.perform(post("/users/signup")
                 .content(requestBody)
                 .contentType(MediaType.APPLICATION_JSON))
