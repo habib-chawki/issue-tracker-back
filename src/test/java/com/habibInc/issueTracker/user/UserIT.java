@@ -71,7 +71,7 @@ public class UserIT {
 
         // expect response to contain an auth token header
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(response.getHeaders().get(JwtUtil.HEADER)).isNotNull();
+        assertThat(response.getHeaders().get(JwtUtil.HEADER)).toString().startsWith(JwtUtil.TOKEN_PREFIX);
     }
 
     @Test
