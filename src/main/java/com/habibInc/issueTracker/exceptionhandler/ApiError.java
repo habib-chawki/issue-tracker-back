@@ -14,13 +14,15 @@ import java.time.LocalDateTime;
 public class ApiError {
     private String errorMessage;
     private HttpStatus status;
+    private String url;
 
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime timestamp;
 
-    public ApiError(String errorMessage, HttpStatus status, LocalDateTime timestamp) {
+    public ApiError(String errorMessage, HttpStatus status, String url, LocalDateTime timestamp) {
         this.errorMessage = errorMessage;
         this.status = status;
+        this.url = url;
         this.timestamp = timestamp;
     }
 }
