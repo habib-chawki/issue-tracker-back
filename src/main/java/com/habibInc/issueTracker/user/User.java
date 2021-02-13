@@ -5,6 +5,7 @@ import com.habibInc.issueTracker.issue.Issue;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,10 +24,12 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Email(message = "Email should be valid")
+    private String email;
+
     private String firstName;
     private String lastName;
     private String userName;
-    private String email;
     private String password;
 
     @OneToMany(mappedBy = "assignee")
