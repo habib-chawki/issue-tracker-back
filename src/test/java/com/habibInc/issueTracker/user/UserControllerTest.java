@@ -59,9 +59,8 @@ public class UserControllerTest {
 
     @Test
     public void givenUserSignup_whenEmailIsInvalid_itShouldReturnInvalidEmailError() throws Exception {
-        // given a user with an invalid email
-        User user = new User();
-        user.setEmail("Invalid_email");
+        // given an invalid user email
+        user.setEmail("invalid_email");
 
         // when a signup request with an invalid email is made
         String requestBody = mapper.writeValueAsString(user);
@@ -73,6 +72,11 @@ public class UserControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errorMessage")
                         .value("Email should be valid"));
+    }
+
+    @Test
+    public void givenUserSignup_whenPasswordIsInvalid_itShouldReturnInvalidPasswordError() {
+        //
     }
 
     @Test
