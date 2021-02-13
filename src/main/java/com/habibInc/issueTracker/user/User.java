@@ -6,6 +6,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.Objects;
 
@@ -27,10 +28,12 @@ public class User {
     @Email(message = "Email should be valid")
     private String email;
 
+    @Size(min = 5, message = "Password should be at least 5 characters long")
+    private String password;
+
     private String firstName;
     private String lastName;
     private String userName;
-    private String password;
 
     @OneToMany(mappedBy = "assignee")
     private List<Issue> assignedIssues;
