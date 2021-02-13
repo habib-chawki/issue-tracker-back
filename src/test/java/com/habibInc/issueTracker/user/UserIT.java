@@ -65,10 +65,12 @@ public class UserIT {
     }
 
     @Test
-    public void whenUserIsSignedUp_itShouldResponseWithAuthTokenHeader() {
+    public void whenUserIsSuccessfullySignedUp_itShouldResponseWithAuthTokenHeader() {
         ResponseEntity<User> response =
                 restTemplate.postForEntity("/users/signup", user, User.class);
 
+        // expect response to contain an auth token header
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getHeaders().get(JwtUtil.HEADER)).isNotNull();
     }
 
