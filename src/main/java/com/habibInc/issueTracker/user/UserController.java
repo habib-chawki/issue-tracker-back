@@ -29,10 +29,10 @@ public class UserController {
     public ResponseEntity<User> createUser(@RequestBody @Valid User user) {
         HttpHeaders headers = new HttpHeaders();
 
-        // generate auth token
-        String token = jwtUtil.generateToken(user.getEmail());
+        // generate auth token and add 'Bearer ' prefix
+        String token = JwtUtil.TOKEN_PREFIX + jwtUtil.generateToken(user.getEmail());
 
-        // set up auth header
+        // set up Authorization header
         headers.add(JwtUtil.HEADER, token);
 
         // invoke the service to create the user
