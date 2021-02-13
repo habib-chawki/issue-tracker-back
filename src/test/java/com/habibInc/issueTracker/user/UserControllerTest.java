@@ -1,7 +1,9 @@
 package com.habibInc.issueTracker.user;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
+import com.habibInc.issueTracker.security.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,9 @@ public class UserControllerTest {
 
     @MockBean
     UserService userService;
+
+    @MockBean
+    JwtUtil jwtUtil;
 
     User user;
 
@@ -54,6 +59,25 @@ public class UserControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(requestBody));
+    }
+
+    @Test
+    public void whenUserIsSignedUp_itShouldReturnResponseWithAuthorizationTokenHeader() throws Exception {
+        // given the expected auth token
+        String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbiI6InNvbWV0b2tlbiJ9.evnBwUTlQE0U2-hqZ3dUsrOoeb0y56sx_K9O0SbCs7Y";
+
+        when(userService.createUser(user)).thenReturn(user);
+        when(jwtUtil.generateToken(user.getEmail())).thenReturn(token);
+
+        String requestBody = mapper.writeValueAsString(user);
+
+        // when a user is signed up then expect an auth token header in the response
+        mockMvc.perform(post("/users/signup")
+                .content(requestBody)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andExpect(header().exists(JwtUtil.HEADER))
+                .andExpect(header().string(JwtUtil.HEADER, token));
     }
 
     @Test
