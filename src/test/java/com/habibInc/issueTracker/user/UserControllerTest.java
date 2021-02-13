@@ -77,7 +77,7 @@ public class UserControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(header().exists(JwtUtil.HEADER))
-                .andExpect(header().string(JwtUtil.HEADER, token));
+                .andExpect(header().string(JwtUtil.HEADER, JwtUtil.TOKEN_PREFIX + token));
     }
 
     @Test
