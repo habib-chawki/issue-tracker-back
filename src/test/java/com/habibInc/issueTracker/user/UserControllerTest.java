@@ -1,5 +1,6 @@
 package com.habibInc.issueTracker.user;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,6 +55,22 @@ public class UserControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(requestBody));
+    }
+
+    @Test
+    public void givenUserSignup_whenEmailIsInvalid_itShouldReturnInvalidEmailError() throws Exception {
+        // given a user with an invalid email
+        User user = new User();
+        user.setEmail("Invalid_email");
+
+        // when a signup request with an invalid email is made
+        String requestBody = mapper.writeValueAsString(user);
+
+        // then a 400 invalid email error should be returned
+        mockMvc.perform(post("/users/signup")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
