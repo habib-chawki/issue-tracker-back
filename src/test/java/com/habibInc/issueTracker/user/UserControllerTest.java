@@ -13,6 +13,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -75,8 +76,18 @@ public class UserControllerTest {
     }
 
     @Test
-    public void givenUserSignup_whenPasswordIsInvalid_itShouldReturnInvalidPasswordError() {
-        //
+    public void givenUserSignup_whenPasswordIsInvalid_itShouldReturnInvalidPasswordError() throws Exception {
+        // given an invalid short user password
+        user.setPassword("1a");
+
+        // when a signup request with an invalid password is made
+        String requestBody = mapper.writeValueAsString(user);
+
+        // then a 400 invalid password error should be returned
+        mockMvc.perform(post("/users/signup")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
