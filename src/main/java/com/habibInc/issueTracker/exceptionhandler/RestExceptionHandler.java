@@ -3,6 +3,7 @@ package com.habibInc.issueTracker.exceptionhandler;
 import io.jsonwebtoken.MalformedJwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -33,6 +34,12 @@ public class RestExceptionHandler {
     public ResponseEntity<ApiError> handleUnauthorizedException(ForbiddenOperationException ex){
         ApiError error = new ApiError(ex.getMessage(), LocalDateTime.now());
         return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ApiError> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        ApiError error = new ApiError(ex.getBindingResult().getAllErrors().get(0).getDefaultMessage(), LocalDateTime.now());
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
 }
