@@ -26,7 +26,7 @@ public class AuthenticationFilterIT {
     @Autowired
     TestRestTemplate restTemplate;
 
-    User user, createdUser;
+    User user;
     AuthenticationRequest authenticationRequest;
 
     @BeforeEach
@@ -41,14 +41,13 @@ public class AuthenticationFilterIT {
     }
 
     @Test
-    public void itShouldLogUsersIn() {
+    public void itShouldLogUserIn() {
         // given the user is created
-        createdUser = userService.createUser(user);
+        userService.createUser(user);
 
         // given the login request
-        authenticationRequest = new AuthenticationRequest(
-                "my_email@email.com", "MyPassword"
-        );
+        authenticationRequest =
+                new AuthenticationRequest(user.getEmail(), "MyPassword");
 
         // when the login request is made
         ResponseEntity<String> res = restTemplate.postForEntity(
@@ -57,7 +56,7 @@ public class AuthenticationFilterIT {
                 String.class
         );
 
-        // then user login should be successful and the response should contain an auth token
+        // then login should be successful and the response should contain an auth token
         assertThat(res.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(res.getHeaders().containsKey(JwtUtil.HEADER)).isTrue();
         assertThat(res.getHeaders().get(JwtUtil.HEADER)).isNotNull();
