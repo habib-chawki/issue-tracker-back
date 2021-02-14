@@ -2,6 +2,7 @@ package com.habibInc.issueTracker.user;
 
 import com.habibInc.issueTracker.exceptionhandler.InvalidIdException;
 import com.habibInc.issueTracker.security.JwtUtil;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -26,7 +27,7 @@ public class UserController {
 
     @PostMapping("/signup")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Long> createUser(@RequestBody @Valid User user) {
+    public ResponseEntity<UserDto> createUser(@RequestBody @Valid User user) {
         HttpHeaders headers = new HttpHeaders();
 
         // generate auth token and add 'Bearer ' prefix
@@ -38,10 +39,13 @@ public class UserController {
         // invoke the service to create the user
         User createdUser = userService.createUser(user);
 
+        // set up user DTO response body
+        UserDto responseBody = new ModelMapper().map(createdUser, UserDto.class);
+
         // set up the response with the auth token
-        ResponseEntity<Long> response = ResponseEntity.created(URI.create("/signup"))
+        ResponseEntity<UserDto> response = ResponseEntity.created(URI.create("/signup"))
                 .header(JwtUtil.HEADER, token)
-                .body(createdUser.getId());
+                .body(responseBody);
 
         return response;
     }
