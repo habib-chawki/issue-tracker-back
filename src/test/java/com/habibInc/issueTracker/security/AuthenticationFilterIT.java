@@ -1,5 +1,6 @@
 package com.habibInc.issueTracker.security;
 
+import com.habibInc.issueTracker.exceptionhandler.ApiError;
 import com.habibInc.issueTracker.user.User;
 import com.habibInc.issueTracker.user.UserDto;
 import com.habibInc.issueTracker.user.UserRepository;
@@ -50,39 +51,55 @@ public class AuthenticationFilterIT {
     @Test
     public void itShouldLogUserIn() {
         // when the login request is made with valid credentials
-        ResponseEntity<UserDto> res = restTemplate.postForEntity(
+        ResponseEntity<UserDto> response = restTemplate.postForEntity(
                 "/login",
                 authenticationRequest,
                 UserDto.class
         );
 
         // then login should be successful
-        assertThat(res.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    public void whenCredentialsAreInvalid_thenLoginShouldFail() {
+        // given invalid credentials (user does not exist)
+        AuthenticationRequest authenticationRequest =
+                new AuthenticationRequest("user.not.found@email.com", "fail");
+
+        // when the login request is made with invalid credentials
+        ResponseEntity<ApiError> response = restTemplate.postForEntity(
+                "/login",
+                authenticationRequest,
+                ApiError.class
+        );
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     }
 
     @Test
     public void whenUserIsLoggedInSuccessfully_itShouldRespondWithTheAuthToken () {
         // when the login request is made with valid credentials
-        ResponseEntity<UserDto> res = restTemplate.postForEntity(
+        ResponseEntity<UserDto> response = restTemplate.postForEntity(
                 "/login",
                 authenticationRequest,
                 UserDto.class
         );
 
         // then the response should contain the auth token header
-        assertThat(res.getHeaders().containsKey(JwtUtil.HEADER)).isTrue();
-        assertThat(res.getHeaders().get(JwtUtil.HEADER)).isNotNull();
+        assertThat(response.getHeaders().containsKey(JwtUtil.HEADER)).isTrue();
+        assertThat(response.getHeaders().get(JwtUtil.HEADER)).isNotNull();
     }
 
     @Test
     public void whenUserIsLoggedInSuccessfully_itShouldRespondWithUserDto() {
-        ResponseEntity<UserDto> res = restTemplate.postForEntity(
+        ResponseEntity<UserDto> response = restTemplate.postForEntity(
                 "/login",
                 authenticationRequest,
                 UserDto.class
         );
 
-        assertThat(res.getBody().getId()).isEqualTo(user.getId());
+        assertThat(response.getBody().getId()).isEqualTo(user.getId());
     }
 
     @AfterEach
