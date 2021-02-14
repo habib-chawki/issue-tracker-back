@@ -1,7 +1,9 @@
 package com.habibInc.issueTracker.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.habibInc.issueTracker.user.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -11,6 +13,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -52,12 +55,27 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     protected void successfulAuthentication(HttpServletRequest request,
                                             HttpServletResponse response,
                                             FilterChain chain,
-                                            Authentication authResult) {
+                                            Authentication authResult) throws IOException {
+        // retrieve the authenticated user
+        CustomUserDetails principal = (CustomUserDetails) authResult.getPrincipal();
+
+        // set up the user DTO response body
+        UserDto userDto = new UserDto(
+                principal.getAuthenticatedUser().getId(),
+                principal.getAuthenticatedUser().getUserName()
+        );
+
+        String responseBody = new ObjectMapper().writeValueAsString(userDto);
+
         // generate the auth token
         String subject = authResult.getName();
         String token = jwtUtil.generateToken(subject);
 
         // embed the token in an authorization header
         response.addHeader(JwtUtil.HEADER, JwtUtil.TOKEN_PREFIX + token);
+
+        // set the response body
+        response.setContentType("application/json");
+        response.getWriter().print(responseBody);
     }
 }
