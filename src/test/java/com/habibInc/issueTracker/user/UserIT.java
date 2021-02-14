@@ -55,19 +55,20 @@ public class UserIT {
 
     @Test
     public void itShouldSignUpUser() {
-        ResponseEntity<User> response =
-                restTemplate.postForEntity("/users/signup", user, User.class);
+        ResponseEntity<Long> response =
+                restTemplate.postForEntity("/users/signup", user, Long.class);
 
         // expect user to have been properly and successfully created
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(response.getBody()).isEqualToComparingOnlyGivenFields(user);
-        assertThat(response.getBody().getId()).isNotNull().isPositive();
+
+        // expect response to be the created user's id
+        assertThat(response.getBody()).isNotNull().isPositive();
     }
 
     @Test
     public void whenUserIsSuccessfullySignedUp_itShouldResponseWithAuthTokenHeader() {
-        ResponseEntity<User> response =
-                restTemplate.postForEntity("/users/signup", user, User.class);
+        ResponseEntity<Long> response =
+                restTemplate.postForEntity("/users/signup", user, Long.class);
 
         // expect response to contain an auth token header
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
