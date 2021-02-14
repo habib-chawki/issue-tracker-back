@@ -26,7 +26,7 @@ public class UserController {
 
     @PostMapping("/signup")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<User> createUser(@RequestBody @Valid User user) {
+    public ResponseEntity<Long> createUser(@RequestBody @Valid User user) {
         HttpHeaders headers = new HttpHeaders();
 
         // generate auth token and add 'Bearer ' prefix
@@ -39,9 +39,9 @@ public class UserController {
         User createdUser = userService.createUser(user);
 
         // set up the response with the auth token
-        ResponseEntity<User> response = ResponseEntity.created(URI.create("/signup"))
+        ResponseEntity<Long> response = ResponseEntity.created(URI.create("/signup"))
                 .header(JwtUtil.HEADER, token)
-                .body(createdUser);
+                .body(createdUser.getId());
 
         return response;
     }
