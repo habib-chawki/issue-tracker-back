@@ -33,8 +33,7 @@ public class AuthenticationFilterIT {
     public void setup() {
         user = new User();
 
-        user.setFirstName("first");
-        user.setLastName("last");
+        user.setFullName("first-last");
         user.setUserName("my_username");
         user.setEmail("my_email@email.com");
         user.setPassword("MyPassword");

@@ -39,8 +39,7 @@ public class UserControllerTest {
     public void setup() {
         user = User.builder()
                 .id(1L)
-                .firstName("first")
-                .lastName("last")
+                .fullName("full")
                 .userName("my_username")
                 .email("my_email@email.com")
                 .password("user_password")

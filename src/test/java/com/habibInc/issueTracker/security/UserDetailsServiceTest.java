@@ -14,7 +14,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 public class UserDetailsServiceTest {
@@ -37,8 +36,7 @@ public class UserDetailsServiceTest {
         user = new User();
 
         user.setId(1L);
-        user.setFirstName("first");
-        user.setLastName("last");
+        user.setFullName("first");
         user.setUserName("my_username");
         user.setEmail("my_email@email.com");
         user.setPassword("MyP@ssworD");
