@@ -1,6 +1,7 @@
 package com.habibInc.issueTracker.security;
 
 import com.habibInc.issueTracker.user.User;
+import com.habibInc.issueTracker.user.UserDto;
 import com.habibInc.issueTracker.user.UserRepository;
 import com.habibInc.issueTracker.user.UserService;
 import org.junit.jupiter.api.AfterEach;
@@ -37,26 +38,38 @@ public class AuthenticationFilterIT {
         user.setUserName("my_username");
         user.setEmail("my_email@email.com");
         user.setPassword("MyPassword");
+
+        // create the user
+        user = userService.createUser(user);
+
+        // set up the login request
+        authenticationRequest =
+                new AuthenticationRequest(user.getEmail(), "MyPassword");
     }
 
     @Test
     public void itShouldLogUserIn() {
-        // given the user is created
-        userService.createUser(user);
-
-        // given the login request
-        authenticationRequest =
-                new AuthenticationRequest(user.getEmail(), "MyPassword");
-
-        // when the login request is made
+        // when the login request is made with valid credentials
         ResponseEntity<String> res = restTemplate.postForEntity(
                 "/login",
                 authenticationRequest,
                 String.class
         );
 
-        // then login should be successful and the response should contain an auth token
+        // then login should be successful
         assertThat(res.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    public void whenUserIsLoggedInSuccessfully_itShouldRespondWithTheAuthToken () {
+        // when the login request is made with valid credentials
+        ResponseEntity<String> res = restTemplate.postForEntity(
+                "/login",
+                authenticationRequest,
+                String.class
+        );
+
+        // then the response should contain the auth token header
         assertThat(res.getHeaders().containsKey(JwtUtil.HEADER)).isTrue();
         assertThat(res.getHeaders().get(JwtUtil.HEADER)).isNotNull();
     }
