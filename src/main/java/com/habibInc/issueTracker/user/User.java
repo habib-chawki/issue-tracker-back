@@ -31,8 +31,7 @@ public class User {
     @Size(min = 5, message = "Password should be at least 5 characters long")
     private String password;
 
-    private String firstName;
-    private String lastName;
+    private String fullName;
     private String userName;
 
     @OneToMany(mappedBy = "assignee")
