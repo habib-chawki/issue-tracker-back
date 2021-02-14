@@ -50,10 +50,10 @@ public class AuthenticationFilterIT {
     @Test
     public void itShouldLogUserIn() {
         // when the login request is made with valid credentials
-        ResponseEntity<String> res = restTemplate.postForEntity(
+        ResponseEntity<UserDto> res = restTemplate.postForEntity(
                 "/login",
                 authenticationRequest,
-                String.class
+                UserDto.class
         );
 
         // then login should be successful
@@ -63,15 +63,26 @@ public class AuthenticationFilterIT {
     @Test
     public void whenUserIsLoggedInSuccessfully_itShouldRespondWithTheAuthToken () {
         // when the login request is made with valid credentials
-        ResponseEntity<String> res = restTemplate.postForEntity(
+        ResponseEntity<UserDto> res = restTemplate.postForEntity(
                 "/login",
                 authenticationRequest,
-                String.class
+                UserDto.class
         );
 
         // then the response should contain the auth token header
         assertThat(res.getHeaders().containsKey(JwtUtil.HEADER)).isTrue();
         assertThat(res.getHeaders().get(JwtUtil.HEADER)).isNotNull();
+    }
+
+    @Test
+    public void whenUserIsLoggedInSuccessfully_itShouldRespondWithUserDto() {
+        ResponseEntity<UserDto> res = restTemplate.postForEntity(
+                "/login",
+                authenticationRequest,
+                UserDto.class
+        );
+
+        assertThat(res.getBody().getId()).isEqualTo(user.getId());
     }
 
     @AfterEach
