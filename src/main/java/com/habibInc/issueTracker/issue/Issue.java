@@ -25,7 +25,7 @@ import java.util.Objects;
 
 
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-@JsonIgnoreProperties(value = {"column"})
+@JsonIgnoreProperties(value = {"column", "reporter", "assignee"})
 public class Issue {
 
     @Id
