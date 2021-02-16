@@ -88,7 +88,7 @@ public class IssueIT {
         issue1.setAssignee(assignee1);
         issue1.setCreationTime(LocalDateTime.now());
         issue1.setUpdateTime(LocalDateTime.now());
-        issue1.setEstimate(LocalTime.of(2, 0));
+        issue1.setEstimate("4");
 
         // set up issue2 properties
         issue2.setSummary("Issue 2 summary");
@@ -98,7 +98,7 @@ public class IssueIT {
         issue2.setAssignee(assignee2);
         issue2.setCreationTime(LocalDateTime.now());
         issue2.setUpdateTime(LocalDateTime.now());
-        issue2.setEstimate(LocalTime.of(6, 15));
+        issue2.setEstimate("6");
     }
 
     @Nested

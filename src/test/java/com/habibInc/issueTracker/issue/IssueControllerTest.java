@@ -51,7 +51,7 @@ public class IssueControllerTest {
                 .resolution(IssueResolution.DONE)
                 .creationTime(LocalDateTime.now())
                 .updateTime(LocalDateTime.now())
-                .estimate(LocalTime.of(2, 0))
+                .estimate("4")
                 .build();
 
         issue2 = Issue.builder()
@@ -62,7 +62,7 @@ public class IssueControllerTest {
                 .resolution(IssueResolution.DUPLICATE)
                 .creationTime(LocalDateTime.now())
                 .updateTime(LocalDateTime.now())
-                .estimate(LocalTime.of(6, 15))
+                .estimate("6")
                 .build();
     }
 

@@ -63,7 +63,7 @@ public class IssueServiceTest {
         issue1.setResolution(IssueResolution.DONE);
         issue1.setCreationTime(LocalDateTime.now());
         issue1.setUpdateTime(LocalDateTime.now());
-        issue1.setEstimate(LocalTime.of(2, 0));
+        issue1.setEstimate("4");
 
         // set the authenticated user as the reporter
         issue1.setReporter(authenticatedUser);
@@ -76,7 +76,7 @@ public class IssueServiceTest {
         issue2.setResolution(IssueResolution.DUPLICATE);
         issue2.setCreationTime(LocalDateTime.now());
         issue2.setUpdateTime(LocalDateTime.now());
-        issue2.setEstimate(LocalTime.of(6, 15));
+        issue2.setEstimate("6");
 
         // set another reporter for issue2
         issue2.setReporter(reporter);
