@@ -54,7 +54,8 @@ public class Issue {
 
     private LocalDateTime creationTime;
     private LocalDateTime updateTime;
-    private LocalTime estimate;
+
+    private String estimate;
 
     @ManyToOne
     private Column column;
