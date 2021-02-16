@@ -15,7 +15,6 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -132,8 +131,8 @@ public class IssueIT {
                     restTemplate.postForEntity("/issues", httpEntity, Issue.class);
 
             // then the created issue's reporter should be the authenticated user
-            assertThat(response.getBody().getReporter().getEmail())
-                    .isEqualTo(authenticatedUser.getEmail());
+            assertThat(issueService.getIssueById(response.getBody().getId()).getReporter())
+                    .isEqualTo(authenticatedUser);
         }
     }
 
