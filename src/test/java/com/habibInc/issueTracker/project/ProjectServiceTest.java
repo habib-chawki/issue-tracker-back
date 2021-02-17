@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -57,5 +58,16 @@ public class ProjectServiceTest {
         // then expect the list of projects to have been fetched successfully
         verify(projectRepository, times(1)).findAll();
         assertThat(retrievedProjects).isEqualTo(projects);
+    }
+
+    @Test
+    public void itShouldGetProjectById() {
+        when(projectRepository.findById(project.getId())).thenReturn(Optional.of(project));
+
+        Project retrievedProject = projectService.getProjectById(project.getId());
+
+        // expect the project to have been retrieved by id successfully
+        verify(projectRepository, times(1)).findById(project.getId());
+        assertThat(retrievedProject).isEqualTo(project);
     }
 }
