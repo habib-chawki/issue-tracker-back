@@ -1,5 +1,6 @@
 package com.habibInc.issueTracker.project;
 
+import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,7 @@ public class ProjectService {
     }
 
     public Project getProjectById(Long id) {
-        return null;
+        return projectRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
     }
 }
