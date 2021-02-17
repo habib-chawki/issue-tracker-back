@@ -24,4 +24,10 @@ public class ProjectController {
         return projectService.createProject(project);
     }
 
+
+    @GetMapping({"", "/"})
+    @ResponseStatus(HttpStatus.OK)
+    public List<Project> getProjects(){
+        return projectService.getProjects();
+    }
 }
