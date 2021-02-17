@@ -58,10 +58,16 @@ public class ProjectControllerTest {
 
     @Test
     public void itShouldGetListOfProjects() throws Exception {
-        when(projectService.getProjects()).thenReturn(List.of(project, project2));
+        // given a list of projects
+        List<Project> projects = List.of(this.project, project2);
+        when(projectService.getProjects()).thenReturn(projects);
+
+        // given the expected response
+        String responseBody = mapper.writeValueAsString(projects);
 
         // when a GET request is made, then expect the list of projects to be fetched
         mockMvc.perform(get("/projects"))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content().json(responseBody));
     }
 }
