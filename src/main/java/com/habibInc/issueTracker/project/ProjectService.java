@@ -20,6 +20,6 @@ public class ProjectService {
     }
 
     public List<Project> getProjects() {
-        return null;
+        return (List<Project>) projectRepository.findAll();
     }
 }
