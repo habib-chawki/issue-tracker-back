@@ -24,10 +24,15 @@ public class ProjectController {
         return projectService.createProject(project);
     }
 
-
     @GetMapping({"", "/"})
     @ResponseStatus(HttpStatus.OK)
     public List<Project> getProjects(){
         return projectService.getProjects();
+    }
+
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Project getProject(@PathVariable Long id) {
+        return projectService.getProjectById(id);
     }
 }
