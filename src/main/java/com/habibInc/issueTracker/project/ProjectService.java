@@ -1,10 +1,19 @@
 package com.habibInc.issueTracker.project;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ProjectService {
+
+    private final ProjectRepository projectRepository;
+
+    @Autowired
+    ProjectService(ProjectRepository projectRepository) {
+        this.projectRepository = projectRepository;
+    }
+
     public Project createProject(Project project) {
-        return null;
+        return projectRepository.save(project);
     }
 }
