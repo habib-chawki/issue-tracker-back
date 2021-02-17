@@ -11,7 +11,6 @@ import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -38,7 +37,9 @@ public class Issue {
     private String description;
     private String summary;
 
+    @Enumerated(EnumType.STRING)
     private IssueType type;
+
     private IssueResolution resolution;
 
     @OneToMany(mappedBy = "issue", cascade = CascadeType.ALL)
