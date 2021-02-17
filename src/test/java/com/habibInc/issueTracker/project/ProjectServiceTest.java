@@ -1,5 +1,6 @@
 package com.habibInc.issueTracker.project;
 
+import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -69,5 +70,11 @@ public class ProjectServiceTest {
         // expect the project to have been retrieved by id successfully
         verify(projectRepository, times(1)).findById(project.getId());
         assertThat(retrievedProject).isEqualTo(project);
+    }
+
+    @Test
+    public void givenGetProjectById_whenProjectDoesNotExist_itShouldReturnProjectNotFoundError() {
+        assertThatExceptionOfType(ResourceNotFoundException.class)
+                .isThrownBy(() -> projectService.getProjectById(404L));
     }
 }
