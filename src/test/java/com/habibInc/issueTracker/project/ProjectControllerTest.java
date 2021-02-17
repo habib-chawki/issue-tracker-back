@@ -1,6 +1,7 @@
 package com.habibInc.issueTracker.project;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.habibInc.issueTracker.utils.Utils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +16,7 @@ import java.util.List;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(ProjectController.class)
 @WithMockUser
@@ -84,7 +84,11 @@ public class ProjectControllerTest {
     }
 
     @Test
-    public void givenGetProjectById_whenIdIsInvalid_itShouldReturnInvalidIdError() {
-
+    public void givenGetProjectById_whenIdIsInvalid_itShouldReturnInvalidIdError() throws Exception {
+        // when a GET request is made with an invalid project id
+        // then a 400 bad request error should be returned
+        mockMvc.perform(get("/projects/invalid_id"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorMessage").value(Utils.errorMessage));
     }
 }
