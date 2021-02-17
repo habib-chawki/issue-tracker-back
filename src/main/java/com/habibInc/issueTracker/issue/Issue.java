@@ -43,6 +43,9 @@ public class Issue {
     @Enumerated(EnumType.STRING)
     private IssueResolution resolution;
 
+    @Enumerated(EnumType.STRING)
+    private IssuePriority priority;
+
     @OneToMany(mappedBy = "issue", cascade = CascadeType.ALL)
     private List<Comment> comments;
 
