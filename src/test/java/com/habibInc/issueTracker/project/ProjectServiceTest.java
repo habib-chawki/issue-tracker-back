@@ -6,6 +6,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -17,7 +19,7 @@ public class ProjectServiceTest {
     @Mock
     ProjectRepository projectRepository;
 
-    Project project;
+    Project project, project2;
 
     @BeforeEach
     public void init() {
@@ -27,6 +29,7 @@ public class ProjectServiceTest {
     @BeforeEach
     public void setup() {
         project = Project.builder().id(1L).name("Proj").build();
+        project2 = Project.builder().id(2L).name("Secondary proj").build();
     }
 
     @Test
@@ -40,5 +43,19 @@ public class ProjectServiceTest {
         // then expect the project repository to have been invoked
         verify(projectRepository, times(1)).save(project);
         assertThat(createdProject).isEqualTo(project);
+    }
+
+    @Test
+    public void itShouldGetListOfProjects() {
+        // given the repository returns a list of projects
+        List<Project> projects = List.of(this.project, project2);
+        when(projectRepository.findAll()).thenReturn(projects);
+
+        // when the service is invoked to fetch the list of projects
+        List<Project> retrievedProjects = projectService.getProjects();
+
+        // then expect the list of projects to have been fetched successfully
+        verify(projectRepository, times(1)).findAll();
+        assertThat(retrievedProjects).isEqualTo(projects);
     }
 }
