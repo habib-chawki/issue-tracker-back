@@ -10,7 +10,10 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
+
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -27,12 +30,13 @@ public class ProjectControllerTest {
     @MockBean
     ProjectService projectService;
 
-    Project project;
+    Project project, project2;
 
     @BeforeEach
     public void setup() {
-        // set up a project entity
+        // set up project entities
         project = Project.builder().id(1L).name("Primary proj").build();
+        project2 = Project.builder().id(2L).name("Secondary proj").build();
     }
 
     @Test
@@ -50,5 +54,14 @@ public class ProjectControllerTest {
                 .content(requestBody))
                 .andExpect(status().isCreated())
                 .andExpect(content().json(requestBody));
+    }
+
+    @Test
+    public void itShouldGetListOfProjects() throws Exception {
+        when(projectService.getProjects()).thenReturn(List.of(project, project2));
+
+        // when a GET request is made, then expect the list of projects to be fetched
+        mockMvc.perform(get("/projects"))
+                .andExpect(status().isOk());
     }
 }
