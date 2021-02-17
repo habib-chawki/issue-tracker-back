@@ -22,4 +22,8 @@ public class ProjectService {
     public List<Project> getProjects() {
         return (List<Project>) projectRepository.findAll();
     }
+
+    public Project getProjectById(Long id) {
+        return null;
+    }
 }
