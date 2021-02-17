@@ -70,4 +70,21 @@ public class ProjectControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().json(responseBody));
     }
+
+    @Test
+    public void itShouldGetProjectById() throws Exception {
+        when(projectService.getProjectById(project.getId())).thenReturn(project);
+
+        // given the expected response
+        String responseBody = mapper.writeValueAsString(project);
+
+        mockMvc.perform(get("/projects/" + project.getId()))
+                .andExpect(status().isOk())
+                .andExpect(content().json(responseBody));
+    }
+
+    @Test
+    public void givenGetProjectById_whenIdIsInvalid_itShouldReturnInvalidIdError() {
+
+    }
 }
