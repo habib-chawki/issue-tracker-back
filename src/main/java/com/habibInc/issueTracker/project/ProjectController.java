@@ -1,5 +1,6 @@
 package com.habibInc.issueTracker.project;
 
+import com.habibInc.issueTracker.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +33,8 @@ public class ProjectController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Project getProject(@PathVariable Long id) {
-        return projectService.getProjectById(id);
+    public Project getProject(@PathVariable String id) {
+        Long parsedId = Utils.validateId(id);
+        return projectService.getProjectById(parsedId);
     }
 }
