@@ -40,6 +40,7 @@ public class Issue {
     @Enumerated(EnumType.STRING)
     private IssueType type;
 
+    @Enumerated(EnumType.STRING)
     private IssueResolution resolution;
 
     @OneToMany(mappedBy = "issue", cascade = CascadeType.ALL)
