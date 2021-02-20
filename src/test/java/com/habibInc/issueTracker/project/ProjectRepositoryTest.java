@@ -68,7 +68,13 @@ public class ProjectRepositoryTest {
         );
 
         // given the backlog is saved
-        issueRepository.saveAll(backlog);
+        backlog = (List<Issue>) issueRepository.saveAll(backlog);
+
+        List<Issue> retrievedBacklog =
+                issueRepository.findAllByProjectId(project.getId());
+
+        // then expect the project backlog to have been retrieved successfully
+        assertThat(retrievedBacklog).hasSameElementsAs(backlog);
     }
 
     @AfterEach
