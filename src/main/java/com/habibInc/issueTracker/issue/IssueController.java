@@ -25,7 +25,7 @@ public class IssueController {
     @ResponseStatus(HttpStatus.CREATED)
     public Issue createIssue(@RequestBody Issue issue,
                              @AuthenticationPrincipal User authenticatedUser,
-                             @RequestParam Long projectId) {
+                             @RequestParam(name = "project") Long projectId) {
         return issueService.createIssue(issue, authenticatedUser, projectId);
     }
 
