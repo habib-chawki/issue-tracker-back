@@ -208,6 +208,46 @@ public class ProjectIT {
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).hasSameElementsAs(backlog);
         }
+
+        @Test
+        public void givenGetProjectBacklog_itShouldNotFetchBacklogIssuesOfOtherProjects() {
+            // given two distinct projects
+            project = projectService.createProject(project, authenticatedUser);
+            project2 = projectService.createProject(project2, authenticatedUser);
+
+            // given the first project's backlog
+            List<Issue> backlogPrimary = List.of(
+                    Issue.builder().project(project).summary("issue 1").build(),
+                    Issue.builder().project(project).summary("issue 2").build(),
+                    Issue.builder().project(project).summary("issue 2").build()
+            );
+
+            // given the other project's backlog
+            List<Issue> backlogSecondary = List.of(
+                    Issue.builder().project(project2).summary("issue 3").build(),
+                    Issue.builder().project(project2).summary("issue 4").build()
+            );
+
+            // given the backlogs are saved
+            backlogPrimary = (List<Issue>) issueRepository.saveAll(backlogPrimary);
+            backlogSecondary = (List<Issue>) issueRepository.saveAll(backlogSecondary);
+
+            // given the GET backlog url
+            String url = String.format("%s/%s/backlog", baseUrl, project.getId());
+
+            // when a GET request to fetch a project's backlog is made
+            ResponseEntity<Issue[]> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    httpEntity,
+                    Issue[].class
+            );
+
+            // then expect the response to be the list of issues
+            // belonging to that project's backlog only
+            assertThat(response.getBody()).containsExactlyElementsOf(backlogPrimary);
+            assertThat(response.getBody()).doesNotContainAnyElementsOf(backlogSecondary);
+        }
     }
 
     @AfterEach
