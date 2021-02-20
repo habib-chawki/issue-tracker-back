@@ -95,12 +95,17 @@ public class ProjectIT {
         }
 
         @Test
-        public void whenProjectIsCreated_itShouldSetAuthenticatedUserAsProjectOwner() {
+        public void givenCreateProject_itShouldSetAuthenticatedUserAsProjectOwner() {
             // given the POST request to create the project
-            restTemplate.postForEntity(url, httpEntity, Project.class);
+            ResponseEntity<Project> response =
+                    restTemplate.postForEntity(url, httpEntity, Project.class);
 
-            // expect the authenticated user to have been set as project owner
+            // when the project is created
+            Project createdProject =
+                    projectService.getProjectById(response.getBody().getId());
 
+            // then expect the authenticated user to have been set as project owner
+            assertThat(createdProject.getOwner()).isEqualTo(authenticatedUser);
         }
     }
 
