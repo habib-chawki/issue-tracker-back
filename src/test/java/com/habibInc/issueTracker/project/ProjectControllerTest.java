@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -45,7 +46,7 @@ public class ProjectControllerTest {
     @Test
     public void itShouldCreateProject() throws Exception {
         // given the project service
-        when(projectService.createProject(any(Project.class), any(User.class))).thenReturn(project);
+        when(projectService.createProject(eq(project), any())).thenReturn(project);
 
         // given the request body
         String requestBody = mapper.writeValueAsString(project);
