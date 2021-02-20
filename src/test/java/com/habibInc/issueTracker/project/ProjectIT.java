@@ -1,5 +1,6 @@
 package com.habibInc.issueTracker.project;
 
+import com.habibInc.issueTracker.exceptionhandler.ApiError;
 import com.habibInc.issueTracker.issue.IssueRepository;
 import com.habibInc.issueTracker.security.JwtUtil;
 import com.habibInc.issueTracker.user.User;
@@ -134,6 +135,21 @@ public class ProjectIT {
             // then the project should be retrieved successfully
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isEqualToComparingOnlyGivenFields(project);
+        }
+
+        @Test
+        public void givenGetProjectById_whenProjectDoesNotExist_itShouldReturnProjectNotFoundError() {
+            // when the project does not exist
+            ResponseEntity<ApiError> response = restTemplate.exchange(
+                    baseUrl + "/404",
+                    HttpMethod.GET,
+                    httpEntity,
+                    ApiError.class
+            );
+
+            // then expect a 404 project not found error
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+            assertThat(response.getBody().getErrorMessage()).contains("Project not found");
         }
     }
 
