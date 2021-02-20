@@ -1,6 +1,8 @@
 package com.habibInc.issueTracker.project;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.utils.Utils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -92,5 +94,25 @@ public class ProjectControllerTest {
         mockMvc.perform(get("/projects/invalid_id"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errorMessage").value(Utils.errorMessage));
+    }
+
+    @Test
+    public void itShouldGetProjectBacklog() throws Exception {
+        // given the project backlog
+        List<Issue> backlog = List.of(
+                Issue.builder().id(100L).summary("issue 1").build(),
+                Issue.builder().id(200L).summary("issue 2").build(),
+                Issue.builder().id(300L).summary("issue 2").build()
+        );
+
+        // given the expected response
+        String response = mapper.writeValueAsString(backlog);
+
+        when(projectService.getBacklog(project.getId())).thenReturn(backlog);
+
+        // expect the backlog to be fetched successfully
+        mockMvc.perform(get("/projects/" + project.getId() + "/backlog"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(response));
     }
 }
