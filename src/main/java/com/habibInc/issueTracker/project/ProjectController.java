@@ -1,5 +1,6 @@
 package com.habibInc.issueTracker.project;
 
+import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,5 +37,11 @@ public class ProjectController {
     public Project getProject(@PathVariable String id) {
         Long parsedId = Utils.validateId(id);
         return projectService.getProjectById(parsedId);
+    }
+
+    @GetMapping("/{id}/backlog")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Issue> getBacklog(@PathVariable("id") Long projectId) {
+        return projectService.getBacklog(projectId);
     }
 }
