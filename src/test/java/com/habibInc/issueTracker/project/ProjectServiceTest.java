@@ -1,6 +1,9 @@
 package com.habibInc.issueTracker.project;
 
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
+import com.habibInc.issueTracker.issue.Issue;
+import com.habibInc.issueTracker.issue.IssueRepository;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -20,6 +23,9 @@ public class ProjectServiceTest {
 
     @Mock
     ProjectRepository projectRepository;
+
+    @Mock
+    IssueRepository issueRepository;
 
     Project project, project2;
 
@@ -76,5 +82,23 @@ public class ProjectServiceTest {
     public void givenGetProjectById_whenProjectDoesNotExist_itShouldReturnProjectNotFoundError() {
         assertThatExceptionOfType(ResourceNotFoundException.class)
                 .isThrownBy(() -> projectService.getProjectById(404L));
+    }
+
+    @Test
+    public void itShouldGetProjectBacklog() {
+        // given the project backlog
+        List<Issue> backlog = List.of(
+                Issue.builder().id(100L).summary("issue 1").build(),
+                Issue.builder().id(200L).summary("issue 2").build(),
+                Issue.builder().id(300L).summary("issue 2").build()
+        );
+
+        when(issueRepository.findAllByProjectId(project.getId())).thenReturn(backlog);
+
+        // when projectService is invoked to get the project backlog
+        List<Issue> retrievedBacklog = projectService.getBacklog(project.getId());
+
+        // then the backlog should be retrieved successfully
+        assertThat(retrievedBacklog).isEqualTo(backlog);
     }
 }
