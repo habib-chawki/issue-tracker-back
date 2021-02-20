@@ -70,6 +70,7 @@ public class ProjectRepositoryTest {
         // given the backlog is saved
         backlog = (List<Issue>) issueRepository.saveAll(backlog);
 
+        // when issueRepository#findAllByProjectId is invoked
         List<Issue> retrievedBacklog =
                 issueRepository.findAllByProjectId(project.getId());
 
