@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.exceptionhandler.ForbiddenOperationException;
+import com.habibInc.issueTracker.project.Project;
 import com.habibInc.issueTracker.project.ProjectService;
 import com.habibInc.issueTracker.user.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -116,7 +117,19 @@ public class IssueServiceTest {
 
     @Test
     public void givenCreateIssue_itShouldSetProject() {
+        // given the project
+        Project project = new Project();
+        project.setId(100L);
+        project.setName("Proj");
 
+        when(projectService.getProjectById(project.getId())).thenReturn(project);
+        when(issueRepository.save(issue1)).thenReturn(issue1);
+
+        // when an issue is created
+        Issue createdIssue = issueService.createIssue(issue1, null, project.getId());
+
+        // then its project property should be set
+        assertThat(createdIssue.getProject()).isEqualTo(project);
     }
 
     @Test
