@@ -1,12 +1,11 @@
 package com.habibInc.issueTracker.project;
 
+import com.habibInc.issueTracker.issue.IssueRepository;
 import com.habibInc.issueTracker.security.JwtUtil;
 import com.habibInc.issueTracker.user.User;
+import com.habibInc.issueTracker.user.UserRepository;
 import com.habibInc.issueTracker.user.UserService;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -18,13 +17,26 @@ import org.springframework.http.ResponseEntity;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ProjectIT {
 
     @Autowired
     TestRestTemplate restTemplate;
 
     @Autowired
+    ProjectService projectService;
+
+    @Autowired
     UserService userService;
+
+    @Autowired
+    ProjectRepository projectRepository;
+
+    @Autowired
+    IssueRepository issueRepository;
+
+    @Autowired
+    UserRepository userRepository;
 
     @Autowired
     JwtUtil jwtUtil;
@@ -35,7 +47,7 @@ public class ProjectIT {
 
     Project project;
 
-    @BeforeEach
+    @BeforeAll
     public void authSetup() {
         // create a user to authenticate
         authenticatedUser = new User();
@@ -64,11 +76,15 @@ public class ProjectIT {
     class Post {
 
         private final String url = "/projects";
+        HttpEntity<Project> httpEntity;
+
+        @BeforeEach
+        public void setup() {
+            httpEntity = new HttpEntity<>(project, headers);
+        }
 
         @Test
         public void itShouldCreateProject() {
-            HttpEntity<Project> httpEntity = new HttpEntity<>(project, headers);
-
             // when a POST request to create a new project is made
             ResponseEntity<Project> response =
                     restTemplate.postForEntity(url, httpEntity, Project.class);
@@ -77,11 +93,31 @@ public class ProjectIT {
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
             assertThat(response.getBody().getId()).isNotNull().isPositive();
         }
+
+        @Test
+        public void whenProjectIsCreated_itShouldSetAuthenticatedUserAsProjectOwner() {
+            // given the POST request to create the project
+            restTemplate.postForEntity(url, httpEntity, Project.class);
+
+            // expect the authenticated user to have been set as project owner
+
+        }
     }
 
     @Nested
     @DisplayName("GET")
     class Get {
 
+    }
+
+    @AfterEach
+    public void teardown() {
+        issueRepository.deleteAll();
+        projectRepository.deleteAll();
+    }
+
+    @AfterAll
+    public void authTeardown() {
+        userRepository.deleteAll();
     }
 }

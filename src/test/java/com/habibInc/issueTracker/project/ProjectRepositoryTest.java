@@ -77,10 +77,4 @@ public class ProjectRepositoryTest {
         // then expect the project backlog to have been retrieved successfully
         assertThat(retrievedBacklog).hasSameElementsAs(backlog);
     }
-
-    @AfterEach
-    public void teardown() {
-        issueRepository.deleteAll();
-        projectRepository.deleteAll();
-    }
 }
