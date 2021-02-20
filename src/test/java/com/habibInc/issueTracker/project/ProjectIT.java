@@ -12,6 +12,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -43,7 +46,7 @@ public class ProjectIT {
     String token;
     HttpHeaders headers;
 
-    Project project;
+    Project project, project2;
 
     @BeforeAll
     public void authSetup() {
@@ -66,7 +69,10 @@ public class ProjectIT {
     @BeforeEach
     public void setup() {
         project = new Project();
-        project.setName("Important project!");
+        project.setName("Primary project");
+
+        project2 = new Project();
+        project2.setName("Secondary project");
     }
 
     @Nested
@@ -150,6 +156,25 @@ public class ProjectIT {
             // then expect a 404 project not found error
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
             assertThat(response.getBody().getErrorMessage()).contains("Project not found");
+        }
+
+        @Test
+        public void itShouldGetListOfAllProjects() {
+            // given a list of projects
+            List<Project> projects = List.of(project, project2);
+            projects = (List<Project>) projectRepository.saveAll(projects);
+
+            // when a GET request to fetch all projects is made
+            ResponseEntity<Project[]> response = restTemplate.exchange(
+                    baseUrl,
+                    HttpMethod.GET,
+                    httpEntity,
+                    Project[].class
+            );
+
+            // then expect the response to be the list of projects
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody()).hasSameElementsAs(projects);
         }
     }
 
