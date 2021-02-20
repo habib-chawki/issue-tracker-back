@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.exceptionhandler.ApiError;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
+import com.habibInc.issueTracker.project.Project;
+import com.habibInc.issueTracker.project.ProjectService;
 import com.habibInc.issueTracker.security.JwtUtil;
 import com.habibInc.issueTracker.user.User;
 import com.habibInc.issueTracker.user.UserRepository;
@@ -41,6 +43,9 @@ public class IssueIT {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    ProjectService projectService;
 
     @Autowired
     ObjectMapper mapper;
@@ -103,11 +108,21 @@ public class IssueIT {
     @Nested
     @DisplayName("POST")
     class Post {
+
         HttpEntity<Issue> httpEntity;
+        Project project;
 
         @BeforeEach
         public void setup() {
+            // set up the request
             httpEntity = new HttpEntity<>(issue1, headers);
+
+            // set up a project
+            project = new Project();
+            project.setName("Primary project");
+
+            // save the project
+            projectService.createProject(project, authenticatedUser);
         }
 
         @Test
@@ -115,7 +130,7 @@ public class IssueIT {
         public void itShouldCreateIssue() {
             // when a POST request to create an issue is received
             ResponseEntity<Issue> response =
-                    restTemplate.postForEntity("/issues", httpEntity, Issue.class);
+                    restTemplate.postForEntity("/issues" + project.getId(), httpEntity, Issue.class);
 
             // then expect the issue to have been created successfully
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
@@ -128,12 +143,13 @@ public class IssueIT {
         public void whenIssueIsCreated_itShouldSetTheAuthenticatedUserAsReporter() {
             // when an issue is created after a POST request
             ResponseEntity<Issue> response =
-                    restTemplate.postForEntity("/issues", httpEntity, Issue.class);
+                    restTemplate.postForEntity("/issues" + project.getId(), httpEntity, Issue.class);
 
             // then the created issue's reporter should be the authenticated user
             assertThat(issueService.getIssueById(response.getBody().getId()).getReporter())
                     .isEqualTo(authenticatedUser);
         }
+
     }
 
     @Nested
