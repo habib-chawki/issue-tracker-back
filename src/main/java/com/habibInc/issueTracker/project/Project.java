@@ -19,7 +19,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @Builder
 
-@JsonIgnoreProperties(value = {"owner"})
+@JsonIgnoreProperties(value = {"owner", "backlog"})
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
