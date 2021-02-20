@@ -1,12 +1,11 @@
 package com.habibInc.issueTracker.project;
 
+import com.habibInc.issueTracker.issue.Issue;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 @Entity
 
@@ -24,4 +23,6 @@ public class Project {
     @NotBlank
     private String name;
 
+    @OneToMany(mappedBy = "project")
+    private List<Issue> backlog;
 }
