@@ -1,5 +1,7 @@
 package com.habibInc.issueTracker.project;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.user.User;
 import lombok.*;
@@ -16,6 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 
+@JsonIgnoreProperties(value = {"owner"})
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
