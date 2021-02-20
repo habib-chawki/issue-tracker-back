@@ -2,6 +2,7 @@ package com.habibInc.issueTracker.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.habibInc.issueTracker.issue.Issue;
+import com.habibInc.issueTracker.project.Project;
 import lombok.*;
 
 import javax.persistence.*;
@@ -39,6 +40,9 @@ public class User {
 
     @OneToMany(mappedBy = "reporter")
     private List<Issue> reportedIssues;
+
+    @OneToMany(mappedBy = "owner")
+    private List<Project> projects;
 
     @Override
     public boolean equals(Object o) {
