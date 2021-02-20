@@ -75,7 +75,7 @@ public class IssueControllerTest {
         String requestBody = mapper.writeValueAsString(issue1);
 
         // perform a post request and expect the new issue to have been created
-        mockMvc.perform(post("/issues")
+        mockMvc.perform(post("/issues?project=10")
                 .content(requestBody)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())

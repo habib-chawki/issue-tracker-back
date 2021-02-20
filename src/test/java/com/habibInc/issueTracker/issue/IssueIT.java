@@ -52,6 +52,7 @@ public class IssueIT {
 
     User assignee1, assignee2, authenticatedUser;
     Issue issue1, issue2;
+    Project project;
 
     String token;
     HttpHeaders headers;
@@ -103,6 +104,13 @@ public class IssueIT {
         issue2.setCreationTime(LocalDateTime.now());
         issue2.setUpdateTime(LocalDateTime.now());
         issue2.setEstimate("6");
+
+        // set up a project
+        project = new Project();
+        project.setName("Primary project");
+
+        // save the project
+        project = projectService.createProject(project, authenticatedUser);
     }
 
     @Nested
@@ -110,19 +118,11 @@ public class IssueIT {
     class Post {
 
         HttpEntity<Issue> httpEntity;
-        Project project;
 
         @BeforeEach
         public void setup() {
             // set up the request
             httpEntity = new HttpEntity<>(issue1, headers);
-
-            // set up a project
-            project = new Project();
-            project.setName("Primary project");
-
-            // save the project
-            project = projectService.createProject(project, authenticatedUser);
         }
 
         @Test
@@ -177,7 +177,7 @@ public class IssueIT {
         @Test
         public void itShouldGetIssueById() {
             // given the issue is created
-            issue2 = issueService.createIssue(issue2, authenticatedUser, null);
+            issue2 = issueService.createIssue(issue2, authenticatedUser, project.getId());
 
             // when a GET request is made to retrieve an issue by id
             ResponseEntity<Issue> response = restTemplate.exchange(
@@ -238,7 +238,7 @@ public class IssueIT {
         @Test
         public void itShouldUpdateIssue() throws JsonProcessingException {
             // create the issue
-            Issue issue = issueService.createIssue(issue1, authenticatedUser, null);
+            Issue issue = issueService.createIssue(issue1, authenticatedUser, project.getId());
 
             // set up an updated issue
             String issueJson = mapper.writeValueAsString(issue);
@@ -295,7 +295,7 @@ public class IssueIT {
             userService.createUser(randomReporter);
 
             // given an issue created by the random reporter
-            Issue issue = issueService.createIssue(issue1, randomReporter, null);
+            Issue issue = issueService.createIssue(issue1, randomReporter, project.getId());
 
             // copy and update the issue
             String issueJson = mapper.writeValueAsString(issue);
@@ -328,7 +328,7 @@ public class IssueIT {
         @Test
         public void itShouldDeleteIssueById() {
             // create the issue
-            Issue issue = issueService.createIssue(issue1, authenticatedUser, null);
+            Issue issue = issueService.createIssue(issue1, authenticatedUser, project.getId());
 
             // set the authorization header
             HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
@@ -378,7 +378,7 @@ public class IssueIT {
             userService.createUser(randomReporter);
 
             // given an issue created by the random reporter
-            Issue issue = issueService.createIssue(issue1, randomReporter, null);
+            Issue issue = issueService.createIssue(issue1, randomReporter, project.getId());
 
             // given the authorization header
             HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
