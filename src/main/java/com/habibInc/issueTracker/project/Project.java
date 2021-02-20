@@ -1,6 +1,7 @@
 package com.habibInc.issueTracker.project;
 
 import com.habibInc.issueTracker.issue.Issue;
+import com.habibInc.issueTracker.user.User;
 import lombok.*;
 
 import javax.persistence.*;
@@ -25,4 +26,7 @@ public class Project {
 
     @OneToMany(mappedBy = "project")
     private List<Issue> backlog;
+
+    @OneToOne
+    private User owner;
 }
