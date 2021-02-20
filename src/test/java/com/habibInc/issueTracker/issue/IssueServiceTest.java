@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.exceptionhandler.ForbiddenOperationException;
+import com.habibInc.issueTracker.project.ProjectService;
 import com.habibInc.issueTracker.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,6 +30,9 @@ public class IssueServiceTest {
     // create repository mock
     @Mock
     IssueRepository issueRepository;
+
+    @Mock
+    ProjectService projectService;
 
     Issue issue1, issue2;
     User authenticatedUser;
@@ -92,6 +96,22 @@ public class IssueServiceTest {
 
         // expect the issue to have been created successfully
         assertThat(createdIssue).isEqualTo(issue1);
+    }
+
+    @Test
+    public void givenCreateIssue_itShouldSetReporter() {
+        // given a reporter
+        User reporter = new User();
+        reporter.setEmail("reporter@issue.me");
+        reporter.setPassword("reporter");
+
+        when(issueRepository.save(issue2)).thenReturn(issue2);
+
+        // when an issue is created
+        Issue createdIssue = issueService.createIssue(issue2, reporter, null);
+
+        // then expect the reporter to have been set
+        assertThat(createdIssue.getReporter()).isEqualTo(reporter);
     }
 
     @Test

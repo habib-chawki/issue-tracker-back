@@ -2,6 +2,8 @@ package com.habibInc.issueTracker.issue;
 
 import com.habibInc.issueTracker.exceptionhandler.ForbiddenOperationException;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
+import com.habibInc.issueTracker.project.Project;
+import com.habibInc.issueTracker.project.ProjectService;
 import com.habibInc.issueTracker.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,10 +12,12 @@ import org.springframework.stereotype.Service;
 public class IssueService {
 
     private final IssueRepository issueRepository;
+    private final ProjectService projectService;
 
     @Autowired
-    public IssueService(IssueRepository issueRepository) {
+    public IssueService(IssueRepository issueRepository, ProjectService projectService) {
         this.issueRepository = issueRepository;
+        this.projectService = projectService;
     }
 
     public Issue getIssueById(Long id) {
@@ -22,7 +26,13 @@ public class IssueService {
     }
 
     public Issue createIssue(Issue issue, User authenticatedUser, Long projectId) {
+        // find the project by id (throws project not found exception)
+        Project project = projectService.getProjectById(projectId);
+
+        // set the issue project and reporter
         issue.setReporter(authenticatedUser);
+        issue.setProject(project);
+
         return issueRepository.save(issue);
     }
 
