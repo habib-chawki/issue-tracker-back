@@ -2,6 +2,7 @@ package com.habibInc.issueTracker.project;
 
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.issue.Issue;
+import com.habibInc.issueTracker.issue.IssueRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,10 +12,12 @@ import java.util.List;
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
+    private final IssueRepository issueRepository;
 
     @Autowired
-    ProjectService(ProjectRepository projectRepository) {
+    ProjectService(ProjectRepository projectRepository, IssueRepository issueRepository) {
         this.projectRepository = projectRepository;
+        this.issueRepository = issueRepository;
     }
 
     public Project createProject(Project project) {
@@ -31,6 +34,6 @@ public class ProjectService {
     }
 
     public List<Issue> getBacklog(Long projectId) {
-        return null;
+        return issueRepository.findAllByProjectId(projectId);
     }
 }
