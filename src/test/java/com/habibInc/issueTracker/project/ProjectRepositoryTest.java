@@ -48,4 +48,9 @@ public class ProjectRepositoryTest {
 
         assertThat(retrievedProjects).isEqualTo(projects);
     }
+
+    @Test
+    public void itShouldFindAllIssuesByProjectId() {
+
+    }
 }

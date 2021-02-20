@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.habibInc.issueTracker.column.Column;
 import com.habibInc.issueTracker.comment.Comment;
+import com.habibInc.issueTracker.project.Project;
 import com.habibInc.issueTracker.user.User;
 import lombok.*;
 import org.hibernate.annotations.NaturalId;
@@ -57,13 +58,16 @@ public class Issue {
     @OneToOne
     private User reporter;
 
-    private LocalDateTime creationTime;
-    private LocalDateTime updateTime;
+    @ManyToOne
+    private Project project;
 
     private String estimate;
 
     @ManyToOne
     private Column column;
+
+    private LocalDateTime creationTime;
+    private LocalDateTime updateTime;
 
     // equals and hashCode
     @Override
