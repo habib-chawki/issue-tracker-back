@@ -1,9 +1,11 @@
 package com.habibInc.issueTracker.project;
 
 import com.habibInc.issueTracker.issue.Issue;
+import com.habibInc.issueTracker.user.User;
 import com.habibInc.issueTracker.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -22,8 +24,9 @@ public class ProjectController {
 
     @PostMapping({"", "/"})
     @ResponseStatus(HttpStatus.CREATED)
-    public Project createProject(@Valid @RequestBody Project project) {
-        return projectService.createProject(project);
+    public Project createProject(@Valid @RequestBody Project project,
+                                 @AuthenticationPrincipal User authenticatedUser) {
+        return projectService.createProject(project, authenticatedUser);
     }
 
     @GetMapping({"", "/"})

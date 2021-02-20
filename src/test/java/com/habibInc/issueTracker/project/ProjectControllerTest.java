@@ -1,8 +1,8 @@
 package com.habibInc.issueTracker.project;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.issue.Issue;
+import com.habibInc.issueTracker.user.User;
 import com.habibInc.issueTracker.utils.Utils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,7 +45,7 @@ public class ProjectControllerTest {
     @Test
     public void itShouldCreateProject() throws Exception {
         // given the project service
-        when(projectService.createProject(any(Project.class))).thenReturn(project);
+        when(projectService.createProject(any(Project.class), any(User.class))).thenReturn(project);
 
         // given the request body
         String requestBody = mapper.writeValueAsString(project);
