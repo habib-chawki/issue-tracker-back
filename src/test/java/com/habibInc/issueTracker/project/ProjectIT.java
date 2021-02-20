@@ -133,6 +133,7 @@ public class ProjectIT {
 
             // then the project should be retrieved successfully
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody()).isEqualToComparingOnlyGivenFields(project);
         }
     }
 
