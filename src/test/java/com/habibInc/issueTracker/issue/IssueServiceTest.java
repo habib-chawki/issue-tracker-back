@@ -88,7 +88,7 @@ public class IssueServiceTest {
         when(issueRepository.save(issue1)).thenReturn(issue1);
 
         // create the issue
-        Issue createdIssue = issueService.createIssue(issue1, null);
+        Issue createdIssue = issueService.createIssue(issue1, null, null);
 
         // expect the issue to have been created successfully
         assertThat(createdIssue).isEqualTo(issue1);

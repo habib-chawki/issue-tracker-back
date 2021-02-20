@@ -24,8 +24,9 @@ public class IssueController {
     @PostMapping({"", "/"})
     @ResponseStatus(HttpStatus.CREATED)
     public Issue createIssue(@RequestBody Issue issue,
-                             @AuthenticationPrincipal User authenticatedUser) {
-        return issueService.createIssue(issue, authenticatedUser);
+                             @AuthenticationPrincipal User authenticatedUser,
+                             @RequestParam Long projectId) {
+        return issueService.createIssue(issue, authenticatedUser, projectId);
     }
 
     @GetMapping("/{id}")

@@ -151,7 +151,7 @@ public class IssueIT {
         @Test
         public void itShouldGetIssueById() {
             // given the issue is created
-            issue2 = issueService.createIssue(issue2, authenticatedUser);
+            issue2 = issueService.createIssue(issue2, authenticatedUser, null);
 
             // when a GET request is made to retrieve an issue by id
             ResponseEntity<Issue> response = restTemplate.exchange(
@@ -212,7 +212,7 @@ public class IssueIT {
         @Test
         public void itShouldUpdateIssue() throws JsonProcessingException {
             // create the issue
-            Issue issue = issueService.createIssue(issue1, authenticatedUser);
+            Issue issue = issueService.createIssue(issue1, authenticatedUser, null);
 
             // set up an updated issue
             String issueJson = mapper.writeValueAsString(issue);
@@ -269,7 +269,7 @@ public class IssueIT {
             userService.createUser(randomReporter);
 
             // given an issue created by the random reporter
-            Issue issue = issueService.createIssue(issue1, randomReporter);
+            Issue issue = issueService.createIssue(issue1, randomReporter, null);
 
             // copy and update the issue
             String issueJson = mapper.writeValueAsString(issue);
@@ -302,7 +302,7 @@ public class IssueIT {
         @Test
         public void itShouldDeleteIssueById() {
             // create the issue
-            Issue issue = issueService.createIssue(issue1, authenticatedUser);
+            Issue issue = issueService.createIssue(issue1, authenticatedUser, null);
 
             // set the authorization header
             HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
@@ -352,7 +352,7 @@ public class IssueIT {
             userService.createUser(randomReporter);
 
             // given an issue created by the random reporter
-            Issue issue = issueService.createIssue(issue1, randomReporter);
+            Issue issue = issueService.createIssue(issue1, randomReporter, null);
 
             // given the authorization header
             HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
