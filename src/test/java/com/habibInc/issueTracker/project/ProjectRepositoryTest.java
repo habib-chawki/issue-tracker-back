@@ -1,5 +1,8 @@
 package com.habibInc.issueTracker.project;
 
+import com.habibInc.issueTracker.issue.Issue;
+import com.habibInc.issueTracker.issue.IssueRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +20,9 @@ public class ProjectRepositoryTest {
 
     @Autowired
     ProjectRepository projectRepository;
+
+    @Autowired
+    IssueRepository issueRepository;
 
     Project project, project2;
 
@@ -51,6 +57,23 @@ public class ProjectRepositoryTest {
 
     @Test
     public void itShouldFindAllIssuesByProjectId() {
+        // given a project
+        project = projectRepository.save(project);
 
+        // given the project backlog
+        List<Issue> backlog = List.of(
+                Issue.builder().id(100L).project(project).summary("issue 1").build(),
+                Issue.builder().id(200L).project(project).summary("issue 2").build(),
+                Issue.builder().id(300L).project(project).summary("issue 2").build()
+        );
+
+        // given the backlog is saved
+        issueRepository.saveAll(backlog);
+    }
+
+    @AfterEach
+    public void teardown() {
+        issueRepository.deleteAll();
+        projectRepository.deleteAll();
     }
 }
