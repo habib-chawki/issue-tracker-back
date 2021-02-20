@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.exceptionhandler.ApiError;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.project.Project;
+import com.habibInc.issueTracker.project.ProjectRepository;
 import com.habibInc.issueTracker.project.ProjectService;
 import com.habibInc.issueTracker.security.JwtUtil;
 import com.habibInc.issueTracker.user.User;
@@ -46,6 +47,9 @@ public class IssueIT {
 
     @Autowired
     ProjectService projectService;
+
+    @Autowired
+    ProjectRepository projectRepository;
 
     @Autowired
     ObjectMapper mapper;
@@ -400,6 +404,7 @@ public class IssueIT {
     @AfterEach
     public void tearDown() {
         issueRepository.deleteAll();
+        projectRepository.deleteAll();
     }
 
     @AfterAll
