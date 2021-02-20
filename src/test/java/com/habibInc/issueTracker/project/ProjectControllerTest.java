@@ -115,4 +115,12 @@ public class ProjectControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().json(response));
     }
+
+    @Test
+    public void givenGetProjectBacklog_whenProjectIdIsInvalid_itShouldReturnInvalidIdError() throws Exception {
+        mockMvc.perform(get("/projects/invalid_id/backlog"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorMessage")
+                        .value(Utils.errorMessage));
+    }
 }
