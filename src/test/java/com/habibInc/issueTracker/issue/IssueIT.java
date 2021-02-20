@@ -122,7 +122,7 @@ public class IssueIT {
             project.setName("Primary project");
 
             // save the project
-            projectService.createProject(project, authenticatedUser);
+            project = projectService.createProject(project, authenticatedUser);
         }
 
         @Test
@@ -130,7 +130,7 @@ public class IssueIT {
         public void itShouldCreateIssue() {
             // when a POST request to create an issue is received
             ResponseEntity<Issue> response =
-                    restTemplate.postForEntity("/issues" + project.getId(), httpEntity, Issue.class);
+                    restTemplate.postForEntity("/issues?project=" + project.getId(), httpEntity, Issue.class);
 
             // then expect the issue to have been created successfully
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
@@ -143,13 +143,23 @@ public class IssueIT {
         public void whenIssueIsCreated_itShouldSetTheAuthenticatedUserAsReporter() {
             // when an issue is created after a POST request
             ResponseEntity<Issue> response =
-                    restTemplate.postForEntity("/issues" + project.getId(), httpEntity, Issue.class);
+                    restTemplate.postForEntity("/issues?project=" + project.getId(), httpEntity, Issue.class);
 
             // then the created issue's reporter should be the authenticated user
             assertThat(issueService.getIssueById(response.getBody().getId()).getReporter())
                     .isEqualTo(authenticatedUser);
         }
 
+        @Test
+        public void whenIssueIsCreated_itShouldSetTheIssueProject() {
+            // when an issue is created after a POST request
+            ResponseEntity<Issue> response =
+                    restTemplate.postForEntity("/issues?project=" + project.getId(), httpEntity, Issue.class);
+
+            // then the issue project should be set
+            assertThat(issueService.getIssueById(response.getBody().getId()).getProject())
+                    .isEqualTo(project);
+        }
     }
 
     @Nested
