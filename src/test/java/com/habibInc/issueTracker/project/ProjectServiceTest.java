@@ -4,7 +4,6 @@ import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.issue.IssueRepository;
 import com.habibInc.issueTracker.user.User;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -54,18 +53,18 @@ public class ProjectServiceTest {
         assertThat(createdProject).isEqualTo(project);
     }
 
-
     @Test
     public void givenCreateProject_itShouldSetAuthenticatedUserAsProjectOwner() {
         // given the authenticated user
-        User authenticatedUser = User.builder().id(555L).email("user@email.com").password("userPass").build();
+        User authenticatedUser =
+                User.builder().id(555L).email("user@email.com").password("userPass").build();
 
         when(projectRepository.save(project)).thenReturn(project);
 
         // when the project is created
-        Project createdProject = projectService.createProject(this.project, authenticatedUser);
+        Project createdProject = projectService.createProject(project, authenticatedUser);
 
-        // then the authenticated user to have been set as project owner
+        // then the authenticated user should be set as project owner
         assertThat(createdProject.getOwner()).isEqualTo(authenticatedUser);
     }
 
