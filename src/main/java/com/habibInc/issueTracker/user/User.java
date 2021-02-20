@@ -20,7 +20,7 @@ import java.util.Objects;
 
 @Builder
 
-@JsonIgnoreProperties(value = {"assignedIssues", "reportedIssues"})
+@JsonIgnoreProperties(value = {"projects", "assignedIssues", "reportedIssues"})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

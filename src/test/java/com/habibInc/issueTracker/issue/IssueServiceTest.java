@@ -95,6 +95,11 @@ public class IssueServiceTest {
     }
 
     @Test
+    public void givenCreateIssue_itShouldSetProject() {
+
+    }
+
+    @Test
     public void itShouldGetIssueById() {
         // mock repository behaviour and return an issue optional
         when(issueRepository.findById(2L)).thenReturn(Optional.of(issue2));
