@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface IssueRepository extends PagingAndSortingRepository<Issue, Long> {
     List<Issue> findByColumnId(Long columnId, Pageable pageable);
+    List<Issue> findAllByProjectId(Long projectId);
 }
