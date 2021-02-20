@@ -41,7 +41,8 @@ public class ProjectController {
 
     @GetMapping("/{id}/backlog")
     @ResponseStatus(HttpStatus.OK)
-    public List<Issue> getBacklog(@PathVariable("id") Long projectId) {
+    public List<Issue> getBacklog(@PathVariable String id) {
+        Long projectId = Utils.validateId(id);
         return projectService.getBacklog(projectId);
     }
 }
