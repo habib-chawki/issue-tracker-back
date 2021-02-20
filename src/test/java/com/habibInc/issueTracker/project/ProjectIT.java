@@ -1,6 +1,7 @@
 package com.habibInc.issueTracker.project;
 
 import com.habibInc.issueTracker.exceptionhandler.ApiError;
+import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.issue.IssueRepository;
 import com.habibInc.issueTracker.security.JwtUtil;
 import com.habibInc.issueTracker.user.User;
@@ -175,6 +176,37 @@ public class ProjectIT {
             // then expect the response to be the list of projects
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).hasSameElementsAs(projects);
+        }
+
+        @Test
+        public void itShouldGetProjectBacklog() {
+            // given the project is saved
+            project = projectService.createProject(project, authenticatedUser);
+
+            // given the GET backlog url
+            String url = String.format("%s/%s/backlog", baseUrl, project.getId());
+
+            // given the project backlog
+            List<Issue> backlog = List.of(
+                    Issue.builder().project(project).summary("issue 1").build(),
+                    Issue.builder().project(project).summary("issue 2").build(),
+                    Issue.builder().project(project).summary("issue 2").build()
+            );
+
+            // given the backlog is saved
+            backlog = (List<Issue>) issueRepository.saveAll(backlog);
+
+            // when a GET request to fetch the project backlog is made
+            ResponseEntity<Issue[]> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    httpEntity,
+                    Issue[].class
+            );
+
+            // then expect the backlog to have been retrieved successfully
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody()).hasSameElementsAs(backlog);
         }
     }
 

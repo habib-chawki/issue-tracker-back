@@ -62,9 +62,9 @@ public class ProjectRepositoryTest {
 
         // given the project backlog
         List<Issue> backlog = List.of(
-                Issue.builder().id(100L).project(project).summary("issue 1").build(),
-                Issue.builder().id(200L).project(project).summary("issue 2").build(),
-                Issue.builder().id(300L).project(project).summary("issue 2").build()
+                Issue.builder().project(project).summary("issue 1").build(),
+                Issue.builder().project(project).summary("issue 2").build(),
+                Issue.builder().project(project).summary("issue 2").build()
         );
 
         // given the backlog is saved
