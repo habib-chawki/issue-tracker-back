@@ -17,6 +17,7 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -69,6 +70,22 @@ public class SprintControllerTest {
                 .content(requestBody))
                 .andExpect(status().isCreated())
                 .andExpect(content().json(requestBody));
+    }
+
+    @Test
+    public void itShouldGetSprintById() throws Exception {
+        // given the sprintService#getSprintById response
+        when(sprintService.getSprintById(sprint.getId())).thenReturn(sprint);
+
+        // given the expected response
+        String expectedResponse = mapper.writeValueAsString(sprint);
+
+        // when a GET request is made to fetch a sprint by id
+        // then the sprint should be retrieved successfully
+        mockMvc.perform(get("/projects/1/sprints/"+sprint.getId())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(expectedResponse));
     }
 
     @Test

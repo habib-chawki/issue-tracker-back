@@ -50,4 +50,9 @@ public class SprintServiceTest {
         // then expect the sprint to have been created successfully
         assertThat(createdSprint).isEqualTo(sprint);
     }
+
+    @Test
+    public void itShouldAddIssuesToSprint() {
+        fail("Failed intentionally");
+    }
 }
