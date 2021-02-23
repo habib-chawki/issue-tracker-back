@@ -63,9 +63,9 @@ public class SprintRepositoryTest {
     public void itShouldFindSprintAlongWithItsIssues() {
         // given a list of issues
         List<Issue> issues = List.of(
-                Issue.builder().id(100L).summary("issue 1").build(),
-                Issue.builder().id(200L).summary("issue 2").build(),
-                Issue.builder().id(300L).summary("issue 3").build()
+                Issue.builder().summary("issue 1").build(),
+                Issue.builder().summary("issue 2").build(),
+                Issue.builder().summary("issue 3").build()
         );
 
         // given the issues are saved
