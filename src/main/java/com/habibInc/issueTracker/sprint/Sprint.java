@@ -1,10 +1,13 @@
 package com.habibInc.issueTracker.sprint;
 
+import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.project.Project;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 
@@ -28,4 +31,20 @@ public class Sprint {
 
     @ManyToOne
     private Project project;
+
+    @OneToMany(mappedBy = "sprint")
+    private List<Issue> issues;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Sprint sprint = (Sprint) o;
+        return id.equals(sprint.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
