@@ -1,6 +1,8 @@
 package com.habibInc.issueTracker.sprint;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.habibInc.issueTracker.issue.Issue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +13,10 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -32,6 +35,7 @@ public class SprintControllerTest {
     SprintService sprintService;
 
     Sprint sprint;
+    List<Issue> issues;
 
     @BeforeEach
     public void setup(){
@@ -42,6 +46,13 @@ public class SprintControllerTest {
                 .startDate(LocalDateTime.now())
                 .endDate(LocalDateTime.now().plusMonths(1))
                 .build();
+
+        // set up a list of sprint issues
+        issues = List.of(
+                Issue.builder().id(100L).summary("issue 1").build(),
+                Issue.builder().id(200L).summary("issue 2").build(),
+                Issue.builder().id(300L).summary("issue 3").build()
+        );
     }
 
     @Test
@@ -58,5 +69,20 @@ public class SprintControllerTest {
                 .content(requestBody))
                 .andExpect(status().isCreated())
                 .andExpect(content().json(requestBody));
+    }
+
+    @Test
+    public void itShouldAddIssuesToSprint() throws Exception {
+        doNothing().when(sprintService).addIssues(issues);
+
+        // given the request body
+        String requestBody = mapper.writeValueAsString(issues);
+
+        // when a POST request is made to add a list of issues to the sprint
+        // then the sprint issues should be set successfully
+        mockMvc.perform(post("/projects/1/sprints/"+sprint.getId()+"/issues")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isOk());
     }
 }
