@@ -2,6 +2,7 @@ package com.habibInc.issueTracker.project;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.habibInc.issueTracker.issue.Issue;
+import com.habibInc.issueTracker.sprint.Sprint;
 import com.habibInc.issueTracker.user.User;
 import lombok.*;
 
@@ -32,6 +33,9 @@ public class Project {
 
     @OneToOne
     private User owner;
+
+    @OneToMany(mappedBy = "project")
+    private List<Sprint> sprints;
 
     @Override
     public boolean equals(Object o) {
