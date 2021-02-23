@@ -1,11 +1,9 @@
 package com.habibInc.issueTracker.sprint;
 
+import com.habibInc.issueTracker.project.Project;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
@@ -27,4 +25,7 @@ public class Sprint {
 
     private LocalDateTime startDate;
     private LocalDateTime endDate;
+
+    @ManyToOne
+    private Project project;
 }
