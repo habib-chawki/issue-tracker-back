@@ -32,7 +32,7 @@ public class Sprint {
     @ManyToOne
     private Project project;
 
-    @OneToMany(mappedBy = "sprint")
+    @OneToMany(mappedBy = "sprint", fetch = FetchType.EAGER)
     private List<Issue> issues;
 
     @Override
