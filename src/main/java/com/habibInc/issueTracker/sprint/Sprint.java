@@ -1,6 +1,6 @@
 package com.habibInc.issueTracker.sprint;
 
-import lombok.Builder;
+import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,6 +9,11 @@ import javax.persistence.Id;
 import java.time.LocalDateTime;
 
 @Entity
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 
 @Builder
 
