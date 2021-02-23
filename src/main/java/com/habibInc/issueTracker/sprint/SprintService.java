@@ -23,4 +23,8 @@ public class SprintService {
     public void addIssues(List<Issue> issues) {
 
     }
+
+    public Sprint getSprintById(Long sprintId) {
+        return null;
+    }
 }
