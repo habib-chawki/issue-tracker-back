@@ -24,6 +24,12 @@ public class SprintController {
         return sprintService.createSprint(sprint);
     }
 
+    @GetMapping("/{sprintId}")
+    @ResponseStatus(HttpStatus.OK)
+    public Sprint getSprintById(@PathVariable Long sprintId){
+        return sprintService.getSprintById(sprintId);
+    }
+
     @PostMapping("/{sprintId}/issues")
     @ResponseStatus(HttpStatus.OK)
     public void addIssues(@RequestBody List<Issue> issues){
