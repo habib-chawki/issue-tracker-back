@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -49,6 +50,19 @@ public class SprintServiceTest {
 
         // then expect the sprint to have been created successfully
         assertThat(createdSprint).isEqualTo(sprint);
+    }
+
+    @Test
+    public void itShouldGetSprintById() {
+        // given the repository response
+        when(sprintRepository.findById(sprint.getId())).thenReturn(Optional.of(sprint));
+
+        // when the sprint service is invoked to fetch a sprint by id
+        Sprint retrievedSprint = sprintService.getSprintById(sprint.getId());
+
+        // then the repository should be invoked and the sprint should be fetched successfully
+        verify(sprintRepository, times(1)).findById(sprint.getId());
+        assertThat(retrievedSprint).isEqualTo(sprint);
     }
 
     @Test
