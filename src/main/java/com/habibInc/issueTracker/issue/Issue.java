@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.habibInc.issueTracker.column.Column;
 import com.habibInc.issueTracker.comment.Comment;
 import com.habibInc.issueTracker.project.Project;
+import com.habibInc.issueTracker.sprint.Sprint;
 import com.habibInc.issueTracker.user.User;
 import lombok.*;
 import org.hibernate.annotations.NaturalId;
@@ -22,7 +23,6 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-
 
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @JsonIgnoreProperties(value = {"column", "reporter", "assignee"})
@@ -61,10 +61,13 @@ public class Issue {
     @ManyToOne
     private Project project;
 
-    private String estimate;
+    @ManyToOne
+    private Sprint sprint;
 
     @ManyToOne
     private Column column;
+
+    private String estimate;
 
     private LocalDateTime creationTime;
     private LocalDateTime updateTime;
