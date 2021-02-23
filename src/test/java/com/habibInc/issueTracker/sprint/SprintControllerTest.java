@@ -12,6 +12,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -27,7 +30,7 @@ public class SprintControllerTest {
     ObjectMapper mapper;
 
     @MockBean
-            SprintService sprintService;
+    SprintService sprintService;
 
     Sprint sprint;
 
@@ -44,9 +47,13 @@ public class SprintControllerTest {
 
     @Test
     public void itShouldCreateSprint() throws Exception {
+        // given the service response
+        when(sprintService.createSprint(any(Sprint.class))).thenReturn(sprint);
+
         // given the request body
         String requestBody = mapper.writeValueAsString(sprint);
 
+        // when a POST request is made, then the sprint should be created successfully
         mockMvc.perform(post("/projects/1/sprints")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))
