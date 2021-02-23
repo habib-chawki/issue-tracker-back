@@ -1,6 +1,5 @@
 package com.habibInc.issueTracker.project;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.user.User;
