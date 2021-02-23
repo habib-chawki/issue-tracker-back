@@ -32,7 +32,7 @@ public class SprintController {
 
     @PostMapping("/{sprintId}/issues")
     @ResponseStatus(HttpStatus.OK)
-    public void addIssues(@PathVariable Long sprintId, @RequestBody List<Issue> issues){
+    public void setSprintIssues(@PathVariable Long sprintId, @RequestBody List<Issue> issues){
         sprintService.setSprintIssues(sprintId, issues);
     }
 
