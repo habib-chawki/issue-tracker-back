@@ -21,12 +21,16 @@ public class SprintService {
         return sprintRepository.save(sprint);
     }
 
-    public void addIssues(List<Issue> issues) {
-
-    }
-
     public Sprint getSprintById(Long sprintId) {
         return sprintRepository.findById(sprintId).orElseThrow(() ->
                 new ResourceNotFoundException("Sprint not found"));
+    }
+
+    public void setSprintIssues(Long sprintId, List<Issue> issues) {
+        Sprint sprint = getSprintById(sprintId);
+
+        // set the sprint issues and save it
+        sprint.setIssues(issues);
+        sprintRepository.save(sprint);
     }
 }
