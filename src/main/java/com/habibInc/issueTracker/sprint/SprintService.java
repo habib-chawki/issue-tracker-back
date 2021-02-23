@@ -1,5 +1,6 @@
 package com.habibInc.issueTracker.sprint;
 
+import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.issue.Issue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ public class SprintService {
     }
 
     public Sprint getSprintById(Long sprintId) {
-        return null;
+        return sprintRepository.findById(sprintId).orElseThrow(() ->
+                new ResourceNotFoundException("Sprint not found"));
     }
 }
