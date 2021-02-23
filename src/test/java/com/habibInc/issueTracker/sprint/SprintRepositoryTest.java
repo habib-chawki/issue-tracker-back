@@ -1,5 +1,7 @@
 package com.habibInc.issueTracker.sprint;
 
+import com.habibInc.issueTracker.issue.Issue;
+import com.habibInc.issueTracker.issue.IssueRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
@@ -18,6 +21,9 @@ public class SprintRepositoryTest {
 
     @Autowired
     SprintRepository sprintRepository;
+
+    @Autowired
+    IssueRepository issueRepository;
 
     Sprint sprint;
 
@@ -51,6 +57,31 @@ public class SprintRepositoryTest {
 
         // then the sprint should be retrieved successfully
         assertThat(sprintOptional.get()).isEqualTo(sprint);
+    }
+
+    @Test
+    public void itShouldFindSprintAlongWithItsIssues() {
+        // given a list of issues
+        List<Issue> issues = List.of(
+                Issue.builder().id(100L).summary("issue 1").build(),
+                Issue.builder().id(200L).summary("issue 2").build(),
+                Issue.builder().id(300L).summary("issue 3").build()
+        );
+
+        // given the issues are saved
+        issueRepository.saveAll(issues);
+
+        // given the sprint issues are set
+        sprint.setIssues(issues);
+
+        // given the sprint is saved
+        sprintRepository.save(sprint);
+
+        // when the sprint is queried by id
+        Optional<Sprint> sprintOptional = sprintRepository.findById(sprint.getId());
+
+        // then the sprint should be retrieved along with its issues
+        assertThat(sprintOptional.get().getIssues()).containsExactlyElementsOf(issues);
     }
 
 }
