@@ -7,7 +7,6 @@ import com.habibInc.issueTracker.security.JwtUtil;
 import com.habibInc.issueTracker.user.User;
 import com.habibInc.issueTracker.user.UserRepository;
 import com.habibInc.issueTracker.user.UserService;
-import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -41,6 +40,9 @@ public class SprintIT {
     ProjectRepository projectRepository;
 
     @Autowired
+    SprintRepository sprintRepository;
+
+    @Autowired
     JwtUtil jwtUtil;
 
     Sprint sprint;
@@ -63,10 +65,7 @@ public class SprintIT {
         // add Authorization request header
         headers = new HttpHeaders();
         headers.add(JwtUtil.HEADER, JwtUtil.TOKEN_PREFIX + token);
-    }
 
-    @BeforeAll
-    public void globalSetup() {
         // set up a project
         project = new Project();
         project.setName("Project");
@@ -100,20 +99,21 @@ public class SprintIT {
 
         @Test
         public void itShouldCreateSprint() {
+            // when a POST request is made to create a new sprint
             ResponseEntity<Sprint> response =
                     restTemplate.postForEntity(baseUrl, httpEntity, Sprint.class);
 
+            // then expect the sprint to have been created successfully
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+            assertThat(response.getBody().getId()).isNotNull().isPositive();
+            assertThat(response.getBody()).isEqualToComparingOnlyGivenFields(sprint);
         }
     }
 
     @AfterAll
-    public void globalTeardown() {
-        projectRepository.deleteAll();
-    }
-
-    @AfterAll
     public void authTeardown() {
+        sprintRepository.deleteAll();
+        projectRepository.deleteAll();
         userRepository.deleteAll();
     }
 }
