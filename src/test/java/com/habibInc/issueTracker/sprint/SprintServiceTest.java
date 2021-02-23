@@ -1,6 +1,7 @@
 package com.habibInc.issueTracker.sprint;
 
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
+import com.habibInc.issueTracker.issue.Issue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -8,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
@@ -21,6 +23,7 @@ public class SprintServiceTest {
     SprintRepository sprintRepository;
 
     Sprint sprint;
+    List<Issue> issues;
 
     @BeforeEach
     public void init() {
@@ -36,6 +39,13 @@ public class SprintServiceTest {
                 .startDate(LocalDateTime.now())
                 .endDate(LocalDateTime.now().plusMonths(1))
                 .build();
+
+        // set up a list of sprint issues
+        issues = List.of(
+                Issue.builder().id(100L).summary("issue 1").build(),
+                Issue.builder().id(200L).summary("issue 2").build(),
+                Issue.builder().id(300L).summary("issue 3").build()
+        );
     }
 
     @Test
@@ -78,7 +88,14 @@ public class SprintServiceTest {
     }
 
     @Test
-    public void itShouldAddIssuesToSprint() {
-        fail("Failed intentionally");
+    public void itShouldSetSprintIssues() {
+        // given the sprint
+        when(sprintRepository.findById(sprint.getId())).thenReturn(Optional.of(sprint));
+
+        // when the service is invoked to add issues to the sprint
+        sprintService.setSprintIssues(sprint.getId(), issues);
+
+        // then the sprint issues property should be set
+        assertThat(sprint.getIssues()).isEqualTo(issues);
     }
 }

@@ -1,6 +1,5 @@
 package com.habibInc.issueTracker.sprint;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.issue.Issue;
 import org.junit.jupiter.api.BeforeEach;
@@ -89,8 +88,8 @@ public class SprintControllerTest {
     }
 
     @Test
-    public void itShouldAddIssuesToSprint() throws Exception {
-        doNothing().when(sprintService).addIssues(issues);
+    public void itShouldSetSprintIssues() throws Exception {
+        doNothing().when(sprintService).setSprintIssues(sprint.getId(), issues);
 
         // given the request body
         String requestBody = mapper.writeValueAsString(issues);
