@@ -1,5 +1,6 @@
 package com.habibInc.issueTracker.sprint;
 
+import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -63,6 +64,17 @@ public class SprintServiceTest {
         // then the repository should be invoked and the sprint should be fetched successfully
         verify(sprintRepository, times(1)).findById(sprint.getId());
         assertThat(retrievedSprint).isEqualTo(sprint);
+    }
+
+    @Test
+    public void givenGetSprintById_whenSprintDoesNotExist_itShouldReturnSprintNotFoundError() {
+        // when the sprint does not exist
+        when(sprintRepository.findById(404L)).thenReturn(Optional.ofNullable(null));
+
+        // then a sprint not found error should be returned
+        assertThatExceptionOfType(ResourceNotFoundException.class).isThrownBy(
+                () -> sprintService.getSprintById(404L)
+        ).withMessageContaining("Sprint not found");
     }
 
     @Test
