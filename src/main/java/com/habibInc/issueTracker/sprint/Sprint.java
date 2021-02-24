@@ -1,5 +1,6 @@
 package com.habibInc.issueTracker.sprint;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.project.Project;
 import lombok.*;
@@ -29,7 +30,8 @@ public class Sprint {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
 
-    @ManyToOne
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
     private Project project;
 
     @OneToMany(mappedBy = "sprint", fetch = FetchType.EAGER)
