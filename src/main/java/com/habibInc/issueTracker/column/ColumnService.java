@@ -6,6 +6,7 @@ import com.habibInc.issueTracker.exceptionhandler.ForbiddenOperationException;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.issue.IssueRepository;
+import com.habibInc.issueTracker.issue.IssueService;
 import com.habibInc.issueTracker.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -17,15 +18,17 @@ import java.util.List;
 @Service
 public class ColumnService {
 
-    private ColumnRepository columnRepository;
-    private IssueRepository issueRepository;
-    private BoardService boardService;
+    private final ColumnRepository columnRepository;
+    private final IssueRepository issueRepository;
+    private final BoardService boardService;
+    private final IssueService issueService;
 
     @Autowired
-    public ColumnService(ColumnRepository columnRepository, IssueRepository issueRepository, BoardService boardService) {
+    public ColumnService(ColumnRepository columnRepository, IssueRepository issueRepository, BoardService boardService, IssueService issueService) {
         this.columnRepository = columnRepository;
         this.issueRepository = issueRepository;
         this.boardService = boardService;
+        this.issueService = issueService;
     }
 
     public Column createColumn(Long boardId, Column column) {
@@ -98,5 +101,14 @@ public class ColumnService {
     }
 
     public void updateIssueColumn(Long boardId, Long columnId, Long issueId, Long newColumnId) {
+        // fetch the column (throws resource not found exception)
+        Column column = getColumnById(boardId, newColumnId);
+
+        // fetch the issue by id (throws resource not found exception)
+        Issue issue = issueService.getIssueById(issueId);
+
+        // update the issue column and save
+        issue.setColumn(column);
+        issueRepository.save(issue);
     }
 }
