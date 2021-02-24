@@ -1,5 +1,7 @@
 package com.habibInc.issueTracker.sprint;
 
+import com.habibInc.issueTracker.issue.Issue;
+import com.habibInc.issueTracker.issue.IssueRepository;
 import com.habibInc.issueTracker.project.Project;
 import com.habibInc.issueTracker.project.ProjectRepository;
 import com.habibInc.issueTracker.project.ProjectService;
@@ -11,12 +13,10 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -40,7 +40,13 @@ public class SprintIT {
     ProjectRepository projectRepository;
 
     @Autowired
+    SprintService sprintService;
+
+    @Autowired
     SprintRepository sprintRepository;
+
+    @Autowired
+    IssueRepository issueRepository;
 
     @Autowired
     JwtUtil jwtUtil;
@@ -92,13 +98,11 @@ public class SprintIT {
         private String baseUrl = "/projects/" + project.getId() + "/sprints";
         private HttpEntity httpEntity;
 
-        @BeforeEach
-        public void setup() {
-            httpEntity = new HttpEntity(sprint, headers);
-        }
-
         @Test
         public void itShouldCreateSprint() {
+            // given the request body
+            httpEntity = new HttpEntity(sprint, headers);
+
             // when a POST request is made to create a new sprint
             ResponseEntity<Sprint> response =
                     restTemplate.postForEntity(baseUrl, httpEntity, Sprint.class);
@@ -108,11 +112,76 @@ public class SprintIT {
             assertThat(response.getBody().getId()).isNotNull().isPositive();
             assertThat(response.getBody()).isEqualToComparingOnlyGivenFields(sprint);
         }
+
+        @Test
+        public void itShouldSetSprintIssues() {
+            // given the sprint is saved
+            sprint = sprintService.createSprint(sprint);
+
+            // given the url
+            String url = baseUrl + "/" + sprint.getId() + "/issues";
+
+            // given a list of issues
+            List<Issue> issues = List.of(
+                    Issue.builder().summary("issue 1").build(),
+                    Issue.builder().summary("issue 2").build(),
+                    Issue.builder().summary("issue 3").build()
+            );
+
+            // given the issues are saved
+            issues = (List<Issue>) issueRepository.saveAll(issues);
+
+            // given the request body
+            httpEntity = new HttpEntity(issues, headers);
+
+            // when a POST request is made to set the sprint issues
+            ResponseEntity<Void> response =
+                    restTemplate.postForEntity(url, httpEntity, Void.class);
+
+            // then expect the sprint issues to have been set successfully
+//            List<Issue> sprintIssues =
+//                    sprintService.getSprintById(sprint.getId()).getIssues();
+//            assertThat(sprintIssues).containsExactlyElementsOf(issues);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        }
+    }
+
+    @Nested
+    @DisplayName("GET")
+    class Get {
+
+        private String baseUrl = "/projects/" + project.getId() + "/sprints";
+        private HttpEntity httpEntity;
+
+        @BeforeEach
+        public void setup() {
+            httpEntity = new HttpEntity(headers);
+        }
+
+        @Test
+        public void itShouldGetSprint() {
+            // given the sprint is saved
+            sprint = sprintService.createSprint(sprint);
+
+            // when a GET request is made to fetch a sprint by id
+            ResponseEntity<Sprint> response =
+                    restTemplate.exchange(baseUrl + "/" + sprint.getId(), HttpMethod.GET, httpEntity, Sprint.class);
+
+            // then expect the sprint to have been retrieved successfully
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody()).isEqualTo(sprint);
+        }
+    }
+
+    @AfterEach
+    public void teardown() {
+        issueRepository.deleteAll();
+        sprintRepository.deleteAll();
     }
 
     @AfterAll
     public void authTeardown() {
-        sprintRepository.deleteAll();
         projectRepository.deleteAll();
         userRepository.deleteAll();
     }
