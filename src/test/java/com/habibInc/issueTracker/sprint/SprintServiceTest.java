@@ -2,6 +2,7 @@ package com.habibInc.issueTracker.sprint;
 
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.issue.Issue;
+import com.habibInc.issueTracker.issue.IssueRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -21,6 +22,9 @@ public class SprintServiceTest {
 
     @Mock
     SprintRepository sprintRepository;
+
+    @Mock
+    IssueRepository issueRepository;
 
     Sprint sprint;
     List<Issue> issues;
@@ -91,11 +95,12 @@ public class SprintServiceTest {
     public void itShouldSetSprintIssues() {
         // given the sprint
         when(sprintRepository.findById(sprint.getId())).thenReturn(Optional.of(sprint));
+        when(issueRepository.saveAll(issues)).thenReturn(issues);
 
         // when the service is invoked to add issues to the sprint
         sprintService.setSprintIssues(sprint.getId(), issues);
 
-        // then the sprint issues property should be set
-        assertThat(sprint.getIssues()).isEqualTo(issues);
+        // then each issue's sprint property should be updated
+        issues.forEach((Issue issue) -> assertThat(issue.getSprint()).isEqualTo(sprint));
     }
 }
