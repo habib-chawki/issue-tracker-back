@@ -172,6 +172,29 @@ public class SprintIT {
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isEqualTo(sprint);
         }
+
+        @Test
+        public void givenGetSprintById_itShouldGetItsIssues() {
+            // given the sprint
+            sprint = sprintService.createSprint(sprint);
+
+            // given a list of issues
+            List<Issue> issues = List.of(
+                    Issue.builder().summary("issue 1").sprint(sprint).build(),
+                    Issue.builder().summary("issue 2").sprint(sprint).build(),
+                    Issue.builder().summary("issue 3").sprint(sprint).build()
+            );
+
+            // given the issues are saved
+            issues = (List<Issue>) issueRepository.saveAll(issues);
+
+            // when a GET request is made to fetch a sprint by id
+            ResponseEntity<Sprint> response =
+                    restTemplate.exchange(baseUrl + "/" + sprint.getId(), HttpMethod.GET, httpEntity, Sprint.class);
+
+            // then expect the list of sprint issues to have been retrieved
+            assertThat(response.getBody().getIssues()).isEqualTo(issues);
+        }
     }
 
     @AfterEach
