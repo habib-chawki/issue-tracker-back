@@ -6,6 +6,7 @@ import com.habibInc.issueTracker.exceptionhandler.ForbiddenOperationException;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.issue.IssueRepository;
+import com.habibInc.issueTracker.issue.IssueService;
 import com.habibInc.issueTracker.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,6 +35,9 @@ public class ColumnServiceTest {
 
     @Mock
     BoardService boardService;
+
+    @Mock
+    IssueService issueService;
 
     Column column;
     Board board;
@@ -330,15 +334,22 @@ public class ColumnServiceTest {
     @Test
     public void itShouldUpdateIssueColumn() {
         // given a column
-        Column column = new Column();
-        column.setId(100L);
-        column.setTitle("Column 01");
+        Column newColumn = new Column();
+        newColumn.setId(555L);
+        newColumn.setTitle("Column 2");
+        newColumn.setBoard(board);
 
-        // given a board id
-        Long boardId = 101L;
+        // given an issue
+        Issue issue = Issue.builder().id(100L).column(column).summary("issue 1").build();
 
-        when(columnService.getColumnById(boardId, column.getId())).thenReturn(column);
+        when(columnRepository.findById(newColumn.getId())).thenReturn(Optional.of(newColumn));
+        when(issueService.getIssueById(issue.getId())).thenReturn(issue);
+        when(issueRepository.save(issue)).thenReturn(issue);
 
+        // when the column service is invoked to update the issue column
+        columnService.updateIssueColumn(board.getId(), column.getId(), issue.getId(), newColumn.getId());
 
+        // then expect the column to have been updated successfully
+        assertThat(issue.getColumn()).isEqualTo(newColumn);
     }
 }
