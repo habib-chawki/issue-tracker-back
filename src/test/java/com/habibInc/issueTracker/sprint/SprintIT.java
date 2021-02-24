@@ -115,12 +115,6 @@ public class SprintIT {
 
         @Test
         public void itShouldSetSprintIssues() {
-            // given the sprint is saved
-            sprint = sprintService.createSprint(sprint);
-
-            // given the url
-            String url = baseUrl + "/" + sprint.getId() + "/issues";
-
             // given a list of issues
             List<Issue> issues = List.of(
                     Issue.builder().summary("issue 1").build(),
@@ -131,19 +125,25 @@ public class SprintIT {
             // given the issues are saved
             issues = (List<Issue>) issueRepository.saveAll(issues);
 
-            // given the request body
+            // given the sprint is saved
+            sprint = sprintService.createSprint(sprint);
+
+            // given the url
+            String url = baseUrl + "/" + sprint.getId() + "/issues";
+
+            // given the request body containing the list of issues
             httpEntity = new HttpEntity(issues, headers);
 
             // when a POST request is made to set the sprint issues
-            ResponseEntity<Void> response =
+            ResponseEntity<Void> postResponse =
                     restTemplate.postForEntity(url, httpEntity, Void.class);
 
             // then expect the sprint issues to have been set successfully
-//            List<Issue> sprintIssues =
-//                    sprintService.getSprintById(sprint.getId()).getIssues();
-//            assertThat(sprintIssues).containsExactlyElementsOf(issues);
+            assertThat(postResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            List<Issue> sprintIssues =
+                    sprintService.getSprintById(sprint.getId()).getIssues();
+            assertThat(sprintIssues).containsExactlyElementsOf(issues);
         }
     }
 
