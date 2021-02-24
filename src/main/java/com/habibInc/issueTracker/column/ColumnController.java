@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.exceptionhandler.InvalidIdException;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.user.User;
+import com.habibInc.issueTracker.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,7 +19,7 @@ import java.util.Map;
 
 public class ColumnController {
 
-    private ColumnService columnService;
+    private final ColumnService columnService;
 
     @Autowired
     public ColumnController(ColumnService columnService) {
@@ -113,5 +114,22 @@ public class ColumnController {
         }catch(NumberFormatException ex){
             throw new InvalidIdException("Invalid id");
         }
+    }
+
+    @PatchMapping("/columns/{columnId}/issues/{issueId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void updateIssueColumn(@RequestBody String request,
+                                  @PathVariable Long boardId,
+                                  @PathVariable Long columnId,
+                                  @PathVariable Long issueId) throws JsonProcessingException {
+
+        // extract the request body
+        Map<String, String> requestBody = new ObjectMapper().readValue(request, Map.class);
+
+        // extract and validate the new column id
+        Long newColumnId = Utils.validateId(requestBody.get("newColumnId"));
+
+        // update the issue column
+        columnService.updateIssueColumn(boardId, columnId, issueId, newColumnId);
     }
 }

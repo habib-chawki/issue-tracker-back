@@ -326,4 +326,19 @@ public class ColumnServiceTest {
                         404L, column.getId(), "new title", boardOwner))
                 .withMessageContaining("Board not found");
     }
+
+    @Test
+    public void itShouldUpdateIssueColumn() {
+        // given a column
+        Column column = new Column();
+        column.setId(100L);
+        column.setTitle("Column 01");
+
+        // given a board id
+        Long boardId = 101L;
+
+        when(columnService.getColumnById(boardId, column.getId())).thenReturn(column);
+
+
+    }
 }

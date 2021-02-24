@@ -96,4 +96,7 @@ public class ColumnService {
         // save and return
         return columnRepository.save(column);
     }
+
+    public void updateIssueColumn(Long boardId, Long columnId, Long issueId, Long newColumnId) {
+    }
 }
