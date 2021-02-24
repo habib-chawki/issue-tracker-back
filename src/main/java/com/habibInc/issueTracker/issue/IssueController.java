@@ -21,7 +21,7 @@ public class IssueController {
         this.userService = userService;
     }
 
-    @PostMapping({"", "/"})
+    @PostMapping(value = {"", "/"}, params = "project")
     @ResponseStatus(HttpStatus.CREATED)
     public Issue createIssue(@RequestBody Issue issue,
                              @AuthenticationPrincipal User authenticatedUser,
