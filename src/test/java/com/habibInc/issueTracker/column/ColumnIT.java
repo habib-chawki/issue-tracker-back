@@ -498,6 +498,7 @@ public class ColumnIT {
 
             // then expect the issue column to have been updated successfully
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(issueRepository.findById(issue.getId()).get().getColumn()).isEqualTo(column);
         }
     }
 
