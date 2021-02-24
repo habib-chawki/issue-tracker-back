@@ -174,7 +174,7 @@ public class SprintIT {
         }
 
         @Test
-        public void givenGetSprintById_itShouldGetItsIssues() {
+        public void itShouldGetSprintByIdAlongWithItsIssues() {
             // given the sprint
             sprint = sprintService.createSprint(sprint);
 
