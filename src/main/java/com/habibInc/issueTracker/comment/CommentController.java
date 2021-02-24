@@ -57,11 +57,11 @@ public class CommentController {
     @ResponseStatus(HttpStatus.OK)
     public Comment updateComment(@PathVariable String commentId,
                               @PathVariable String issueId,
-                              @RequestBody String content,
+                              @RequestBody String request,
                               @AuthenticationPrincipal User authenticatedUser) throws JsonProcessingException {
         try{
             // extract comment content from request body
-            Map<String, String> requestBody = new ObjectMapper().readValue(content, Map.class);
+            Map<String, String> requestBody = new ObjectMapper().readValue(request, Map.class);
             String commentContent = requestBody.get("content");
 
             // verify ids and update comment

@@ -1,12 +1,17 @@
 package com.habibInc.issueTracker.issue;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.exceptionhandler.InvalidIdException;
 import com.habibInc.issueTracker.user.User;
 import com.habibInc.issueTracker.user.UserService;
+import com.habibInc.issueTracker.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/issues")
@@ -67,5 +72,18 @@ public class IssueController {
         }catch(NumberFormatException ex){
             throw new InvalidIdException("Invalid issue id");
         }
+    }
+
+    @PatchMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void updateColumn(@RequestBody String request) throws JsonProcessingException {
+        // extract the request body
+        Map<String, String> requestBody = new ObjectMapper().readValue(request, Map.class);
+
+        // extract and validate the new column id
+        Long columnId = Utils.validateId(requestBody.get("newColumn"));
+
+        // update the issue column
+        issueService.updateColumn(columnId);
     }
 }

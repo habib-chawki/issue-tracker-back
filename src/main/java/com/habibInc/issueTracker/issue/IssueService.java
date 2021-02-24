@@ -61,4 +61,8 @@ public class IssueService {
         else
             throw new ForbiddenOperationException("Forbidden");
     }
+
+    public void updateColumn(Long columnId) {
+
+    }
 }
