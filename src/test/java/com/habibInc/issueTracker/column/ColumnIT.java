@@ -16,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 
+import java.net.http.HttpResponse;
 import java.util.Arrays;
 import java.util.List;
 
@@ -469,6 +470,34 @@ public class ColumnIT {
             // then expect a 403 forbidden operation error
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
             assertThat(response.getBody().getErrorMessage()).contains("Forbidden");
+        }
+
+        @Test
+        public void itShouldUpdateIssueColumn() {
+            // given the column is saved
+            column = columnService.createColumn(board.getId(), column);
+
+            // given the request body
+            String requestBody = String.format("{\"newColumnId\": \"" + column.getId() + "\"}");
+
+            // given the request
+            httpEntity = new HttpEntity<>(requestBody, httpHeaders);
+
+            // given an issue
+            Issue issue = Issue.builder().summary("issue 1").build();
+
+            // given the issue is saved
+            issue = issueRepository.save(issue);
+
+            // given the PATCH url endpoint
+            String url = String.format(baseUrl + "/issues/%s", board.getId(), column.getId(), issue.getId());
+
+            // when the PATCH request is made to update the issue column
+            ResponseEntity<Void> response =
+                    restTemplate.exchange(url, HttpMethod.PATCH, httpEntity, Void.class);
+
+            // then expect the issue column to have been updated successfully
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         }
     }
 
