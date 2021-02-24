@@ -302,4 +302,21 @@ public class ColumnControllerTest {
                 .andExpect(jsonPath("$.errorMessage").value("Invalid id"));
     }
 
+    @Test
+    public void itShouldUpdateIssueColumn() throws Exception {
+        // given the board and issue
+        Long boardId = 100L;
+        Long issueId = 200L;
+
+        String url = String.format("/boards/%s/columns/%s/issues/%s", boardId, column.getId(), issueId);
+
+        // given the request body
+        String requestBody = "{\"newColumnId\": \"200\"}";
+
+        doNothing().when(columnService).updateIssueColumn(boardId, column.getId() , issueId, 200L);
+
+        // expect the PATCH request to have been served successfully
+        mockMvc.perform(patch(url).content(requestBody)).andExpect(status().isOk());
+    }
+
 }
