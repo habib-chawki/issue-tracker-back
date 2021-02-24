@@ -224,18 +224,4 @@ public class IssueControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.errorMessage").value(errorMessage));
     }
-
-    @Test
-    public void itShouldUpdateIssueColumn() throws Exception {
-        // given the new column id
-        Long columnId = 20L;
-
-        doNothing().when(issueService).updateColumn(columnId);
-
-        String requestBody = "{\"newColumn\" : \"" + columnId + "\"}";
-
-        mockMvc.perform(patch("/issues/"+issue1.getId())
-                .contentType(MediaType.APPLICATION_JSON).content(requestBody))
-                .andExpect(status().isOk());
-    }
 }
