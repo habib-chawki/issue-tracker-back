@@ -78,6 +78,23 @@ public class SprintServiceTest {
     }
 
     @Test
+    public void givenCreateSprint_itShouldSetTheProject() {
+        // given a project
+        Project project = new Project();
+        project.setId(666L);
+        project.setName("Project");
+
+        when(projectService.getProjectById(project.getId())).thenReturn(project);
+        when(sprintRepository.save(sprint)).thenReturn(sprint);
+
+        // when the sprint is created
+        Sprint sprint = sprintService.createSprint(project.getId(), this.sprint);
+
+        // then the its project should be set
+        assertThat(sprint.getProject()).isEqualTo(project);
+    }
+
+    @Test
     public void itShouldGetSprintById() {
         // given the repository response
         when(sprintRepository.findById(sprint.getId())).thenReturn(Optional.of(sprint));
