@@ -1,12 +1,13 @@
 package com.habibInc.issueTracker.sprint;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.project.Project;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
@@ -27,8 +28,11 @@ public class Sprint {
     private String name;
     private String goal;
 
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+    @JsonFormat(pattern="yyyy-MM-dd")
+    private LocalDate startDate;
+
+    @JsonFormat(pattern="yyyy-MM-dd")
+    private LocalDate endDate;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
