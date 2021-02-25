@@ -59,7 +59,7 @@ public class SprintControllerTest {
     @Test
     public void itShouldCreateSprint() throws Exception {
         // given the service response
-        when(sprintService.createSprint(any(Sprint.class))).thenReturn(sprint);
+        when(sprintService.createSprint(any(Long.class), any(Sprint.class))).thenReturn(sprint);
 
         // given the request body
         String requestBody = mapper.writeValueAsString(sprint);

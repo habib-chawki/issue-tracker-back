@@ -3,6 +3,8 @@ package com.habibInc.issueTracker.sprint;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.issue.IssueRepository;
+import com.habibInc.issueTracker.project.Project;
+import com.habibInc.issueTracker.project.ProjectService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -26,6 +28,9 @@ public class SprintServiceTest {
 
     @Mock
     IssueRepository issueRepository;
+
+    @Mock
+    ProjectService projectService;
 
     Sprint sprint;
     List<Issue> issues;
@@ -55,11 +60,15 @@ public class SprintServiceTest {
 
     @Test
     public void itShouldCreateSprint() {
+        // given the project id
+        Long projectId = 100L;
+
         // given the repository response
         when(sprintRepository.save(sprint)).thenReturn(sprint);
+        when(projectService.getProjectById(projectId)).thenReturn(new Project());
 
         // when sprintService#createSprint() is invoked
-        Sprint createdSprint = sprintService.createSprint(sprint);
+        Sprint createdSprint = sprintService.createSprint(projectId, sprint);
 
         // expect the repository to have been invoked
         verify(sprintRepository, times(1)).save(sprint);

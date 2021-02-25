@@ -86,7 +86,6 @@ public class SprintIT {
         sprint = Sprint.builder()
                 .name("Primary sprint")
                 .goal("Primary goal")
-                .project(project)
                 .startDate(LocalDate.now())
                 .endDate(LocalDate.now().plusDays(30))
                 .build();
@@ -127,7 +126,7 @@ public class SprintIT {
             issues = (List<Issue>) issueRepository.saveAll(issues);
 
             // given the sprint is saved
-            sprint = sprintService.createSprint(sprint);
+            sprint = sprintService.createSprint(project.getId(), sprint);
 
             // given the url
             String url = baseUrl + "/" + sprint.getId() + "/issues";
@@ -163,7 +162,7 @@ public class SprintIT {
         @Test
         public void itShouldGetSprint() {
             // given the sprint is saved
-            sprint = sprintService.createSprint(sprint);
+            sprint = sprintService.createSprint(project.getId(), sprint);
 
             // when a GET request is made to fetch a sprint by id
             ResponseEntity<Sprint> response =
@@ -177,7 +176,7 @@ public class SprintIT {
         @Test
         public void itShouldGetSprintByIdAlongWithItsIssues() {
             // given the sprint
-            sprint = sprintService.createSprint(sprint);
+            sprint = sprintService.createSprint(project.getId(), sprint);
 
             // given a list of issues
             List<Issue> issues = List.of(
