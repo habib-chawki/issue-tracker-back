@@ -3,6 +3,8 @@ package com.habibInc.issueTracker.sprint;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.issue.IssueRepository;
+import com.habibInc.issueTracker.project.Project;
+import com.habibInc.issueTracker.project.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,14 +15,21 @@ public class SprintService {
 
     private final SprintRepository sprintRepository;
     private final IssueRepository issueRepository;
+    private final ProjectService projectService;
 
     @Autowired
-    public SprintService(SprintRepository sprintRepository, IssueRepository issueRepository) {
+    public SprintService(SprintRepository sprintRepository, IssueRepository issueRepository, ProjectService projectService) {
         this.sprintRepository = sprintRepository;
         this.issueRepository = issueRepository;
+        this.projectService = projectService;
     }
 
-    public Sprint createSprint(Sprint sprint) {
+    public Sprint createSprint(Long projectId, Sprint sprint) {
+        // find the project (throws project not found id)
+        Project project = projectService.getProjectById(projectId);
+
+        // set the sprint project before saving
+        sprint.setProject(project);
         return sprintRepository.save(sprint);
     }
 
