@@ -15,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -86,8 +87,8 @@ public class SprintIT {
                 .name("Primary sprint")
                 .goal("Primary goal")
                 .project(project)
-                .startDate(LocalDateTime.now())
-                .endDate(LocalDateTime.now().plusDays(30))
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.now().plusDays(30))
                 .build();
     }
 

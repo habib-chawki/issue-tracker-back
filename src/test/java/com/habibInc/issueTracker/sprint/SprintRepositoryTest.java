@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -32,8 +33,8 @@ public class SprintRepositoryTest {
         sprint = Sprint.builder()
                 .name("Primary sprint")
                 .goal("Primary sprint goal")
-                .startDate(LocalDateTime.now())
-                .endDate(LocalDateTime.now().plusDays(15))
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.now().plusDays(15))
                 .build();
     }
 

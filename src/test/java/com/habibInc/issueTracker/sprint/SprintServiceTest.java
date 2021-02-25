@@ -9,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -40,8 +41,8 @@ public class SprintServiceTest {
                 .id(1L)
                 .name("First sprint")
                 .goal("sprint goal")
-                .startDate(LocalDateTime.now())
-                .endDate(LocalDateTime.now().plusMonths(1))
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.now().plusMonths(1))
                 .build();
 
         // set up a list of sprint issues

@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -43,8 +44,8 @@ public class SprintControllerTest {
                 .id(1L)
                 .name("First sprint")
                 .goal("sprint goal")
-                .startDate(LocalDateTime.now())
-                .endDate(LocalDateTime.now().plusMonths(1))
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.now().plusMonths(1))
                 .build();
 
         // set up a list of sprint issues
