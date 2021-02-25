@@ -20,8 +20,8 @@ public class SprintController {
 
     @PostMapping({"", "/"})
     @ResponseStatus(HttpStatus.CREATED)
-    public Sprint createSprint(@RequestBody Sprint sprint) {
-        return sprintService.createSprint(sprint);
+    public Sprint createSprint(@PathVariable Long projectId, @RequestBody Sprint sprint) {
+        return sprintService.createSprint(projectId, sprint);
     }
 
     @GetMapping("/{sprintId}")
