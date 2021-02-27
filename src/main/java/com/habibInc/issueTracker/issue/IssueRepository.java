@@ -15,11 +15,11 @@ public interface IssueRepository extends PagingAndSortingRepository<Issue, Long>
     List<Issue> findByColumnId(Long columnId, Pageable pageable);
     List<Issue> findAllByProjectId(Long projectId);
 
-    @Modifying
-    @Query(value = "UPDATE issues SET sprint_id = :sprintId WHERE issue_id IN :issueIds")
-    int updateSprintBacklog(@Param("sprintId") Long sprintId, @Param("issueIds") Collection<Long> issueIds);
+//    @Modifying
+//    @Query(value = "UPDATE issue SET sprint_id = :sprintId WHERE id IN :issueIds")
+//    int updateSprintBacklog(@Param("sprintId") Long sprintId, @Param("issueIds") Collection<Long> issueIds);
 
-    @Modifying
-    @Query(value = "UPDATE issues SET column_id = :columnId WHERE issue_id = :issueId", nativeQuery = true)
+    @Modifying(clearAutomatically = true)
+    @Query(value = "UPDATE issue SET `column_id` = :columnId WHERE id = :issueId", nativeQuery = true)
     int updateIssueColumn(@Param("issueId") Long issueId, @Param("columnId") Long columnId);
 }
