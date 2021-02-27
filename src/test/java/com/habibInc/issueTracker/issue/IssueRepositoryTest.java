@@ -142,4 +142,26 @@ public class IssueRepositoryTest {
         assertThat(paginatedIssuesList.size()).isEqualTo(size);
         assertThat(paginatedIssuesList).isEqualTo(issues.subList(0, size));
     }
+
+    @Test
+    public void itShouldUpdateIssueColumn() {
+        // given two distinct columns
+        Column column = new Column();
+        column.setTitle("Column");
+        column = columnRepository.save(column);
+
+        Column column2 = new Column();
+        column2.setTitle("Column 02");
+        column2 = columnRepository.save(column2);
+
+        // given an issue belonging to the first column
+        Issue issue = Issue.builder().column(column).summary("issue 1").build();
+        issue = issueRepository.save(issue);
+
+        // when a request to update the issue column is made (imitates a transfer)
+        issueRepository.updateIssueColumn(issue.getId(), column2.getId());
+
+        // then expect the update to be successful (issue transferred to another column)
+        assertThat(issueRepository.findById(issue.getId()).get().getColumn()).isEqualTo(column2);
+    }
 }
