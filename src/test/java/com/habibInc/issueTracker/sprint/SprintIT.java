@@ -175,24 +175,28 @@ public class SprintIT {
 
         @Test
         public void itShouldGetSprintByIdAlongWithItsIssues() {
-            // given the sprint
-            sprint = sprintService.createSprint(project.getId(), sprint);
-
             // given a list of issues
             List<Issue> issues = List.of(
-                    Issue.builder().summary("issue 1").sprint(sprint).build(),
-                    Issue.builder().summary("issue 2").sprint(sprint).build(),
-                    Issue.builder().summary("issue 3").sprint(sprint).build()
+                    Issue.builder().summary("issue 1").build(),
+                    Issue.builder().summary("issue 2").build(),
+                    Issue.builder().summary("issue 3").build()
             );
 
             // given the issues are saved
             issues = (List<Issue>) issueRepository.saveAll(issues);
 
-            // when a GET request is made to fetch a sprint by id
+            // given the sprint is created
+            sprint = sprintService.createSprint(project.getId(), sprint);
+
+            // given the sprint issues are set via a POST request
+            HttpEntity<Issue[]> httpPostEntity = new HttpEntity(issues, headers);
+            restTemplate.postForEntity(baseUrl + "/" + sprint.getId() + "/issues", httpPostEntity, Void.class);
+
+            // when a GET request is made to fetch the sprint by id
             ResponseEntity<Sprint> response =
                     restTemplate.exchange(baseUrl + "/" + sprint.getId(), HttpMethod.GET, httpEntity, Sprint.class);
 
-            // then expect the list of sprint issues to have been retrieved
+            // then expect the list of sprint issues to have been retrieved along with it
             assertThat(response.getBody().getIssues()).isEqualTo(issues);
         }
     }
