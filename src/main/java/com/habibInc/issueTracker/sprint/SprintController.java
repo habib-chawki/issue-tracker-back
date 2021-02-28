@@ -1,6 +1,7 @@
 package com.habibInc.issueTracker.sprint;
 
 import com.habibInc.issueTracker.issue.Issue;
+import com.habibInc.issueTracker.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +33,8 @@ public class SprintController {
 
     @PatchMapping("/{sprintId}/backlog")
     @ResponseStatus(HttpStatus.OK)
-    public void setSprintBacklog(@PathVariable Long sprintId, @RequestBody List<Issue> issues){
-        sprintService.setSprintBacklog(sprintId, issues);
+    public int setSprintBacklog(@PathVariable("sprintId") String id, @RequestBody List<Long> issuesIds){
+        Long sprintId = Utils.validateId(id);
+        return sprintService.setSprintBacklog(sprintId, issuesIds);
     }
 }
