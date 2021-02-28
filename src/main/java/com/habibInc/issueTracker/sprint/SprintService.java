@@ -38,14 +38,15 @@ public class SprintService {
                 new ResourceNotFoundException("Sprint not found"));
     }
 
-    public void setSprintBacklog(Long sprintId, List<Issue> issues) {
-        Sprint sprint = getSprintById(sprintId);
-
-        // update the sprint for each issue
-        for(Issue issue: issues){
-            issue.setSprint(sprint);
-        }
-
-        issueRepository.saveAll(issues);
+    public int setSprintBacklog(Long sprintId, List<Long> issuesIds) {
+        return issueRepository.setSprintBacklog(sprintId, issuesIds);
+//        Sprint sprint = getSprintById(sprintId);
+//
+//        // update the sprint for each issue
+//        for(Issue issue: issues){
+//            issue.setSprint(sprint);
+//        }
+//
+//        issueRepository.saveAll(issues);
     }
 }
