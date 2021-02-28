@@ -2,6 +2,8 @@ package com.habibInc.issueTracker.issue;
 
 import com.habibInc.issueTracker.column.Column;
 import com.habibInc.issueTracker.column.ColumnRepository;
+import com.habibInc.issueTracker.sprint.Sprint;
+import com.habibInc.issueTracker.sprint.SprintRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +13,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.*;
@@ -27,6 +29,9 @@ public class IssueRepositoryTest {
 
     @Autowired
     ColumnRepository columnRepository;
+
+    @Autowired
+    SprintRepository sprintRepository;
 
     Issue issue1, issue2;
 
@@ -163,5 +168,33 @@ public class IssueRepositoryTest {
 
         // then expect the update to be successful (issue transferred to another column)
         assertThat(issueRepository.findById(issue.getId()).get().getColumn()).isEqualTo(column2);
+    }
+
+    @Test
+    public void itShouldSetSprintBacklog() {
+        // given a list of issues
+        List<Issue> issues = List.of(
+                Issue.builder().summary("issue 1").build(),
+                Issue.builder().summary("issue 2").build(),
+                Issue.builder().summary("issue 3").build(),
+                Issue.builder().summary("issue 4").build(),
+                Issue.builder().summary("issue 5").build()
+        );
+        issues = (List<Issue>) issueRepository.saveAll(issues);
+
+        // given a sprint
+        Sprint sprint = new Sprint();
+        sprint.setName("Primary sprint");
+        sprint = sprintRepository.save(sprint);
+
+        // given a list of issues ids
+        List<Long> issuesIds =
+                issues.stream().map((issue) -> issue.getId()).collect(Collectors.toList());
+
+        // when a request is made to set the sprint backlog
+        int numOfUpdatedIssues = issueRepository.setSprintBacklog(sprint.getId(), issuesIds);
+
+        // then expect the sprint of each issue to have been set
+        assertThat(numOfUpdatedIssues).isEqualTo(issues.size());
     }
 }
