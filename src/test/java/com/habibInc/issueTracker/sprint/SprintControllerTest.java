@@ -12,13 +12,11 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -89,15 +87,15 @@ public class SprintControllerTest {
     }
 
     @Test
-    public void itShouldSetSprintIssues() throws Exception {
-        doNothing().when(sprintService).setSprintIssues(sprint.getId(), issues);
+    public void itShouldSetSprintBacklog() throws Exception {
+        doNothing().when(sprintService).setSprintBacklog(sprint.getId(), issues);
 
         // given the request body
         String requestBody = mapper.writeValueAsString(issues);
 
         // when a POST request is made to add a list of issues to the sprint
         // then the sprint issues should be set successfully
-        mockMvc.perform(post("/projects/1/sprints/"+sprint.getId()+"/issues")
+        mockMvc.perform(patch("/projects/1/sprints/"+sprint.getId()+"/backlog")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))
                 .andExpect(status().isOk());

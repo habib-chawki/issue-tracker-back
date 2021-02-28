@@ -38,7 +38,7 @@ public class SprintService {
                 new ResourceNotFoundException("Sprint not found"));
     }
 
-    public void setSprintIssues(Long sprintId, List<Issue> issues) {
+    public void setSprintBacklog(Long sprintId, List<Issue> issues) {
         Sprint sprint = getSprintById(sprintId);
 
         // update the sprint for each issue

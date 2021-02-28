@@ -112,39 +112,6 @@ public class SprintIT {
             assertThat(response.getBody().getId()).isNotNull().isPositive();
             assertThat(response.getBody()).isEqualToComparingOnlyGivenFields(sprint);
         }
-
-        @Test
-        public void itShouldSetSprintIssues() {
-            // given a list of issues
-            List<Issue> issues = List.of(
-                    Issue.builder().summary("issue 1").build(),
-                    Issue.builder().summary("issue 2").build(),
-                    Issue.builder().summary("issue 3").build()
-            );
-
-            // given the issues are saved
-            issues = (List<Issue>) issueRepository.saveAll(issues);
-
-            // given the sprint is saved
-            sprint = sprintService.createSprint(project.getId(), sprint);
-
-            // given the url
-            String url = baseUrl + "/" + sprint.getId() + "/issues";
-
-            // given the request body containing the list of issues
-            httpEntity = new HttpEntity(issues, headers);
-
-            // when a POST request is made to set the sprint issues
-            ResponseEntity<Void> postResponse =
-                    restTemplate.postForEntity(url, httpEntity, Void.class);
-
-            // then expect the sprint issues to have been set successfully
-            assertThat(postResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-
-            List<Issue> sprintIssues =
-                    sprintService.getSprintById(sprint.getId()).getIssues();
-            assertThat(sprintIssues).containsExactlyElementsOf(issues);
-        }
     }
 
     @Nested
@@ -188,9 +155,14 @@ public class SprintIT {
             // given the sprint is created
             sprint = sprintService.createSprint(project.getId(), sprint);
 
-            // given the sprint issues are set via a POST request
+            // given the sprint issues are set via a PATCH request
             HttpEntity<Issue[]> httpPostEntity = new HttpEntity(issues, headers);
-            restTemplate.postForEntity(baseUrl + "/" + sprint.getId() + "/issues", httpPostEntity, Void.class);
+            restTemplate.exchange(
+                    baseUrl + "/" + sprint.getId() + "/backlog",
+                    HttpMethod.PATCH,
+                    httpPostEntity,
+                    Void.class
+            );
 
             // when a GET request is made to fetch the sprint by id
             ResponseEntity<Sprint> response =
@@ -201,6 +173,46 @@ public class SprintIT {
         }
     }
 
+    @Nested
+    @DisplayName("PATCH")
+    class Patch {
+
+        private String baseUrl = "/projects/" + project.getId() + "/sprints";
+        private HttpEntity httpEntity;
+
+        @Test
+        public void itShouldSetSprintBacklog() {
+            // given a list of issues
+            List<Issue> issues = List.of(
+                    Issue.builder().summary("issue 1").build(),
+                    Issue.builder().summary("issue 2").build(),
+                    Issue.builder().summary("issue 3").build()
+            );
+
+            // given the issues are saved
+            issues = (List<Issue>) issueRepository.saveAll(issues);
+
+            // given the sprint is saved
+            sprint = sprintService.createSprint(project.getId(), sprint);
+
+            // given the url
+            String url = baseUrl + "/" + sprint.getId() + "/backlog";
+
+            // given the request body containing the list of issues
+            httpEntity = new HttpEntity(issues, headers);
+
+            // when a PATCH request is made to set the sprint backlog
+            ResponseEntity<Void> patchResponse =
+                    restTemplate.exchange(url, HttpMethod.PATCH, httpEntity, Void.class);
+
+            // then expect the sprint issues to have been set successfully
+            assertThat(patchResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+            List<Issue> sprintIssues =
+                    sprintService.getSprintById(sprint.getId()).getIssues();
+            assertThat(sprintIssues).containsExactlyElementsOf(issues);
+        }
+    }
     @AfterEach
     public void teardown() {
         issueRepository.deleteAll();

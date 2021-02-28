@@ -12,7 +12,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -119,13 +118,13 @@ public class SprintServiceTest {
     }
 
     @Test
-    public void itShouldSetSprintIssues() {
+    public void itShouldSetSprintBacklog() {
         // given the sprint
         when(sprintRepository.findById(sprint.getId())).thenReturn(Optional.of(sprint));
         when(issueRepository.saveAll(issues)).thenReturn(issues);
 
         // when the service is invoked to add issues to the sprint
-        sprintService.setSprintIssues(sprint.getId(), issues);
+        sprintService.setSprintBacklog(sprint.getId(), issues);
 
         // then each issue's sprint property should be updated
         issues.forEach((Issue issue) -> assertThat(issue.getSprint()).isEqualTo(sprint));
