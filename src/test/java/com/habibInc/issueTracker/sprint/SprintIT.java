@@ -16,8 +16,8 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -155,12 +155,15 @@ public class SprintIT {
             // given the sprint is created
             sprint = sprintService.createSprint(project.getId(), sprint);
 
-            // given the sprint issues are set via a PATCH request
-            HttpEntity<Issue[]> httpPostEntity = new HttpEntity(issues, headers);
+            // given the list of issues ids
+            List<Long> issuesIds = issues.stream().map((issue) -> issue.getId()).collect(Collectors.toList());
+
+            // given the sprint backlog is set via a PATCH request
+            HttpEntity<Long[]> httpPatchEntity = new HttpEntity(issuesIds, headers);
             restTemplate.exchange(
                     baseUrl + "/" + sprint.getId() + "/backlog",
                     HttpMethod.PATCH,
-                    httpPostEntity,
+                    httpPatchEntity,
                     Void.class
             );
 
@@ -178,7 +181,6 @@ public class SprintIT {
     class Patch {
 
         private String baseUrl = "/projects/" + project.getId() + "/sprints";
-        private HttpEntity httpEntity;
 
         @Test
         public void itShouldSetSprintBacklog() {
@@ -192,18 +194,19 @@ public class SprintIT {
             // given the issues are saved
             issues = (List<Issue>) issueRepository.saveAll(issues);
 
-            // given the sprint is saved
+            // given the sprint is created
             sprint = sprintService.createSprint(project.getId(), sprint);
 
             // given the url
             String url = baseUrl + "/" + sprint.getId() + "/backlog";
 
-            // given the request body containing the list of issues
-            httpEntity = new HttpEntity(issues, headers);
+            // given the request body containing the list of issues ids
+            List<Long> issuesIds = issues.stream().map((issue) -> issue.getId()).collect(Collectors.toList());
+            HttpEntity<List<Long>> httpEntity = new HttpEntity<>(issuesIds, headers);
 
             // when a PATCH request is made to set the sprint backlog
-            ResponseEntity<Void> patchResponse =
-                    restTemplate.exchange(url, HttpMethod.PATCH, httpEntity, Void.class);
+            ResponseEntity<String> patchResponse =
+                    restTemplate.exchange(url, HttpMethod.PATCH, httpEntity, String.class);
 
             // then expect the sprint issues to have been set successfully
             assertThat(patchResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -213,6 +216,7 @@ public class SprintIT {
             assertThat(sprintIssues).containsExactlyElementsOf(issues);
         }
     }
+
     @AfterEach
     public void teardown() {
         issueRepository.deleteAll();
