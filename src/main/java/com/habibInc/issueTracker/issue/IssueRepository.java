@@ -15,9 +15,9 @@ public interface IssueRepository extends PagingAndSortingRepository<Issue, Long>
     List<Issue> findByColumnId(Long columnId, Pageable pageable);
     List<Issue> findAllByProjectId(Long projectId);
 
-    @Modifying
-    @Query(value = "UPDATE issue SET sprint_id = :sprintId WHERE id IN :issueIds", nativeQuery = true)
-    int setSprintBacklog(@Param("sprintId") Long sprintId, @Param("issueIds") Collection<Long> issueIds);
+    @Modifying(clearAutomatically = true)
+    @Query(value = "UPDATE issue SET sprint_id = :sprintId WHERE id IN :ids", nativeQuery = true)
+    int setSprintBacklog(@Param("sprintId") Long sprintId, @Param("ids") Collection<Long> ids);
 
     @Modifying(clearAutomatically = true)
     @Query(value = "UPDATE issue SET `column_id` = :columnId WHERE id = :issueId", nativeQuery = true)
