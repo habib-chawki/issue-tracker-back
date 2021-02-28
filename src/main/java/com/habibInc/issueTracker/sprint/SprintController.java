@@ -30,10 +30,9 @@ public class SprintController {
         return sprintService.getSprintById(sprintId);
     }
 
-    @PostMapping("/{sprintId}/issues")
+    @PatchMapping("/{sprintId}/backlog")
     @ResponseStatus(HttpStatus.OK)
-    public void setSprintIssues(@PathVariable Long sprintId, @RequestBody List<Issue> issues){
-        sprintService.setSprintIssues(sprintId, issues);
+    public void setSprintBacklog(@PathVariable Long sprintId, @RequestBody List<Issue> issues){
+        sprintService.setSprintBacklog(sprintId, issues);
     }
-
 }
