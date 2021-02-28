@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -88,13 +89,17 @@ public class SprintControllerTest {
 
     @Test
     public void itShouldSetSprintBacklog() throws Exception {
-        doNothing().when(sprintService).setSprintBacklog(sprint.getId(), issues);
+        // given the list of issues ids
+        List<Long> issuesIds = issues.stream().map((issue) -> issue.getId()).collect(Collectors.toList());
+
+        // given the service returns the number of updated issues
+        when(sprintService.setSprintBacklog(eq(sprint.getId()), eq(issuesIds))).thenReturn(issues.size());
 
         // given the request body
-        String requestBody = mapper.writeValueAsString(issues);
+        String requestBody = mapper.writeValueAsString(issuesIds);
 
-        // when a POST request is made to add a list of issues to the sprint
-        // then the sprint issues should be set successfully
+        // when a PATCH request is made to add a list of issues to the sprint
+        // then the sprint backlog should be set successfully
         mockMvc.perform(patch("/projects/1/sprints/"+sprint.getId()+"/backlog")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))
