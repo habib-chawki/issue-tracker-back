@@ -7,7 +7,6 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collection;
 import java.util.List;
 
 @Repository
@@ -17,7 +16,7 @@ public interface IssueRepository extends PagingAndSortingRepository<Issue, Long>
 
     @Modifying(clearAutomatically = true)
     @Query(value = "UPDATE issue SET sprint_id = :sprintId WHERE id IN :ids", nativeQuery = true)
-    int setSprintBacklog(@Param("sprintId") Long sprintId, @Param("ids") Collection<Long> ids);
+    int setSprintBacklog(@Param("sprintId") Long sprintId, @Param("ids") List<Long> ids);
 
     @Modifying(clearAutomatically = true)
     @Query(value = "UPDATE issue SET `column_id` = :columnId WHERE id = :issueId", nativeQuery = true)
