@@ -194,7 +194,12 @@ public class IssueRepositoryTest {
         // when a request is made to set the sprint backlog
         int numOfUpdatedIssues = issueRepository.setSprintBacklog(sprint.getId(), issuesIds);
 
-        // then expect the sprint of each issue to have been set
+        // then expect all issues to have been updated
         assertThat(numOfUpdatedIssues).isEqualTo(issues.size());
+
+        // expect the sprint of each issue to have been set
+        List<Issue> updatedIssues = (List<Issue>) issueRepository.findAll();
+        for(Issue issue : updatedIssues)
+            assertThat(issue.getSprint()).isEqualTo(sprint);
     }
 }
