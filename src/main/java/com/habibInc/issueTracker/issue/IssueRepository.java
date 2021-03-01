@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -14,6 +15,7 @@ public interface IssueRepository extends PagingAndSortingRepository<Issue, Long>
     List<Issue> findByColumnId(Long columnId, Pageable pageable);
     List<Issue> findAllByProjectId(Long projectId);
 
+    @Transactional
     @Modifying(clearAutomatically = true)
     @Query(value = "UPDATE issue SET sprint_id = :sprintId WHERE id IN :ids", nativeQuery = true)
     int setSprintBacklog(@Param("sprintId") Long sprintId, @Param("ids") List<Long> ids);
