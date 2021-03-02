@@ -172,7 +172,7 @@ public class SprintIT {
                     restTemplate.exchange(baseUrl + "/" + sprint.getId(), HttpMethod.GET, httpEntity, Sprint.class);
 
             // then expect the list of sprint issues to have been retrieved along with it
-            assertThat(response.getBody().getIssues()).isEqualTo(issues);
+            assertThat(response.getBody().getBacklog()).isEqualTo(issues);
         }
     }
 
@@ -212,7 +212,7 @@ public class SprintIT {
             assertThat(patchResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
 
             List<Issue> sprintIssues =
-                    sprintService.getSprintById(sprint.getId()).getIssues();
+                    sprintService.getSprintById(sprint.getId()).getBacklog();
             assertThat(sprintIssues).containsExactlyElementsOf(issues);
         }
     }

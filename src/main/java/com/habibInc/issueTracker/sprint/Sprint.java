@@ -39,7 +39,7 @@ public class Sprint {
     private Project project;
 
     @OneToMany(mappedBy = "sprint", fetch = FetchType.EAGER)
-    private List<Issue> issues;
+    private List<Issue> backlog;
 
     @Override
     public boolean equals(Object o) {

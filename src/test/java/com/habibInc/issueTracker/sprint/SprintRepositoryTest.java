@@ -9,7 +9,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -73,7 +72,7 @@ public class SprintRepositoryTest {
         issueRepository.saveAll(issues);
 
         // given the sprint issues are set
-        sprint.setIssues(issues);
+        sprint.setBacklog(issues);
 
         // given the sprint is saved
         sprintRepository.save(sprint);
@@ -82,7 +81,7 @@ public class SprintRepositoryTest {
         Optional<Sprint> sprintOptional = sprintRepository.findById(sprint.getId());
 
         // then the sprint should be retrieved along with its issues
-        assertThat(sprintOptional.get().getIssues()).containsExactlyElementsOf(issues);
+        assertThat(sprintOptional.get().getBacklog()).containsExactlyElementsOf(issues);
     }
 
 }
