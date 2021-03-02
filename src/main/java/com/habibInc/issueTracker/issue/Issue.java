@@ -25,7 +25,7 @@ import java.util.Objects;
 @Builder
 
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-@JsonIgnoreProperties(value = {"column", "reporter", "assignee"})
+@JsonIgnoreProperties(value = {"column", "reporter", "assignee", "sprint", "project"})
 public class Issue {
 
     @Id
@@ -61,7 +61,7 @@ public class Issue {
     @ManyToOne
     private Project project;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Sprint sprint;
 
     @ManyToOne
