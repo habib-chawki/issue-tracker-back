@@ -1,7 +1,6 @@
 package com.habibInc.issueTracker.sprint;
 
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
-import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.issue.IssueRepository;
 import com.habibInc.issueTracker.project.Project;
 import com.habibInc.issueTracker.project.ProjectService;
@@ -40,13 +39,5 @@ public class SprintService {
 
     public int setSprintBacklog(Long sprintId, List<Long> issuesIds) {
         return issueRepository.setSprintBacklog(sprintId, issuesIds);
-//        Sprint sprint = getSprintById(sprintId);
-//
-//        // update the sprint for each issue
-//        for(Issue issue: issues){
-//            issue.setSprint(sprint);
-//        }
-//
-//        issueRepository.saveAll(issues);
     }
 }
