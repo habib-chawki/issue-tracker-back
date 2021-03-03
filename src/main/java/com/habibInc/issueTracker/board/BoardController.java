@@ -18,11 +18,12 @@ public class BoardController {
         this.boardService = boardService;
     }
 
-    @PostMapping({"", "/"})
+    @PostMapping(value = {"", "/"}, params = "sprint")
     @ResponseStatus(HttpStatus.CREATED)
-    public Board createBoard(@RequestBody Board board,
+    public Board createBoard(@RequestParam(name = "sprint") Long sprintId,
+                             @RequestBody Board board,
                              @AuthenticationPrincipal User authenticatedUser){
-        return boardService.createBoard(board, authenticatedUser);
+        return boardService.createBoard(sprintId, board, authenticatedUser);
     }
 
     @GetMapping("/{boardId}")
