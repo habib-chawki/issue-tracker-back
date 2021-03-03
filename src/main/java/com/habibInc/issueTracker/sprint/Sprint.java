@@ -2,6 +2,7 @@ package com.habibInc.issueTracker.sprint;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.habibInc.issueTracker.board.Board;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.project.Project;
 import lombok.*;
@@ -40,6 +41,9 @@ public class Sprint {
 
     @OneToMany(mappedBy = "sprint", fetch = FetchType.EAGER)
     private List<Issue> backlog;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private Board board;
 
     @Override
     public boolean equals(Object o) {
