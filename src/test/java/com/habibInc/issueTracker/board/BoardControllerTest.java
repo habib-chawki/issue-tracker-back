@@ -41,7 +41,7 @@ public class BoardControllerTest {
     @Test
     public void itShouldCreateBoard() throws Exception {
         // given the board service
-        when(boardService.createBoard(eq(board), any())).thenReturn(board);
+        when(boardService.createBoard(any(), eq(board), any())).thenReturn(board);
 
         // when a request to create a board is made
         String url = "/boards";
@@ -49,6 +49,7 @@ public class BoardControllerTest {
 
         // then the response should be the created board
         mockMvc.perform(post(url)
+                .queryParam("sprint", String.valueOf(10L))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))
                 .andExpect(status().isCreated())
