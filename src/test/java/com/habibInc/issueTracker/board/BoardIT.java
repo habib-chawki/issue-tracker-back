@@ -5,6 +5,9 @@ import com.habibInc.issueTracker.column.ColumnRepository;
 import com.habibInc.issueTracker.exceptionhandler.ApiError;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.security.JwtUtil;
+import com.habibInc.issueTracker.sprint.Sprint;
+import com.habibInc.issueTracker.sprint.SprintRepository;
+import com.habibInc.issueTracker.sprint.SprintService;
 import com.habibInc.issueTracker.user.User;
 import com.habibInc.issueTracker.user.UserRepository;
 import com.habibInc.issueTracker.user.UserService;
@@ -44,9 +47,13 @@ public class BoardIT {
     @Autowired
     ColumnRepository columnRepository;
 
+    @Autowired
+    SprintRepository sprintRepository;
+
     User authenticatedUser;
     HttpHeaders httpHeaders;
 
+    Sprint sprint;
     Board board;
 
     @BeforeAll
@@ -71,6 +78,11 @@ public class BoardIT {
 
     @BeforeEach
     public void setup() {
+        sprint = new Sprint();
+        sprint.setName("sprint 1");
+
+        sprint = sprintRepository.save(sprint);
+
         board = new Board();
         board.setName("ScrumOrKanban");
     }
@@ -81,7 +93,7 @@ public class BoardIT {
         @Test
         public void itShouldCreateBoard() {
             // given the url endpoint and the request
-            String url = "/boards";
+            String url = "/boards?sprint=" + sprint.getId();
             HttpEntity<Board> httpEntity = new HttpEntity<>(board, httpHeaders);
 
             // when a post request is made to create a new board
@@ -108,7 +120,7 @@ public class BoardIT {
         @BeforeEach
         public void setup() {
             // create the board
-            board = boardService.createBoard(board, authenticatedUser);
+            board = boardService.createBoard(sprint.getId(), board, authenticatedUser);
 
             // set up the request
             url = "/boards/" + board.getId();
@@ -165,7 +177,7 @@ public class BoardIT {
         @DisplayName("Delete board by id")
         public void itShouldDeleteBoardById() {
             // given a board
-            board = boardService.createBoard(board, authenticatedUser);
+            board = boardService.createBoard(sprint.getId(), board, authenticatedUser);
 
             // given the request
             String url = "/boards/" + board.getId();
@@ -186,7 +198,7 @@ public class BoardIT {
         @DisplayName("Delete board along with its columns")
         public void itShouldDeleteBoardByIdAlongWithAllOfItsColumns() {
             // given the board is created
-            board = boardService.createBoard(board, authenticatedUser);
+            board = boardService.createBoard(sprint.getId(), board, authenticatedUser);
 
             // given a list of columns belonging to the board
             columnRepository.saveAll(
@@ -223,7 +235,7 @@ public class BoardIT {
             notAuthenticatedUser = userService.createUser(notAuthenticatedUser);
 
             // given a board that belongs to a user other than the authenticated user
-            board = boardService.createBoard(board, notAuthenticatedUser);
+            board = boardService.createBoard(sprint.getId(), board, notAuthenticatedUser);
 
             // given the DELETE request
             String url = "/boards/" + board.getId();
@@ -241,6 +253,7 @@ public class BoardIT {
     @AfterEach
     public void teardown() {
         boardRepository.deleteAll();
+        sprintRepository.deleteAll();
     }
 
     @AfterAll
