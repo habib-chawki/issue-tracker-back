@@ -1,8 +1,10 @@
 package com.habibInc.issueTracker.board;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.habibInc.issueTracker.column.Column;
+import com.habibInc.issueTracker.sprint.Sprint;
 import com.habibInc.issueTracker.user.User;
 import lombok.*;
 
@@ -19,6 +21,7 @@ import java.util.Objects;
 @Builder
 
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@JsonIgnoreProperties(value = {"sprint"})
 public class Board {
 
     @Id
@@ -32,6 +35,9 @@ public class Board {
 
     @OneToOne
     private User owner;
+
+    @OneToOne(mappedBy = "board")
+    private Sprint sprint;
 
     @Override
     public boolean equals(Object o) {
