@@ -6,6 +6,8 @@ import com.habibInc.issueTracker.board.Board;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.project.Project;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -42,7 +44,7 @@ public class Sprint {
     @OneToMany(mappedBy = "sprint", fetch = FetchType.EAGER)
     private List<Issue> backlog;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "sprint")
     private Board board;
 
     @Override
