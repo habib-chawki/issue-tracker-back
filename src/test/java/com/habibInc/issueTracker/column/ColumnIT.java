@@ -7,6 +7,9 @@ import com.habibInc.issueTracker.exceptionhandler.ApiError;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.issue.IssueRepository;
 import com.habibInc.issueTracker.security.JwtUtil;
+import com.habibInc.issueTracker.sprint.Sprint;
+import com.habibInc.issueTracker.sprint.SprintRepository;
+import com.habibInc.issueTracker.sprint.SprintService;
 import com.habibInc.issueTracker.user.User;
 import com.habibInc.issueTracker.user.UserRepository;
 import com.habibInc.issueTracker.user.UserService;
@@ -48,6 +51,9 @@ public class ColumnIT {
     IssueRepository issueRepository;
 
     @Autowired
+    SprintRepository sprintRepository;
+
+    @Autowired
     TestRestTemplate restTemplate;
 
     @Autowired
@@ -58,6 +64,7 @@ public class ColumnIT {
     User authenticatedUser;
     Column column;
     Board board;
+    Sprint sprint;
 
     @BeforeAll
     public void authSetup() {
@@ -80,12 +87,17 @@ public class ColumnIT {
 
     @BeforeEach
     public void setup() {
+        sprint = new Sprint();
+        sprint.setName("sprint 01");
+
+        sprint = sprintRepository.save(sprint);
+
         // set up a board
         board = new Board();
         board.setName("column_board");
 
         // save the board with the authenticated user set as owner
-        board = boardService.createBoard(board, authenticatedUser);
+        board = boardService.createBoard(sprint.getId(), board, authenticatedUser);
 
         // set up a column
         column = new Column();
@@ -392,6 +404,7 @@ public class ColumnIT {
             randomUser = userService.createUser(randomUser);
 
             // given the random user set as board owner
+            Board board = new Board();
             board.setOwner(randomUser);
             board = boardRepository.save(board);
 
@@ -454,6 +467,7 @@ public class ColumnIT {
             randomUser = userService.createUser(randomUser);
 
             // given the random user set as board owner
+            Board board = new Board();
             board.setOwner(randomUser);
             board = boardRepository.save(board);
 
@@ -507,6 +521,7 @@ public class ColumnIT {
         issueRepository.deleteAll();
         columnRepository.deleteAll();
         boardRepository.deleteAll();
+        sprintRepository.deleteAll();
     }
 
     @AfterAll
