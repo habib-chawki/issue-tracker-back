@@ -2,6 +2,8 @@ package com.habibInc.issueTracker.board;
 
 import com.habibInc.issueTracker.exceptionhandler.ForbiddenOperationException;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
+import com.habibInc.issueTracker.sprint.Sprint;
+import com.habibInc.issueTracker.sprint.SprintService;
 import com.habibInc.issueTracker.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,14 +11,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class BoardService {
 
-    private BoardRepository boardRepository;
+    private final BoardRepository boardRepository;
+    private final SprintService sprintService;
 
     @Autowired
-    public BoardService(BoardRepository boardRepository) {
+    public BoardService(BoardRepository boardRepository, SprintService sprintService) {
         this.boardRepository = boardRepository;
+        this.sprintService = sprintService;
     }
 
-    public Board createBoard(Board board, User authenticatedUser){
+    public Board createBoard(Long sprintId, Board board, User authenticatedUser){
+        // fetch the sprint (throws sprint not found error)
+        Sprint sprint = sprintService.getSprintById(sprintId);
+
+        // set board owner and sprint
+        board.setSprint(sprint);
         board.setOwner(authenticatedUser);
         return boardRepository.save(board);
     }
