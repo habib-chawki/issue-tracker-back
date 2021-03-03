@@ -36,7 +36,7 @@ public class Board {
     @OneToOne
     private User owner;
 
-    @OneToOne(mappedBy = "board")
+    @OneToOne
     private Sprint sprint;
 
     @Override
