@@ -2,6 +2,7 @@ package com.habibInc.issueTracker.board;
 
 import com.habibInc.issueTracker.exceptionhandler.ForbiddenOperationException;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
+import com.habibInc.issueTracker.sprint.SprintService;
 import com.habibInc.issueTracker.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,6 +22,9 @@ public class BoardServiceTest {
 
     @Mock
     BoardRepository boardRepository;
+
+    @Mock
+    SprintService sprintService;
 
     Board board;
     User owner;
@@ -43,11 +47,14 @@ public class BoardServiceTest {
 
     @Test
     public void itShouldCreateBoard() {
+        Long sprintId = 10L;
+
         // given the board repository "save()" method
         when(boardRepository.save(board)).thenReturn(board);
+        when(sprintService.getSprintById(sprintId)).thenReturn(null);
 
         // when "createBoard()" service method is invoked
-        Board createdBoard = boardService.createBoard(board, owner);
+        Board createdBoard = boardService.createBoard(sprintId, board, owner);
 
         // then the response should be the successfully created board
         assertThat(createdBoard).isEqualTo(board);
@@ -55,8 +62,10 @@ public class BoardServiceTest {
 
     @Test
     public void givenCreateBoard_itShouldSetBoardOwner() {
+        Long sprintId = 10L;
+
         // when "createBoard()" is invoked
-        boardService.createBoard(board, owner);
+        boardService.createBoard(sprintId, board, owner);
 
         // then the owner should be set
         assertThat(board.getOwner()).isEqualTo(owner);
