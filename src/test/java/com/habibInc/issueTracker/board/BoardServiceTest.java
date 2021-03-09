@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 
 import java.util.Optional;
 
@@ -22,6 +23,7 @@ import static org.mockito.Mockito.*;
 
 public class BoardServiceTest {
     @InjectMocks
+    @Spy
     BoardService boardService;
 
     @Mock
@@ -59,7 +61,8 @@ public class BoardServiceTest {
         // given
         when(boardRepository.save(board)).thenReturn(board);
         when(sprintService.getSprintById(sprintId)).thenReturn(null);
-        when(columnRepository.save(any(Column.class))).thenReturn(new Column());
+
+        doNothing().when(boardService).createToDoColumn(any(), any());
 
         // when "createBoard()" service method is invoked
         Board createdBoard = boardService.createBoard(sprintId, board, owner);
@@ -72,8 +75,9 @@ public class BoardServiceTest {
     public void givenCreateBoard_itShouldSetBoardOwner() {
         Long sprintId = 10L;
 
+        // given
         when(boardRepository.save(board)).thenReturn(board);
-        when(columnRepository.save(any(Column.class))).thenReturn(new Column());
+        doNothing().when(boardService).createToDoColumn(any(), any());
 
         // when "createBoard()" is invoked
         boardService.createBoard(sprintId, board, owner);
@@ -89,9 +93,10 @@ public class BoardServiceTest {
         sprint.setId(10L);
         sprint.setName("Sprint");
 
+        // given
         when(boardRepository.save(board)).thenReturn(board);
         when(sprintService.getSprintById(sprint.getId())).thenReturn(sprint);
-        when(columnRepository.save(any(Column.class))).thenReturn(new Column());
+        doNothing().when(boardService).createToDoColumn(any(), any());
 
         // when createBoard() is invoked
         boardService.createBoard(sprint.getId(), board, owner);
