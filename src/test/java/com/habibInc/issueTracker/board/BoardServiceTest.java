@@ -1,5 +1,7 @@
 package com.habibInc.issueTracker.board;
 
+import com.habibInc.issueTracker.column.Column;
+import com.habibInc.issueTracker.column.ColumnService;
 import com.habibInc.issueTracker.exceptionhandler.ForbiddenOperationException;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.sprint.Sprint;
@@ -27,6 +29,9 @@ public class BoardServiceTest {
     @Mock
     SprintService sprintService;
 
+    @Mock
+    ColumnService columnService;
+
     Board board;
     User owner;
 
@@ -50,9 +55,10 @@ public class BoardServiceTest {
     public void itShouldCreateBoard() {
         Long sprintId = 10L;
 
-        // given the board repository "save()" method
+        // given
         when(boardRepository.save(board)).thenReturn(board);
         when(sprintService.getSprintById(sprintId)).thenReturn(null);
+        when(columnService.createColumn(eq(board.getId()), any())).thenReturn(new Column());
 
         // when "createBoard()" service method is invoked
         Board createdBoard = boardService.createBoard(sprintId, board, owner);
@@ -64,6 +70,9 @@ public class BoardServiceTest {
     @Test
     public void givenCreateBoard_itShouldSetBoardOwner() {
         Long sprintId = 10L;
+
+        when(boardRepository.save(board)).thenReturn(board);
+        when(columnService.createColumn(eq(board.getId()), any(Column.class))).thenReturn(new Column());
 
         // when "createBoard()" is invoked
         boardService.createBoard(sprintId, board, owner);
@@ -79,7 +88,9 @@ public class BoardServiceTest {
         sprint.setId(10L);
         sprint.setName("Sprint");
 
+        when(boardRepository.save(board)).thenReturn(board);
         when(sprintService.getSprintById(sprint.getId())).thenReturn(sprint);
+        when(columnService.createColumn(eq(board.getId()), any(Column.class))).thenReturn(new Column());
 
         // when createBoard() is invoked
         boardService.createBoard(sprint.getId(), board, owner);
