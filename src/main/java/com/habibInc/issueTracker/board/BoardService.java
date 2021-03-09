@@ -1,5 +1,8 @@
 package com.habibInc.issueTracker.board;
 
+import com.habibInc.issueTracker.column.Column;
+import com.habibInc.issueTracker.column.ColumnRepository;
+import com.habibInc.issueTracker.column.ColumnService;
 import com.habibInc.issueTracker.exceptionhandler.ForbiddenOperationException;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.sprint.Sprint;
@@ -13,11 +16,13 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
     private final SprintService sprintService;
+    private final ColumnRepository columnRepository;
 
     @Autowired
-    public BoardService(BoardRepository boardRepository, SprintService sprintService) {
+    public BoardService(BoardRepository boardRepository, SprintService sprintService, ColumnRepository columnRepository) {
         this.boardRepository = boardRepository;
         this.sprintService = sprintService;
+        this.columnRepository = columnRepository;
     }
 
     public Board createBoard(Long sprintId, Board board, User authenticatedUser){
@@ -27,7 +32,18 @@ public class BoardService {
         // set board owner and sprint
         board.setSprint(sprint);
         board.setOwner(authenticatedUser);
-        return boardRepository.save(board);
+
+        // save the board
+        board = boardRepository.save(board);
+
+        // create the to do column
+        Column toDoColumn = new Column();
+        toDoColumn.setTitle("To Do");
+        toDoColumn.setBoard(board);
+
+        columnRepository.save(toDoColumn);
+
+        return board;
     }
 
     public Board getBoardById(Long boardId) {
