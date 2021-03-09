@@ -202,4 +202,34 @@ public class IssueRepositoryTest {
         for(Issue issue : updatedIssues)
             assertThat(issue.getSprint()).isEqualTo(sprint);
     }
+
+    @Test
+    public void itShouldUpdateTheColumnOfAListOfIssues() {
+        // given a list of issues
+        List<Issue> issues = List.of(
+                Issue.builder().summary("issue 1").build(),
+                Issue.builder().summary("issue 2").build(),
+                Issue.builder().summary("issue 3").build(),
+                Issue.builder().summary("issue 4").build(),
+                Issue.builder().summary("issue 5").build()
+        );
+
+        issues = (List<Issue>) issueRepository.saveAll(issues);
+
+        // given a column
+        Column column = new Column();
+        column.setTitle("Column");
+        column = columnRepository.save(column);
+
+        // given the list of issue ids
+        List<Long> issueIds = issues.stream().map((issue) -> issue.getId()).collect(Collectors.toList());
+
+        // when a request is made to update the column of the list of issues
+        issueRepository.updateIssuesColumn(column.getId(), issueIds);
+
+        // then expect the column of each issue to be the to do column
+        List<Issue> updatedIssues = (List<Issue>) issueRepository.findAll();
+        for(Issue issue : updatedIssues)
+            assertThat(issue.getColumn()).isEqualTo(column);
+    }
 }
