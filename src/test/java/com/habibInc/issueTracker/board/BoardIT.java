@@ -278,6 +278,7 @@ public class BoardIT {
 
     @AfterEach
     public void teardown() {
+        columnRepository.deleteAll();
         boardRepository.deleteAll();
         sprintRepository.deleteAll();
     }
