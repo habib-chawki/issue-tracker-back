@@ -104,9 +104,21 @@ public class BoardIT {
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
             assertThat(response).isEqualToComparingOnlyGivenFields(board);
             assertThat(response.getBody().getId()).isNotNull().isPositive();
+        }
 
-            // the authenticated user should be set as board owner
-            assertThat(response.getBody().getOwner()).isEqualTo(authenticatedUser);
+        @Test
+        public void givenCreateBoard_itShouldSetAuthenticatedUserAsBoardOwner() {
+            // given the url endpoint and the request
+            String url = "/boards?sprint=" + sprint.getId();
+            HttpEntity<Board> httpEntity = new HttpEntity<>(board, httpHeaders);
+
+            // when a post request is made to create a new board
+            ResponseEntity<Board> response =
+                    restTemplate.exchange(url, HttpMethod.POST, httpEntity, Board.class);
+
+            // then the authenticated user should have been set as board owner
+            assertThat(boardService.getBoardById(response.getBody().getId()).getOwner())
+                    .isEqualTo(authenticatedUser);
         }
     }
 
