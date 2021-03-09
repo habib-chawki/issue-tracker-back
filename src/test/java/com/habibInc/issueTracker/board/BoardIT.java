@@ -11,6 +11,7 @@ import com.habibInc.issueTracker.sprint.SprintService;
 import com.habibInc.issueTracker.user.User;
 import com.habibInc.issueTracker.user.UserRepository;
 import com.habibInc.issueTracker.user.UserService;
+import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -90,13 +91,19 @@ public class BoardIT {
     @Nested
     @DisplayName("POST")
     class Post {
+
+        private String url;
+        private HttpEntity<Board> httpEntity;
+
+        @BeforeEach
+        public void setup() {
+            url = "/boards?sprint=" + sprint.getId();
+            httpEntity = new HttpEntity<>(board, httpHeaders);
+        }
+
         @Test
         public void itShouldCreateBoard() {
-            // given the url endpoint and the request
-            String url = "/boards?sprint=" + sprint.getId();
-            HttpEntity<Board> httpEntity = new HttpEntity<>(board, httpHeaders);
-
-            // when a post request is made to create a new board
+            // when a POST request is made to create a new board
             ResponseEntity<Board> response =
                     restTemplate.exchange(url, HttpMethod.POST, httpEntity, Board.class);
 
@@ -108,11 +115,7 @@ public class BoardIT {
 
         @Test
         public void givenCreateBoard_itShouldSetAuthenticatedUserAsBoardOwner() {
-            // given the url endpoint and the request
-            String url = "/boards?sprint=" + sprint.getId();
-            HttpEntity<Board> httpEntity = new HttpEntity<>(board, httpHeaders);
-
-            // when a post request is made to create a new board
+            // when the board is created via a POST request
             ResponseEntity<Board> response =
                     restTemplate.exchange(url, HttpMethod.POST, httpEntity, Board.class);
 
