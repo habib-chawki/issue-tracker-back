@@ -7,11 +7,9 @@ import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.security.JwtUtil;
 import com.habibInc.issueTracker.sprint.Sprint;
 import com.habibInc.issueTracker.sprint.SprintRepository;
-import com.habibInc.issueTracker.sprint.SprintService;
 import com.habibInc.issueTracker.user.User;
 import com.habibInc.issueTracker.user.UserRepository;
 import com.habibInc.issueTracker.user.UserService;
-import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -174,7 +172,7 @@ public class BoardIT {
 
             // then the board should be retrieved along with a list of columns
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-            assertThat(response.getBody().getColumns()).isEqualTo(columns);
+            assertThat(response.getBody().getColumns()).containsAll(columns);
         }
     }
 
