@@ -1,6 +1,8 @@
 package com.habibInc.issueTracker.user;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.project.Project;
 import lombok.*;
@@ -20,6 +22,7 @@ import java.util.Objects;
 
 @Builder
 
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @JsonIgnoreProperties(value = {"projects", "assignedIssues", "reportedIssues"})
 public class User {
     @Id
