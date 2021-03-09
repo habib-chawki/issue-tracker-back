@@ -37,13 +37,17 @@ public class BoardService {
         board = boardRepository.save(board);
 
         // create the to do column
+        createToDoColumn(board);
+
+        return board;
+    }
+
+    public void createToDoColumn(Board board){
         Column toDoColumn = new Column();
         toDoColumn.setTitle("To Do");
         toDoColumn.setBoard(board);
 
         columnRepository.save(toDoColumn);
-
-        return board;
     }
 
     public Board getBoardById(Long boardId) {
