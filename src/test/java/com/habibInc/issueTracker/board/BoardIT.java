@@ -173,6 +173,9 @@ public class BoardIT {
             // then the board should be retrieved along with a list of columns
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody().getColumns()).containsAll(columns);
+
+            // the first column of the board should be the to do column
+            assertThat(response.getBody().getColumns().get(0).getTitle()).isEqualTo("To Do");
         }
     }
 
