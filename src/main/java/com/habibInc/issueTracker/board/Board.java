@@ -21,7 +21,7 @@ import java.util.Objects;
 @Builder
 
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-@JsonIgnoreProperties(value = {"sprint"})
+@JsonIgnoreProperties(value = {"sprint", "owner"})
 public class Board {
 
     @Id
