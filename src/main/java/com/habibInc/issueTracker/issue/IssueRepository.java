@@ -23,4 +23,9 @@ public interface IssueRepository extends PagingAndSortingRepository<Issue, Long>
     @Modifying(clearAutomatically = true)
     @Query(value = "UPDATE issue SET `column_id` = :columnId WHERE id = :issueId", nativeQuery = true)
     int updateIssueColumn(@Param("issueId") Long issueId, @Param("columnId") Long columnId);
+
+    @Transactional
+    @Modifying(clearAutomatically = true)
+    @Query(value = "UPDATE issue SET `column_id` = :columnId WHERE id IN :ids", nativeQuery = true)
+    int updateIssuesColumn(@Param("columnId") Long columnId, @Param("ids") List<Long> ids);
 }
