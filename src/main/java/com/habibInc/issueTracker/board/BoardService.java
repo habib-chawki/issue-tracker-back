@@ -2,27 +2,33 @@ package com.habibInc.issueTracker.board;
 
 import com.habibInc.issueTracker.column.Column;
 import com.habibInc.issueTracker.column.ColumnRepository;
-import com.habibInc.issueTracker.column.ColumnService;
 import com.habibInc.issueTracker.exceptionhandler.ForbiddenOperationException;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
+import com.habibInc.issueTracker.issue.Issue;
+import com.habibInc.issueTracker.issue.IssueRepository;
 import com.habibInc.issueTracker.sprint.Sprint;
 import com.habibInc.issueTracker.sprint.SprintService;
 import com.habibInc.issueTracker.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class BoardService {
 
     private final BoardRepository boardRepository;
-    private final SprintService sprintService;
     private final ColumnRepository columnRepository;
+    private final IssueRepository issueRepository;
+    private final SprintService sprintService;
 
     @Autowired
-    public BoardService(BoardRepository boardRepository, SprintService sprintService, ColumnRepository columnRepository) {
+    public BoardService(BoardRepository boardRepository, ColumnRepository columnRepository, IssueRepository issueRepository, SprintService sprintService) {
         this.boardRepository = boardRepository;
-        this.sprintService = sprintService;
         this.columnRepository = columnRepository;
+        this.issueRepository = issueRepository;
+        this.sprintService = sprintService;
     }
 
     public Board createBoard(Long sprintId, Board board, User authenticatedUser){
@@ -37,17 +43,30 @@ public class BoardService {
         board = boardRepository.save(board);
 
         // create the to do column
-        createToDoColumn(board);
+        createToDoColumn(sprint, board);
 
         return board;
     }
 
-    public void createToDoColumn(Board board){
+    public void createToDoColumn(Sprint sprint, Board board){
+        // create and save the to do column
         Column toDoColumn = new Column();
         toDoColumn.setTitle("To Do");
         toDoColumn.setBoard(board);
 
-        columnRepository.save(toDoColumn);
+        toDoColumn = columnRepository.save(toDoColumn);
+
+        // set the sprint backlog as the to do column issues
+        setToDoColumnIssues(toDoColumn, sprint.getBacklog());
+    }
+
+    public void setToDoColumnIssues(Column column, List<Issue> issues) {
+        // extract the id of each sprint backlog issue
+        List<Long> issueIds =
+                issues.stream().map((issue) -> issue.getId()).collect(Collectors.toList());
+
+        // update the column
+        issueRepository.updateIssuesColumn(column.getId(), issueIds);
     }
 
     public Board getBoardById(Long boardId) {
