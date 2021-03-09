@@ -121,6 +121,16 @@ public class BoardIT {
             assertThat(boardService.getBoardById(response.getBody().getId()).getOwner())
                     .isEqualTo(authenticatedUser);
         }
+
+        @Test
+        public void givenCreateBoard_itShouldCreateTodoColumn() {
+            // when the board is created
+            ResponseEntity<Board> response =
+                    restTemplate.exchange(url, HttpMethod.POST, httpEntity, Board.class);
+
+            // then a to do column should have been created along with it
+            assertThat(((List<Column>) columnRepository.findAll()).get(0).getTitle()).isEqualTo("To Do");
+        }
     }
 
     @Nested
