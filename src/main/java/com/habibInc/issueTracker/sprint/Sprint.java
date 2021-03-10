@@ -1,13 +1,11 @@
 package com.habibInc.issueTracker.sprint;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.habibInc.issueTracker.board.Board;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.project.Project;
 import lombok.*;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -23,6 +21,7 @@ import java.util.Objects;
 
 @Builder
 
+@JsonIgnoreProperties({"project", "backlog"})
 public class Sprint {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -37,7 +36,6 @@ public class Sprint {
     @JsonFormat(pattern="yyyy-MM-dd")
     private LocalDate endDate;
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private Project project;
 
