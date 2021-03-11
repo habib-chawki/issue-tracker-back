@@ -1,5 +1,6 @@
 package com.habibInc.issueTracker.column;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.habibInc.issueTracker.board.Board;
 import com.habibInc.issueTracker.issue.Issue;
 import lombok.*;
@@ -17,6 +18,7 @@ import java.util.Objects;
 @Builder
 
 @Table(name = "`column`")
+@JsonIgnoreProperties({"board"})
 public class Column {
 
     @Id
@@ -25,7 +27,7 @@ public class Column {
 
     private String title;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Board board;
 
     @OneToMany(mappedBy = "column")
