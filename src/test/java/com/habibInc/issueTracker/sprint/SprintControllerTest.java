@@ -12,6 +12,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -103,6 +104,17 @@ public class SprintControllerTest {
         mockMvc.perform(patch("/projects/1/sprints/"+sprint.getId()+"/backlog")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void itShouldGetSprintsByStatus() throws Exception {
+        // given the sprint service returns a list of active sprints
+        when(sprintService.getSprintsByStatus(SprintStatus.ACTIVE)).thenReturn(new ArrayList<>());
+
+        // when a GET request is made to fetch a list of sprints by status
+        // then expect the sprints with the correct status to have been fetched
+        mockMvc.perform(get("/projects/1/sprints?status=ACTIVE"))
                 .andExpect(status().isOk());
     }
 }
