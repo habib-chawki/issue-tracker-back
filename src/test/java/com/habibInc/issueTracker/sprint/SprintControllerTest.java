@@ -114,7 +114,7 @@ public class SprintControllerTest {
 
         // when a GET request is made to fetch a list of sprints by status
         // then expect the sprints with the correct status to have been fetched
-        mockMvc.perform(get("/projects/1/sprints?status=ACTIVE"))
+        mockMvc.perform(get("/projects/1/sprints?status=active"))
                 .andExpect(status().isOk());
     }
 }
