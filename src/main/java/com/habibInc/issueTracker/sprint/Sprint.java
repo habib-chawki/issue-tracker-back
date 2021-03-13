@@ -6,6 +6,7 @@ import com.habibInc.issueTracker.board.Board;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.project.Project;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -31,7 +32,7 @@ public class Sprint {
     private String goal;
 
     @Enumerated(EnumType.STRING)
-    private SprintStatus status;
+    private SprintStatus status = SprintStatus.INACTIVE;
 
     @JsonFormat(pattern="yyyy-MM-dd")
     private LocalDate startDate;
