@@ -209,9 +209,10 @@ public class SprintIT {
             // then expect only the sprints with the correct status to have been fetched
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-            assertThat(sprintsByStatus).containsExactlyElementsOf(activeSprints);
-            assertThat(sprintsByStatus).doesNotContainAnyElementsOf(inactiveSprints);
-            assertThat(sprintsByStatus).doesNotContainAnyElementsOf(overSprints);
+            assertThat(sprintsByStatus)
+                    .containsExactlyElementsOf(activeSprints)
+                    .doesNotContainAnyElementsOf(inactiveSprints)
+                    .doesNotContainAnyElementsOf(overSprints);
         }
     }
 
