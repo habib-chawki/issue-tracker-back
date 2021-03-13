@@ -84,4 +84,23 @@ public class SprintRepositoryTest {
         assertThat(sprintOptional.get().getBacklog()).containsExactlyElementsOf(issues);
     }
 
+    @Test
+    public void itShouldFindAllSprintsByStatus() {
+        // given a list of sprints with various statuses
+        Sprint activeSprint1 = Sprint.builder().name("sprint 1").status(SprintStatus.ACTIVE).build();
+        Sprint activeSprint2 = Sprint.builder().name("sprint 2").status(SprintStatus.ACTIVE).build();
+        Sprint inactiveSprint = Sprint.builder().name("sprint 2").status(SprintStatus.INACTIVE).build();
+        Sprint overSprint = Sprint.builder().name("sprint 2").status(SprintStatus.OVER).build();
+
+        sprintRepository.saveAll(List.of(activeSprint1, activeSprint2, inactiveSprint, overSprint));
+
+        // when the sprints are queried by status
+        List<Sprint> sprintsByStatus = sprintRepository.findAllByStatus(SprintStatus.ACTIVE);
+
+        // then only the sprints with the correct status should be fetched
+        assertThat(sprintsByStatus).containsAll(List.of(activeSprint1, activeSprint2));
+        assertThat(sprintsByStatus).doesNotContain(inactiveSprint);
+        assertThat(sprintsByStatus).doesNotContain(overSprint);
+    }
+
 }
