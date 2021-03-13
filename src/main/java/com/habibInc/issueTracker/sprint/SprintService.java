@@ -42,6 +42,6 @@ public class SprintService {
     }
 
     public List<Sprint> getSprintsByStatus(SprintStatus status) {
-        return null;
+        return sprintRepository.findAllByStatus(status);
     }
 }
