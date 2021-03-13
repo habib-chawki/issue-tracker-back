@@ -30,6 +30,9 @@ public class Sprint {
     private String name;
     private String goal;
 
+    @Enumerated(EnumType.STRING)
+    private SprintStatus status;
+
     @JsonFormat(pattern="yyyy-MM-dd")
     private LocalDate startDate;
 
