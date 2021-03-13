@@ -16,6 +16,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -173,6 +174,44 @@ public class SprintIT {
 
             // then expect the list of sprint issues to have been retrieved along with it
             assertThat(response.getBody().getBacklog()).isEqualTo(issues);
+        }
+
+        @Test
+        public void itShouldGetSprintsByStatus() {
+            // given a list of active sprints
+            List<Sprint> activeSprints = List.of(
+                    Sprint.builder().name("sprint active 1").status(SprintStatus.ACTIVE).build(),
+                    Sprint.builder().name("sprint active 2").status(SprintStatus.ACTIVE).build()
+            );
+
+            // given a list of inactive sprints
+            List<Sprint> inactiveSprints = List.of(
+                    Sprint.builder().name("sprint inactive 1").status(SprintStatus.INACTIVE).build(),
+                    Sprint.builder().name("sprint inactive 2").status(SprintStatus.INACTIVE).build()
+            );
+
+            // given a list of over sprints
+            List<Sprint> overSprints = List.of(
+                    Sprint.builder().name("sprint over 1").status(SprintStatus.OVER).build(),
+                    Sprint.builder().name("sprint over 2").status(SprintStatus.OVER).build()
+            );
+
+            activeSprints = (List<Sprint>) sprintRepository.saveAll(activeSprints);
+            inactiveSprints = (List<Sprint>) sprintRepository.saveAll(inactiveSprints);
+            overSprints = (List<Sprint>) sprintRepository.saveAll(overSprints);
+
+            // when a GET request is made to fetch sprints by status
+            ResponseEntity<Sprint[]> response =
+                    restTemplate.exchange(baseUrl + "?status=active", HttpMethod.GET, httpEntity, Sprint[].class);
+
+            List<Sprint> sprintsByStatus = Arrays.asList(response.getBody());
+
+            // then expect only the sprints with the correct status to have been fetched
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+            assertThat(sprintsByStatus).containsExactlyElementsOf(activeSprints);
+            assertThat(sprintsByStatus).doesNotContainAnyElementsOf(inactiveSprints);
+            assertThat(sprintsByStatus).doesNotContainAnyElementsOf(overSprints);
         }
     }
 
