@@ -123,6 +123,17 @@ public class SprintServiceTest {
         // expect the issue repository to have been invoked
         sprintService.setSprintBacklog(sprint.getId(), new ArrayList<>());
         verify(issueRepository, times(1)).setSprintBacklog(eq(sprint.getId()), any(List.class));
+    }
 
+    @Test
+    public void itShouldGetSprintsByStatus() {
+        // given the sprint repository
+        when(sprintRepository.findAllByStatus(SprintStatus.ACTIVE)).thenReturn(new ArrayList<>());
+
+        // when the service method is invoked
+        sprintService.getSprintsByStatus(SprintStatus.ACTIVE);
+
+        // then expect the repository to have been invoked
+        verify(sprintRepository, times(1)).findAllByStatus(SprintStatus.ACTIVE);
     }
 }
