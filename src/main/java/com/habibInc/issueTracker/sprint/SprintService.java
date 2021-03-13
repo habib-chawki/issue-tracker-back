@@ -40,4 +40,8 @@ public class SprintService {
     public int setSprintBacklog(Long sprintId, List<Long> issuesIds) {
         return issueRepository.setSprintBacklog(sprintId, issuesIds);
     }
+
+    public List<Sprint> getSprintsByStatus(SprintStatus status) {
+        return null;
+    }
 }
