@@ -120,11 +120,11 @@ public class SprintControllerTest {
 
     @Test
     public void itShouldUpdateSprintStatus() throws Exception {
-        // given the sprint service returns the updated sprint
-        when(sprintService.updateSprintStatus(sprint.getId())).thenReturn(sprint);
-
         // given the request body
         String requestBody = "{\"newSprintStatus\": \"active\"}";
+
+        // given the sprint service returns the updated sprint
+        when(sprintService.updateSprintStatus(sprint.getId(), SprintStatus.ACTIVE)).thenReturn(sprint);
 
         // when a PATCH request is made to update the sprint status
         // then expect the response to be the updated sprint
