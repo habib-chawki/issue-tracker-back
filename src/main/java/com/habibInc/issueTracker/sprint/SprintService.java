@@ -45,7 +45,7 @@ public class SprintService {
         return sprintRepository.findAllByStatus(status);
     }
 
-    public Sprint updateSprintStatus(Long sprintId) {
+    public Sprint updateSprintStatus(Long sprintId, SprintStatus status) {
         return null;
     }
 }
