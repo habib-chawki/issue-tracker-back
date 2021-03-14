@@ -117,4 +117,20 @@ public class SprintControllerTest {
         mockMvc.perform(get("/projects/1/sprints?status=active"))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    public void itShouldUpdateSprintStatus() throws Exception {
+        // given the sprint service returns the updated sprint
+        when(sprintService.updateSprintStatus(sprint.getId())).thenReturn(sprint);
+
+        // given the request body
+        String requestBody = "{\"newSprintStatus\": \"active\"}";
+
+        // when a PATCH request is made to update the sprint status
+        // then expect the response to be the updated sprint
+        mockMvc.perform(patch("/projects/1/sprints/" + sprint.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isOk());
+    }
 }
