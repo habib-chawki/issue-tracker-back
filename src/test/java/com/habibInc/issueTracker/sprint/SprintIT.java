@@ -255,6 +255,24 @@ public class SprintIT {
                     sprintService.getSprintById(sprint.getId()).getBacklog();
             assertThat(sprintIssues).containsExactlyElementsOf(issues);
         }
+
+        @Test
+        public void itShouldUpdateSprintStatus() {
+            // given the sprint is created
+            sprint = sprintService.createSprint(project.getId(), sprint);
+
+            // given the request body with the new sprint status
+            String requestBody = "{\"newSprintStatus\": \"active\"}";
+            HttpEntity<String> httpEntity = new HttpEntity<>(requestBody, headers);
+
+            // when a PATCH request is made to update the sprint status
+            ResponseEntity<Sprint> response =
+                    restTemplate.exchange(baseUrl + "/" + sprint.getId(), HttpMethod.PATCH, httpEntity, Sprint.class);
+
+            // then the sprint status should be updated successfully
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody().getStatus()).isEqualTo(SprintStatus.ACTIVE);
+        }
     }
 
     @AfterEach
