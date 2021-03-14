@@ -1,11 +1,14 @@
 package com.habibInc.issueTracker.sprint;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/projects/{projectId}/sprints")
@@ -45,7 +48,14 @@ public class SprintController {
 
     @PatchMapping("{sprintId}")
     @ResponseStatus(HttpStatus.OK)
-    public Sprint updateSprintStatus(@PathVariable Long sprintId) {
-        return sprintService.updateSprintStatus(sprintId);
+    public Sprint updateSprintStatus(@PathVariable Long sprintId, @RequestBody String request) throws JsonProcessingException {
+        // extract request body
+        Map<String, String> requestBody = new ObjectMapper().readValue(request, Map.class);
+
+        // extract new sprint status
+        SprintStatus status = SprintStatus.valueOf(requestBody.get("newSprintStatus").toUpperCase());
+
+        // update sprint status
+        return sprintService.updateSprintStatus(sprintId, status);
     }
 }
