@@ -46,6 +46,12 @@ public class SprintService {
     }
 
     public Sprint updateSprintStatus(Long sprintId, SprintStatus status) {
-        return null;
+        // find the sprint by id (throws sprint not found error)
+        Sprint sprint = getSprintById(sprintId);
+
+        // update the sprint status
+        sprint.setStatus(status);
+
+        return sprintRepository.save(sprint);
     }
 }
