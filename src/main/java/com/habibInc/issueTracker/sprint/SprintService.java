@@ -44,4 +44,8 @@ public class SprintService {
     public List<Sprint> getSprintsByStatus(SprintStatus status) {
         return sprintRepository.findAllByStatus(status);
     }
+
+    public Sprint updateSprintStatus(Long sprintId) {
+        return null;
+    }
 }
