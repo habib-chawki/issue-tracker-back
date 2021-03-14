@@ -42,4 +42,10 @@ public class SprintController {
     public List<Sprint> getSprintsByStatus(@RequestParam SprintStatus status) {
         return sprintService.getSprintsByStatus(status);
     }
+
+    @PatchMapping("{sprintId}")
+    @ResponseStatus(HttpStatus.OK)
+    public Sprint updateSprintStatus(@PathVariable Long sprintId) {
+        return sprintService.updateSprintStatus(sprintId);
+    }
 }
