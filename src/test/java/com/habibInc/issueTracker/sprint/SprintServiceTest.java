@@ -46,6 +46,7 @@ public class SprintServiceTest {
                 .id(1L)
                 .name("First sprint")
                 .goal("sprint goal")
+                .status(SprintStatus.INACTIVE)
                 .startDate(LocalDate.now())
                 .endDate(LocalDate.now().plusMonths(1))
                 .build();
@@ -135,5 +136,21 @@ public class SprintServiceTest {
 
         // then expect the repository to have been invoked
         verify(sprintRepository, times(1)).findAllByStatus(SprintStatus.ACTIVE);
+    }
+
+    @Test
+    public void itShouldUpdateSprintStatus() {
+        // given the sprint repository
+        when(sprintRepository.findById(sprint.getId())).thenReturn(Optional.of(sprint));
+        when(sprintRepository.save(sprint)).thenReturn(sprint);
+
+        // when the service method is invoked
+        sprintService.updateSprintStatus(sprint.getId(), SprintStatus.ACTIVE);
+
+        // then expect the status to have been updated
+        assertThat(sprint.getStatus()).isEqualTo(SprintStatus.ACTIVE);
+
+        verify(sprintRepository, times(1)).findById(sprint.getId());
+        verify(sprintRepository, times(1)).save(sprint);
     }
 }
