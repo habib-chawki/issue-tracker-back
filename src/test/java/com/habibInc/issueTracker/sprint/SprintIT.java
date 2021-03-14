@@ -269,7 +269,7 @@ public class SprintIT {
             ResponseEntity<Sprint> response =
                     restTemplate.exchange(baseUrl + "/" + sprint.getId(), HttpMethod.PATCH, httpEntity, Sprint.class);
 
-            // then the sprint status should be updated successfully
+            // then the status should be updated successfully
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody().getStatus()).isEqualTo(SprintStatus.ACTIVE);
         }
