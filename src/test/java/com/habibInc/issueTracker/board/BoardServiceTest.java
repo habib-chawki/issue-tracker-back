@@ -59,10 +59,12 @@ public class BoardServiceTest {
         Long sprintId = 10L;
 
         // given
-        when(boardRepository.save(board)).thenReturn(board);
         when(sprintService.getSprintById(sprintId)).thenReturn(null);
+        when(boardRepository.save(board)).thenReturn(board);
+        when(boardRepository.findById(board.getId())).thenReturn(Optional.of(board));
 
         doNothing().when(boardService).createToDoColumn(any(), any());
+        doNothing().when(boardService).createBoardColumns(any());
 
         // when "createBoard()" service method is invoked
         Board createdBoard = boardService.createBoard(sprintId, board, owner);
@@ -77,7 +79,11 @@ public class BoardServiceTest {
 
         // given
         when(boardRepository.save(board)).thenReturn(board);
+        when(boardRepository.findById(board.getId())).thenReturn(Optional.of(board));
+
         doNothing().when(boardService).createToDoColumn(any(), any());
+        doNothing().when(boardService).createBoardColumns(any());
+
 
         // when "createBoard()" is invoked
         boardService.createBoard(sprintId, board, owner);
@@ -96,7 +102,10 @@ public class BoardServiceTest {
         // given
         when(boardRepository.save(board)).thenReturn(board);
         when(sprintService.getSprintById(sprint.getId())).thenReturn(sprint);
+        when(boardRepository.findById(board.getId())).thenReturn(Optional.of(board));
+
         doNothing().when(boardService).createToDoColumn(any(), any());
+        doNothing().when(boardService).createBoardColumns(any());
 
         // when createBoard() is invoked
         boardService.createBoard(sprint.getId(), board, owner);
