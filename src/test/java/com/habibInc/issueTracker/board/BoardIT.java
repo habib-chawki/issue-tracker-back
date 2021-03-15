@@ -128,8 +128,10 @@ public class BoardIT {
             ResponseEntity<Board> response =
                     restTemplate.exchange(url, HttpMethod.POST, httpEntity, Board.class);
 
-            // then a to do column should have been created along with it
+            // then a "To do", "In progress" and "Done" columns should have been created along with it
             assertThat(response.getBody().getColumns().get(0).getTitle()).isEqualTo("To Do");
+            assertThat(response.getBody().getColumns().get(1).getTitle()).isEqualTo("In progress");
+            assertThat(response.getBody().getColumns().get(2).getTitle()).isEqualTo("Done");
         }
     }
 
