@@ -6,6 +6,7 @@ import com.habibInc.issueTracker.issue.Issue;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -31,7 +32,7 @@ public class Column {
     private Board board;
 
     @OneToMany(mappedBy = "column")
-    List<Issue> issues;
+    List<Issue> issues = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {
