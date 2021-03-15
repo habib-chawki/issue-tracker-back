@@ -12,6 +12,7 @@ import com.habibInc.issueTracker.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -75,8 +76,8 @@ public class BoardService {
 
     public void createBoardColumns(Board board) {
         columnRepository.saveAll(List.of(
-                Column.builder().title("In progress").board(board).build(),
-                Column.builder().title("Done").board(board).build()
+                Column.builder().title("In progress").board(board).issues(new ArrayList<>()).build(),
+                Column.builder().title("Done").board(board).issues(new ArrayList<>()).build()
         ));
     }
 
