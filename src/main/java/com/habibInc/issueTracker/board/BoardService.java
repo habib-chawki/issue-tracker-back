@@ -40,12 +40,13 @@ public class BoardService {
         board.setOwner(authenticatedUser);
 
         // save the board
-        board = boardRepository.save(board);
+        boardRepository.save(board);
 
         // create the to do column
         createToDoColumn(sprint, board);
 
-        return board;
+        // return the board after having saved its columns
+        return getBoardById(board.getId());
     }
 
     public void createToDoColumn(Sprint sprint, Board board){
