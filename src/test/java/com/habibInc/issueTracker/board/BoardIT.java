@@ -129,7 +129,7 @@ public class BoardIT {
                     restTemplate.exchange(url, HttpMethod.POST, httpEntity, Board.class);
 
             // then a to do column should have been created along with it
-            assertThat(((List<Column>) columnRepository.findAll()).get(0).getTitle()).isEqualTo("To Do");
+            assertThat(response.getBody().getColumns().get(0).getTitle()).isEqualTo("To Do");
         }
     }
 
