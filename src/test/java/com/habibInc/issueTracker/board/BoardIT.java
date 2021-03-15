@@ -123,15 +123,17 @@ public class BoardIT {
         }
 
         @Test
-        public void givenCreateBoard_itShouldCreateTodoColumn() {
+        public void givenCreateBoard_itShouldCreateItsColumns() {
             // when the board is created
             ResponseEntity<Board> response =
                     restTemplate.exchange(url, HttpMethod.POST, httpEntity, Board.class);
 
+            List<Column> boardColumns = response.getBody().getColumns();
+
             // then a "To do", "In progress" and "Done" columns should have been created along with it
-            assertThat(response.getBody().getColumns().get(0).getTitle()).isEqualTo("To Do");
-            assertThat(response.getBody().getColumns().get(1).getTitle()).isEqualTo("In progress");
-            assertThat(response.getBody().getColumns().get(2).getTitle()).isEqualTo("Done");
+            assertThat(boardColumns.get(0).getTitle()).containsIgnoringCase("To Do");
+            assertThat(boardColumns.get(1).getTitle()).containsIgnoringCase("In progress");
+            assertThat(boardColumns.get(2).getTitle()).containsIgnoringCase("Done");
         }
     }
 
