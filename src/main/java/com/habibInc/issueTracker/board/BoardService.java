@@ -45,6 +45,9 @@ public class BoardService {
         // create the to do column
         createToDoColumn(sprint, board);
 
+        // create other board columns
+        createBoardColumns(board);
+
         // return the board after having saved its columns
         return getBoardById(board.getId());
     }
@@ -68,6 +71,13 @@ public class BoardService {
 
         // update the column
         issueRepository.updateIssuesColumn(column.getId(), issueIds);
+    }
+
+    public void createBoardColumns(Board board) {
+        columnRepository.saveAll(List.of(
+                Column.builder().title("In progress").board(board).build(),
+                Column.builder().title("Done").board(board).build()
+        ));
     }
 
     public Board getBoardById(Long boardId) {
