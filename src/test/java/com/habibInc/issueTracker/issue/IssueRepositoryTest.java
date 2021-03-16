@@ -6,6 +6,8 @@ import com.habibInc.issueTracker.project.Project;
 import com.habibInc.issueTracker.project.ProjectRepository;
 import com.habibInc.issueTracker.sprint.Sprint;
 import com.habibInc.issueTracker.sprint.SprintRepository;
+import com.habibInc.issueTracker.sprint.SprintService;
+import com.habibInc.issueTracker.sprint.SprintStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +42,7 @@ public class IssueRepositoryTest {
 
     Issue issue1, issue2;
     Project project;
+    Sprint sprint;
 
     @BeforeEach
     public void init() {
@@ -68,6 +71,9 @@ public class IssueRepositoryTest {
         // create a project
         project = new Project();
         project.setName("Project");
+
+        // create a sprint
+        sprint = Sprint.builder().name("Sprint").build();
     }
 
     @Test
@@ -264,5 +270,38 @@ public class IssueRepositoryTest {
 
         // then expect the project backlog to have been retrieved successfully
         assertThat(retrievedBacklog).hasSameElementsAs(backlog);
+    }
+
+    @Test
+    public void itShouldFindAllIssuesByProjectIdAndSprintId() {
+        // given a project
+        project = projectRepository.save(project);
+
+        // given a sprint
+        sprint.setProject(project);
+        sprint = sprintRepository.save(sprint);
+
+        // given a list of issues belonging to a sprint
+        List<Issue> issuesWithSprint = List.of(
+                Issue.builder().project(project).sprint(sprint).summary("issue 1").build(),
+                Issue.builder().project(project).sprint(sprint).summary("issue 2").build(),
+                Issue.builder().project(project).sprint(sprint).summary("issue 3").build()
+        );
+
+        // given a list of issues without a sprint
+        List<Issue> issuesWithoutSprint = List.of(
+                Issue.builder().project(project).summary("issue 10").build(),
+                Issue.builder().project(project).summary("issue 20").build(),
+                Issue.builder().project(project).summary("issue 30").build()
+        );
+
+        issuesWithSprint = (List<Issue>) issueRepository.saveAll(issuesWithSprint);
+        issuesWithoutSprint = (List<Issue>) issueRepository.saveAll(issuesWithoutSprint);
+
+        // when findAllByProjectIdAndSprintId is invoked
+        List<Issue> allByProjectIdAndSprintId =
+                issueRepository.findAllByProjectIdAndSprintId(project.getId(), sprint.getId());
+
+        assertThat(allByProjectIdAndSprintId).containsExactlyElementsOf(issuesWithSprint);
     }
 }
