@@ -53,27 +53,4 @@ public class ProjectRepositoryTest {
 
         assertThat(retrievedProjects).isEqualTo(projects);
     }
-
-    @Test
-    public void itShouldFindAllIssuesByProjectId() {
-        // given a project
-        project = projectRepository.save(project);
-
-        // given the project backlog
-        List<Issue> backlog = List.of(
-                Issue.builder().project(project).summary("issue 1").build(),
-                Issue.builder().project(project).summary("issue 2").build(),
-                Issue.builder().project(project).summary("issue 2").build()
-        );
-
-        // given the backlog is saved
-        backlog = (List<Issue>) issueRepository.saveAll(backlog);
-
-        // when issueRepository#findAllByProjectId is invoked
-        List<Issue> retrievedBacklog =
-                issueRepository.findAllByProjectId(project.getId());
-
-        // then expect the project backlog to have been retrieved successfully
-        assertThat(retrievedBacklog).hasSameElementsAs(backlog);
-    }
 }
