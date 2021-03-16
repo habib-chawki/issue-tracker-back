@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class SprintServiceTest {
+    @Spy
     @InjectMocks
     SprintService sprintService;
 
@@ -149,6 +151,24 @@ public class SprintServiceTest {
 
         // then expect the status to have been updated
         assertThat(sprint.getStatus()).isEqualTo(SprintStatus.ACTIVE);
+
+        verify(sprintRepository, times(1)).findById(sprint.getId());
+        verify(sprintRepository, times(1)).save(sprint);
+    }
+
+    @Test
+    public void givenUpdateSprintStatus_whenStatusIsOver_itShouldSetSprintToNull() {
+        // given the sprint repository
+        when(sprintRepository.findById(sprint.getId())).thenReturn(Optional.of(sprint));
+        when(sprintRepository.save(sprint)).thenReturn(sprint);
+
+        doNothing().when(sprintService).moveUnfinishedIssuesToProductBacklog(sprint);
+
+        // when the service method is invoked
+        sprintService.updateSprintStatus(sprint.getId(), SprintStatus.OVER);
+
+        // then expect the status to have been updated
+        assertThat(sprint.getStatus()).isEqualTo(SprintStatus.OVER);
 
         verify(sprintRepository, times(1)).findById(sprint.getId());
         verify(sprintRepository, times(1)).save(sprint);
