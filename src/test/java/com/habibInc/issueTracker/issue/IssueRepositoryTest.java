@@ -2,6 +2,8 @@ package com.habibInc.issueTracker.issue;
 
 import com.habibInc.issueTracker.column.Column;
 import com.habibInc.issueTracker.column.ColumnRepository;
+import com.habibInc.issueTracker.project.Project;
+import com.habibInc.issueTracker.project.ProjectRepository;
 import com.habibInc.issueTracker.sprint.Sprint;
 import com.habibInc.issueTracker.sprint.SprintRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,7 +35,11 @@ public class IssueRepositoryTest {
     @Autowired
     SprintRepository sprintRepository;
 
+    @Autowired
+    ProjectRepository projectRepository;
+
     Issue issue1, issue2;
+    Project project;
 
     @BeforeEach
     public void init() {
@@ -58,6 +64,10 @@ public class IssueRepositoryTest {
         issue2.setCreationTime(LocalDateTime.now());
         issue2.setUpdateTime(LocalDateTime.now());
         issue2.setEstimate("6");
+
+        // create a project
+        project = new Project();
+        project.setName("Project");
     }
 
     @Test
@@ -231,5 +241,28 @@ public class IssueRepositoryTest {
         List<Issue> updatedIssues = (List<Issue>) issueRepository.findAll();
         for(Issue issue : updatedIssues)
             assertThat(issue.getColumn()).isEqualTo(column);
+    }
+
+    @Test
+    public void itShouldFindAllIssuesByProjectId() {
+        // given a project
+        project = projectRepository.save(project);
+
+        // given the project backlog
+        List<Issue> backlog = List.of(
+                Issue.builder().project(project).summary("issue 1").build(),
+                Issue.builder().project(project).summary("issue 2").build(),
+                Issue.builder().project(project).summary("issue 2").build()
+        );
+
+        // given the backlog is saved
+        backlog = (List<Issue>) issueRepository.saveAll(backlog);
+
+        // when issueRepository#findAllByProjectId is invoked
+        List<Issue> retrievedBacklog =
+                issueRepository.findAllByProjectId(project.getId());
+
+        // then expect the project backlog to have been retrieved successfully
+        assertThat(retrievedBacklog).hasSameElementsAs(backlog);
     }
 }
