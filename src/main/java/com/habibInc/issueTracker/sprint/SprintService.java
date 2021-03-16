@@ -1,6 +1,8 @@
 package com.habibInc.issueTracker.sprint;
 
+import com.habibInc.issueTracker.column.Column;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
+import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.issue.IssueRepository;
 import com.habibInc.issueTracker.project.Project;
 import com.habibInc.issueTracker.project.ProjectService;
@@ -8,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class SprintService {
@@ -49,9 +52,30 @@ public class SprintService {
         // find the sprint by id (throws sprint not found error)
         Sprint sprint = getSprintById(sprintId);
 
+        // when the sprint is over, then return the unfinished issues to the product backlog
+        if(status.equals(SprintStatus.OVER)){
+            moveUnfinishedIssuesToProductBacklog(sprint);
+        }
+
         // update the sprint status
         sprint.setStatus(status);
 
         return sprintRepository.save(sprint);
+    }
+
+    public void moveUnfinishedIssuesToProductBacklog(Sprint sprint) {
+        List<Issue> sprintBacklog = sprint.getBacklog();
+        List<Column> boardColumns = sprint.getBoard().getColumns();
+
+        Long lastColumnId = boardColumns.get(boardColumns.size() - 1).getId();
+
+        // extract the id of all the issues that do not belong to the last column
+        List<Long> unfinishedIssues = sprintBacklog.stream()
+                .filter((issue) -> !issue.getColumn().getId().equals(lastColumnId))
+                .map((issue) -> issue.getId())
+                .collect(Collectors.toList());
+
+        // move the unfinished issues back to the product backlog (set the sprint to null)
+        issueRepository.updateIssuesSprint(null, unfinishedIssues);
     }
 }
