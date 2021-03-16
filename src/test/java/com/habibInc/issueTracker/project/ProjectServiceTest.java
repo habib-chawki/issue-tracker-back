@@ -108,7 +108,7 @@ public class ProjectServiceTest {
                 Issue.builder().id(300L).summary("issue 2").build()
         );
 
-        when(issueRepository.findAllByProjectId(project.getId())).thenReturn(backlog);
+        when(issueRepository.findAllByProjectIdAndSprintId(project.getId(), null)).thenReturn(backlog);
 
         // when projectService is invoked to get the project backlog
         List<Issue> retrievedBacklog = projectService.getBacklog(project.getId());
