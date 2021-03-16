@@ -298,10 +298,17 @@ public class IssueRepositoryTest {
         issuesWithSprint = (List<Issue>) issueRepository.saveAll(issuesWithSprint);
         issuesWithoutSprint = (List<Issue>) issueRepository.saveAll(issuesWithoutSprint);
 
-        // when findAllByProjectIdAndSprintId is invoked
-        List<Issue> allByProjectIdAndSprintId =
+        // when "findAllByProjectIdAndSprintId()" is invoked with a sprint id
+        List<Issue> issues =
                 issueRepository.findAllByProjectIdAndSprintId(project.getId(), sprint.getId());
 
-        assertThat(allByProjectIdAndSprintId).containsExactlyElementsOf(issuesWithSprint);
+        // then all the issues belonging to the sprint should be retrieved
+        assertThat(issues).containsExactlyElementsOf(issuesWithSprint);
+
+        // when "findAllByProjectIdAndSprintId()" is invoked with a null sprint id
+        issues = issueRepository.findAllByProjectIdAndSprintId(project.getId(), null);
+
+        // then all the issues without a sprint should be retrieved
+        assertThat(issues).containsExactlyElementsOf(issuesWithoutSprint);
     }
 }
