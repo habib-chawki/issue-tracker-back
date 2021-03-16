@@ -123,7 +123,7 @@ public class SprintServiceTest {
     public void itShouldSetSprintBacklog() {
         // expect the issue repository to have been invoked
         sprintService.setSprintBacklog(sprint.getId(), new ArrayList<>());
-        verify(issueRepository, times(1)).setSprintBacklog(eq(sprint.getId()), any(List.class));
+        verify(issueRepository, times(1)).updateIssuesSprint(eq(sprint.getId()), any(List.class));
     }
 
     @Test

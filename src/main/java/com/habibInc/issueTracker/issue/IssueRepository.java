@@ -1,6 +1,5 @@
 package com.habibInc.issueTracker.issue;
 
-import com.habibInc.issueTracker.sprint.Sprint;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -20,7 +19,7 @@ public interface IssueRepository extends PagingAndSortingRepository<Issue, Long>
     @Transactional
     @Modifying(clearAutomatically = true)
     @Query(value = "UPDATE issue SET sprint_id = :sprintId WHERE id IN :ids", nativeQuery = true)
-    int setSprintBacklog(@Param("sprintId") Long sprintId, @Param("ids") List<Long> ids);
+    int updateIssuesSprint(@Param("sprintId") Long sprintId, @Param("ids") List<Long> ids);
 
     @Modifying(clearAutomatically = true)
     @Query(value = "UPDATE issue SET `column_id` = :columnId WHERE id = :issueId", nativeQuery = true)

@@ -6,8 +6,6 @@ import com.habibInc.issueTracker.project.Project;
 import com.habibInc.issueTracker.project.ProjectRepository;
 import com.habibInc.issueTracker.sprint.Sprint;
 import com.habibInc.issueTracker.sprint.SprintRepository;
-import com.habibInc.issueTracker.sprint.SprintService;
-import com.habibInc.issueTracker.sprint.SprintStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -187,7 +185,7 @@ public class IssueRepositoryTest {
     }
 
     @Test
-    public void itShouldSetSprintBacklog() {
+    public void itShouldUpdateIssuesSprint() {
         // given a list of issues
         List<Issue> issues = List.of(
                 Issue.builder().summary("issue 1").build(),
@@ -208,7 +206,7 @@ public class IssueRepositoryTest {
                 issues.stream().map((issue) -> issue.getId()).collect(Collectors.toList());
 
         // when a request is made to set the sprint backlog
-        int numOfUpdatedIssues = issueRepository.setSprintBacklog(sprint.getId(), issuesIds);
+        int numOfUpdatedIssues = issueRepository.updateIssuesSprint(sprint.getId(), issuesIds);
 
         // then expect all issues to have been updated
         assertThat(numOfUpdatedIssues).isEqualTo(issues.size());
@@ -220,7 +218,7 @@ public class IssueRepositoryTest {
     }
 
     @Test
-    public void itShouldUpdateTheColumnOfAListOfIssues() {
+    public void itShouldUpdateIssuesColumn() {
         // given a list of issues
         List<Issue> issues = List.of(
                 Issue.builder().summary("issue 1").build(),

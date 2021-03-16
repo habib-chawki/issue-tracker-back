@@ -38,7 +38,7 @@ public class SprintService {
     }
 
     public int setSprintBacklog(Long sprintId, List<Long> issuesIds) {
-        return issueRepository.setSprintBacklog(sprintId, issuesIds);
+        return issueRepository.updateIssuesSprint(sprintId, issuesIds);
     }
 
     public List<Sprint> getSprintsByStatus(SprintStatus status) {
