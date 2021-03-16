@@ -299,11 +299,11 @@ public class SprintIT {
                     Issue.builder().summary("issue 3").sprint(sprint).build()
             );
 
-            sprintBacklog = (List<Issue>) issueRepository.saveAll(sprintBacklog);
+            issueRepository.saveAll(sprintBacklog);
 
             // given the sprint board
             Board sprintBoard = Board.builder().name("Sprint board").build();
-            sprintBoard = boardService.createBoard(sprint.getId(), sprintBoard, authenticatedUser);
+            boardService.createBoard(sprint.getId(), sprintBoard, authenticatedUser);
 
             // given the request body with the new sprint status (OVER)
             String requestBody = "{\"newSprintStatus\": \"over\"}";
@@ -316,6 +316,14 @@ public class SprintIT {
             // then the status should be updated successfully
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody().getStatus()).isEqualTo(SprintStatus.OVER);
+
+            /*
+             * The issues that do not belong to the last column
+             * should be moved back to the product backlog
+             * their sprint property value should be set to null
+            */
+            sprintBacklog = issueRepository.findAllByProjectIdAndSprintId(project.getId(), sprint.getId());
+            sprintBacklog.forEach(issue -> assertThat(issue.getSprint()).isNull());
         }
     }
 
