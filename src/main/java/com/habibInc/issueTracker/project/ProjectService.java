@@ -36,6 +36,6 @@ public class ProjectService {
     }
 
     public List<Issue> getBacklog(Long projectId) {
-        return issueRepository.findAllByProjectId(projectId);
+        return issueRepository.findAllByProjectIdAndSprintId(projectId, null);
     }
 }
