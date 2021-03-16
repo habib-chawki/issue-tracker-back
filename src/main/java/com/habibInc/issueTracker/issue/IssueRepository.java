@@ -1,5 +1,6 @@
 package com.habibInc.issueTracker.issue;
 
+import com.habibInc.issueTracker.sprint.Sprint;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -14,6 +15,7 @@ import java.util.List;
 public interface IssueRepository extends PagingAndSortingRepository<Issue, Long> {
     List<Issue> findByColumnId(Long columnId, Pageable pageable);
     List<Issue> findAllByProjectId(Long projectId);
+    List<Issue> findAllByProjectIdAndSprintId(Long projectId, Long sprintId);
 
     @Transactional
     @Modifying(clearAutomatically = true)
