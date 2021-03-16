@@ -1,5 +1,9 @@
 package com.habibInc.issueTracker.sprint;
 
+import com.habibInc.issueTracker.board.Board;
+import com.habibInc.issueTracker.board.BoardRepository;
+import com.habibInc.issueTracker.board.BoardService;
+import com.habibInc.issueTracker.column.ColumnRepository;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.issue.IssueRepository;
 import com.habibInc.issueTracker.project.Project;
@@ -49,6 +53,15 @@ public class SprintIT {
 
     @Autowired
     IssueRepository issueRepository;
+
+    @Autowired
+    BoardService boardService;
+
+    @Autowired
+    BoardRepository boardRepository;
+
+    @Autowired
+    ColumnRepository columnRepository;
 
     @Autowired
     JwtUtil jwtUtil;
@@ -273,11 +286,44 @@ public class SprintIT {
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody().getStatus()).isEqualTo(SprintStatus.ACTIVE);
         }
+
+        @Test
+        public void giveUpdateSprintStatus_whenStatusIsOver_itShouldSetIssuesSprintToNull() {
+            // given the sprint
+            sprint = sprintService.createSprint(project.getId(), sprint);
+
+            // given the sprint backlog
+            List<Issue> sprintBacklog = List.of(
+                    Issue.builder().summary("issue 1").sprint(sprint).build(),
+                    Issue.builder().summary("issue 2").sprint(sprint).build(),
+                    Issue.builder().summary("issue 3").sprint(sprint).build()
+            );
+
+            sprintBacklog = (List<Issue>) issueRepository.saveAll(sprintBacklog);
+
+            // given the sprint board
+            Board sprintBoard = Board.builder().name("Sprint board").build();
+            sprintBoard = boardService.createBoard(sprint.getId(), sprintBoard, authenticatedUser);
+
+            // given the request body with the new sprint status (OVER)
+            String requestBody = "{\"newSprintStatus\": \"over\"}";
+            HttpEntity<String> httpEntity = new HttpEntity<>(requestBody, headers);
+
+            // when a PATCH request is made to update the sprint status to over
+            ResponseEntity<Sprint> response =
+                    restTemplate.exchange(baseUrl + "/" + sprint.getId(), HttpMethod.PATCH, httpEntity, Sprint.class);
+
+            // then the status should be updated successfully
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody().getStatus()).isEqualTo(SprintStatus.OVER);
+        }
     }
 
     @AfterEach
     public void teardown() {
         issueRepository.deleteAll();
+        columnRepository.deleteAll();
+        boardRepository.deleteAll();
         sprintRepository.deleteAll();
     }
 
