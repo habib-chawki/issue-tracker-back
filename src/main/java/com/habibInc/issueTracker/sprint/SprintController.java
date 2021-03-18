@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/projects/{projectId}/sprints")
@@ -74,5 +73,20 @@ public class SprintController {
 
         // update sprint status
         return sprintService.updateSprintStatus(sprintId, status);
+    }
+
+    @PatchMapping("{sprintId}/issues/{issueId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void updateIssueSprint(@RequestBody String request,
+                                  @PathVariable Long sprintId,
+                                  @PathVariable Long issueId) throws JsonProcessingException {
+        // extract request body
+        Map<String, String> requestBody = new ObjectMapper().readValue(request, Map.class);
+
+        // extract new sprint id
+        Long newSprintId = Utils.validateId(requestBody.get("newSprintId"));
+
+        // update issue sprint
+        sprintService.updateIssueSprint(sprintId, issueId, newSprintId);
     }
 }
