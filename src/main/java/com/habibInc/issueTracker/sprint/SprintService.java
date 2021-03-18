@@ -4,6 +4,7 @@ import com.habibInc.issueTracker.column.Column;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.issue.IssueRepository;
+import com.habibInc.issueTracker.issue.IssueService;
 import com.habibInc.issueTracker.project.Project;
 import com.habibInc.issueTracker.project.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,15 +16,17 @@ import java.util.stream.Collectors;
 @Service
 public class SprintService {
 
-    private final SprintRepository sprintRepository;
-    private final IssueRepository issueRepository;
     private final ProjectService projectService;
+    private final SprintRepository sprintRepository;
+    private final IssueService issueService;
+    private final IssueRepository issueRepository;
 
     @Autowired
-    public SprintService(SprintRepository sprintRepository, IssueRepository issueRepository, ProjectService projectService) {
-        this.sprintRepository = sprintRepository;
-        this.issueRepository = issueRepository;
+    public SprintService(ProjectService projectService, SprintRepository sprintRepository, IssueService issueService, IssueRepository issueRepository) {
         this.projectService = projectService;
+        this.sprintRepository = sprintRepository;
+        this.issueService = issueService;
+        this.issueRepository = issueRepository;
     }
 
     public Sprint createSprint(Long projectId, Sprint sprint) {
@@ -77,5 +80,19 @@ public class SprintService {
 
         // move the unfinished issues back to the product backlog (set the sprint to null)
         issueRepository.updateIssuesSprint(null, unfinishedIssues);
+    }
+
+    public void updateIssueSprint(Long sprintId, Long issueId, Long newSprintId) {
+        // fetch the new sprint by id (throws sprint not found error)
+        Sprint newSprint = getSprintById(newSprintId);
+
+        // get the issue (throws issue not found error)
+        Issue issue = issueService.getIssueById(issueId);
+
+        // update the sprint
+        issue.setSprint(newSprint);
+
+        //save the sprint
+        issueRepository.save(issue);
     }
 }
