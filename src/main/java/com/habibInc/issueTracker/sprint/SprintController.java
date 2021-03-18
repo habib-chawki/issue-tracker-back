@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/projects/{projectId}/sprints")
@@ -50,8 +52,15 @@ public class SprintController {
 
     @GetMapping(value = "", params = "status")
     @ResponseStatus(HttpStatus.OK)
-    public List<Sprint> getSprintsByStatus(@RequestParam SprintStatus status) {
-        return sprintService.getSprintsByStatus(status);
+    public List<SprintBacklogDto> getSprintsByStatus(@RequestParam SprintStatus status) {
+        List<Sprint> sprints = sprintService.getSprintsByStatus(status);
+
+        // convert each sprint to SprintBacklogDto
+        List<SprintBacklogDto> sprintsByStatus = sprints.stream()
+                .map(sprint -> modelMapper.map(sprint, SprintBacklogDto.class))
+                .collect(Collectors.toList());
+
+        return sprintsByStatus;
     }
 
     @PatchMapping("{sprintId}")
