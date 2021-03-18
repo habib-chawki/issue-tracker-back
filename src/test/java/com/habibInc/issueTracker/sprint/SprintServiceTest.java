@@ -3,6 +3,7 @@ package com.habibInc.issueTracker.sprint;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.issue.IssueRepository;
+import com.habibInc.issueTracker.issue.IssueService;
 import com.habibInc.issueTracker.project.Project;
 import com.habibInc.issueTracker.project.ProjectService;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,6 +34,9 @@ public class SprintServiceTest {
 
     @Mock
     ProjectService projectService;
+
+    @Mock
+    IssueService issueService;
 
     Sprint sprint;
     List<Issue> issues;
@@ -172,5 +176,23 @@ public class SprintServiceTest {
 
         verify(sprintRepository, times(1)).findById(sprint.getId());
         verify(sprintRepository, times(1)).save(sprint);
+    }
+
+    @Test
+    public void itShouldUpdateIssueSprint() {
+        // given an issue
+        Issue issue = Issue.builder().id(100L).summary("issue").build();
+
+        // given
+        when(sprintRepository.findById(sprint.getId())).thenReturn(Optional.of(sprint));
+        when(issueService.getIssueById(issue.getId())).thenReturn(issue);
+
+        when(issueRepository.save(issue)).thenReturn(issue);
+
+        // when the service method is invoked
+        sprintService.updateIssueSprint(null, issue.getId(), sprint.getId());
+
+        // then the sprint should have been updated
+        assertThat(issue.getSprint()).isEqualTo(sprint);
     }
 }
