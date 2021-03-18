@@ -139,4 +139,26 @@ public class SprintControllerTest {
                 .content(requestBody))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    public void itShouldUpdateIssueSprint() throws Exception {
+        // given an issue
+        Issue issue = Issue.builder().id(100L).summary("issue").build();
+
+        // given the old and new sprints ids
+        Long oldSprintId = 10L;
+        Long newSprintId = 20L;
+
+        // given the request body
+        String requestBody = "{\"newSprintId\": \""+ newSprintId +"\"}";
+
+        doNothing().when(sprintService).updateIssueSprint(oldSprintId, issue.getId(), newSprintId);
+
+        // given the endpoint url
+        String url = "/projects/1/sprints/" + oldSprintId + "/issues/" + issue.getId();
+        mockMvc.perform(patch(url)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isOk());
+    }
 }
