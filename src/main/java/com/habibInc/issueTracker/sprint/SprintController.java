@@ -3,6 +3,7 @@ package com.habibInc.issueTracker.sprint;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.utils.Utils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -15,10 +16,12 @@ import java.util.Map;
 public class SprintController {
 
     private final SprintService sprintService;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public SprintController(SprintService sprintService) {
+    public SprintController(SprintService sprintService, ModelMapper modelMapper) {
         this.sprintService = sprintService;
+        this.modelMapper = modelMapper;
     }
 
     @PostMapping({"", "/"})
@@ -29,8 +32,13 @@ public class SprintController {
 
     @GetMapping("/{sprintId}")
     @ResponseStatus(HttpStatus.OK)
-    public Sprint getSprintById(@PathVariable Long sprintId){
-        return sprintService.getSprintById(sprintId);
+    public SprintBoardDto getSprintById(@PathVariable Long sprintId){
+        Sprint sprint = sprintService.getSprintById(sprintId);
+
+        // convert Sprint to SprintBoardDto
+        SprintBoardDto sprintDto = modelMapper.map(sprint, SprintBoardDto.class);
+
+        return sprintDto;
     }
 
     @PatchMapping("/{sprintId}/backlog")
