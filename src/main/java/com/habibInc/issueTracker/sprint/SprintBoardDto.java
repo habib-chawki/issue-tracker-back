@@ -1,13 +1,12 @@
 package com.habibInc.issueTracker.sprint;
 
-import com.habibInc.issueTracker.issue.Issue;
+import com.habibInc.issueTracker.board.Board;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Data
-public class SprintBacklogDto {
+public class SprintBoardDto {
     private Long id;
 
     private String name;
@@ -17,5 +16,5 @@ public class SprintBacklogDto {
     private LocalDate startDate;
     private LocalDate endDate;
 
-    private List<Issue> backlog;
+    private Board board;
 }
