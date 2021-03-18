@@ -305,6 +305,17 @@ public class SprintIT {
 
             // the issue sprint should be the old sprint before updating
             assertThat(issue.getSprint().equals(oldSprint));
+
+            // given the request body
+            String requestBody = "{\"newSprintId\": \""+ newSprint.getId() +"\"}";
+            HttpEntity<String> httpEntity = new HttpEntity<>(requestBody, headers);
+
+            // when a PATCH request is made to update the issue sprint
+            ResponseEntity<Void> response =
+                    restTemplate.exchange(baseUrl + "/" + oldSprint.getId() + "/issues/" + issue.getId(), HttpMethod.PATCH, httpEntity, Void.class);
+
+            // then expect the update to have been successful
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         }
     }
 
