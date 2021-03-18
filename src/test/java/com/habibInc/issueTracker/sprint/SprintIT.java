@@ -22,6 +22,7 @@ import org.springframework.http.*;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -316,6 +317,9 @@ public class SprintIT {
 
             // then expect the update to have been successful
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+            assertThat(sprintRepository.findById(newSprint.getId()).get().getBacklog())
+                    .contains(issue);
         }
     }
 
