@@ -1,7 +1,5 @@
 package com.habibInc.issueTracker.sprint;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.board.Board;
 import com.habibInc.issueTracker.board.BoardRepository;
 import com.habibInc.issueTracker.board.BoardService;
@@ -21,8 +19,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -293,6 +289,22 @@ public class SprintIT {
             */
             sprintBacklog = issueRepository.findAllByProjectIdAndSprintId(project.getId(), sprint.getId());
             sprintBacklog.forEach(issue -> assertThat(issue.getSprint()).isNull());
+        }
+
+        @Test
+        public void itShouldUpdateIssueSprint() {
+            // given the new and old sprints
+            Sprint oldSprint = Sprint.builder().name("Old sprint").build();
+            Sprint newSprint = Sprint.builder().name("New sprint").build();
+
+            oldSprint = sprintService.createSprint(project.getId(), oldSprint);
+            newSprint = sprintService.createSprint(project.getId(), newSprint);
+
+            // given an issue that belongs to the old sprint
+            Issue issue = issueRepository.save(Issue.builder().summary("Issue").sprint(oldSprint).build());
+
+            // the issue sprint should be the old sprint before updating
+            assertThat(issue.getSprint().equals(oldSprint));
         }
     }
 
