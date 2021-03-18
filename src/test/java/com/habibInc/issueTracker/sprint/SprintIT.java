@@ -1,5 +1,7 @@
 package com.habibInc.issueTracker.sprint;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.board.Board;
 import com.habibInc.issueTracker.board.BoardRepository;
 import com.habibInc.issueTracker.board.BoardService;
@@ -19,6 +21,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -141,52 +145,17 @@ public class SprintIT {
         }
 
         @Test
-        public void itShouldGetSprint() {
+        public void itShouldGetSprintById() {
             // given the sprint is saved
             sprint = sprintService.createSprint(project.getId(), sprint);
 
             // when a GET request is made to fetch a sprint by id
-            ResponseEntity<Sprint> response =
-                    restTemplate.exchange(baseUrl + "/" + sprint.getId(), HttpMethod.GET, httpEntity, Sprint.class);
+            ResponseEntity<SprintBoardDto> response =
+                    restTemplate.exchange(baseUrl + "/" + sprint.getId(), HttpMethod.GET, httpEntity, SprintBoardDto.class);
 
             // then expect the sprint to have been retrieved successfully
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-            assertThat(response.getBody()).isEqualTo(sprint);
-        }
-
-        @Test
-        public void itShouldGetSprintByIdAlongWithItsIssues() {
-            // given a list of issues
-            List<Issue> issues = List.of(
-                    Issue.builder().summary("issue 1").build(),
-                    Issue.builder().summary("issue 2").build(),
-                    Issue.builder().summary("issue 3").build()
-            );
-
-            // given the issues are saved
-            issues = (List<Issue>) issueRepository.saveAll(issues);
-
-            // given the sprint is created
-            sprint = sprintService.createSprint(project.getId(), sprint);
-
-            // given the list of issues ids
-            List<Long> issuesIds = issues.stream().map((issue) -> issue.getId()).collect(Collectors.toList());
-
-            // given the sprint backlog is set via a PATCH request
-            HttpEntity<Long[]> httpPatchEntity = new HttpEntity(issuesIds, headers);
-            restTemplate.exchange(
-                    baseUrl + "/" + sprint.getId() + "/backlog",
-                    HttpMethod.PATCH,
-                    httpPatchEntity,
-                    Void.class
-            );
-
-            // when a GET request is made to fetch the sprint by id
-            ResponseEntity<Sprint> response =
-                    restTemplate.exchange(baseUrl + "/" + sprint.getId(), HttpMethod.GET, httpEntity, Sprint.class);
-
-            // then expect the list of sprint issues to have been retrieved along with it
-            assertThat(response.getBody().getBacklog()).isEqualTo(issues);
+            assertThat(response.getBody()).isEqualToIgnoringGivenFields(sprint);
         }
 
         @Test
