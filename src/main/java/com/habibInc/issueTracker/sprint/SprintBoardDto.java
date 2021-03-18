@@ -4,6 +4,7 @@ import com.habibInc.issueTracker.board.Board;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Data
 public class SprintBoardDto {
@@ -17,4 +18,17 @@ public class SprintBoardDto {
     private LocalDate endDate;
 
     private Board board;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SprintBoardDto that = (SprintBoardDto) o;
+        return id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
