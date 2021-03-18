@@ -4,12 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.issue.Issue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.ui.Model;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -19,8 +21,7 @@ import java.util.stream.Collectors;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(SprintController.class)
 @WithMockUser
@@ -30,10 +31,13 @@ public class SprintControllerTest {
     MockMvc mockMvc;
 
     @Autowired
-    ObjectMapper mapper;
+    ObjectMapper objectMapper;
 
     @MockBean
     SprintService sprintService;
+
+    @MockBean
+    ModelMapper modelMapper;
 
     Sprint sprint;
     List<Issue> issues;
@@ -62,7 +66,7 @@ public class SprintControllerTest {
         when(sprintService.createSprint(any(Long.class), any(Sprint.class))).thenReturn(sprint);
 
         // given the request body
-        String requestBody = mapper.writeValueAsString(sprint);
+        String requestBody = objectMapper.writeValueAsString(sprint);
 
         // when a POST request is made, then the sprint should be created successfully
         mockMvc.perform(post("/projects/1/sprints")
@@ -77,8 +81,10 @@ public class SprintControllerTest {
         // given the sprintService#getSprintById response
         when(sprintService.getSprintById(sprint.getId())).thenReturn(sprint);
 
-        // given the expected response
-        String expectedResponse = mapper.writeValueAsString(sprint);
+        // given the expected sprint DTO response
+        SprintBoardDto sprintDto = new ModelMapper().map(sprint, SprintBoardDto.class);
+        when(modelMapper.map(sprint, SprintBoardDto.class)).thenReturn(sprintDto);
+        String expectedResponse = objectMapper.writeValueAsString(sprintDto);
 
         // when a GET request is made to fetch a sprint by id
         // then the sprint should be retrieved successfully
@@ -97,7 +103,7 @@ public class SprintControllerTest {
         when(sprintService.setSprintBacklog(eq(sprint.getId()), eq(issuesIds))).thenReturn(issues.size());
 
         // given the request body
-        String requestBody = mapper.writeValueAsString(issuesIds);
+        String requestBody = objectMapper.writeValueAsString(issuesIds);
 
         // when a PATCH request is made to add a list of issues to the sprint
         // then the sprint backlog should be set successfully
