@@ -27,8 +27,13 @@ public class SprintController {
 
     @PostMapping({"", "/"})
     @ResponseStatus(HttpStatus.CREATED)
-    public Sprint createSprint(@PathVariable Long projectId, @RequestBody Sprint sprint) {
-        return sprintService.createSprint(projectId, sprint);
+    public SprintBacklogDto createSprint(@PathVariable Long projectId, @RequestBody Sprint sprint) {
+        Sprint createdSprint = sprintService.createSprint(projectId, sprint);
+
+        // convert Sprint to SprintBacklogDto
+        SprintBacklogDto sprintDto = modelMapper.map(createdSprint, SprintBacklogDto.class);
+
+        return sprintDto;
     }
 
     @GetMapping("/{sprintId}")
