@@ -78,7 +78,7 @@ public class SprintController {
     @PatchMapping("{sprintId}/issues/{issueId}")
     @ResponseStatus(HttpStatus.OK)
     public void updateIssueSprint(@RequestBody String request,
-                                  @PathVariable Long sprintId,
+                                  @PathVariable String sprintId,
                                   @PathVariable Long issueId) throws JsonProcessingException {
         // extract request body
         Map<String, String> requestBody = new ObjectMapper().readValue(request, Map.class);

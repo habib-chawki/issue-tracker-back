@@ -146,7 +146,7 @@ public class SprintControllerTest {
         Issue issue = Issue.builder().id(100L).summary("issue").build();
 
         // given the old and new sprints ids
-        Long oldSprintId = 10L;
+        String oldSprintId = "10L";
         Long newSprintId = 20L;
 
         // given the request body

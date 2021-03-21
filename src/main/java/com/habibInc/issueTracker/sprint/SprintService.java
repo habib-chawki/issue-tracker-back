@@ -82,7 +82,7 @@ public class SprintService {
         issueRepository.updateIssuesSprint(null, unfinishedIssues);
     }
 
-    public void updateIssueSprint(Long sprintId, Long issueId, Long newSprintId) {
+    public void updateIssueSprint(String sprintId, Long issueId, Long newSprintId) {
         // check if the id is null (indicates that the issue is back to the product backlog)
         // otherwise fetch the new sprint by id (throws sprint not found error)
         Sprint newSprint = newSprintId != null ? getSprintById(newSprintId) : null;
