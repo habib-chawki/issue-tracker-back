@@ -83,8 +83,12 @@ public class SprintController {
         // extract request body
         Map<String, String> requestBody = new ObjectMapper().readValue(request, Map.class);
 
-        // extract new sprint id
-        Long newSprintId = Utils.validateId(requestBody.get("newSprintId"));
+        // extract new sprint id (null indicates the issue is back to the product backlog)
+        Long newSprintId = null;
+
+        if(!requestBody.get("newSprintId").equals("null")){
+            newSprintId = Utils.validateId(requestBody.get("newSprintId"));
+        }
 
         // update issue sprint
         sprintService.updateIssueSprint(sprintId, issueId, newSprintId);
