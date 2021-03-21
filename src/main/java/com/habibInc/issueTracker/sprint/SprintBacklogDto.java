@@ -1,13 +1,16 @@
 package com.habibInc.issueTracker.sprint;
 
 import com.habibInc.issueTracker.issue.Issue;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
-@Data
+@NoArgsConstructor
+@Setter
+@Getter
+
 public class SprintBacklogDto {
     private Long id;
 
