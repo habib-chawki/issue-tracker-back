@@ -62,18 +62,25 @@ public class SprintControllerTest {
 
     @Test
     public void itShouldCreateSprint() throws Exception {
+        // given the sprint DTO
+        SprintBacklogDto sprintDto = new ModelMapper().map(sprint, SprintBacklogDto.class);
+
         // given the service response
         when(sprintService.createSprint(any(Long.class), any(Sprint.class))).thenReturn(sprint);
+        when(modelMapper.map(sprint, SprintBacklogDto.class)).thenReturn(sprintDto);
 
         // given the request body
         String requestBody = objectMapper.writeValueAsString(sprint);
+
+        // given the expected response DTO
+        String expectedResponse = objectMapper.writeValueAsString(sprintDto);
 
         // when a POST request is made, then the sprint should be created successfully
         mockMvc.perform(post("/projects/1/sprints")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))
                 .andExpect(status().isCreated())
-                .andExpect(content().json(requestBody));
+                .andExpect(content().json(expectedResponse));
     }
 
     @Test
