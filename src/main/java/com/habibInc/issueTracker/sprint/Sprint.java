@@ -6,10 +6,10 @@ import com.habibInc.issueTracker.board.Board;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.project.Project;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -44,7 +44,7 @@ public class Sprint {
     private Project project;
 
     @OneToMany(mappedBy = "sprint", fetch = FetchType.EAGER)
-    private List<Issue> backlog;
+    private List<Issue> backlog = new ArrayList<>();
 
     @OneToOne(mappedBy = "sprint")
     private Board board;
