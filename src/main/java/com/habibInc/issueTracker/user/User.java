@@ -9,6 +9,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.Objects;
@@ -27,12 +28,17 @@ import java.util.Objects;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(unique = true, nullable = false, updatable = false)
     private Long id;
 
     @Email(message = "Email should be valid")
+    @NotBlank(message = "Email must not be blank")
+    @Column(unique = true, nullable = false, updatable = false)
     private String email;
 
     @Size(min = 5, message = "Password should be at least 5 characters long")
+    @NotBlank(message = "Password must not be blank")
+    @Column(nullable = false)
     private String password;
 
     private String fullName;
