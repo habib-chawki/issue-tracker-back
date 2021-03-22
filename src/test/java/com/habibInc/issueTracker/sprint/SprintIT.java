@@ -254,7 +254,7 @@ public class SprintIT {
         }
 
         @Test
-        public void giveUpdateSprintStatus_whenStatusIsOver_itShouldSetIssuesSprintToNull() {
+        public void givenUpdateSprintStatus_whenStatusIsOver_itShouldSetIssuesSprintToNull() {
             // given the sprint
             sprint = sprintService.createSprint(project.getId(), sprint);
 
