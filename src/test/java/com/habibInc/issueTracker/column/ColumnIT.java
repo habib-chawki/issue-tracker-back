@@ -310,7 +310,7 @@ public class ColumnIT {
 
                 // then expect to get a paginated list of issues
                 assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-                assertThat(response.getBody()).containsAll(issues.subList(0, size));
+                assertThat(Arrays.asList(response.getBody())).containsAll(issues.subList(0, size));
             }
 
             @Test
@@ -358,11 +358,13 @@ public class ColumnIT {
                 ResponseEntity<Issue[]> response =
                         restTemplate.exchange(url, HttpMethod.GET, httpEntity, Issue[].class);
 
+                List<Issue> paginatedIssuesList = Arrays.asList(response.getBody());
+
                 // then expect the retrieved issues to belong to the targeted column only
                 assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-                assertThat(response.getBody().length).isEqualTo(targetedColumnIssues.size());
-                assertThat(response.getBody()).containsAll(targetedColumnIssues);
-                assertThat(response.getBody()).doesNotContainAnyElementsOf(anotherColumnIssues);
+                assertThat(paginatedIssuesList.size()).isEqualTo(targetedColumnIssues.size());
+                assertThat(paginatedIssuesList).containsAll(targetedColumnIssues);
+                assertThat(paginatedIssuesList).doesNotContainAnyElementsOf(anotherColumnIssues);
             }
 
         }
