@@ -242,6 +242,9 @@ public class ColumnIT {
 
             @Test
             public void itShouldGetColumnById() {
+                // given the column is created
+                column = columnService.createColumn(board.getId(), column);
+
                 // given the url
                 String url = String.format(baseUrl, board.getId(), column.getId());
 
@@ -276,7 +279,7 @@ public class ColumnIT {
 
             @Test
             public void itShouldGetPaginatedListOfIssues() {
-                // given a created column
+                // given the column is created
                 Column createdColumn = columnService.createColumn(board.getId(), column);
 
                 // given a list of issues
@@ -288,7 +291,7 @@ public class ColumnIT {
                         Issue.builder().summary("issue 5").column(createdColumn).build()
                 );
 
-                // save the list of issues
+                // given the issues are saved
                 issues = (List<Issue>) issueRepository.saveAll(issues);
 
                 // given a GET request to fetch a paginated list of issues
@@ -301,7 +304,7 @@ public class ColumnIT {
                         board.getId(), createdColumn.getId(), page, size
                 );
 
-                // when the request is made
+                // when the GET request is made
                 ResponseEntity<Issue[]> response =
                         restTemplate.exchange(url, HttpMethod.GET, httpEntity, Issue[].class);
 
@@ -397,7 +400,7 @@ public class ColumnIT {
         @Test
         public void givenDeleteColumnById_whenAuthenticatedUserIsNotTheBoardOwner_itShouldReturnForbiddenOperationError() {
             // given a random user
-            User randomUser = User.builder().email("not.authenticated@user.random").password("!authenticated").build();
+            User randomUser = User.builder().email("random@user.me").password("random_pass").build();
             randomUser = userService.createUser(randomUser);
 
             // given the random user set as board owner

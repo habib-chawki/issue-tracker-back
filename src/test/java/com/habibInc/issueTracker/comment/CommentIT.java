@@ -194,8 +194,8 @@ public class CommentIT {
         public void givenDeleteComment_whenAuthenticatedUserIsNotTheOwner_itShouldReturnForbiddenError() {
             // set and save a random user
             User randomUser = new User();
-            randomUser.setEmail("random.user@email.com");
-            randomUser.setPassword("random_pass");
+            randomUser.setEmail("random@user.me");
+            randomUser.setPassword("random_pwd");
 
             randomUser = userService.createUser(randomUser);
 
