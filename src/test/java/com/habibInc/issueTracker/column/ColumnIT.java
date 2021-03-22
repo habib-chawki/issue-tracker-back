@@ -397,7 +397,7 @@ public class ColumnIT {
         @Test
         public void givenDeleteColumnById_whenAuthenticatedUserIsNotTheBoardOwner_itShouldReturnForbiddenOperationError() {
             // given a random user
-            User randomUser = User.builder().id(666L).email("not.authenticated@user.random").password("!authenticated").build();
+            User randomUser = User.builder().email("not.authenticated@user.random").password("!authenticated").build();
             randomUser = userService.createUser(randomUser);
 
             // given the random user set as board owner
