@@ -54,7 +54,7 @@ public class IssueIT {
     @Autowired
     ObjectMapper mapper;
 
-    User assignee1, assignee2, authenticatedUser;
+    User authenticatedUser;
     Issue issue1, issue2;
     Project project;
 
@@ -65,11 +65,11 @@ public class IssueIT {
     public void authSetup() {
         // create a user to authenticate
         authenticatedUser = new User();
-        authenticatedUser.setEmail("Habib@email.com");
-        authenticatedUser.setPassword("my_password");
+        authenticatedUser.setEmail("authenticated@user.me");
+        authenticatedUser.setPassword("auth_password");
 
         // save the user to pass authorization
-        userService.createUser(authenticatedUser);
+        authenticatedUser = userService.createUser(authenticatedUser);
 
         // generate an auth token signed with the user email
         token = jwtUtil.generateToken(authenticatedUser.getEmail());
@@ -85,16 +85,11 @@ public class IssueIT {
         issue1 = new Issue();
         issue2 = new Issue();
 
-        // create assignees
-        assignee1 = new User();
-        assignee2 = new User();
-
         // set up issue1 properties
         issue1.setSummary("Issue 1 summary");
         issue1.setDescription("Issue 1 description");
         issue1.setType(IssueType.STORY);
         issue1.setResolution(IssueResolution.DONE);
-        issue1.setAssignee(assignee1);
         issue1.setCreationTime(LocalDateTime.now());
         issue1.setUpdateTime(LocalDateTime.now());
         issue1.setEstimate("4");
@@ -104,7 +99,6 @@ public class IssueIT {
         issue2.setDescription("Issue 2 description");
         issue2.setType(IssueType.TASK);
         issue2.setResolution(IssueResolution.DUPLICATE);
-        issue2.setAssignee(assignee2);
         issue2.setCreationTime(LocalDateTime.now());
         issue2.setUpdateTime(LocalDateTime.now());
         issue2.setEstimate("6");
@@ -293,8 +287,8 @@ public class IssueIT {
             // given a random reporter who's not the authenticated user
             User randomReporter = new User();
 
-            randomReporter.setEmail("not.the.authenticated.user@email.com");
-            randomReporter.setPassword("bla_bla_bla");
+            randomReporter.setEmail("random.user@email.com");
+            randomReporter.setPassword("random_pass");
 
             userService.createUser(randomReporter);
 
