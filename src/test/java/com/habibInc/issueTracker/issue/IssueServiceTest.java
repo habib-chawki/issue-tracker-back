@@ -67,7 +67,7 @@ public class IssueServiceTest {
         issue1.setStatus(IssueStatus.RESOLVED);
         issue1.setCreationTime(LocalDateTime.now());
         issue1.setUpdateTime(LocalDateTime.now());
-        issue1.setEstimate("4");
+        issue1.setPoints(4);
 
         // set the authenticated user as the reporter
         issue1.setReporter(authenticatedUser);
@@ -80,7 +80,7 @@ public class IssueServiceTest {
         issue2.setStatus(IssueStatus.IN_PROGRESS);
         issue2.setCreationTime(LocalDateTime.now());
         issue2.setUpdateTime(LocalDateTime.now());
-        issue2.setEstimate("6");
+        issue2.setPoints(8);
 
         // set another reporter for issue2
         issue2.setReporter(reporter);

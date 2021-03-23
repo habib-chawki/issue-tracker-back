@@ -50,7 +50,7 @@ public class IssueControllerTest {
                 .status(IssueStatus.RESOLVED)
                 .creationTime(LocalDateTime.now())
                 .updateTime(LocalDateTime.now())
-                .estimate("4")
+                .points(4)
                 .build();
 
         issue2 = Issue.builder()
@@ -61,7 +61,7 @@ public class IssueControllerTest {
                 .status(IssueStatus.IN_PROGRESS)
                 .creationTime(LocalDateTime.now())
                 .updateTime(LocalDateTime.now())
-                .estimate("6")
+                .points(8)
                 .build();
     }
 

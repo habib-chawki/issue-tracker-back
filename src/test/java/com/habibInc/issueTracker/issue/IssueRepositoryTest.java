@@ -55,7 +55,7 @@ public class IssueRepositoryTest {
         issue1.setStatus(IssueStatus.RESOLVED);
         issue1.setCreationTime(LocalDateTime.now());
         issue1.setUpdateTime(LocalDateTime.now());
-        issue1.setEstimate("4");
+        issue1.setPoints(4);
 
         // set up issue2 properties
         issue2.setSummary("Issue 2 summary");
@@ -64,7 +64,7 @@ public class IssueRepositoryTest {
         issue2.setStatus(IssueStatus.IN_PROGRESS);
         issue2.setCreationTime(LocalDateTime.now());
         issue2.setUpdateTime(LocalDateTime.now());
-        issue2.setEstimate("6");
+        issue2.setPoints(21);
 
         // create a project
         project = new Project();
