@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public enum IssueResolution {
     @JsonProperty(value = "Unresolved") UNRESOLVED,
-    @JsonProperty(value = "Done") DONE,
-    @JsonProperty(value = "Duplicate") DUPLICATE,
-    @JsonProperty(value = "Wont Do") WONT_DO
+    @JsonProperty(value = "In Progress") IN_PROGRESS,
+    @JsonProperty(value = "Resolved") RESOLVED
 }
