@@ -67,7 +67,7 @@ public class Issue {
     @ManyToOne
     private Column column;
 
-    private String estimate;
+    private int points;
 
     private LocalDateTime creationTime;
     private LocalDateTime updateTime;
