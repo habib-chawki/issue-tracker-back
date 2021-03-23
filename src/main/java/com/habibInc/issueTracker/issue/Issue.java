@@ -42,7 +42,7 @@ public class Issue {
     private IssueType type = IssueType.STORY;
 
     @Enumerated(EnumType.STRING)
-    private IssueResolution resolution = IssueResolution.UNRESOLVED;
+    private IssueStatus status = IssueStatus.UNRESOLVED;
 
     @Enumerated(EnumType.STRING)
     private IssuePriority priority = IssuePriority.MEDIUM;

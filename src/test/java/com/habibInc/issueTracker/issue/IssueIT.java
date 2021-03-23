@@ -89,7 +89,7 @@ public class IssueIT {
         issue1.setSummary("Issue 1 summary");
         issue1.setDescription("Issue 1 description");
         issue1.setType(IssueType.STORY);
-        issue1.setResolution(IssueResolution.RESOLVED);
+        issue1.setStatus(IssueStatus.RESOLVED);
         issue1.setCreationTime(LocalDateTime.now());
         issue1.setUpdateTime(LocalDateTime.now());
         issue1.setEstimate("4");
@@ -98,7 +98,7 @@ public class IssueIT {
         issue2.setSummary("Issue 2 summary");
         issue2.setDescription("Issue 2 description");
         issue2.setType(IssueType.TASK);
-        issue2.setResolution(IssueResolution.IN_PROGRESS);
+        issue2.setStatus(IssueStatus.IN_PROGRESS);
         issue2.setCreationTime(LocalDateTime.now());
         issue2.setUpdateTime(LocalDateTime.now());
         issue2.setEstimate("6");
