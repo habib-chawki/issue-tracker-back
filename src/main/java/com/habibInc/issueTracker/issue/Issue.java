@@ -39,13 +39,13 @@ public class Issue {
     private String summary;
 
     @Enumerated(EnumType.STRING)
-    private IssueType type;
+    private IssueType type = IssueType.STORY;
 
     @Enumerated(EnumType.STRING)
-    private IssueResolution resolution;
+    private IssueResolution resolution = IssueResolution.UNRESOLVED;
 
     @Enumerated(EnumType.STRING)
-    private IssuePriority priority;
+    private IssuePriority priority = IssuePriority.MEDIUM;
 
     @OneToMany(mappedBy = "issue", cascade = CascadeType.ALL)
     private List<Comment> comments;
