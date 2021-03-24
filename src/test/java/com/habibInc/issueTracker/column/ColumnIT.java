@@ -1,5 +1,7 @@
 package com.habibInc.issueTracker.column;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.board.Board;
 import com.habibInc.issueTracker.board.BoardRepository;
 import com.habibInc.issueTracker.board.BoardService;
@@ -22,6 +24,7 @@ import org.springframework.http.*;
 import java.net.http.HttpResponse;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -435,7 +438,7 @@ public class ColumnIT {
 
         final String baseUrl = "/boards/%s/columns/%s";
         final String updatedTitle = "updated title";
-        final String requestBody = String.format("{\"title\": \"" + updatedTitle + "\"}");
+        final String requestBody = String.format("{\"newColumnTitle\": \"" + updatedTitle + "\"}");
 
         HttpEntity<String> httpEntity;
 
@@ -453,12 +456,14 @@ public class ColumnIT {
             String url = String.format(baseUrl, board.getId(), column.getId());
 
             // when a PATCH request is made to update column title
-            ResponseEntity<String> response =
-                    restTemplate.exchange(url, HttpMethod.PATCH, httpEntity, String.class);
+            ResponseEntity<Map> response =
+                    restTemplate.exchange(url, HttpMethod.PATCH, httpEntity, Map.class);
+
+            //Map responseBody = new ObjectMapper().readValue(response.getBody(), Map.class);
 
             // then expect the response to be the column with the updated title
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-            assertThat(response.getBody()).isEqualTo(updatedTitle);
+            assertThat(response.getBody().get("updatedTitle")).isEqualTo(updatedTitle);
         }
 
         @Test
