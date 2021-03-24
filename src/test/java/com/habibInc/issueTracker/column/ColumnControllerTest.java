@@ -266,7 +266,7 @@ public class ColumnControllerTest {
         String updatedTitle = "new column title";
 
         // given the column service response
-        when(columnService.updateTitle(eq(boardId), eq(column.getId()), eq(updatedTitle), any(User.class))).thenReturn(column);
+        when(columnService.updateTitle(eq(boardId), eq(column.getId()), eq(updatedTitle), any(User.class))).thenReturn(column.getTitle());
 
         // given the request body
         String requestBody = String.format("{\"title\": \"%s\"}", updatedTitle);

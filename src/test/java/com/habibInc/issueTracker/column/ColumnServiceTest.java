@@ -284,11 +284,11 @@ public class ColumnServiceTest {
         when(columnRepository.save(column)).thenReturn(column);
 
         // when updateTitle() is called
-        Column response =
+        String response =
                 columnService.updateTitle(this.column.getBoard().getId(), this.column.getId(), newTitle, boardOwner);
 
         // then the response should be the column with the updated title
-        assertThat(response.getTitle()).isEqualTo(newTitle);
+        assertThat(response).isEqualTo(newTitle);
     }
 
     @Test

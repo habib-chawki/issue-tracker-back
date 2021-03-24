@@ -453,13 +453,12 @@ public class ColumnIT {
             String url = String.format(baseUrl, board.getId(), column.getId());
 
             // when a PATCH request is made to update column title
-            ResponseEntity<Column> response =
-                    restTemplate.exchange(url, HttpMethod.PATCH, httpEntity, Column.class);
+            ResponseEntity<String> response =
+                    restTemplate.exchange(url, HttpMethod.PATCH, httpEntity, String.class);
 
             // then expect the response to be the column with the updated title
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-            assertThat(response.getBody()).isEqualToComparingOnlyGivenFields(column);
-            assertThat(response.getBody().getTitle()).isEqualTo(updatedTitle);
+            assertThat(response.getBody()).isEqualTo(updatedTitle);
         }
 
         @Test
