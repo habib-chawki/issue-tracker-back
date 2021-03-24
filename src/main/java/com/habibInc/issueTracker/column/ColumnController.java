@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -104,13 +105,26 @@ public class ColumnController {
                                     @PathVariable String columnId,
                                     @AuthenticationPrincipal User authenticatedUser) throws JsonProcessingException {
         try{
-            Map<String, String> requestBody = new ObjectMapper().readValue(request, Map.class);
-            String title = requestBody.get("title");
+            final ObjectMapper mapper = new ObjectMapper();
+            Map<String, String> body;
 
+            // extract the new title from the request body
+            body = mapper.readValue(request, Map.class);
+            String title = body.get("newColumnTitle");
+
+            // validate the board and column ids
             Long parsedBoardId = Long.parseLong(boardId);
             Long parsedColumnId = Long.parseLong(columnId);
 
-            return columnService.updateTitle(parsedBoardId, parsedColumnId, title, authenticatedUser);
+            // invoke the service and get back the updated title
+            String updatedTitle =
+                    columnService.updateTitle(parsedBoardId, parsedColumnId, title, authenticatedUser);
+
+            // setup the response body with the updated title
+            body = new HashMap<>();
+            body.put("updatedTitle", updatedTitle);
+
+            return mapper.writeValueAsString(body);
         }catch(NumberFormatException ex){
             throw new InvalidIdException("Invalid id");
         }

@@ -459,8 +459,6 @@ public class ColumnIT {
             ResponseEntity<Map> response =
                     restTemplate.exchange(url, HttpMethod.PATCH, httpEntity, Map.class);
 
-            //Map responseBody = new ObjectMapper().readValue(response.getBody(), Map.class);
-
             // then expect the response to be the column with the updated title
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody().get("updatedTitle")).isEqualTo(updatedTitle);
