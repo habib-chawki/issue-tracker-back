@@ -85,7 +85,7 @@ public class ColumnService {
         columnRepository.deleteById(column.getId());
     }
 
-    public Column updateTitle(Long boardId, Long columnId, String updatedTitle, User authenticatedUser) {
+    public String updateTitle(Long boardId, Long columnId, String updatedTitle, User authenticatedUser) {
         // fetch the column by id (handles column / board not found errors)
         Column column = getColumnById(boardId, columnId);
 
@@ -97,7 +97,7 @@ public class ColumnService {
         column.setTitle(updatedTitle);
 
         // save and return
-        return columnRepository.save(column);
+        return columnRepository.save(column).getTitle();
     }
 
     public void updateIssueColumn(Long boardId, Long columnId, Long issueId, Long newColumnId) {

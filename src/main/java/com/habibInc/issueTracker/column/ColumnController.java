@@ -99,7 +99,7 @@ public class ColumnController {
 
     @PatchMapping(path = "/columns/{columnId}")
     @ResponseStatus(HttpStatus.OK)
-    public Column updateColumnTitle(@RequestBody String request,
+    public String updateColumnTitle(@RequestBody String request,
                                     @PathVariable String boardId,
                                     @PathVariable String columnId,
                                     @AuthenticationPrincipal User authenticatedUser) throws JsonProcessingException {
