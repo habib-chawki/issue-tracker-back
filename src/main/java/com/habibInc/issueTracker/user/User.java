@@ -54,7 +54,12 @@ public class User {
     @OneToMany(mappedBy = "owner")
     private List<Project> createdProjects;
 
-    @ManyToMany(mappedBy = "assignedUsers")
+    @ManyToMany
+    @JoinTable(
+            name = "project_user",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "project_id")
+    )
     private Set<Project> assignedProjects;
 
     @Override
