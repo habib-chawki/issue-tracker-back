@@ -13,6 +13,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 
@@ -52,6 +53,9 @@ public class User {
 
     @OneToMany(mappedBy = "owner")
     private List<Project> createdProjects;
+
+    @ManyToMany(mappedBy = "devTeam")
+    private Set<Project> activeProjects;
 
     @Override
     public boolean equals(Object o) {
