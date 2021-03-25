@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Set;
 
 @Service
@@ -40,6 +39,6 @@ public class UserService {
     }
 
     public Set<User> getUsersByProject(Long projectId) {
-        return userRepository.findAllByProjectId(projectId);
+        return userRepository.findAllByAssignedProjectsId(projectId);
     }
 }

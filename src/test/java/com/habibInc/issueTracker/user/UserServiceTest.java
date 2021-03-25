@@ -7,7 +7,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -134,7 +133,7 @@ public class UserServiceTest {
         );
 
         // given the repository response
-        when(userRepository.findAllByProjectId(projectId)).thenReturn(users);
+        when(userRepository.findAllByAssignedProjectsId(projectId)).thenReturn(users);
 
         // when the service is invoked
         Set<User> usersByProject = userService.getUsersByProject(projectId);
@@ -142,6 +141,6 @@ public class UserServiceTest {
         // then expect the list of users to have been fetched successfully
         assertThat(usersByProject).isEqualTo(users);
 
-        verify(userRepository, times(1)).findAllByProjectId(projectId);
+        verify(userRepository, times(1)).findAllByAssignedProjectsId(projectId);
     }
 }
