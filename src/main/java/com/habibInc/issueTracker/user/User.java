@@ -51,7 +51,7 @@ public class User {
     private List<Issue> reportedIssues;
 
     @OneToMany(mappedBy = "owner")
-    private List<Project> projects;
+    private List<Project> createdProjects;
 
     @Override
     public boolean equals(Object o) {
