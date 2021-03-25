@@ -14,7 +14,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -176,7 +175,7 @@ public class UserControllerTest {
 
     @Test
     @WithMockUser
-    public void itShouldGetUsersByProject() throws Exception {
+    public void itShouldGetUsersByAssignedProject() throws Exception {
         // given a project id
         Long projectId = 10L;
 
@@ -195,7 +194,7 @@ public class UserControllerTest {
         );
 
         // given the user service
-        when(userService.getUsersByProject(projectId)).thenReturn(users);
+        when(userService.getUsersByAssignedProject(projectId)).thenReturn(users);
 
         // when a GET request is made, then expect the response to be the list of users
         mockMvc.perform(get("/users?project=" + projectId))

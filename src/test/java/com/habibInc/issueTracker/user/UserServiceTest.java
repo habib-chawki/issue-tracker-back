@@ -121,7 +121,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void itShouldGetUsersByProject() {
+    public void itShouldGetUsersByAssignedProject() {
         // given a project id
         Long projectId = 10L;
 
@@ -136,7 +136,7 @@ public class UserServiceTest {
         when(userRepository.findAllByAssignedProjectsId(projectId)).thenReturn(users);
 
         // when the service is invoked
-        Set<User> usersByProject = userService.getUsersByProject(projectId);
+        Set<User> usersByProject = userService.getUsersByAssignedProject(projectId);
 
         // then expect the list of users to have been fetched successfully
         assertThat(usersByProject).isEqualTo(users);

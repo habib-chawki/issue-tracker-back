@@ -85,7 +85,7 @@ public class UserRepositoryTest {
         );
 
         // given the project is saved
-        project.setDevTeam(new HashSet<>(users));
+        project.setAssignedUsers(new HashSet<>(users));
         project = projectRepository.save(project);
 
         // when a request to find users by project id is made
