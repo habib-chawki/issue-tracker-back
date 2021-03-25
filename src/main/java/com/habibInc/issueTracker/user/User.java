@@ -55,7 +55,7 @@ public class User {
     private List<Project> createdProjects;
 
     @ManyToMany(mappedBy = "devTeam")
-    private Set<Project> activeProjects;
+    private Set<Project> assignedProjects;
 
     @Override
     public boolean equals(Object o) {
