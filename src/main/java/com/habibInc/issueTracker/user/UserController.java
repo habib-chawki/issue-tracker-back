@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -70,7 +69,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public Set<UserDto> getUsersByProject(@RequestParam(value = "project") Long projectId) {
         // invoke service, fetch the list of users
-        Set<User> users = userService.getUsersByProject(projectId);
+        Set<User> users = userService.getUsersByAssignedProject(projectId);
 
         // convert to UserDto
         Set<UserDto> usersByProject =
