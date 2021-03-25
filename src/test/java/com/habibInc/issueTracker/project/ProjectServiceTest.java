@@ -12,6 +12,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -115,5 +116,29 @@ public class ProjectServiceTest {
 
         // then the backlog should be retrieved successfully
         assertThat(retrievedBacklog).isEqualTo(backlog);
+    }
+
+    @Test
+    public void itShouldGetProjectsByAssignedUser() {
+        // given a user id
+        Long userId = 10L;
+
+        // given a set of projects
+        Set<Project> projects = Set.of(
+                Project.builder().id(1L).name("Project 01").build(),
+                Project.builder().id(2L).name("Project 02").build(),
+                Project.builder().id(3L).name("Project 03").build()
+        );
+
+        // given the repository response
+        when(projectRepository.findAllByAssignedUsersId(10L)).thenReturn(projects);
+
+        // when the service is invoked to get the projects by assigned user
+        Set<Project> projectsByAssignedUser = projectService.getProjectsByAssignedUser(userId);
+
+        // then expect the projects to have been fetched successfully
+        assertThat(projectsByAssignedUser).isEqualTo(projects);
+
+        verify(projectRepository, times(1)).findAllByAssignedUsersId(userId);
     }
 }
