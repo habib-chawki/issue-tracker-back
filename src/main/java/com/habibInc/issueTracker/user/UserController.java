@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/users")
@@ -19,11 +20,13 @@ public class UserController {
 
     private final UserService userService;
     private final JwtUtil jwtUtil;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public UserController(UserService userService, JwtUtil jwtUtil) {
+    public UserController(UserService userService, JwtUtil jwtUtil, ModelMapper modelMapper) {
         this.userService = userService;
         this.jwtUtil = jwtUtil;
+        this.modelMapper = modelMapper;
     }
 
     @PostMapping("/signup")
@@ -64,7 +67,14 @@ public class UserController {
 
     @GetMapping(value = {"/", ""}, params = "project")
     @ResponseStatus(HttpStatus.OK)
-    public List<UserDto> getUsersByProject() {
-        return null;
+    public List<UserDto> getUsersByProject(@RequestParam(value = "project") Long projectId) {
+        // invoke service, fetch the list of users
+        List<User> users = userService.getUsersByProject(projectId);
+
+        // convert to UserDto
+        List<UserDto> usersByProject =
+                users.stream().map(user -> modelMapper.map(user, UserDto.class)).collect(Collectors.toList());
+
+        return usersByProject;
     }
 }
