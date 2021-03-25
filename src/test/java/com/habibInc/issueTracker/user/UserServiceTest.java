@@ -7,10 +7,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class UserServiceTest {
@@ -117,5 +118,29 @@ public class UserServiceTest {
 
         // then the password should be hashed
         assertThat(createdUser.getPassword()).isEqualTo(hashedPassword);
+    }
+
+    @Test
+    public void itShouldGetUsersByProject() {
+        // given a project id
+        Long projectId = 10L;
+
+        // given a list of users
+        List<User> users = List.of(
+                User.builder().id(1L).userName("user1@email.com").build(),
+                User.builder().id(2L).userName("user2@email.com").build(),
+                User.builder().id(3L).userName("user3@email.com").build()
+        );
+
+        // given the repository response
+        when(userRepository.findAllByProjectId(projectId)).thenReturn(users);
+
+        // when the service is invoked
+        List<User> usersByProject = userService.getUsersByProject(projectId);
+
+        // then expect the list of users to have been fetched successfully
+        assertThat(usersByProject).isEqualTo(users);
+
+        verify(userRepository, times(1)).findAllByProjectId(projectId);
     }
 }
