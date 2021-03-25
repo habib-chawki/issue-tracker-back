@@ -41,6 +41,6 @@ public class ProjectService {
     }
 
     public Set<Project> getProjectsByAssignedUser(Long userId) {
-        return null;
+        return projectRepository.findAllByAssignedUsersId(userId);
     }
 }
