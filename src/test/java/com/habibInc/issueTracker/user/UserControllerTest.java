@@ -166,4 +166,11 @@ public class UserControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errorMessage").value(errorMessage));
     }
+
+    @Test
+    @WithMockUser
+    public void itShouldGetUsersByProject() throws Exception {
+        mockMvc.perform(get("/users?project=10"))
+                .andExpect(status().isOk());
+    }
 }
