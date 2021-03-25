@@ -6,6 +6,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class UserService {
@@ -38,7 +39,7 @@ public class UserService {
         );
     }
 
-    public List<User> getUsersByProject(Long projectId) {
+    public Set<User> getUsersByProject(Long projectId) {
         return userRepository.findAllByProjectId(projectId);
     }
 }

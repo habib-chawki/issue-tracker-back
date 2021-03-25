@@ -1,5 +1,6 @@
 package com.habibInc.issueTracker.user;
 
+import com.habibInc.issueTracker.project.Project;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,5 +60,15 @@ public class UserRepositoryTest {
 
         // then the proper userEntity should be returned
         assertThat(response.get()).isEqualTo(savedUserEntity);
+    }
+
+    @Test
+    public void itShouldFindAllUsersByProjectId() {
+        // given a project
+        Project project = new Project();
+        project.setName("Project 01");
+
+        // given a set of users
+
     }
 }

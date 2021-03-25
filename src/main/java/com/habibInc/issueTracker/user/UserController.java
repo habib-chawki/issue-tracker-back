@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
@@ -67,13 +68,13 @@ public class UserController {
 
     @GetMapping(value = {"/", ""}, params = "project")
     @ResponseStatus(HttpStatus.OK)
-    public List<UserDto> getUsersByProject(@RequestParam(value = "project") Long projectId) {
+    public Set<UserDto> getUsersByProject(@RequestParam(value = "project") Long projectId) {
         // invoke service, fetch the list of users
-        List<User> users = userService.getUsersByProject(projectId);
+        Set<User> users = userService.getUsersByProject(projectId);
 
         // convert to UserDto
-        List<UserDto> usersByProject =
-                users.stream().map(user -> modelMapper.map(user, UserDto.class)).collect(Collectors.toList());
+        Set<UserDto> usersByProject =
+                users.stream().map(user -> modelMapper.map(user, UserDto.class)).collect(Collectors.toSet());
 
         return usersByProject;
     }

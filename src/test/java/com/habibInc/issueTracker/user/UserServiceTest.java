@@ -9,6 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -126,7 +127,7 @@ public class UserServiceTest {
         Long projectId = 10L;
 
         // given a list of users
-        List<User> users = List.of(
+        Set<User> users = Set.of(
                 User.builder().id(1L).userName("user1@email.com").build(),
                 User.builder().id(2L).userName("user2@email.com").build(),
                 User.builder().id(3L).userName("user3@email.com").build()
@@ -136,7 +137,7 @@ public class UserServiceTest {
         when(userRepository.findAllByProjectId(projectId)).thenReturn(users);
 
         // when the service is invoked
-        List<User> usersByProject = userService.getUsersByProject(projectId);
+        Set<User> usersByProject = userService.getUsersByProject(projectId);
 
         // then expect the list of users to have been fetched successfully
         assertThat(usersByProject).isEqualTo(users);

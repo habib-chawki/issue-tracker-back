@@ -15,6 +15,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.mockito.Mockito.when;
@@ -180,7 +181,7 @@ public class UserControllerTest {
         Long projectId = 10L;
 
         // given a list of users
-        List<User> users = List.of(
+        Set<User> users = Set.of(
                 User.builder().id(1L).userName("user1@email.com").build(),
                 User.builder().id(2L).userName("user2@email.com").build(),
                 User.builder().id(3L).userName("user3@email.com").build()
