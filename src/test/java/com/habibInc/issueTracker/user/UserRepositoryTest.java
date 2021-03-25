@@ -70,7 +70,7 @@ public class UserRepositoryTest {
     }
 
     @Test
-    public void itShouldFindAllUsersByProjectId() {
+    public void itShouldFindAllUsersByAssignedProjectId() {
         // given a project
         Project project = new Project();
         project.setName("Project 01");
@@ -88,11 +88,10 @@ public class UserRepositoryTest {
         project.setDevTeam(new HashSet<>(users));
         project = projectRepository.save(project);
 
-        // when a request to find users by project id
+        // when a request to find users by project id is made
         Set<User> usersByProjectId = userRepository.findAllByAssignedProjectsId(project.getId());
 
         // then expect the response to be the project's dev team
         assertThat(usersByProjectId).containsExactlyElementsOf(users);
-
     }
 }
