@@ -9,11 +9,14 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.mockito.ArgumentMatchers.any;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -32,6 +35,9 @@ public class UserControllerTest {
 
     @MockBean
     JwtUtil jwtUtil;
+
+    @SpyBean
+    ModelMapper modelMapper;
 
     User user;
 
@@ -170,7 +176,30 @@ public class UserControllerTest {
     @Test
     @WithMockUser
     public void itShouldGetUsersByProject() throws Exception {
-        mockMvc.perform(get("/users?project=10"))
+        // given a project id
+        Long projectId = 10L;
+
+        // given a list of users
+        List<User> users = List.of(
+                User.builder().id(1L).userName("user1@email.com").build(),
+                User.builder().id(2L).userName("user2@email.com").build(),
+                User.builder().id(3L).userName("user3@email.com").build()
+        );
+
+        // given the expected response
+        String expectedResponse = mapper.writeValueAsString(
+                users.stream().map(
+                        user -> modelMapper.map(user, UserDto.class)).collect(Collectors.toList()
+                )
+        );
+
+        // given the user service
+        when(userService.getUsersByProject(projectId)).thenReturn(users);
+
+        // when a GET request is made, then expect the response to be the list of users
+        mockMvc.perform(get("/users?project=" + projectId))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(expectedResponse))
                 .andExpect(status().isOk());
     }
 }
