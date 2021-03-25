@@ -10,6 +10,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 
@@ -36,6 +37,13 @@ public class Project {
 
     @OneToMany(mappedBy = "project")
     private List<Sprint> sprints;
+
+    @ManyToMany
+    @JoinTable(
+            joinColumns = @JoinColumn(name = "project_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> devTeam;
 
     @Override
     public boolean equals(Object o) {
