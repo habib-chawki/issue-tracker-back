@@ -1,17 +1,20 @@
 package com.habibInc.issueTracker.project;
 
-import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.issue.IssueRepository;
+import com.habibInc.issueTracker.user.User;
+import com.habibInc.issueTracker.user.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)
@@ -22,6 +25,9 @@ public class ProjectRepositoryTest {
 
     @Autowired
     IssueRepository issueRepository;
+
+    @Autowired
+    UserRepository userRepository;
 
     Project project, project2;
 
@@ -52,5 +58,32 @@ public class ProjectRepositoryTest {
         List<Project> retrievedProjects = (List<Project>) projectRepository.findAll();
 
         assertThat(retrievedProjects).isEqualTo(projects);
+    }
+
+    @Test
+    public void itShouldFindAllProjectsByAssignedUserId() {
+        // given a user
+        User user = new User();
+        user.setEmail("user@email.com");
+        user.setPassword("user_pass");
+
+        // given a set of projects
+        List<Project> projects = (List<Project>) projectRepository.saveAll(
+                List.of(
+                        Project.builder().id(1L).name("Project 01").build(),
+                        Project.builder().id(2L).name("Project 02").build(),
+                        Project.builder().id(3L).name("Project 03").build()
+                )
+        );
+
+        // given the user is saved
+        user.setAssignedProjects(new HashSet<>(projects));
+        user = userRepository.save(user);
+
+        // when a request is made to find all projects by assigned user
+        Set<Project> projectsByUserId = projectRepository.findAllByAssignedUsersId(user.getId());
+
+        // then expect the projects of the given user to have been fetched successfully
+        assertThat(projectsByUserId).containsExactlyElementsOf(projects);
     }
 }
