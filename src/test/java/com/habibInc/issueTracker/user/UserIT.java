@@ -174,9 +174,9 @@ public class UserIT {
         // given a set of users
         List<User> users = (List<User>) userRepository.saveAll(
                 List.of(
-                        User.builder().id(1L).email("user1@email.com").password("pass1").userName("user1@email.com").build(),
-                        User.builder().id(2L).email("user2@email.com").password("pass2").userName("user2@email.com").build(),
-                        User.builder().id(3L).email("user3@email.com").password("pass3").userName("user3@email.com").build()
+                        User.builder().email("user1@email.com").password("pass1").userName("user1@email.com").build(),
+                        User.builder().email("user2@email.com").password("pass2").userName("user2@email.com").build(),
+                        User.builder().email("user3@email.com").password("pass3").userName("user3@email.com").build()
                 )
         );
 

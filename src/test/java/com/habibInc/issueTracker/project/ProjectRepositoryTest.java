@@ -70,9 +70,9 @@ public class ProjectRepositoryTest {
         // given a set of projects
         List<Project> projects = (List<Project>) projectRepository.saveAll(
                 List.of(
-                        Project.builder().id(1L).name("Project 01").build(),
-                        Project.builder().id(2L).name("Project 02").build(),
-                        Project.builder().id(3L).name("Project 03").build()
+                        Project.builder().name("Project 01").build(),
+                        Project.builder().name("Project 02").build(),
+                        Project.builder().name("Project 03").build()
                 )
         );
 
