@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class ProjectService {
@@ -37,5 +38,9 @@ public class ProjectService {
 
     public List<Issue> getBacklog(Long projectId) {
         return issueRepository.findAllByProjectIdAndSprintId(projectId, null);
+    }
+
+    public Set<Project> getProjectsByAssignedUser(Long userId) {
+        return null;
     }
 }
