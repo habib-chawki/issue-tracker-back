@@ -39,6 +39,6 @@ public class UserService {
     }
 
     public List<User> getUsersByProject(Long projectId) {
-        return null;
+        return userRepository.findAllByProjectId(projectId);
     }
 }
