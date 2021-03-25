@@ -61,9 +61,4 @@ public class UserRepositoryTest {
         // then the proper userEntity should be returned
         assertThat(response.get()).isEqualTo(savedUserEntity);
     }
-
-    @AfterEach
-    public void teardown() {
-        userRepository.deleteAll();
-    }
 }
