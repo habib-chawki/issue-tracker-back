@@ -13,7 +13,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -246,6 +248,35 @@ public class ProjectIT {
             // belonging to that project's backlog only
             assertThat(response.getBody()).containsExactlyElementsOf(backlogPrimary);
             assertThat(response.getBody()).doesNotContainAnyElementsOf(backlogSecondary);
+        }
+
+        @Test
+        public void itShouldGetProjectsByAssignedUser() {
+            // given a user
+            User user = new User();
+            user.setEmail("assigned_user@email.com");
+            user.setPassword("assigned_user_pass");
+
+            // given a set of projects
+            List<Project> projects = (List<Project>) projectRepository.saveAll(
+                    List.of(
+                            Project.builder().name("Project 01").build(),
+                            Project.builder().name("Project 02").build(),
+                            Project.builder().name("Project 03").build()
+                    )
+            );
+
+            // given the user is saved
+            user.setAssignedProjects(new HashSet<>(projects));
+            user = userService.createUser(user);
+
+            // when a GET request is made to fetch the list of projects by user id
+            ResponseEntity<Project[]> response =
+                    restTemplate.exchange("/projects?user=" + user.getId(), HttpMethod.GET, httpEntity, Project[].class);
+
+            // then expect the projects to have been fetched successfully
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody()).containsExactlyElementsOf(projects);
         }
     }
 
