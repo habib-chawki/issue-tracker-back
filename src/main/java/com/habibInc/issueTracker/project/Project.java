@@ -20,7 +20,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 
-@JsonIgnoreProperties(value = {"owner", "backlog", "sprints"})
+@JsonIgnoreProperties(value = {"owner", "backlog", "sprints", "assignedUsers"})
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -43,7 +43,7 @@ public class Project {
             joinColumns = @JoinColumn(name = "project_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    private Set<User> devTeam;
+    private Set<User> assignedUsers;
 
     @Override
     public boolean equals(Object o) {
