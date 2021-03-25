@@ -181,7 +181,7 @@ public class UserIT {
         );
 
         // given the project is saved
-        project.setDevTeam(new HashSet<>(users));
+        project.setAssignedUsers(new HashSet<>(users));
         project = projectService.createProject(project, authenticatedUser);
 
         // when a GET request is made to fetch the users by project

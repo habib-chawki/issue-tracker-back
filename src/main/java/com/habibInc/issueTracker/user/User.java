@@ -54,7 +54,7 @@ public class User {
     @OneToMany(mappedBy = "owner")
     private List<Project> createdProjects;
 
-    @ManyToMany(mappedBy = "devTeam")
+    @ManyToMany(mappedBy = "assignedUsers")
     private Set<Project> assignedProjects;
 
     @Override

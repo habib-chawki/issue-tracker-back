@@ -67,7 +67,7 @@ public class UserController {
 
     @GetMapping(value = {"/", ""}, params = "project")
     @ResponseStatus(HttpStatus.OK)
-    public Set<UserDto> getUsersByProject(@RequestParam(value = "project") Long projectId) {
+    public Set<UserDto> getUsersByAssignedProject(@RequestParam(value = "project") Long projectId) {
         // invoke service, fetch the list of users
         Set<User> users = userService.getUsersByAssignedProject(projectId);
 

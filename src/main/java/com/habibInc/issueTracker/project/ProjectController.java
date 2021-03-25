@@ -32,7 +32,7 @@ public class ProjectController {
 
     @GetMapping(value = {"", "/"}, params = "user")
     @ResponseStatus(HttpStatus.OK)
-    public Set<Project> getProjectsByUser(@RequestParam("user") Long userId) {
+    public Set<Project> getProjectsByAssignedUser(@RequestParam("user") Long userId) {
         return projectService.getProjectsByAssignedUser(userId);
     }
 
