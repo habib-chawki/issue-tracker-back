@@ -190,7 +190,7 @@ public class UserIT {
 
         // then expect the response to be the list of the project's dev team members
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-
+        assertThat(response.getBody().length).isEqualTo(users.size());
     }
 
     @AfterEach
