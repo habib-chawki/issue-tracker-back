@@ -5,6 +5,7 @@ import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.project.Project;
 import com.habibInc.issueTracker.project.ProjectService;
 import com.habibInc.issueTracker.user.User;
+import com.habibInc.issueTracker.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,11 +14,13 @@ public class IssueService {
 
     private final IssueRepository issueRepository;
     private final ProjectService projectService;
+    private final UserService userService;
 
     @Autowired
-    public IssueService(IssueRepository issueRepository, ProjectService projectService) {
+    public IssueService(IssueRepository issueRepository, ProjectService projectService, UserService userService) {
         this.issueRepository = issueRepository;
         this.projectService = projectService;
+        this.userService = userService;
     }
 
     public Issue getIssueById(Long id) {
@@ -63,6 +66,15 @@ public class IssueService {
     }
 
     public Issue updateIssueAssignee(Long issueId, Long userId) {
-        return null;
+        // fetch the user by id (throws user not found error)
+        User assignee = userService.getUserById(userId);
+
+        // fetch the issue by id (throws issue not found error)
+        Issue issue = getIssueById(issueId);
+
+        // set the assignee
+        issue.setAssignee(assignee);
+
+        return issueRepository.save(issue);
     }
 }
