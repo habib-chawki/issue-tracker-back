@@ -4,6 +4,7 @@ import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.issue.IssueRepository;
 import com.habibInc.issueTracker.user.User;
+import com.habibInc.issueTracker.user.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -27,6 +28,9 @@ public class ProjectServiceTest {
 
     @Mock
     IssueRepository issueRepository;
+
+    @Mock
+    UserService userService;
 
     Project project, project2;
 
@@ -140,5 +144,22 @@ public class ProjectServiceTest {
         assertThat(projectsByAssignedUser).isEqualTo(projects);
 
         verify(projectRepository, times(1)).findAllByAssignedUsersId(userId);
+    }
+
+    @Test
+    public void itShouldAddUserToProject() {
+        // given a user
+        User user = User.builder().id(666L).email("user@email").password("userpass").build();
+
+        // given
+        when(userService.getUserById(user.getId())).thenReturn(user);
+        when(projectRepository.findById(project.getId())).thenReturn(Optional.of(project));
+
+        // when addUserToProject() is invoked
+        projectService.addUserToProject(user.getId(), project.getId());
+
+        // then the the user should be added successfully via the repository
+        verify(projectRepository, times(1)).findById(project.getId());
+        verify(projectRepository).addUserToProject(user.getId(), project.getId());
     }
 }
