@@ -55,4 +55,11 @@ public class ProjectController {
         Long projectId = Utils.validateId(id);
         return projectService.getBacklog(projectId);
     }
+
+    @PostMapping("/{projectId}/users/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void addUserToProject(@PathVariable("projectId") Long projectId,
+                                 @PathVariable("userId") Long userId){
+        projectService.addUserToProject(userId, projectId);
+    }
 }
