@@ -61,4 +61,8 @@ public class IssueService {
         else
             throw new ForbiddenOperationException("Forbidden");
     }
+
+    public Issue updateIssueAssignee(Long issueId, Long userId) {
+        return null;
+    }
 }
