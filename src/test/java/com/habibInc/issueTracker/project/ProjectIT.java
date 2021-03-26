@@ -15,12 +15,11 @@ import org.springframework.http.*;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+//@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ProjectIT {
 
     @Autowired
@@ -50,7 +49,7 @@ public class ProjectIT {
 
     Project project, project2;
 
-    @BeforeAll
+    @BeforeEach
     public void authSetup() {
         // create a user to authenticate
         authenticatedUser = new User();
@@ -58,7 +57,7 @@ public class ProjectIT {
         authenticatedUser.setPassword("auth_password");
 
         // save the user to pass authorization
-        userService.createUser(authenticatedUser);
+        authenticatedUser = userService.createUser(authenticatedUser);
 
         // generate an auth token signed with the user email
         token = jwtUtil.generateToken(authenticatedUser.getEmail());
@@ -112,6 +111,33 @@ public class ProjectIT {
 
             // then expect the authenticated user to have been set as project owner
             assertThat(createdProject.getOwner()).isEqualTo(authenticatedUser);
+        }
+
+        @Test
+        public void itShouldAddUserToProject() {
+            // given a user to add to the project
+            User user = new User();
+            user.setEmail("userToAdd@project");
+            user.setPassword("user_project");
+
+            user = userService.createUser(user);
+
+            // given the project
+            project = projectService.createProject(project, authenticatedUser);
+
+            // given the url endpoint
+            String url = "/projects/" + project.getId() + "/users/" + user.getId();
+
+            HttpEntity httpEntity = new HttpEntity<>(headers);
+
+            // when a POST request is made to add the user to the project
+            ResponseEntity<Void> response =
+                    restTemplate.exchange(url, HttpMethod.POST, httpEntity, Void.class);
+
+            // then expect the user to have been added to the project successfully
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+
         }
     }
 
@@ -284,10 +310,6 @@ public class ProjectIT {
     public void teardown() {
         issueRepository.deleteAll();
         projectRepository.deleteAll();
-    }
-
-    @AfterAll
-    public void authTeardown() {
         userRepository.deleteAll();
     }
 }
