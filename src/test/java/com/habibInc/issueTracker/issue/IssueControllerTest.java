@@ -2,12 +2,13 @@ package com.habibInc.issueTracker.issue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
-import com.habibInc.issueTracker.user.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -27,15 +28,14 @@ public class IssueControllerTest {
     @Autowired
     MockMvc mockMvc;
 
-    @Autowired
-    ObjectMapper mapper;
-
     @MockBean
     IssueService issueService;
 
-    // mock user service
-    @MockBean
-    UserService userService;
+    @SpyBean
+    ModelMapper modelMapper;
+
+    @SpyBean
+    ObjectMapper objectMapper;
 
     Issue issue1, issue2;
 
@@ -72,7 +72,7 @@ public class IssueControllerTest {
         when(issueService.createIssue(eq(issue1), any(), anyLong())).thenReturn(issue1);
 
         // set up json request body
-        String requestBody = mapper.writeValueAsString(issue1);
+        String requestBody = objectMapper.writeValueAsString(issue1);
 
         // perform a post request and expect the new issue to have been created
         mockMvc.perform(post("/issues?project=10")
@@ -89,7 +89,7 @@ public class IssueControllerTest {
         when(issueService.getIssueById(2L)).thenReturn(issue2);
 
         // the response body is expected to contain the returned issue
-        String responseBody = mapper.writeValueAsString(issue2);
+        String responseBody = objectMapper.writeValueAsString(issue2);
 
         // expect the proper issue to have been returned when a get request is made
         mockMvc.perform(get("/issues/2"))
@@ -137,21 +137,21 @@ public class IssueControllerTest {
         mockMvc.perform(get("/issues"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().string(mapper.writeValueAsString(issues)));
+                .andExpect(content().string(objectMapper.writeValueAsString(issues)));
     }
 
     @Test
     public void itShouldUpdateIssue() throws Exception {
         // make a copy of the issue
-        String issueJson = mapper.writeValueAsString(issue1);
-        Issue updatedIssue = mapper.readValue(issueJson, Issue.class);
+        String issueJson = objectMapper.writeValueAsString(issue1);
+        Issue updatedIssue = objectMapper.readValue(issueJson, Issue.class);
 
         // update the issue
         updatedIssue.setType(IssueType.BUG);
         updatedIssue.setSummary("Updated summary");
 
         // set up the updated issue as the request body
-        String requestBody = mapper.writeValueAsString(updatedIssue);
+        String requestBody = objectMapper.writeValueAsString(updatedIssue);
 
         when(issueService.updateIssue(eq(1L), eq(updatedIssue), any())).thenReturn(updatedIssue);
 
@@ -172,7 +172,7 @@ public class IssueControllerTest {
         when(issueService.updateIssue(eq(10L), eq(issue1), any()))
                 .thenThrow(new ResourceNotFoundException(errorMessage));
 
-        String requestBody = mapper.writeValueAsString(issue1);
+        String requestBody = objectMapper.writeValueAsString(issue1);
 
         // then a 404 not found error should be returned
         mockMvc.perform(put("/issues/10")
@@ -185,7 +185,7 @@ public class IssueControllerTest {
     @Test
     public void givenUpdateIssueById_whenIssueIdIsInvalid_itShouldReturnInvalidIssueIdError() throws Exception {
         String errorMessage = "Invalid issue id";
-        String requestBody = mapper.writeValueAsString(issue1);
+        String requestBody = objectMapper.writeValueAsString(issue1);
 
         // when the issue id is invalid then an 400 bad request error should be returned
         mockMvc.perform(put("/issues/invalid")
@@ -227,10 +227,25 @@ public class IssueControllerTest {
 
     @Test
     public void itShouldUpdateIssueAssignee() throws Exception {
-        // given an issue id
-        Long issueId = 10L;
+        // given the issue and user ids
+        Long userId = 110L;
 
-        mockMvc.perform(patch("/issues/" + issueId))
-                .andExpect(status().isOk());
+        // given the request body
+        String requestBody = "{\"assignee\" : \"" + userId + "\"}";
+
+        // given the service response
+        when(issueService.updateIssueAssignee(issue1.getId(), userId)).thenReturn(issue1);
+
+        // given the expected response (updated issue dto)
+        String expectedResponse =
+                objectMapper.writeValueAsString(modelMapper.map(issue1, IssueDto.class));
+
+        // when a PATCH request is made to update the issue assignee
+        // then the response should be the updated issue
+        mockMvc.perform(patch("/issues/" + issue1.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isOk())
+                .andExpect(content().json(expectedResponse));
     }
 }
