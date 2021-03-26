@@ -146,4 +146,15 @@ public class ProjectControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(mapper.writeValueAsString(projects)));
     }
+
+    @Test
+    public void itShouldAddUserToProject() throws Exception {
+        // given a user id
+        Long userId = 100L;
+
+        // when a POST request id made to add the user to the project
+        // then the response should be a 200 OK
+        mockMvc.perform(post("/projects/" + project.getId() + "/users/" + userId))
+                .andExpect(status().isOk());
+    }
 }
