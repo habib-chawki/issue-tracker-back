@@ -224,4 +224,13 @@ public class IssueControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.errorMessage").value(errorMessage));
     }
+
+    @Test
+    public void itShouldUpdateIssueAssignee() throws Exception {
+        // given an issue id
+        Long issueId = 10L;
+
+        mockMvc.perform(patch("/issues/" + issueId))
+                .andExpect(status().isOk());
+    }
 }
