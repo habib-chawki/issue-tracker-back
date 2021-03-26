@@ -137,7 +137,12 @@ public class ProjectIT {
             // then expect the user to have been added to the project successfully
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
+            // when a GET request is made to fetch the list of projects by user id
+            ResponseEntity<Project[]> getResponse =
+                    restTemplate.exchange("/projects?user=" + user.getId(), HttpMethod.GET, httpEntity, Project[].class);
 
+            // then expect the project to have been added to the user's list of assigned projects
+            assertThat(getResponse.getBody()).contains(project);
         }
     }
 
