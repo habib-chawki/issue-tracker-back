@@ -44,7 +44,7 @@ public class UserController {
         User createdUser = userService.createUser(user);
 
         // set up user DTO response body
-        UserDto responseBody = new ModelMapper().map(createdUser, UserDto.class);
+        UserDto responseBody = modelMapper.map(createdUser, UserDto.class);
 
         // set up the response with the auth token
         ResponseEntity<UserDto> response = ResponseEntity.created(URI.create("/signup"))
