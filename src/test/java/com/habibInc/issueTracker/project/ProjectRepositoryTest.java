@@ -86,4 +86,30 @@ public class ProjectRepositoryTest {
         // then expect the projects of the given user to have been fetched successfully
         assertThat(projectsByUserId).containsExactlyElementsOf(projects);
     }
+
+    @Test
+    public void itShouldAddUserToProject() {
+        // given a user
+        User user = new User();
+        user.setEmail("user@email.com");
+        user.setPassword("user_pass");
+
+        user = userRepository.save(user);
+
+        // given a project
+        Project project = new Project();
+        project.setName("Project");
+
+        project = projectRepository.save(project);
+
+        // when add user to project is invoked
+        projectRepository.addUserToProject(user.getId(), project.getId());
+
+        // then expect the user to have been added to the project successfully
+        Project updatedProject = projectRepository.findById(project.getId()).get();
+        User updatedUser = userRepository.findById(user.getId()).get();
+
+        assertThat(updatedUser.getAssignedProjects()).contains(project);
+        assertThat(updatedProject.getAssignedUsers()).contains(user);
+    }
 }
