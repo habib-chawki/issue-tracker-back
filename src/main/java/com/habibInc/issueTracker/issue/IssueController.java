@@ -66,4 +66,10 @@ public class IssueController {
             throw new InvalidIdException("Invalid issue id");
         }
     }
+
+    @PatchMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void updateIssueAssignee(){
+
+    }
 }
