@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -76,5 +77,12 @@ public class UserController {
                 users.stream().map(user -> modelMapper.map(user, UserDto.class)).collect(Collectors.toSet());
 
         return usersByProject;
+    }
+
+    @GetMapping(value= {"/" , ""}, params = {"page", "size"})
+    @ResponseStatus(HttpStatus.OK)
+    public List<UserDto> getPaginatedListOfUsers(@RequestParam(value = "page") int page,
+                                                 @RequestParam(value = "size") int size) {
+        return null;
     }
 }
