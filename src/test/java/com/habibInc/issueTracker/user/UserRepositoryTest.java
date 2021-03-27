@@ -118,5 +118,12 @@ public class UserRepositoryTest {
 
         // then the response should be the list of paginated users
         assertThat(paginatedListOfUsers.size()).isEqualTo(size);
+
+        // when a request is made to find all the users in the next page
+        pageable = PageRequest.of(page + 1, size);
+        paginatedListOfUsers = userRepository.findAll(pageable);
+
+        // then expect only the users in that page to haven been retrieved
+        assertThat(paginatedListOfUsers.size()).isEqualTo(users.size() - size);
     }
 }
