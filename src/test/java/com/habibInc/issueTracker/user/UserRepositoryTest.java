@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.HashSet;
 import java.util.List;
@@ -93,5 +94,29 @@ public class UserRepositoryTest {
 
         // then expect the response to be the project's dev team
         assertThat(usersByProjectId).containsExactlyElementsOf(users);
+    }
+
+    @Test
+    public void itShouldGetPaginatedListOfUsers() {
+        // given a list of users
+        List<User> users = List.of(
+                User.builder().email("user01@email").password("user01pass").build(),
+                User.builder().email("user02@email").password("user02pass").build(),
+                User.builder().email("user03@email").password("user03pass").build(),
+                User.builder().email("user04@email").password("user04pass").build(),
+                User.builder().email("user05@email").password("user05pass").build()
+        );
+        users = (List<User>) userRepository.saveAll(users);
+
+        // given the pageable object
+        int page = 0;
+        int size = 3;
+        PageRequest pageable = PageRequest.of(page, size);
+
+        // when a request is made to find all users by page
+        List<User> paginatedListOfUsers = userRepository.findAll(pageable);
+
+        // then the response should be the list of paginated users
+        assertThat(paginatedListOfUsers.size()).isEqualTo(size);
     }
 }
