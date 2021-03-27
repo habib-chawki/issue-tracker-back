@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -28,7 +29,7 @@ public class UserControllerTest {
     MockMvc mockMvc;
 
     @Autowired
-    ObjectMapper mapper;
+    ObjectMapper objectMapper;
 
     @MockBean
     UserService userService;
@@ -57,7 +58,7 @@ public class UserControllerTest {
         when(userService.createUser(user)).thenReturn(user);
         when(jwtUtil.generateToken(user.getEmail())).thenReturn("auth_token");
 
-        String requestBody = mapper.writeValueAsString(user);
+        String requestBody = objectMapper.writeValueAsString(user);
 
         // given the expected response body
         UserDto responseBody = new ModelMapper().map(user, UserDto.class);
@@ -68,7 +69,7 @@ public class UserControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(mapper.writeValueAsString(responseBody)));
+                .andExpect(content().json(objectMapper.writeValueAsString(responseBody)));
     }
 
     @Test
@@ -79,7 +80,7 @@ public class UserControllerTest {
         when(userService.createUser(user)).thenReturn(user);
         when(jwtUtil.generateToken(user.getEmail())).thenReturn(token);
 
-        String requestBody = mapper.writeValueAsString(user);
+        String requestBody = objectMapper.writeValueAsString(user);
 
         // when a user is signed up then expect the response to contain an auth token header
         mockMvc.perform(post("/users/signup")
@@ -96,7 +97,7 @@ public class UserControllerTest {
         user.setEmail("invalid_email");
 
         // when a signup request with an invalid email is made
-        String requestBody = mapper.writeValueAsString(user);
+        String requestBody = objectMapper.writeValueAsString(user);
 
         // then a 400 invalid email error should be returned
         mockMvc.perform(post("/users/signup")
@@ -113,7 +114,7 @@ public class UserControllerTest {
         user.setPassword("1a");
 
         // when a signup request with an invalid password is made
-        String requestBody = mapper.writeValueAsString(user);
+        String requestBody = objectMapper.writeValueAsString(user);
 
         // then a 400 invalid password error should be returned
         mockMvc.perform(post("/users/signup")
@@ -131,7 +132,7 @@ public class UserControllerTest {
         when(userService.getUserById(1L)).thenReturn(user);
 
         // set up the perceived response body
-        String responseBody = mapper.writeValueAsString(user);
+        String responseBody = objectMapper.writeValueAsString(user);
 
         // expect the userEntity to have been returned successfully
         mockMvc.perform(get("/users/1")
@@ -187,7 +188,7 @@ public class UserControllerTest {
         );
 
         // given the expected response
-        String expectedResponse = mapper.writeValueAsString(
+        String expectedResponse = objectMapper.writeValueAsString(
                 users.stream().map(
                         user -> modelMapper.map(user, UserDto.class)).collect(Collectors.toList()
                 )
@@ -206,8 +207,24 @@ public class UserControllerTest {
     @Test
     @WithMockUser
     public void itShouldGetPaginatedListOfUsers() throws Exception {
+        // given a list of users
+        List<User> users = List.of(
+                User.builder().id(10L).userName("user01").build(),
+                User.builder().id(20L).userName("user02").build(),
+                User.builder().id(30L).userName("user03").build()
+        );
+
+        // given the service response
+        when(userService.getPaginatedListOfUsers()).thenReturn(users);
+
+        // given the expected response
+        String expectedResponse = objectMapper.writeValueAsString(
+                users.stream().map((user) -> modelMapper.map(user, UserDto.class)).collect(Collectors.toList())
+        );
+
         mockMvc.perform(get("/users?page=1&size=3")
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content().json(expectedResponse));
     }
 }
