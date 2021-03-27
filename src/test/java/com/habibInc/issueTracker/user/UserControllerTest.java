@@ -202,4 +202,12 @@ public class UserControllerTest {
                 .andExpect(content().json(expectedResponse))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    @WithMockUser
+    public void itShouldGetPaginatedListOfUsers() throws Exception {
+        mockMvc.perform(get("/users?page=1&size=3")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
 }
