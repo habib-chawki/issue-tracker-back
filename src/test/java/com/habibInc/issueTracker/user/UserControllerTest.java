@@ -215,7 +215,7 @@ public class UserControllerTest {
         );
 
         // given the service response
-        when(userService.getPaginatedListOfUsers()).thenReturn(users);
+        when(userService.getPaginatedListOfUsers(1, users.size())).thenReturn(users);
 
         // given the expected response
         String expectedResponse = objectMapper.writeValueAsString(
