@@ -5,8 +5,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -142,5 +144,29 @@ public class UserServiceTest {
         assertThat(usersByProject).isEqualTo(users);
 
         verify(userRepository, times(1)).findAllByAssignedProjectsId(projectId);
+    }
+
+    @Test
+    public void itShouldGetPaginatedListOfUsers() {
+        // given the page and size
+        int page = 1;
+        int size = 3;
+
+        // given a list of users
+        List<User> users = List.of(
+                User.builder().id(10L).userName("user01").build(),
+                User.builder().id(20L).userName("user02").build(),
+                User.builder().id(30L).userName("user03").build()
+        );
+
+        // given the repository response
+        when(userRepository.findAll(PageRequest.of(page, size))).thenReturn(users);
+
+        // when the service is invoked to get the paginated list of users
+        List<User> paginatedListOfUsers = userService.getPaginatedListOfUsers(page, size);
+
+        // then expect the paginated list to have been properly retrieved
+        assertThat(paginatedListOfUsers).isEqualTo(users);
+        verify(userRepository, times(1)).findAll(PageRequest.of(page, size));
     }
 }
