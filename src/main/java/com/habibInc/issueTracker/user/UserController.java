@@ -84,7 +84,7 @@ public class UserController {
     public List<UserDto> getPaginatedListOfUsers(@RequestParam(value = "page") int page,
                                                  @RequestParam(value = "size") int size) {
         // get the paginated list of users, invoke the service
-        List<User> users = userService.getPaginatedListOfUsers();
+        List<User> users = userService.getPaginatedListOfUsers(page, size);
 
         // map to DTOs
         List<UserDto> usersDto = users.stream().map((user) -> modelMapper.map(user, UserDto.class)).collect(Collectors.toList());
