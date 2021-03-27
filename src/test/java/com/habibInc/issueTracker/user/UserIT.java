@@ -17,8 +17,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.HashSet;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.springframework.boot.test.context.SpringBootTest.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class UserIT {
@@ -61,7 +61,7 @@ public class UserIT {
         // authenticate the user
         headers = new HttpHeaders();
         token = jwtUtil.generateToken(authenticatedUser.getEmail());
-        headers.add("Authorization", "Bearer " + token);
+        headers.add(JwtUtil.HEADER, JwtUtil.TOKEN_PREFIX + token);
     }
 
     @Test
@@ -191,6 +191,40 @@ public class UserIT {
         // then expect the response to be the list of the project's dev team members
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().length).isEqualTo(users.size());
+    }
+
+    @Test
+    public void itShouldGetPaginatedListOfUsers() {
+        // given the authenticated user
+        authenticatedUser = userService.createUser(authenticatedUser);
+
+        // given a list of users
+        List<User> users = List.of(
+                User.builder().email("user01@email").password("user01pass").build(),
+                User.builder().email("user02@email").password("user02pass").build(),
+                User.builder().email("user03@email").password("user03pass").build(),
+                User.builder().email("user04@email").password("user04pass").build(),
+                User.builder().email("user05@email").password("user05pass").build()
+        );
+        userRepository.saveAll(users);
+
+        // given the request body
+        HttpEntity httpEntity = new HttpEntity(headers);
+
+        // given the page and size
+        int page = 0;
+        int size = 3;
+
+        // given the endpoint url
+        String url = "/users?page=" + page + "&size=" + size;
+
+        // when a GET request is made to fetch a paginated list of users
+        ResponseEntity<UserDto[]> response =
+                restTemplate.exchange(url, HttpMethod.GET, httpEntity, UserDto[].class);
+
+        // expect the response to be a paginated list of users
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().length).isEqualTo(size);
     }
 
     @AfterEach
