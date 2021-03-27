@@ -1,17 +1,15 @@
 package com.habibInc.issueTracker.user;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 
 public class UserDto {
     private Long id;
-    private String username;
+    private String userName;
     private String fullName;
 }
