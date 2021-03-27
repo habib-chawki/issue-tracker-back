@@ -149,7 +149,7 @@ public class UserServiceTest {
     @Test
     public void itShouldGetPaginatedListOfUsers() {
         // given the page and size
-        int page = 1;
+        int page = 0;
         int size = 3;
 
         // given a list of users
