@@ -2,6 +2,7 @@ package com.habibInc.issueTracker.user;
 
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -43,7 +44,8 @@ public class UserService {
         return userRepository.findAllByAssignedProjectsId(projectId);
     }
 
-    public List<User> getPaginatedListOfUsers() {
-        return null;
+    public List<User> getPaginatedListOfUsers(int page, int size) {
+        PageRequest pageable = PageRequest.of(page, size);
+        return userRepository.findAll(pageable);
     }
 }
