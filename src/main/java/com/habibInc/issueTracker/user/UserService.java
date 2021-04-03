@@ -48,4 +48,8 @@ public class UserService {
         PageRequest pageable = PageRequest.of(page, size);
         return userRepository.findAll(pageable);
     }
+
+    public List<User> getPaginatedListOfUsersNotAssignedToProject(Long excludedProjectId, int page, int size) {
+        return null;
+    }
 }
