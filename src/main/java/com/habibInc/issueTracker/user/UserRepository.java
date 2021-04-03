@@ -14,5 +14,8 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     Set<User> findAllByAssignedProjectsId(Long projectId);
 
+    List<User> findAllByAssignedProjectsIdNot(Long projectId, Pageable pageable);
+
     List<User> findAll(Pageable pageable);
+
 }
