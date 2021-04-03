@@ -15,6 +15,7 @@ public class UserDto {
     private String userName;
     private String fullName;
 
+    // equals and hashCode
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
