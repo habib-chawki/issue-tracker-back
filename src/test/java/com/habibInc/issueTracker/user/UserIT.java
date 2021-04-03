@@ -8,6 +8,7 @@ import com.habibInc.issueTracker.security.JwtUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -16,6 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -267,12 +269,17 @@ public class UserIT {
         // given the url
         String url = "/users/?excludedProject=" + otherProject.getId() + "&page=" + page + "&size=" + size;
 
+        // given the expected response
+        List<UserDto> usersDto = users.stream().map(user -> new ModelMapper().map(user, UserDto.class)).collect(Collectors.toList());
+
         // when a GET request is made
         ResponseEntity<UserDto[]> response =
                 restTemplate.exchange(url, HttpMethod.GET, httpEntity, UserDto[].class);
 
         // then expect the response to be the paginated list of users not assigned to the project
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().length).isEqualTo(size);
+        assertThat(response.getBody()).containsAnyElementsOf(usersDto);
     }
 
     @AfterEach
