@@ -50,6 +50,6 @@ public class UserService {
     }
 
     public List<User> getPaginatedListOfUsersNotAssignedToProject(Long excludedProjectId, int page, int size) {
-        return null;
+        return userRepository.findAllByAssignedProjectsIdNot(excludedProjectId, PageRequest.of(page, size));
     }
 }
