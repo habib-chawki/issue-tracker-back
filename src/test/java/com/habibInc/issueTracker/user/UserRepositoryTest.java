@@ -154,11 +154,17 @@ public class UserRepositoryTest {
         assignedProject = projectRepository.save(assignedProject);
         otherProject = projectRepository.save(otherProject);
 
+        // given the page size
+        int pageSize = 2;
+
         // when a request is made to find users not assigned to a project
         List<User> usersNotAssignedToProject =
-                userRepository.findAllByAssignedProjectsIdNot(otherProject.getId(), PageRequest.of(0, 2));
+                userRepository.findAllByAssignedProjectsIdNot(otherProject.getId(), PageRequest.of(0, pageSize));
 
         // then expect only the users that are not assigned to the project to have been retrieved
         assertThat(usersNotAssignedToProject).doesNotContainAnyElementsOf(otherUsers);
+
+        assertThat(usersNotAssignedToProject).containsAnyElementsOf(assignedUsers);
+        assertThat(usersNotAssignedToProject.size()).isEqualTo(pageSize);
     }
 }
