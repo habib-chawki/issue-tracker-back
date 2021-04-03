@@ -72,8 +72,14 @@ public class UserController {
     public List<UserDto> getPaginatedListOfUsersNotAssignedToProject(@RequestParam(value = "excludedProject") Long excludedProjectId,
                                                                      @RequestParam(value = "page", defaultValue = "0") int page,
                                                                      @RequestParam(value = "size", defaultValue = "10") int size){
-        return null;
+        // fetch the list of paginated users not assigned to project
+        List<User> users = userService.getPaginatedListOfUsersNotAssignedToProject(excludedProjectId, page, size);
 
+        // convert to UserDto
+        List<UserDto> usersNotAssignedToProject =
+                users.stream().map(user -> modelMapper.map(user, UserDto.class)).collect(Collectors.toList());
+
+        return usersNotAssignedToProject;
     }
 
     @GetMapping(value = {"/", ""}, params = "project")
