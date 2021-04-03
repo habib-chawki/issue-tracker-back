@@ -66,6 +66,16 @@ public class UserController {
         }
     }
 
+
+    @GetMapping(value = {"", "/"}, params = {"excludedProject", "page", "size"})
+    @ResponseStatus(HttpStatus.OK)
+    public List<UserDto> getPaginatedListOfUsersNotAssignedToProject(@RequestParam(value = "excludedProject") Long excludedProjectId,
+                                                                     @RequestParam(value = "page", defaultValue = "0") int page,
+                                                                     @RequestParam(value = "size", defaultValue = "10") int size){
+        return null;
+
+    }
+
     @GetMapping(value = {"/", ""}, params = "project")
     @ResponseStatus(HttpStatus.OK)
     public Set<UserDto> getUsersByAssignedProject(@RequestParam(value = "project") Long projectId) {
