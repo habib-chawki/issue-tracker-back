@@ -13,8 +13,10 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.util.MultiValueMap;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -226,5 +228,15 @@ public class UserControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(expectedResponse));
+    }
+
+    @Test
+    @WithMockUser
+    public void itShouldGetPaginatedListOfUsersNotAssignedToProject() throws Exception {
+        mockMvc.perform(get("/users")
+                .param("excludedProject", "2")
+                .param("page", "0")
+                .param("size", "10"))
+                .andExpect(status().isOk());
     }
 }
