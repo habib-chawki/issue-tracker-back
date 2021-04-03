@@ -233,10 +233,30 @@ public class UserControllerTest {
     @Test
     @WithMockUser
     public void itShouldGetPaginatedListOfUsersNotAssignedToProject() throws Exception {
+        // given a project id
+        Long excludedProjectId = 666L;
+
+        // given a list of users
+        List<User> users = List.of(
+                User.builder().id(10L).userName("user01").build(),
+                User.builder().id(20L).userName("user02").build(),
+                User.builder().id(30L).userName("user03").build()
+        );
+
+        // given the service response
+        when(userService.getPaginatedListOfUsersNotAssignedToProject(excludedProjectId, 0, users.size())).thenReturn(users);
+
+        // given the expected response
+        String expectedResponse = objectMapper.writeValueAsString(
+                users.stream().map((user) -> modelMapper.map(user, UserDto.class)).collect(Collectors.toList())
+        );
+
+        // when a GET request is made then expect the paginated list of users to be retrieved
         mockMvc.perform(get("/users")
-                .param("excludedProject", "2")
+                .param("excludedProject", String.valueOf(excludedProjectId))
                 .param("page", "0")
-                .param("size", "10"))
-                .andExpect(status().isOk());
+                .param("size", String.valueOf(users.size())))
+                .andExpect(status().isOk())
+                .andExpect(content().json(expectedResponse));
     }
 }
