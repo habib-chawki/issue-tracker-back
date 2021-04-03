@@ -169,4 +169,32 @@ public class UserServiceTest {
         assertThat(paginatedListOfUsers).isEqualTo(users);
         verify(userRepository, times(1)).findAll(PageRequest.of(page, size));
     }
+
+    @Test
+    public void itShouldGetPaginatedListOfUsersNotAssignedToProject() {
+        // given the excluded project id
+        Long excludedProjectId = 777L;
+
+        // given the page and size
+        int page = 0;
+        int size = 3;
+
+        // given a list of users
+        List<User> users = List.of(
+                User.builder().id(10L).userName("user01").build(),
+                User.builder().id(20L).userName("user02").build(),
+                User.builder().id(30L).userName("user03").build()
+        );
+
+        // given the repository response
+        when(userRepository.findAllByAssignedProjectsIdNot(excludedProjectId, PageRequest.of(page, size))).thenReturn(users);
+
+        // when the service is invoked to retrieve the paginated list of users
+        List<User> paginatedListOfUsersNotAssignedToProject =
+                userService.getPaginatedListOfUsersNotAssignedToProject(excludedProjectId, page, size);
+
+        // then expect the list of users not assigned to the given project to have been retrieved
+        assertThat(paginatedListOfUsersNotAssignedToProject).isEqualTo(users);
+        verify(userRepository, times(1)).findAllByAssignedProjectsIdNot(excludedProjectId, PageRequest.of(page, size));
+    }
 }
