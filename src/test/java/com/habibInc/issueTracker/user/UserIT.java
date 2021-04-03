@@ -265,7 +265,7 @@ public class UserIT {
         HttpEntity httpEntity = new HttpEntity(headers);
 
         // given the url
-        String url = "/users?excludedProject="+ otherProject +"&page=" + page + "&size=" + size;
+        String url = "/users/?excludedProject=" + otherProject.getId() + "&page=" + page + "&size=" + size;
 
         // when a GET request is made
         ResponseEntity<UserDto[]> response =
