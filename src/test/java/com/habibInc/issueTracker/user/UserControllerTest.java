@@ -13,10 +13,8 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.util.MultiValueMap;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -244,7 +242,7 @@ public class UserControllerTest {
         );
 
         // given the service response
-        when(userService.getPaginatedListOfUsersNotAssignedToProject(excludedProjectId, 0, users.size())).thenReturn(users);
+        when(userService.getUsersNotAssignedToProject(excludedProjectId, 0, users.size())).thenReturn(users);
 
         // given the expected response
         String expectedResponse = objectMapper.writeValueAsString(

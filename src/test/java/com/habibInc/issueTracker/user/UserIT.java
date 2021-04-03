@@ -227,6 +227,54 @@ public class UserIT {
         assertThat(response.getBody().length).isEqualTo(size);
     }
 
+    @Test
+    public void itShouldGetPaginatedListOfUsersNotAssignedToProject() {
+        // given the authenticated user
+        authenticatedUser = userService.createUser(authenticatedUser);
+
+        // given the list of assigned users
+        List<User> users = List.of(
+                User.builder().email("user01@email").password("user01pass").build(),
+                User.builder().email("user02@email").password("user02pass").build(),
+                User.builder().email("user03@email").password("user03pass").build()
+        );
+
+        // given the list of non-assigned users
+        List<User> otherUsers = List.of(
+                User.builder().email("user04@email").password("user04pass").build(),
+                User.builder().email("user05@email").password("user05pass").build()
+        );
+
+        users = (List<User>) userRepository.saveAll(users);
+        otherUsers = (List<User>) userRepository.saveAll(otherUsers);
+
+        // given the assigned project
+        Project project = Project.builder().name("Assigned project").assignedUsers(new HashSet(users)).build();
+
+        // given another project
+        Project otherProject = Project.builder().name("Not assigned project").assignedUsers(new HashSet(otherUsers)).build();
+
+        project = projectService.createProject(project, authenticatedUser);
+        otherProject = projectService.createProject(otherProject, authenticatedUser);
+
+        // given the pagination params
+        int page = 0;
+        int size = 2;
+
+        // given the request body
+        HttpEntity httpEntity = new HttpEntity(headers);
+
+        // given the url
+        String url = "/users?excludedProject="+ otherProject +"&page=" + page + "&size=" + size;
+
+        // when a GET request is made
+        ResponseEntity<UserDto[]> response =
+                restTemplate.exchange(url, HttpMethod.GET, httpEntity, UserDto[].class);
+
+        // then expect the response to be the paginated list of users not assigned to the project
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
     @AfterEach
     public void teardown() {
         projectRepository.deleteAll();

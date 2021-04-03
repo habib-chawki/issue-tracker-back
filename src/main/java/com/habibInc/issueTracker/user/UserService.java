@@ -49,7 +49,7 @@ public class UserService {
         return userRepository.findAll(pageable);
     }
 
-    public List<User> getPaginatedListOfUsersNotAssignedToProject(Long excludedProjectId, int page, int size) {
+    public List<User> getUsersNotAssignedToProject(Long excludedProjectId, int page, int size) {
         return userRepository.findAllByAssignedProjectsIdNot(excludedProjectId, PageRequest.of(page, size));
     }
 }

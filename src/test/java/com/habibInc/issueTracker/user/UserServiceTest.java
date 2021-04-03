@@ -191,7 +191,7 @@ public class UserServiceTest {
 
         // when the service is invoked to retrieve the paginated list of users
         List<User> paginatedListOfUsersNotAssignedToProject =
-                userService.getPaginatedListOfUsersNotAssignedToProject(excludedProjectId, page, size);
+                userService.getUsersNotAssignedToProject(excludedProjectId, page, size);
 
         // then expect the list of users not assigned to the given project to have been retrieved
         assertThat(paginatedListOfUsersNotAssignedToProject).isEqualTo(users);

@@ -73,7 +73,7 @@ public class UserController {
                                                                      @RequestParam(value = "page", defaultValue = "0") int page,
                                                                      @RequestParam(value = "size", defaultValue = "10") int size){
         // fetch the list of paginated users not assigned to project
-        List<User> users = userService.getPaginatedListOfUsersNotAssignedToProject(excludedProjectId, page, size);
+        List<User> users = userService.getUsersNotAssignedToProject(excludedProjectId, page, size);
 
         // convert to UserDto
         List<UserDto> usersNotAssignedToProject =
