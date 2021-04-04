@@ -222,7 +222,7 @@ public class UserControllerTest {
                 users.stream().map((user) -> modelMapper.map(user, UserDto.class)).collect(Collectors.toList())
         );
 
-        mockMvc.perform(get("/users?page=1&size=3")
+        mockMvc.perform(get("/users?page=0&size=3")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(expectedResponse));
