@@ -159,12 +159,33 @@ public class UserRepositoryTest {
 
         // when a request is made to find users not assigned to a project
         List<User> usersNotAssignedToProject =
-                userRepository.findAllByAssignedProjectsIdNot(otherProject.getId(), PageRequest.of(0, pageSize));
+                userRepository.findAllByAssignedProjectsIsEmptyOrAssignedProjectsIdNot(otherProject.getId(), PageRequest.of(0, pageSize));
 
         // then expect only the users that are not assigned to the project to have been retrieved
         assertThat(usersNotAssignedToProject).doesNotContainAnyElementsOf(otherUsers);
 
         assertThat(usersNotAssignedToProject).containsAnyElementsOf(assignedUsers);
         assertThat(usersNotAssignedToProject.size()).isEqualTo(pageSize);
+    }
+
+    @Test
+    public void givenGetListOfPaginatedUsersNotAssignedToProject_itShouldGetUsersNotAssignedToAnyProject() {
+        // given a list of users
+        List<User> users = (List<User>) userRepository.saveAll(
+                List.of(
+                        User.builder().email("user01@email").password("user01pass").build(),
+                        User.builder().email("user02@email").password("user02pass").build(),
+                        User.builder().email("user03@email").password("user03pass").build()
+                )
+        );
+
+        // given a project
+        Project project = projectRepository.save(Project.builder().name("Project 01").build());
+
+        // when a request is made to find users not assigned to the project
+        List<User> response = userRepository.findAllByAssignedProjectsIsEmptyOrAssignedProjectsIdNot(project.getId(), PageRequest.of(0, users.size()));
+
+        // then expect the response to be all the users
+        assertThat(response).isEqualTo(users);
     }
 }
