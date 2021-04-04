@@ -25,7 +25,7 @@ import java.util.Objects;
 @Builder
 
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-@JsonIgnoreProperties(value = {"column", "reporter", "assignee", "sprint", "project"})
+@JsonIgnoreProperties(value = {"column", "reporter", "sprint", "project"})
 public class Issue {
 
     @Id
@@ -52,7 +52,7 @@ public class Issue {
 
     private int votes;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne
     private User assignee;
 
     @OneToOne
