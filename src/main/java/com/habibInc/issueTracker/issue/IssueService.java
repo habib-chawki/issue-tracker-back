@@ -55,7 +55,11 @@ public class IssueService {
 
         // save the issue only if authenticated user is the reporter
         if (issueToUpdate.getReporter().equals(authenticatedUser))
+        {
+            // set the update time
+            issue.setUpdateTime(LocalDateTime.now());
             return issueRepository.save(issue);
+        }
 
         // in case the authenticated user is not the reporter, throw a forbidden error
         throw new ForbiddenOperationException("Forbidden");
