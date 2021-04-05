@@ -14,6 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 
 import java.util.HashSet;
 import java.util.List;
@@ -281,6 +283,48 @@ public class UserIT {
         assertThat(response.getBody().length).isEqualTo(size);
         assertThat(response.getBody()).containsAnyElementsOf(usersDto);
     }
+
+    @Test
+    public void itShouldGetUsersAssignedToAllButExcludedProject() {
+        // given the authenticated user
+        authenticatedUser = userService.createUser(authenticatedUser);
+
+        // given a user
+        User user = userService.createUser(User.builder().email("user@email.com").password("user_pass").build());
+
+        // given projects
+        Project excludedProject = Project.builder().name("Excluded project").build();
+        Project includedProject1 = Project.builder().name("Included project 01").build();
+        Project includedProject2 = Project.builder().name("Included project 02").build();
+        Project includedProject3 = Project.builder().name("Included project 03").build();
+
+        // given the excluded project is created by the authenticated user
+        excludedProject = projectService.createProject(excludedProject, authenticatedUser);
+
+        // given the other projects are saved
+        projectRepository.saveAll(List.of(includedProject1, includedProject2, includedProject3));
+
+        // given the user is added to all included projects
+        projectService.addUserToProject(user.getId(), includedProject1.getId());
+        projectService.addUserToProject(user.getId(), includedProject2.getId());
+        projectService.addUserToProject(user.getId(), includedProject3.getId());
+
+        // given the request body
+        HttpEntity httpEntity = new HttpEntity(headers);
+
+        // given the url
+        String url = "/users/?excludedProject=" + excludedProject.getId() + "&page=" + 0 + "&size=" + 10;
+
+        // when a GET request is made
+        ResponseEntity<UserDto[]> response =
+                restTemplate.exchange(url, HttpMethod.GET, httpEntity, UserDto[].class);
+
+        // given the expected response
+        final UserDto expectedResponse = new ModelMapper().map(user, UserDto.class);
+
+        assertThat(response.getBody()).containsExactly(expectedResponse);
+    }
+
 
     @AfterEach
     public void teardown() {
