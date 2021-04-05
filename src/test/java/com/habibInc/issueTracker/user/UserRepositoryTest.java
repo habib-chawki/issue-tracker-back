@@ -161,10 +161,6 @@ public class UserRepositoryTest {
                 Project.builder().name("Other project 1").assignedUsers(new HashSet(notAssignedUsers)).build()
         );
 
-        Project otherProject2 = projectRepository.save(
-                Project.builder().name("Other project 2").assignedUsers(new HashSet(notAssignedUsers2)).build()
-        );
-
         // given the page size
         int pageSize = notAssignedUsers.size() + 1;
 
