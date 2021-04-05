@@ -47,11 +47,14 @@ public class ProjectServiceTest {
 
     @Test
     public void itShouldCreateProject() {
+        // given the authenticated user
+        User authenticatedUser = User.builder().email("authenticated@user").password("auth_pass").build();
+
         // given the project repository returns the saved project
         when(projectRepository.save(project)).thenReturn(project);
 
         // when the project service is invoked to create the project
-        Project createdProject = projectService.createProject(project, null);
+        Project createdProject = projectService.createProject(project, authenticatedUser);
 
         // then expect the project repository to have been invoked
         verify(projectRepository, times(1)).save(project);
