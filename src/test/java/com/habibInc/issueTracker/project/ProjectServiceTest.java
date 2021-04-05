@@ -48,7 +48,7 @@ public class ProjectServiceTest {
     @Test
     public void itShouldCreateProject() {
         // given the authenticated user
-        User authenticatedUser = User.builder().email("authenticated@user").password("auth_pass").build();
+        User authenticatedUser = User.builder().id(777L).email("authenticated@user").password("auth_pass").build();
 
         // given the project repository returns the saved project
         when(projectRepository.save(project)).thenReturn(project);
@@ -74,6 +74,21 @@ public class ProjectServiceTest {
 
         // then the authenticated user should be set as project owner
         assertThat(createdProject.getOwner()).isEqualTo(authenticatedUser);
+    }
+
+    @Test
+    public void givenCreateProject_itShouldAddAuthenticatedUserToAssignedUsers() {
+        // given the authenticated user
+        User authenticatedUser = User.builder().id(555L).email("authenticated@user").password("auth_pass").build();
+
+        // given the repository response
+        when(projectRepository.save(project)).thenReturn(project);
+
+        // when the project is created
+        Project createdProject = projectService.createProject(project, authenticatedUser);
+
+        // then the authenticated user should be added to the set of assigned users
+        assertThat(createdProject.getAssignedUsers()).containsExactly(authenticatedUser);
     }
 
     @Test
