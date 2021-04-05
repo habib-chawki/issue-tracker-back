@@ -67,18 +67,16 @@ public class ProjectRepositoryTest {
         user.setEmail("user@email.com");
         user.setPassword("user_pass");
 
+        user = userRepository.save(user);
+
         // given a set of projects
         List<Project> projects = (List<Project>) projectRepository.saveAll(
                 List.of(
-                        Project.builder().name("Project 01").build(),
-                        Project.builder().name("Project 02").build(),
-                        Project.builder().name("Project 03").build()
+                        Project.builder().name("Project 01").assignedUsers(Set.of(user)).build(),
+                        Project.builder().name("Project 02").assignedUsers(Set.of(user)).build(),
+                        Project.builder().name("Project 03").assignedUsers(Set.of(user)).build()
                 )
         );
-
-        // given the user is saved
-        user.setAssignedProjects(new HashSet<>(projects));
-        user = userRepository.save(user);
 
         // when a request is made to find all projects by assigned user
         Set<Project> projectsByUserId = projectRepository.findAllByAssignedUsersId(user.getId());
