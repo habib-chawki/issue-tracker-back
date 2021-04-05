@@ -187,7 +187,7 @@ public class UserServiceTest {
         );
 
         // given the repository response
-        when(userRepository.findAllByAssignedProjectsIsEmptyOrAssignedProjectsIdNot(excludedProjectId, PageRequest.of(page, size))).thenReturn(users);
+        when(userRepository.findDistinctByAssignedProjectsIsEmptyOrAssignedProjectsIdNot(excludedProjectId, PageRequest.of(page, size))).thenReturn(users);
 
         // when the service is invoked to retrieve the paginated list of users
         List<User> paginatedListOfUsersNotAssignedToProject =
@@ -195,6 +195,6 @@ public class UserServiceTest {
 
         // then expect the list of users not assigned to the given project to have been retrieved
         assertThat(paginatedListOfUsersNotAssignedToProject).isEqualTo(users);
-        verify(userRepository, times(1)).findAllByAssignedProjectsIsEmptyOrAssignedProjectsIdNot(excludedProjectId, PageRequest.of(page, size));
+        verify(userRepository, times(1)).findDistinctByAssignedProjectsIsEmptyOrAssignedProjectsIdNot(excludedProjectId, PageRequest.of(page, size));
     }
 }

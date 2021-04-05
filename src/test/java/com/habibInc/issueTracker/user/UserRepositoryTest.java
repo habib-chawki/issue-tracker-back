@@ -166,7 +166,7 @@ public class UserRepositoryTest {
 
         // when a request is made to find the users that are not assigned to the project
         List<User> usersNotAssignedToProject =
-                userRepository.findAllByAssignedProjectsIsEmptyOrAssignedProjectsIdNot(assignedProject.getId(), PageRequest.of(0, pageSize));
+                userRepository.findDistinctByAssignedProjectsIsEmptyOrAssignedProjectsIdNot(assignedProject.getId(), PageRequest.of(0, pageSize));
 
         // then expect only the users that are not assigned to the project to have been retrieved
         assertThat(usersNotAssignedToProject).doesNotContainAnyElementsOf(assignedUsers);
@@ -192,7 +192,7 @@ public class UserRepositoryTest {
         Project project = projectRepository.save(Project.builder().name("Project 01").build());
 
         // when a request is made to find users not assigned to the project
-        List<User> response = userRepository.findAllByAssignedProjectsIsEmptyOrAssignedProjectsIdNot(project.getId(), PageRequest.of(0, users.size()));
+        List<User> response = userRepository.findDistinctByAssignedProjectsIsEmptyOrAssignedProjectsIdNot(project.getId(), PageRequest.of(0, users.size()));
 
         // then expect the response to be all the users
         assertThat(response).isEqualTo(users);
