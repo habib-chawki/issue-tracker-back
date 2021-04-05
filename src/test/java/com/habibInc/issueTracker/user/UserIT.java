@@ -186,7 +186,7 @@ public class UserIT {
 
         // given the project is saved
         project.setAssignedUsers(new HashSet<>(users));
-        project = projectService.createProject(project, authenticatedUser);
+        project = projectRepository.save(project);
 
         // when a GET request is made to fetch the users by project
         ResponseEntity<UserDto[]> response =
