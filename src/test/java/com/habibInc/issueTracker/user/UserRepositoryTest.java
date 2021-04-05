@@ -129,42 +129,55 @@ public class UserRepositoryTest {
 
     @Test
     public void itShouldGetListOfPaginatedUsersNotAssignedToProject() {
-        // given the set of assigned users
+        // given the list of users assigned to the project
         List<User> assignedUsers = List.of(
                 User.builder().email("user01@email").password("user01pass").build(),
                 User.builder().email("user02@email").password("user02pass").build(),
                 User.builder().email("user03@email").password("user03pass").build()
         );
 
-        // given the set of non-assigned users
-        List<User> otherUsers = List.of(
+        // given the lists of non-assigned users
+        List<User> notAssignedUsers = List.of(
                 User.builder().email("user04@email").password("user04pass").build(),
                 User.builder().email("user05@email").password("user05pass").build()
         );
 
+        List<User> notAssignedUsers2 = List.of(
+                User.builder().email("user06@email").password("user06pass").build(),
+                User.builder().email("user07@email").password("user07pass").build()
+        );
+
         assignedUsers = (List<User>) userRepository.saveAll(assignedUsers);
-        otherUsers = (List<User>) userRepository.saveAll(otherUsers);
+        notAssignedUsers = (List<User>) userRepository.saveAll(notAssignedUsers);
+        notAssignedUsers2 = (List<User>) userRepository.saveAll(notAssignedUsers2);
 
-        // given the assigned project
-        Project assignedProject = Project.builder().name("Assigned project").assignedUsers(new HashSet(assignedUsers)).build();
+        // given the project that users are assigned to
+        Project assignedProject = projectRepository.save(
+                Project.builder().name("Assigned project").assignedUsers(new HashSet(assignedUsers)).build()
+        );
 
-        // given another project
-        Project otherProject = Project.builder().name("Not assigned project").assignedUsers(new HashSet(otherUsers)).build();
+        // given other projects
+        Project otherProject = projectRepository.save(
+                Project.builder().name("Other project 1").assignedUsers(new HashSet(notAssignedUsers)).build()
+        );
 
-        assignedProject = projectRepository.save(assignedProject);
-        otherProject = projectRepository.save(otherProject);
+        Project otherProject2 = projectRepository.save(
+                Project.builder().name("Other project 2").assignedUsers(new HashSet(notAssignedUsers2)).build()
+        );
 
         // given the page size
-        int pageSize = 2;
+        int pageSize = notAssignedUsers.size() + 1;
 
-        // when a request is made to find users not assigned to a project
+        // when a request is made to find the users that are not assigned to the project
         List<User> usersNotAssignedToProject =
-                userRepository.findAllByAssignedProjectsIsEmptyOrAssignedProjectsIdNot(otherProject.getId(), PageRequest.of(0, pageSize));
+                userRepository.findAllByAssignedProjectsIsEmptyOrAssignedProjectsIdNot(assignedProject.getId(), PageRequest.of(0, pageSize));
 
         // then expect only the users that are not assigned to the project to have been retrieved
-        assertThat(usersNotAssignedToProject).doesNotContainAnyElementsOf(otherUsers);
+        assertThat(usersNotAssignedToProject).doesNotContainAnyElementsOf(assignedUsers);
+        assertThat(usersNotAssignedToProject).containsAnyElementsOf(notAssignedUsers);
+        assertThat(usersNotAssignedToProject).containsAnyElementsOf(notAssignedUsers2);
 
-        assertThat(usersNotAssignedToProject).containsAnyElementsOf(assignedUsers);
+        // expect the list to be paginated
         assertThat(usersNotAssignedToProject.size()).isEqualTo(pageSize);
     }
 
