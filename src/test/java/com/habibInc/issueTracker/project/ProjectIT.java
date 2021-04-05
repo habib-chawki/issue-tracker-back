@@ -15,6 +15,7 @@ import org.springframework.http.*;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -288,20 +289,18 @@ public class ProjectIT {
             user.setEmail("assigned_user@email.com");
             user.setPassword("assigned_user_pass");
 
+            user = userService.createUser(user);
+
             // given a set of projects
             List<Project> projects = (List<Project>) projectRepository.saveAll(
                     List.of(
-                            Project.builder().name("Project 01").build(),
-                            Project.builder().name("Project 02").build(),
-                            Project.builder().name("Project 03").build()
+                            Project.builder().assignedUsers(Set.of(user)).name("Project 01").build(),
+                            Project.builder().assignedUsers(Set.of(user)).name("Project 02").build(),
+                            Project.builder().assignedUsers(Set.of(user)).name("Project 03").build()
                     )
             );
 
-            // given the user is saved
-            user.setAssignedProjects(new HashSet<>(projects));
-            user = userService.createUser(user);
-
-            // when a GET request is made to fetch the list of projects by user id
+            // when a GET request is made to fetch the list of projects by assigned user id
             ResponseEntity<Project[]> response =
                     restTemplate.exchange("/projects?user=" + user.getId(), HttpMethod.GET, httpEntity, Project[].class);
 
