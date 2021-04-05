@@ -26,7 +26,12 @@ public class ProjectService {
     }
 
     public Project createProject(Project project, User authenticatedUser) {
+        // set project owner
         project.setOwner(authenticatedUser);
+
+        // add owner to list of assigned users
+        project.setAssignedUsers(Set.of(authenticatedUser));
+
         return projectRepository.save(project);
     }
 
