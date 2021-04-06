@@ -324,7 +324,6 @@ public class UserIT {
         assertThat(response.getBody()).containsExactly(expectedResponse);
     }
 
-
     @Test
     public void itShouldGetUsersAssignedToOtherProjectsButNotToExcludedProject() {
         // given the authenticated user
@@ -368,7 +367,7 @@ public class UserIT {
         ResponseEntity<UserDto[]> response =
                 restTemplate.exchange(url, HttpMethod.GET, httpEntity, UserDto[].class);
 
-        // then the response should be the users of project 1
+        // then the response should not contain any users from project 2
         assertThat(response.getBody()).doesNotContainAnyElementsOf(project2Users);
 
         // given the project 1 users
@@ -381,7 +380,7 @@ public class UserIT {
         url = "/users/?excludedProject=" + project1.getId() + "&page=" + 0 + "&size=" + 10;
         response = restTemplate.exchange(url, HttpMethod.GET, httpEntity, UserDto[].class);
 
-        // then the response should be the users of project 2
+        // then the response should not contain any users from project 1
         assertThat(response.getBody()).doesNotContainAnyElementsOf(project1Users);
     }
 
