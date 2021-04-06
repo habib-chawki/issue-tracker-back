@@ -263,16 +263,16 @@ public class UserIT {
 
         // given the pagination params
         int page = 0;
-        int size = 2;
+        int pageSize = 2;
 
         // given the request body
         HttpEntity httpEntity = new HttpEntity(headers);
 
         // given the url
-        String url = "/users/?excludedProject=" + otherProject.getId() + "&page=" + page + "&size=" + size;
+        String url = "/users/?excludedProject=" + otherProject.getId() + "&page=" + page + "&size=" + pageSize;
 
         // given the expected response
-        List<UserDto> usersDto = users.stream().map(user -> new ModelMapper().map(user, UserDto.class)).collect(Collectors.toList());
+        List<UserDto> expectedResponse = users.stream().map(user -> new ModelMapper().map(user, UserDto.class)).collect(Collectors.toList());
 
         // when a GET request is made
         ResponseEntity<UserDto[]> response =
@@ -280,12 +280,12 @@ public class UserIT {
 
         // then expect the response to be the paginated list of users not assigned to the project
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().length).isEqualTo(size);
-        assertThat(response.getBody()).containsAnyElementsOf(usersDto);
+        assertThat(response.getBody()).containsAnyElementsOf(expectedResponse);
+        assertThat(response.getBody().length).isEqualTo(pageSize);
     }
 
     @Test
-    public void itShouldGetUsersAssignedToAllButExcludedProject() {
+    public void itShouldGetUserAssignedToAllButExcludedProject() {
         // given the authenticated user
         authenticatedUser = userService.createUser(authenticatedUser);
 
@@ -315,15 +315,18 @@ public class UserIT {
         // given the url
         String url = "/users/?excludedProject=" + excludedProject.getId() + "&page=" + 0 + "&size=" + 10;
 
+        // given the expected response
+        final UserDto expectedResponse = new ModelMapper().map(user, UserDto.class);
+
         // when a GET request is made
         ResponseEntity<UserDto[]> response =
                 restTemplate.exchange(url, HttpMethod.GET, httpEntity, UserDto[].class);
 
-        // given the expected response
-        final UserDto expectedResponse = new ModelMapper().map(user, UserDto.class);
-
+        // then expect the response to be the user assigned to all but the excluded project
         assertThat(response.getBody()).containsExactly(expectedResponse);
     }
+
+
 
 
     @AfterEach
