@@ -50,6 +50,6 @@ public class UserService {
     }
 
     public List<User> getUsersNotAssignedToProject(Long excludedProjectId, int page, int size) {
-        return userRepository.findDistinctByAssignedProjectsIsEmptyOrAssignedProjectsIdNot(excludedProjectId, PageRequest.of(page, size));
+        return userRepository.findAllByAssignedProjectNot(excludedProjectId, PageRequest.of(page, size));
     }
 }
