@@ -14,8 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 
 import java.util.HashSet;
 import java.util.List;
@@ -198,7 +196,7 @@ public class UserIT {
     }
 
     @Test
-    public void itShouldGetPaginatedListOfUsers() {
+    public void itShouldGetPaginatedListOfAllUsers() {
         // given the authenticated user
         authenticatedUser = userService.createUser(authenticatedUser);
 
@@ -327,7 +325,65 @@ public class UserIT {
     }
 
 
+    @Test
+    public void itShouldGetUsersAssignedToOtherProjectsButNotToExcludedProject() {
+        // given the authenticated user
+        authenticatedUser = userService.createUser(authenticatedUser);
 
+        // given users
+        User user1 = User.builder().email("user1@email").password("pass1").build();
+        User user2 = User.builder().email("user2@email").password("pass2").build();
+        User user3 = User.builder().email("user3@email").password("pass3").build();
+
+        user1 = userService.createUser(user1);
+        user2 = userService.createUser(user2);
+        user3 = userService.createUser(user3);
+
+        // given projects
+        Project project1 = Project.builder().name("project 1").build();
+        Project project2 = Project.builder().name("project 2").build();
+
+        project1 = projectService.createProject(project1, authenticatedUser);
+        project2 = projectService.createProject(project2, authenticatedUser);
+
+        // given users assigned to projects
+        projectService.addUserToProject(user1.getId(), project1.getId());
+        projectService.addUserToProject(user2.getId(), project1.getId());
+
+        projectService.addUserToProject(user2.getId(), project2.getId());
+        projectService.addUserToProject(user3.getId(), project2.getId());
+
+        // given the request body
+        HttpEntity httpEntity = new HttpEntity(headers);
+
+        // given the project 2 users
+        ModelMapper modelMapper = new ModelMapper();
+        List<UserDto> project2Users = List.of(
+                modelMapper.map(user2, UserDto.class),
+                modelMapper.map(user3, UserDto.class)
+        );
+
+        // when a GET request is made to fetch users not belonging to project 2
+        String url = "/users/?excludedProject=" + project2.getId() + "&page=" + 0 + "&size=" + 10;
+        ResponseEntity<UserDto[]> response =
+                restTemplate.exchange(url, HttpMethod.GET, httpEntity, UserDto[].class);
+
+        // then the response should be the users of project 1
+        assertThat(response.getBody()).doesNotContainAnyElementsOf(project2Users);
+
+        // given the project 1 users
+        List<UserDto> project1Users = List.of(
+                modelMapper.map(user1, UserDto.class),
+                modelMapper.map(user2, UserDto.class)
+        );
+
+        // when a GET request is made to fetch users not belonging to project 1
+        url = "/users/?excludedProject=" + project1.getId() + "&page=" + 0 + "&size=" + 10;
+        response = restTemplate.exchange(url, HttpMethod.GET, httpEntity, UserDto[].class);
+
+        // then the response should be the users of project 2
+        assertThat(response.getBody()).doesNotContainAnyElementsOf(project1Users);
+    }
 
     @AfterEach
     public void teardown() {
