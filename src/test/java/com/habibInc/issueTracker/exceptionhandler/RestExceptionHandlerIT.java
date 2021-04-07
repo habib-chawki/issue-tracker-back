@@ -47,7 +47,7 @@ public class RestExceptionHandlerIT {
     }
 
     @Test
-    public void givenUserSignup_whenUserAlreadyExists_itShouldReturnDuplicateError() {
+    public void givenUserSignup_whenUserAlreadyExists_itShouldReturnDuplicateKeyError() {
         // given a signup request of a user that already exists
         User user = User.builder()
                 .email(authenticatedUser.getEmail())
@@ -68,5 +68,6 @@ public class RestExceptionHandlerIT {
 
         // then expect a 409 Conflict error
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
+        assertThat(response.getBody().getErrorMessage()).isEqualTo("Duplicate key");
     }
 }
