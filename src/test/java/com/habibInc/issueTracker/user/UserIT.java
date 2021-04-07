@@ -80,7 +80,7 @@ public class UserIT {
     }
 
     @Test
-    public void whenUserIsSuccessfullySignedUp_itShouldResponseWithAuthTokenHeader() {
+    public void whenUserIsSuccessfullySignedUp_itShouldRespondWithAuthTokenHeader() {
         ResponseEntity<UserDto> response =
                 restTemplate.postForEntity("/users/signup", authenticatedUser, UserDto.class);
 
