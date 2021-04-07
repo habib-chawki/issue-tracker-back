@@ -192,22 +192,6 @@ public class IssueIT {
         }
 
         @Test
-        public void whenIssueDoesNotExist_itShouldReturnIssueNotFoundError() {
-            // when a request for an issue that does not exist is received
-            ResponseEntity<ApiError> response = restTemplate.exchange(
-                    "/issues/" + 404L,
-                    HttpMethod.GET,
-                    httpEntity,
-                    ApiError.class
-            );
-
-            // then the response should be a 404 issue not found error
-            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-            assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Issue not found");
-            assertThat(response.getBody().getTimestamp()).isNotNull();
-        }
-
-        @Test
         public void itShouldGetAllIssues() {
             // given a list of issues
             List<Issue> issues = Arrays.asList(issue1, issue2);

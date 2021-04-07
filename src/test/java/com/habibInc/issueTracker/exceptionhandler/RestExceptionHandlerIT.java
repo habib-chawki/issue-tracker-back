@@ -92,4 +92,22 @@ public class RestExceptionHandlerIT {
         assertThat(response.getBody().getErrorMessage()).isEqualToIgnoringCase(errorMessage);
         assertThat(response.getBody().getTimestamp()).isNotNull();
     }
+
+    @Test
+    public void givenGetIssueById_whenIssueDoesNotExist_itShouldReturnIssueNotFoundError() {
+        HttpEntity httpEntity = new HttpEntity<>(headers);
+
+        // when a request for an issue that does not exist is received
+        ResponseEntity<ApiError> response = restTemplate.exchange(
+                "/issues/" + 404L,
+                HttpMethod.GET,
+                httpEntity,
+                ApiError.class
+        );
+
+        // then the response should be a 404 issue not found error
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Issue not found");
+        assertThat(response.getBody().getTimestamp()).isNotNull();
+    }
 }
