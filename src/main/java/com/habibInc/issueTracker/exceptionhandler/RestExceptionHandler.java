@@ -52,7 +52,7 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ApiError> handleDataIntegrityViolationException(HttpServletRequest request, DataIntegrityViolationException ex){
-        ApiError error = new ApiError(ex.getMessage(), HttpStatus.CONFLICT, request.getRequestURI(), LocalDateTime.now());
+        ApiError error = new ApiError("Duplicate key", HttpStatus.CONFLICT, request.getRequestURI(), LocalDateTime.now());
           return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 
