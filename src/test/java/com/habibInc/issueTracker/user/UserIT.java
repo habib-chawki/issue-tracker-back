@@ -112,32 +112,6 @@ public class UserIT {
     }
 
     @Test
-    public void givenGetUserById_whenUserDoesNotExist_itShouldReturnUserNotFoundError() {
-
-        // save the user to pass the authorization filter successfully
-        userService.createUser(authenticatedUser);
-
-        // set up authorization header
-        HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
-
-        // given an error message
-        String errorMessage = "User not found";
-
-        // when a post request with a user id that does not exist is made
-        ResponseEntity<ApiError> response = restTemplate.exchange(
-                "/users/404",
-                HttpMethod.GET,
-                httpEntity,
-                ApiError.class
-        );
-
-        // then a 404 user not found error should be returned
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(response.getBody().getErrorMessage()).isEqualToIgnoringCase(errorMessage);
-        assertThat(response.getBody().getTimestamp()).isNotNull();
-    }
-
-    @Test
     public void itShouldHashUserPassword() {
         // set up authorization header
         HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
