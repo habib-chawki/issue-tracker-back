@@ -439,7 +439,7 @@ public class ColumnIT {
 
         final String baseUrl = "/boards/%s/columns/%s";
         final String updatedTitle = "updated title";
-        final String requestBody = String.format("{\"newColumnTitle\": \"" + updatedTitle + "\"}");
+        final String requestBody = "{\"newColumnTitle\": \"" + updatedTitle + "\"}";
 
         HttpEntity<String> httpEntity;
 

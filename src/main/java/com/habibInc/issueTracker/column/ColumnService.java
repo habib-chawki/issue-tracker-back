@@ -89,7 +89,7 @@ public class ColumnService {
         // fetch the column by id (handles column / board not found errors)
         Column column = getColumnById(boardId, columnId);
 
-        // check whether authenticated user is the board owner and allowed to delete column
+        // only board owner should be able to update column title
         if(!column.getBoard().getOwner().equals(authenticatedUser))
             throw new ForbiddenOperationException("Forbidden operation");
 
