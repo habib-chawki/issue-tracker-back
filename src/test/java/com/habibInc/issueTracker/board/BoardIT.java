@@ -62,6 +62,7 @@ public class BoardIT {
                 .userName("authenticated_user")
                 .email("authenticated@user.in")
                 .password("auth_pass")
+                .fullName("auth user")
                 .build();
 
         // save the user to pass the authorization filter

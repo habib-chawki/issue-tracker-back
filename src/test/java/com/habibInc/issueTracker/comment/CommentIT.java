@@ -55,6 +55,8 @@ public class CommentIT {
         authenticatedUser = new User();
         authenticatedUser.setEmail("authenticated.user@email.com");
         authenticatedUser.setPassword("my_password");
+        authenticatedUser.setUserName("auth_username");
+        authenticatedUser.setFullName("auth fullname");
 
         // save the user to pass authorization
         authenticatedUser = userService.createUser(authenticatedUser);

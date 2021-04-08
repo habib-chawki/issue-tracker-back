@@ -56,6 +56,8 @@ public class ProjectIT {
         authenticatedUser = new User();
         authenticatedUser.setEmail("auth.user@email.com");
         authenticatedUser.setPassword("auth_password");
+        authenticatedUser.setFullName("auth full name");
+        authenticatedUser.setUserName("auth username");
 
         // save the user to pass authorization
         authenticatedUser = userService.createUser(authenticatedUser);

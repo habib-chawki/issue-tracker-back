@@ -67,6 +67,8 @@ public class IssueIT {
         authenticatedUser = new User();
         authenticatedUser.setEmail("authenticated@user.me");
         authenticatedUser.setPassword("auth_password");
+        authenticatedUser.setFullName("auth full name");
+        authenticatedUser.setUserName("auth username");
 
         // save the user to pass authorization
         authenticatedUser = userService.createUser(authenticatedUser);

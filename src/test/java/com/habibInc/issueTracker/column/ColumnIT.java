@@ -76,6 +76,7 @@ public class ColumnIT {
                 .email("authorizedr@user.in")
                 .userName("authorized")
                 .password("auth_pass")
+                .fullName("auth user")
                 .build();
 
         authenticatedUser = userService.createUser(authenticatedUser);
