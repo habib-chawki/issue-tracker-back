@@ -275,6 +275,8 @@ public class IssueIT {
 
             randomReporter.setEmail("random.user@email.com");
             randomReporter.setPassword("random_pass");
+            randomReporter.setFullName("random user");
+            randomReporter.setUserName("random_user");
 
             userService.createUser(randomReporter);
 
@@ -358,6 +360,8 @@ public class IssueIT {
             User randomReporter = new User();
             randomReporter.setEmail("not.the.authenticated.user@email.com");
             randomReporter.setPassword("bla_bla_bla");
+            randomReporter.setUserName("random_reporter");
+            randomReporter.setFullName("random reporter");
 
             userService.createUser(randomReporter);
 

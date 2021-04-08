@@ -406,7 +406,12 @@ public class ColumnIT {
         @Test
         public void givenDeleteColumnById_whenAuthenticatedUserIsNotTheBoardOwner_itShouldReturnForbiddenOperationError() {
             // given a random user
-            User randomUser = User.builder().email("random@user.me").password("random_pass").build();
+            User randomUser = User.builder()
+                    .email("random@user.me")
+                    .password("random_pass")
+                    .userName("rand_user")
+                    .fullName("random user")
+                    .build();
             randomUser = userService.createUser(randomUser);
 
             // given the random user set as board owner
@@ -468,7 +473,13 @@ public class ColumnIT {
         @Test
         public void givenUpdateColumnTitle_whenAuthenticatedUserIsNotTheBoardOwner_itShouldReturnForbiddenOperationError() {
             // given a random user
-            User randomUser = User.builder().id(666L).email("not.authenticated@user.random").password("!authenticated").build();
+            User randomUser = User.builder()
+                    .id(666L)
+                    .email("not.authenticated@user.random")
+                    .password("!authenticated")
+                    .userName("not.auth")
+                    .fullName("not authenticated user")
+                    .build();
             randomUser = userService.createUser(randomUser);
 
             // given the random user set as board owner

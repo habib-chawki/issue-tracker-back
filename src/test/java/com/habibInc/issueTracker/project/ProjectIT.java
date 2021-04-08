@@ -122,6 +122,8 @@ public class ProjectIT {
             User user = new User();
             user.setEmail("userToAdd@project");
             user.setPassword("user_project");
+            user.setFullName("added user");
+            user.setUserName("added_user");
 
             user = userService.createUser(user);
 
@@ -290,6 +292,8 @@ public class ProjectIT {
             User user = new User();
             user.setEmail("assigned_user@email.com");
             user.setPassword("assigned_user_pass");
+            user.setFullName("assigned user");
+            user.setUserName("assigned_user");
 
             user = userService.createUser(user);
 

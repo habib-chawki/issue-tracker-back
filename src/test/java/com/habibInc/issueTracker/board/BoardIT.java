@@ -260,7 +260,12 @@ public class BoardIT {
         @DisplayName("Disallow deleting boards owned by other users")
         public void givenDeleteBoardById_whenAuthenticatedUserIsNotTheBoardOwner_itShouldReturnForbiddenOperationError() {
             // given a random user
-            User notAuthenticatedUser = User.builder().email("not@authenticated.user").password("forbid").build();
+            User notAuthenticatedUser = User.builder()
+                    .email("not@authenticated.user")
+                    .password("forbid")
+                    .userName("not_auth")
+                    .fullName("not auth")
+                    .build();
 
             // save the random user
             notAuthenticatedUser = userService.createUser(notAuthenticatedUser);

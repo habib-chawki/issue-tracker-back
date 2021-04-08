@@ -150,9 +150,9 @@ public class UserIT {
         // given a set of users
         List<User> users = (List<User>) userRepository.saveAll(
                 List.of(
-                        User.builder().email("user1@email.com").password("pass1").userName("user1@email.com").build(),
-                        User.builder().email("user2@email.com").password("pass2").userName("user2@email.com").build(),
-                        User.builder().email("user3@email.com").password("pass3").userName("user3@email.com").build()
+                        User.builder().email("user1@email.com").password("pass1").fullName("user 01").userName("user_01").build(),
+                        User.builder().email("user2@email.com").password("pass2").fullName("user 02").userName("user_02").build(),
+                        User.builder().email("user3@email.com").password("pass3").fullName("user 03").userName("user_03").build()
                 )
         );
 
@@ -176,11 +176,11 @@ public class UserIT {
 
         // given a list of users
         List<User> users = List.of(
-                User.builder().email("user01@email").password("user01pass").build(),
-                User.builder().email("user02@email").password("user02pass").build(),
-                User.builder().email("user03@email").password("user03pass").build(),
-                User.builder().email("user04@email").password("user04pass").build(),
-                User.builder().email("user05@email").password("user05pass").build()
+                User.builder().email("user01@email").password("user01pass").fullName("user 01").userName("user_01").build(),
+                User.builder().email("user02@email").password("user02pass").fullName("user 02").userName("user_02").build(),
+                User.builder().email("user03@email").password("user03pass").fullName("user 03").userName("user_03").build(),
+                User.builder().email("user04@email").password("user04pass").fullName("user 04").userName("user_04").build(),
+                User.builder().email("user05@email").password("user05pass").fullName("user 05").userName("user_05").build()
         );
         userRepository.saveAll(users);
 
@@ -210,15 +210,15 @@ public class UserIT {
 
         // given the list of assigned users
         List<User> users = List.of(
-                User.builder().email("user01@email").password("user01pass").build(),
-                User.builder().email("user02@email").password("user02pass").build(),
-                User.builder().email("user03@email").password("user03pass").build()
+                User.builder().email("user01@email").password("user01pass").fullName("user 01").userName("user_01").build(),
+                User.builder().email("user02@email").password("user02pass").fullName("user 02").userName("user_02").build(),
+                User.builder().email("user03@email").password("user03pass").fullName("user 03").userName("user_03").build()
         );
 
         // given the list of non-assigned users
         List<User> otherUsers = List.of(
-                User.builder().email("user04@email").password("user04pass").build(),
-                User.builder().email("user05@email").password("user05pass").build()
+                User.builder().email("user04@email").password("user04pass").fullName("user 04").userName("user_04").build(),
+                User.builder().email("user05@email").password("user05pass").fullName("user 05").userName("user_05").build()
         );
 
         users = (List<User>) userRepository.saveAll(users);
@@ -262,7 +262,7 @@ public class UserIT {
         authenticatedUser = userService.createUser(authenticatedUser);
 
         // given a user
-        User user = userService.createUser(User.builder().email("user@email.com").password("user_pass").build());
+        User user = userService.createUser(User.builder().email("user@email.com").password("user_pass").fullName("user 00").userName("user_00").build());
 
         // given projects
         Project excludedProject = Project.builder().name("Excluded project").build();
@@ -304,9 +304,9 @@ public class UserIT {
         authenticatedUser = userService.createUser(authenticatedUser);
 
         // given users
-        User user1 = User.builder().email("user1@email").password("pass1").build();
-        User user2 = User.builder().email("user2@email").password("pass2").build();
-        User user3 = User.builder().email("user3@email").password("pass3").build();
+        User user1 = User.builder().email("user1@email").password("pass1").fullName("user 01").userName("user_01").build();
+        User user2 = User.builder().email("user2@email").password("pass2").fullName("user 02").userName("user_02").build();
+        User user3 = User.builder().email("user3@email").password("pass3").fullName("user 03").userName("user_03").build();
 
         user1 = userService.createUser(user1);
         user2 = userService.createUser(user2);
