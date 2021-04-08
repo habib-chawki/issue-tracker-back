@@ -2,7 +2,9 @@ package com.habibInc.issueTracker.exceptionhandler;
 
 import com.habibInc.issueTracker.security.JwtUtil;
 import com.habibInc.issueTracker.user.User;
+import com.habibInc.issueTracker.user.UserRepository;
 import com.habibInc.issueTracker.user.UserService;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,9 @@ public class RestExceptionHandlerIT {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    UserRepository userRepository;
 
     @Autowired
     JwtUtil jwtUtil;
@@ -109,5 +114,10 @@ public class RestExceptionHandlerIT {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Issue not found");
         assertThat(response.getBody().getTimestamp()).isNotNull();
+    }
+
+    @AfterEach
+    public void teardown() {
+        userRepository.deleteAll();
     }
 }

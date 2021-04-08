@@ -1,7 +1,5 @@
 package com.habibInc.issueTracker.column;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.board.Board;
 import com.habibInc.issueTracker.board.BoardRepository;
 import com.habibInc.issueTracker.board.BoardService;
@@ -11,7 +9,6 @@ import com.habibInc.issueTracker.issue.IssueRepository;
 import com.habibInc.issueTracker.security.JwtUtil;
 import com.habibInc.issueTracker.sprint.Sprint;
 import com.habibInc.issueTracker.sprint.SprintRepository;
-import com.habibInc.issueTracker.sprint.SprintService;
 import com.habibInc.issueTracker.user.User;
 import com.habibInc.issueTracker.user.UserRepository;
 import com.habibInc.issueTracker.user.UserService;
@@ -21,7 +18,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 
-import java.net.http.HttpResponse;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +25,6 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ColumnIT {
 
     @Autowired
@@ -69,11 +64,11 @@ public class ColumnIT {
     Board board;
     Sprint sprint;
 
-    @BeforeAll
+    @BeforeEach
     public void authSetup() {
         // save the authenticated user
         authenticatedUser = User.builder()
-                .email("authorizedr@user.in")
+                .email("authorized@user.in")
                 .userName("authorized")
                 .password("auth_pass")
                 .fullName("auth user")
@@ -474,7 +469,6 @@ public class ColumnIT {
         public void givenUpdateColumnTitle_whenAuthenticatedUserIsNotTheBoardOwner_itShouldReturnForbiddenOperationError() {
             // given a random user
             User randomUser = User.builder()
-                    .id(666L)
                     .email("not.authenticated@user.random")
                     .password("!authenticated")
                     .userName("not.auth")
@@ -538,10 +532,6 @@ public class ColumnIT {
         columnRepository.deleteAll();
         boardRepository.deleteAll();
         sprintRepository.deleteAll();
-    }
-
-    @AfterAll
-    public void authTeardown() {
         userRepository.deleteAll();
     }
 }
