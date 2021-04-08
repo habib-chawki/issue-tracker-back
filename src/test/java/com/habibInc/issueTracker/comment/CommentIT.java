@@ -40,6 +40,9 @@ public class CommentIT {
     CommentService commentService;
 
     @Autowired
+    CommentRepository commentRepository;
+
+    @Autowired
     JwtUtil jwtUtil;
 
     User authenticatedUser;
@@ -287,11 +290,8 @@ public class CommentIT {
 
     @AfterEach
     public void teardown() {
+        commentRepository.deleteAll();
         issueRepository.deleteAll();
-    }
-
-    @AfterEach
-    public void authTeardown() {
         userRepository.deleteAll();
     }
 }
