@@ -49,7 +49,7 @@ public class CommentIT {
     String token;
     HttpHeaders headers;
 
-    @BeforeAll
+    @BeforeEach
     public void authSetup() {
         // create a user to authenticate
         authenticatedUser = new User();
@@ -290,7 +290,7 @@ public class CommentIT {
         issueRepository.deleteAll();
     }
 
-    @AfterAll
+    @AfterEach
     public void authTeardown() {
         userRepository.deleteAll();
     }
