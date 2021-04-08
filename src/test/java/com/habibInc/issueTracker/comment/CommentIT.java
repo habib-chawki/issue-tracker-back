@@ -128,10 +128,10 @@ public class CommentIT {
 
         @Test
         public void givenCreateComment_itShouldSetTheIssueAndTheAuthenticatedUserAsOwner() {
-            // set up base url
+            // given the endpoint url
             String url = String.format(baseUrl, issue.getId());
 
-            // when a post request is made to create a new comment
+            // when a POST request is made to create a comment
             ResponseEntity<Comment> response = restTemplate.exchange(
                     url,
                     HttpMethod.POST,
@@ -139,11 +139,11 @@ public class CommentIT {
                     Comment.class
             );
 
-            // then the created comment's owner should be the currently logged-in user
-            assertThat(response.getBody().getOwner()).isEqualTo(authenticatedUser);
+            // then the owner and issue of the created comment should be set
+            Comment createdComment = commentService.getCommentById(response.getBody().getId());
 
-            // the issue should be set
-            assertThat(response.getBody().getIssue()).isEqualTo(issue);
+            assertThat(createdComment.getOwner()).isEqualTo(authenticatedUser);
+            assertThat(createdComment.getIssue()).isEqualTo(issue);
         }
 
         @Test
