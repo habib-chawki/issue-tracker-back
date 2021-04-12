@@ -86,12 +86,11 @@ public class ColumnService {
     }
 
     public String updateTitle(Long boardId, Long columnId, String updatedTitle, User authenticatedUser) {
-        // fetch the column and board by id
-        Board board = boardService.getBoardById(boardId);
+        // fetch the column by id (handles column / board not found errors)
         Column column = getColumnById(boardId, columnId);
 
         // only board owner should be able to update column title
-        if(!board.getOwner().equals(authenticatedUser))
+        if(!column.getBoard().getOwner().equals(authenticatedUser))
             throw new ForbiddenOperationException("Forbidden operation");
 
         // update the title
