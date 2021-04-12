@@ -25,6 +25,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestInstance(value = TestInstance.Lifecycle.PER_CLASS)
 public class ColumnIT {
 
     @Autowired
@@ -64,7 +65,7 @@ public class ColumnIT {
     Board board;
     Sprint sprint;
 
-    @BeforeEach
+    @BeforeAll
     public void authSetup() {
         // save the authenticated user
         authenticatedUser = User.builder()
@@ -262,11 +263,11 @@ public class ColumnIT {
                 // given an incorrect board id
                 String url = String.format(baseUrl, 404L, column.getId());
 
-                // when a GET request is made to retrieve the column by id while the board id is incorrect
+                // when a GET request is made to retrieve the column by id
                 ResponseEntity<ApiError> response =
                         restTemplate.exchange(url, HttpMethod.GET, httpEntity, ApiError.class);
 
-                // then expect a 404 board not found error to be returned
+                // then expect a 404 board not found error
                 assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
                 assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Board not found");
             }
@@ -532,6 +533,10 @@ public class ColumnIT {
         columnRepository.deleteAll();
         boardRepository.deleteAll();
         sprintRepository.deleteAll();
+    }
+
+    @AfterAll
+    public void authTeardown() {
         userRepository.deleteAll();
     }
 }
