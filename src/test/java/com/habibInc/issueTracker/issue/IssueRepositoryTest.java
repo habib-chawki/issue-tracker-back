@@ -20,10 +20,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.*;
 
 @DataJpaTest
-@AutoConfigureTestDatabase(replace = Replace.NONE)
+@AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
 public class IssueRepositoryTest {
 
     @Autowired
@@ -52,19 +51,19 @@ public class IssueRepositoryTest {
         issue1.setSummary("Issue 1 summary");
         issue1.setDescription("Issue 1 description");
         issue1.setType(IssueType.STORY);
-        issue1.setResolution(IssueResolution.DONE);
+        issue1.setStatus(IssueStatus.RESOLVED);
         issue1.setCreationTime(LocalDateTime.now());
         issue1.setUpdateTime(LocalDateTime.now());
-        issue1.setEstimate("4");
+        issue1.setPoints(4);
 
         // set up issue2 properties
         issue2.setSummary("Issue 2 summary");
         issue2.setDescription("Issue 2 description");
         issue2.setType(IssueType.TASK);
-        issue2.setResolution(IssueResolution.DUPLICATE);
+        issue2.setStatus(IssueStatus.IN_PROGRESS);
         issue2.setCreationTime(LocalDateTime.now());
         issue2.setUpdateTime(LocalDateTime.now());
-        issue2.setEstimate("6");
+        issue2.setPoints(21);
 
         // create a project
         project = new Project();

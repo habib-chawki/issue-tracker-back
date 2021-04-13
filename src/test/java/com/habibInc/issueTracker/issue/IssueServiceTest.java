@@ -7,13 +7,13 @@ import com.habibInc.issueTracker.exceptionhandler.ForbiddenOperationException;
 import com.habibInc.issueTracker.project.Project;
 import com.habibInc.issueTracker.project.ProjectService;
 import com.habibInc.issueTracker.user.User;
+import com.habibInc.issueTracker.user.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +34,9 @@ public class IssueServiceTest {
 
     @Mock
     ProjectService projectService;
+
+    @Mock
+    UserService userService;
 
     Issue issue1, issue2;
     User authenticatedUser;
@@ -65,10 +68,10 @@ public class IssueServiceTest {
         issue1.setSummary("Issue 1 summary");
         issue1.setDescription("Issue 1 description");
         issue1.setType(IssueType.STORY);
-        issue1.setResolution(IssueResolution.DONE);
+        issue1.setStatus(IssueStatus.RESOLVED);
         issue1.setCreationTime(LocalDateTime.now());
         issue1.setUpdateTime(LocalDateTime.now());
-        issue1.setEstimate("4");
+        issue1.setPoints(4);
 
         // set the authenticated user as the reporter
         issue1.setReporter(authenticatedUser);
@@ -78,10 +81,10 @@ public class IssueServiceTest {
         issue2.setSummary("Issue 2 summary");
         issue2.setDescription("Issue 2 description");
         issue2.setType(IssueType.TASK);
-        issue2.setResolution(IssueResolution.DUPLICATE);
+        issue2.setStatus(IssueStatus.IN_PROGRESS);
         issue2.setCreationTime(LocalDateTime.now());
         issue2.setUpdateTime(LocalDateTime.now());
-        issue2.setEstimate("6");
+        issue2.setPoints(8);
 
         // set another reporter for issue2
         issue2.setReporter(reporter);
@@ -240,5 +243,27 @@ public class IssueServiceTest {
         assertThatExceptionOfType(ForbiddenOperationException.class)
                 .isThrownBy(() -> issueService.deleteIssue(2L, authenticatedUser))
                 .withMessageContaining("Forbidden");
+    }
+
+    @Test
+    public void itShouldUpdateIssueAssignee() {
+        // given a user
+        User assignee = new User();
+        assignee.setId(100L);
+        assignee.setEmail("assignee@user");
+        assignee.setPassword("assignee_pass");
+
+        when(userService.getUserById(assignee.getId())).thenReturn(assignee);
+        when(issueRepository.findById(issue1.getId())).thenReturn(Optional.of(issue1));
+        when(issueRepository.save(issue1)).thenReturn(issue1);
+
+        // when the update assignee request is made
+        issueService.updateIssueAssignee(issue1.getId(), assignee.getId());
+
+        // then expect the issue assignee to have been updated successfully
+        assertThat(issue1.getAssignee()).isEqualTo(assignee);
+
+        verify(issueRepository, times(1)).findById(issue1.getId());
+        verify(issueRepository, times(1)).save(issue1);
     }
 }

@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/users")
@@ -18,11 +21,13 @@ public class UserController {
 
     private final UserService userService;
     private final JwtUtil jwtUtil;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public UserController(UserService userService, JwtUtil jwtUtil) {
+    public UserController(UserService userService, JwtUtil jwtUtil, ModelMapper modelMapper) {
         this.userService = userService;
         this.jwtUtil = jwtUtil;
+        this.modelMapper = modelMapper;
     }
 
     @PostMapping("/signup")
@@ -40,7 +45,7 @@ public class UserController {
         User createdUser = userService.createUser(user);
 
         // set up user DTO response body
-        UserDto responseBody = new ModelMapper().map(createdUser, UserDto.class);
+        UserDto responseBody = modelMapper.map(createdUser, UserDto.class);
 
         // set up the response with the auth token
         ResponseEntity<UserDto> response = ResponseEntity.created(URI.create("/signup"))
@@ -59,6 +64,47 @@ public class UserController {
         }catch(NumberFormatException ex){
             throw new InvalidIdException("Invalid user id");
         }
+    }
 
+
+    @GetMapping(value = {"", "/"}, params = {"excludedProject", "page", "size"})
+    @ResponseStatus(HttpStatus.OK)
+    public List<UserDto> getPaginatedListOfUsersNotAssignedToProject(@RequestParam(value = "excludedProject") Long excludedProjectId,
+                                                                     @RequestParam(value = "page", defaultValue = "0") int page,
+                                                                     @RequestParam(value = "size", defaultValue = "10") int size){
+        // fetch the list of paginated users not assigned to project
+        List<User> users = userService.getUsersNotAssignedToProject(excludedProjectId, page, size);
+
+        // convert to UserDto
+        List<UserDto> usersNotAssignedToProject =
+                users.stream().map(user -> modelMapper.map(user, UserDto.class)).collect(Collectors.toList());
+
+        return usersNotAssignedToProject;
+    }
+
+    @GetMapping(value = {"/", ""}, params = "project")
+    @ResponseStatus(HttpStatus.OK)
+    public Set<UserDto> getUsersByAssignedProject(@RequestParam(value = "project") Long projectId) {
+        // invoke service, fetch the list of users
+        Set<User> users = userService.getUsersByAssignedProject(projectId);
+
+        // convert to UserDto
+        Set<UserDto> usersByProject =
+                users.stream().map(user -> modelMapper.map(user, UserDto.class)).collect(Collectors.toSet());
+
+        return usersByProject;
+    }
+
+    @GetMapping(value= {"/" , ""}, params = {"page", "size"})
+    @ResponseStatus(HttpStatus.OK)
+    public List<UserDto> getPaginatedListOfUsers(@RequestParam(value = "page") int page,
+                                                 @RequestParam(value = "size") int size) {
+        // get the paginated list of users, invoke the service
+        List<User> users = userService.getPaginatedListOfUsers(page, size);
+
+        // map to DTOs
+        List<UserDto> usersDto = users.stream().map((user) -> modelMapper.map(user, UserDto.class)).collect(Collectors.toList());
+
+        return usersDto;
     }
 }

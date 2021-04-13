@@ -5,12 +5,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class UserServiceTest {
@@ -117,5 +120,81 @@ public class UserServiceTest {
 
         // then the password should be hashed
         assertThat(createdUser.getPassword()).isEqualTo(hashedPassword);
+    }
+
+    @Test
+    public void itShouldGetUsersByAssignedProject() {
+        // given a project id
+        Long projectId = 10L;
+
+        // given a list of users
+        Set<User> users = Set.of(
+                User.builder().id(1L).userName("user1@email.com").build(),
+                User.builder().id(2L).userName("user2@email.com").build(),
+                User.builder().id(3L).userName("user3@email.com").build()
+        );
+
+        // given the repository response
+        when(userRepository.findAllByAssignedProjectsId(projectId)).thenReturn(users);
+
+        // when the service is invoked
+        Set<User> usersByProject = userService.getUsersByAssignedProject(projectId);
+
+        // then expect the list of users to have been fetched successfully
+        assertThat(usersByProject).isEqualTo(users);
+
+        verify(userRepository, times(1)).findAllByAssignedProjectsId(projectId);
+    }
+
+    @Test
+    public void itShouldGetPaginatedListOfUsers() {
+        // given the page and size
+        int page = 0;
+        int size = 3;
+
+        // given a list of users
+        List<User> users = List.of(
+                User.builder().id(10L).userName("user01").build(),
+                User.builder().id(20L).userName("user02").build(),
+                User.builder().id(30L).userName("user03").build()
+        );
+
+        // given the repository response
+        when(userRepository.findAll(PageRequest.of(page, size))).thenReturn(users);
+
+        // when the service is invoked to get the paginated list of users
+        List<User> paginatedListOfUsers = userService.getPaginatedListOfUsers(page, size);
+
+        // then expect the paginated list to have been properly retrieved
+        assertThat(paginatedListOfUsers).isEqualTo(users);
+        verify(userRepository, times(1)).findAll(PageRequest.of(page, size));
+    }
+
+    @Test
+    public void itShouldGetPaginatedListOfUsersNotAssignedToProject() {
+        // given the excluded project id
+        Long excludedProjectId = 777L;
+
+        // given the page and size
+        int page = 0;
+        int size = 3;
+
+        // given a list of users
+        List<User> users = List.of(
+                User.builder().id(10L).userName("user01").build(),
+                User.builder().id(20L).userName("user02").build(),
+                User.builder().id(30L).userName("user03").build()
+        );
+
+        // given the repository response
+        when(userRepository.findAllByAssignedProjectNot(excludedProjectId, PageRequest.of(page, size))).thenReturn(users);
+
+        // when the service is invoked to retrieve the paginated list of users
+        List<User> paginatedListOfUsersNotAssignedToProject =
+                userService.getUsersNotAssignedToProject(excludedProjectId, page, size);
+
+        // then expect the list of users not assigned to the given project to have been retrieved
+        assertThat(paginatedListOfUsersNotAssignedToProject).isEqualTo(users);
+        verify(userRepository, times(1)).findAllByAssignedProjectNot(excludedProjectId, PageRequest.of(page, size));
     }
 }

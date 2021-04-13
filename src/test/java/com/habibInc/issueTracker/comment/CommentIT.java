@@ -40,6 +40,9 @@ public class CommentIT {
     CommentService commentService;
 
     @Autowired
+    CommentRepository commentRepository;
+
+    @Autowired
     JwtUtil jwtUtil;
 
     User authenticatedUser;
@@ -49,12 +52,14 @@ public class CommentIT {
     String token;
     HttpHeaders headers;
 
-    @BeforeAll
+    @BeforeEach
     public void authSetup() {
         // create a user to authenticate
         authenticatedUser = new User();
         authenticatedUser.setEmail("authenticated.user@email.com");
         authenticatedUser.setPassword("my_password");
+        authenticatedUser.setUserName("auth_username");
+        authenticatedUser.setFullName("auth fullname");
 
         // save the user to pass authorization
         authenticatedUser = userService.createUser(authenticatedUser);
@@ -123,10 +128,10 @@ public class CommentIT {
 
         @Test
         public void givenCreateComment_itShouldSetTheIssueAndTheAuthenticatedUserAsOwner() {
-            // set up base url
+            // given the endpoint url
             String url = String.format(baseUrl, issue.getId());
 
-            // when a post request is made to create a new comment
+            // when a POST request is made to create a comment
             ResponseEntity<Comment> response = restTemplate.exchange(
                     url,
                     HttpMethod.POST,
@@ -134,11 +139,11 @@ public class CommentIT {
                     Comment.class
             );
 
-            // then the created comment's owner should be the currently logged-in user
-            assertThat(response.getBody().getOwner()).isEqualTo(authenticatedUser);
+            // then the owner and issue of the created comment should be set
+            Comment createdComment = commentService.getCommentById(response.getBody().getId());
 
-            // the issue should be set
-            assertThat(response.getBody().getIssue()).isEqualTo(issue);
+            assertThat(createdComment.getOwner()).isEqualTo(authenticatedUser);
+            assertThat(createdComment.getIssue()).isEqualTo(issue);
         }
 
         @Test
@@ -196,6 +201,8 @@ public class CommentIT {
             User randomUser = new User();
             randomUser.setEmail("random@user.me");
             randomUser.setPassword("random_pwd");
+            randomUser.setUserName("rand_user");
+            randomUser.setFullName("rand user");
 
             randomUser = userService.createUser(randomUser);
 
@@ -259,6 +266,8 @@ public class CommentIT {
             randomUser.setId(555L);
             randomUser.setEmail("random.user@email.com");
             randomUser.setPassword("random_pass");
+            randomUser.setUserName("rand_user");
+            randomUser.setFullName("just random");
 
             randomUser = userService.createUser(randomUser);
 
@@ -281,11 +290,8 @@ public class CommentIT {
 
     @AfterEach
     public void teardown() {
+        commentRepository.deleteAll();
         issueRepository.deleteAll();
-    }
-
-    @AfterAll
-    public void authTeardown() {
         userRepository.deleteAll();
     }
 }

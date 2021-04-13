@@ -14,6 +14,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -123,5 +124,37 @@ public class ProjectControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errorMessage")
                         .value(Utils.errorMessage));
+    }
+
+    @Test
+    public void itShouldGetProjectsByAssignedUser() throws Exception {
+        // given a user id
+        Long userId = 100L;
+
+        // given a set of projects
+        Set<Project> projects = Set.of(
+                Project.builder().id(1L).name("Project 01").build(),
+                Project.builder().id(2L).name("Project 02").build(),
+                Project.builder().id(3L).name("Project 03").build()
+        );
+
+        // given the project service response
+        when(projectService.getProjectsByAssignedUser(userId)).thenReturn(projects);
+
+        mockMvc.perform(get("/projects?user=" + userId))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(mapper.writeValueAsString(projects)));
+    }
+
+    @Test
+    public void itShouldAddUserToProject() throws Exception {
+        // given a user id
+        Long userId = 100L;
+
+        // when a POST request id made to add the user to the project
+        // then the response should be a 200 OK
+        mockMvc.perform(post("/projects/" + project.getId() + "/users/" + userId))
+                .andExpect(status().isOk());
     }
 }

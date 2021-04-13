@@ -67,6 +67,8 @@ public class IssueIT {
         authenticatedUser = new User();
         authenticatedUser.setEmail("authenticated@user.me");
         authenticatedUser.setPassword("auth_password");
+        authenticatedUser.setFullName("auth full name");
+        authenticatedUser.setUserName("auth username");
 
         // save the user to pass authorization
         authenticatedUser = userService.createUser(authenticatedUser);
@@ -89,19 +91,19 @@ public class IssueIT {
         issue1.setSummary("Issue 1 summary");
         issue1.setDescription("Issue 1 description");
         issue1.setType(IssueType.STORY);
-        issue1.setResolution(IssueResolution.DONE);
+        issue1.setStatus(IssueStatus.RESOLVED);
         issue1.setCreationTime(LocalDateTime.now());
         issue1.setUpdateTime(LocalDateTime.now());
-        issue1.setEstimate("4");
+        issue1.setPoints(4);
 
         // set up issue2 properties
         issue2.setSummary("Issue 2 summary");
         issue2.setDescription("Issue 2 description");
         issue2.setType(IssueType.TASK);
-        issue2.setResolution(IssueResolution.DUPLICATE);
+        issue2.setStatus(IssueStatus.IN_PROGRESS);
         issue2.setCreationTime(LocalDateTime.now());
         issue2.setUpdateTime(LocalDateTime.now());
-        issue2.setEstimate("6");
+        issue2.setPoints(6);
 
         // set up a project
         project = new Project();
@@ -192,22 +194,6 @@ public class IssueIT {
         }
 
         @Test
-        public void whenIssueDoesNotExist_itShouldReturnIssueNotFoundError() {
-            // when a request for an issue that does not exist is received
-            ResponseEntity<ApiError> response = restTemplate.exchange(
-                    "/issues/" + 404L,
-                    HttpMethod.GET,
-                    httpEntity,
-                    ApiError.class
-            );
-
-            // then the response should be a 404 issue not found error
-            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-            assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Issue not found");
-            assertThat(response.getBody().getTimestamp()).isNotNull();
-        }
-
-        @Test
         public void itShouldGetAllIssues() {
             // given a list of issues
             List<Issue> issues = Arrays.asList(issue1, issue2);
@@ -289,6 +275,8 @@ public class IssueIT {
 
             randomReporter.setEmail("random.user@email.com");
             randomReporter.setPassword("random_pass");
+            randomReporter.setFullName("random user");
+            randomReporter.setUserName("random_user");
 
             userService.createUser(randomReporter);
 
@@ -372,6 +360,8 @@ public class IssueIT {
             User randomReporter = new User();
             randomReporter.setEmail("not.the.authenticated.user@email.com");
             randomReporter.setPassword("bla_bla_bla");
+            randomReporter.setUserName("random_reporter");
+            randomReporter.setFullName("random reporter");
 
             userService.createUser(randomReporter);
 
@@ -392,6 +382,38 @@ public class IssueIT {
             // then the operation should be forbidden
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
             assertThat(response.getBody().getErrorMessage()).contains("Forbidden");
+        }
+    }
+
+    @Nested
+    @DisplayName("PATCH")
+    class Patch {
+
+        @Test
+        public void itShouldUpdateIssueAssignee() {
+            // given a user
+            User assignee = User.builder()
+                    .email("assignee@user")
+                    .password("assignee_pass")
+                    .fullName("assignee me")
+                    .userName("issue_assignee")
+                    .build();
+            assignee = userService.createUser(assignee);
+
+            // given an issue
+            issue1 = issueService.createIssue(issue1, authenticatedUser, project.getId());
+
+            // given the request body
+            String requestBody = "{\"assignee\" : \"" + assignee.getId() + "\"}";
+            HttpEntity httpEntity = new HttpEntity(requestBody, headers);
+
+            // when a PATCH request is made to update the issue assignee
+            ResponseEntity<IssueDto> response =
+                    restTemplate.exchange("/issues/" + issue1.getId(), HttpMethod.PATCH, httpEntity, IssueDto.class);
+
+            // then the response should be the updated issue
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody().getAssignee()).isEqualToComparingOnlyGivenFields(assignee);
         }
     }
 

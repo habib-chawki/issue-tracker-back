@@ -1,6 +1,7 @@
 package com.habibInc.issueTracker.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.habibInc.issueTracker.user.User;
 import com.habibInc.issueTracker.user.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -58,11 +59,13 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                                             Authentication authResult) throws IOException {
         // retrieve the authenticated user
         CustomUserDetails principal = (CustomUserDetails) authResult.getPrincipal();
+        User authenticatedUser = principal.getAuthenticatedUser();
 
         // set up the user DTO response body
         UserDto userDto = new UserDto(
-                principal.getAuthenticatedUser().getId(),
-                principal.getAuthenticatedUser().getUserName()
+                authenticatedUser.getId(),
+                authenticatedUser.getUserName(),
+                authenticatedUser.getFullName()
         );
 
         String responseBody = new ObjectMapper().writeValueAsString(userDto);

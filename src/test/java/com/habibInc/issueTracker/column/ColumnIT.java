@@ -9,7 +9,6 @@ import com.habibInc.issueTracker.issue.IssueRepository;
 import com.habibInc.issueTracker.security.JwtUtil;
 import com.habibInc.issueTracker.sprint.Sprint;
 import com.habibInc.issueTracker.sprint.SprintRepository;
-import com.habibInc.issueTracker.sprint.SprintService;
 import com.habibInc.issueTracker.user.User;
 import com.habibInc.issueTracker.user.UserRepository;
 import com.habibInc.issueTracker.user.UserService;
@@ -19,14 +18,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 
-import java.net.http.HttpResponse;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestInstance(value = TestInstance.Lifecycle.PER_CLASS)
 public class ColumnIT {
 
     @Autowired
@@ -70,9 +69,10 @@ public class ColumnIT {
     public void authSetup() {
         // save the authenticated user
         authenticatedUser = User.builder()
-                .email("authorizedr@user.in")
+                .email("authorized@user.in")
                 .userName("authorized")
                 .password("auth_pass")
+                .fullName("auth user")
                 .build();
 
         authenticatedUser = userService.createUser(authenticatedUser);
@@ -263,11 +263,11 @@ public class ColumnIT {
                 // given an incorrect board id
                 String url = String.format(baseUrl, 404L, column.getId());
 
-                // when a GET request is made to retrieve the column by id while the board id is incorrect
+                // when a GET request is made to retrieve the column by id
                 ResponseEntity<ApiError> response =
                         restTemplate.exchange(url, HttpMethod.GET, httpEntity, ApiError.class);
 
-                // then expect a 404 board not found error to be returned
+                // then expect a 404 board not found error
                 assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
                 assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Board not found");
             }
@@ -402,7 +402,12 @@ public class ColumnIT {
         @Test
         public void givenDeleteColumnById_whenAuthenticatedUserIsNotTheBoardOwner_itShouldReturnForbiddenOperationError() {
             // given a random user
-            User randomUser = User.builder().email("random@user.me").password("random_pass").build();
+            User randomUser = User.builder()
+                    .email("random@user.me")
+                    .password("random_pass")
+                    .userName("rand_user")
+                    .fullName("random user")
+                    .build();
             randomUser = userService.createUser(randomUser);
 
             // given the random user set as board owner
@@ -435,7 +440,7 @@ public class ColumnIT {
 
         final String baseUrl = "/boards/%s/columns/%s";
         final String updatedTitle = "updated title";
-        final String requestBody = String.format("{\"title\": \"" + updatedTitle + "\"}");
+        final String requestBody = "{\"newColumnTitle\": \"" + updatedTitle + "\"}";
 
         HttpEntity<String> httpEntity;
 
@@ -453,19 +458,23 @@ public class ColumnIT {
             String url = String.format(baseUrl, board.getId(), column.getId());
 
             // when a PATCH request is made to update column title
-            ResponseEntity<Column> response =
-                    restTemplate.exchange(url, HttpMethod.PATCH, httpEntity, Column.class);
+            ResponseEntity<Map> response =
+                    restTemplate.exchange(url, HttpMethod.PATCH, httpEntity, Map.class);
 
             // then expect the response to be the column with the updated title
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-            assertThat(response.getBody()).isEqualToComparingOnlyGivenFields(column);
-            assertThat(response.getBody().getTitle()).isEqualTo(updatedTitle);
+            assertThat(response.getBody().get("updatedTitle")).isEqualTo(updatedTitle);
         }
 
         @Test
         public void givenUpdateColumnTitle_whenAuthenticatedUserIsNotTheBoardOwner_itShouldReturnForbiddenOperationError() {
             // given a random user
-            User randomUser = User.builder().id(666L).email("not.authenticated@user.random").password("!authenticated").build();
+            User randomUser = User.builder()
+                    .email("not.authenticated@user.random")
+                    .password("!authenticated")
+                    .userName("not.auth")
+                    .fullName("not authenticated user")
+                    .build();
             randomUser = userService.createUser(randomUser);
 
             // given the random user set as board owner

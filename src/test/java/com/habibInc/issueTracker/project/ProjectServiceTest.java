@@ -4,6 +4,7 @@ import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.issue.IssueRepository;
 import com.habibInc.issueTracker.user.User;
+import com.habibInc.issueTracker.user.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -12,6 +13,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -26,6 +28,9 @@ public class ProjectServiceTest {
 
     @Mock
     IssueRepository issueRepository;
+
+    @Mock
+    UserService userService;
 
     Project project, project2;
 
@@ -42,11 +47,14 @@ public class ProjectServiceTest {
 
     @Test
     public void itShouldCreateProject() {
+        // given the authenticated user
+        User authenticatedUser = User.builder().id(777L).email("authenticated@user").password("auth_pass").build();
+
         // given the project repository returns the saved project
         when(projectRepository.save(project)).thenReturn(project);
 
         // when the project service is invoked to create the project
-        Project createdProject = projectService.createProject(project, null);
+        Project createdProject = projectService.createProject(project, authenticatedUser);
 
         // then expect the project repository to have been invoked
         verify(projectRepository, times(1)).save(project);
@@ -66,6 +74,21 @@ public class ProjectServiceTest {
 
         // then the authenticated user should be set as project owner
         assertThat(createdProject.getOwner()).isEqualTo(authenticatedUser);
+    }
+
+    @Test
+    public void givenCreateProject_itShouldAddAuthenticatedUserToAssignedUsers() {
+        // given the authenticated user
+        User authenticatedUser = User.builder().id(555L).email("authenticated@user").password("auth_pass").build();
+
+        // given the repository response
+        when(projectRepository.save(project)).thenReturn(project);
+
+        // when the project is created
+        Project createdProject = projectService.createProject(project, authenticatedUser);
+
+        // then the authenticated user should be added to the set of assigned users
+        assertThat(createdProject.getAssignedUsers()).containsExactly(authenticatedUser);
     }
 
     @Test
@@ -115,5 +138,46 @@ public class ProjectServiceTest {
 
         // then the backlog should be retrieved successfully
         assertThat(retrievedBacklog).isEqualTo(backlog);
+    }
+
+    @Test
+    public void itShouldGetProjectsByAssignedUser() {
+        // given a user id
+        Long userId = 10L;
+
+        // given a set of projects
+        Set<Project> projects = Set.of(
+                Project.builder().id(1L).name("Project 01").build(),
+                Project.builder().id(2L).name("Project 02").build(),
+                Project.builder().id(3L).name("Project 03").build()
+        );
+
+        // given the repository response
+        when(projectRepository.findAllByAssignedUsersId(10L)).thenReturn(projects);
+
+        // when the service is invoked to get the projects by assigned user
+        Set<Project> projectsByAssignedUser = projectService.getProjectsByAssignedUser(userId);
+
+        // then expect the projects to have been fetched successfully
+        assertThat(projectsByAssignedUser).isEqualTo(projects);
+
+        verify(projectRepository, times(1)).findAllByAssignedUsersId(userId);
+    }
+
+    @Test
+    public void itShouldAddUserToProject() {
+        // given a user
+        User user = User.builder().id(666L).email("user@email").password("userpass").build();
+
+        // given
+        when(userService.getUserById(user.getId())).thenReturn(user);
+        when(projectRepository.findById(project.getId())).thenReturn(Optional.of(project));
+
+        // when addUserToProject() is invoked
+        projectService.addUserToProject(user.getId(), project.getId());
+
+        // then the the user should be added successfully via the repository
+        verify(projectRepository, times(1)).findById(project.getId());
+        verify(projectRepository).addUserToProject(user.getId(), project.getId());
     }
 }

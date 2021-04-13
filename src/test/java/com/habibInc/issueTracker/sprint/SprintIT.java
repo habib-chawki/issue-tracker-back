@@ -78,6 +78,8 @@ public class SprintIT {
         authenticatedUser = new User();
         authenticatedUser.setEmail("auth@user.me");
         authenticatedUser.setPassword("auth.pass");
+        authenticatedUser.setFullName("auth full name");
+        authenticatedUser.setUserName("auth username");
 
         userService.createUser(authenticatedUser);
 

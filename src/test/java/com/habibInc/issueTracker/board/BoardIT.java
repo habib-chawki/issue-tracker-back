@@ -62,6 +62,7 @@ public class BoardIT {
                 .userName("authenticated_user")
                 .email("authenticated@user.in")
                 .password("auth_pass")
+                .fullName("auth user")
                 .build();
 
         // save the user to pass the authorization filter
@@ -259,7 +260,12 @@ public class BoardIT {
         @DisplayName("Disallow deleting boards owned by other users")
         public void givenDeleteBoardById_whenAuthenticatedUserIsNotTheBoardOwner_itShouldReturnForbiddenOperationError() {
             // given a random user
-            User notAuthenticatedUser = User.builder().email("not@authenticated.user").password("forbid").build();
+            User notAuthenticatedUser = User.builder()
+                    .email("not@authenticated.user")
+                    .password("forbid")
+                    .userName("not_auth")
+                    .fullName("not auth")
+                    .build();
 
             // save the random user
             notAuthenticatedUser = userService.createUser(notAuthenticatedUser);

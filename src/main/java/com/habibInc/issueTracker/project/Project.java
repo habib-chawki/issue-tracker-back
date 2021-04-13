@@ -10,6 +10,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 
@@ -19,7 +20,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @Builder
 
-@JsonIgnoreProperties(value = {"owner", "backlog", "sprints"})
+@JsonIgnoreProperties(value = {"owner", "backlog", "sprints", "assignedUsers"})
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -36,6 +37,14 @@ public class Project {
 
     @OneToMany(mappedBy = "project")
     private List<Sprint> sprints;
+
+    @ManyToMany
+    @JoinTable(
+            name = "project_user",
+            joinColumns = @JoinColumn(name = "project_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> assignedUsers;
 
     @Override
     public boolean equals(Object o) {

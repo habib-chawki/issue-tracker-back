@@ -13,12 +13,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+//@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ProjectIT {
 
     @Autowired
@@ -48,15 +50,17 @@ public class ProjectIT {
 
     Project project, project2;
 
-    @BeforeAll
+    @BeforeEach
     public void authSetup() {
         // create a user to authenticate
         authenticatedUser = new User();
         authenticatedUser.setEmail("auth.user@email.com");
         authenticatedUser.setPassword("auth_password");
+        authenticatedUser.setFullName("auth full name");
+        authenticatedUser.setUserName("auth username");
 
         // save the user to pass authorization
-        userService.createUser(authenticatedUser);
+        authenticatedUser = userService.createUser(authenticatedUser);
 
         // generate an auth token signed with the user email
         token = jwtUtil.generateToken(authenticatedUser.getEmail());
@@ -110,6 +114,40 @@ public class ProjectIT {
 
             // then expect the authenticated user to have been set as project owner
             assertThat(createdProject.getOwner()).isEqualTo(authenticatedUser);
+        }
+
+        @Test
+        public void itShouldAddUserToProject() {
+            // given a user to add to the project
+            User user = new User();
+            user.setEmail("userToAdd@project");
+            user.setPassword("user_project");
+            user.setFullName("added user");
+            user.setUserName("added_user");
+
+            user = userService.createUser(user);
+
+            // given the project
+            project = projectService.createProject(project, authenticatedUser);
+
+            // given the url endpoint
+            String url = "/projects/" + project.getId() + "/users/" + user.getId();
+
+            HttpEntity httpEntity = new HttpEntity<>(headers);
+
+            // when a POST request is made to add the user to the project
+            ResponseEntity<Void> response =
+                    restTemplate.exchange(url, HttpMethod.POST, httpEntity, Void.class);
+
+            // then expect the user to have been added to the project successfully
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+            // when a GET request is made to fetch the list of projects by user id
+            ResponseEntity<Project[]> getResponse =
+                    restTemplate.exchange("/projects?user=" + user.getId(), HttpMethod.GET, httpEntity, Project[].class);
+
+            // then expect the project to have been added to the user's list of assigned projects
+            assertThat(getResponse.getBody()).contains(project);
         }
     }
 
@@ -247,16 +285,41 @@ public class ProjectIT {
             assertThat(response.getBody()).containsExactlyElementsOf(backlogPrimary);
             assertThat(response.getBody()).doesNotContainAnyElementsOf(backlogSecondary);
         }
+
+        @Test
+        public void itShouldGetProjectsByAssignedUser() {
+            // given a user
+            User user = new User();
+            user.setEmail("assigned_user@email.com");
+            user.setPassword("assigned_user_pass");
+            user.setFullName("assigned user");
+            user.setUserName("assigned_user");
+
+            user = userService.createUser(user);
+
+            // given a set of projects
+            List<Project> projects = (List<Project>) projectRepository.saveAll(
+                    List.of(
+                            Project.builder().assignedUsers(Set.of(user)).name("Project 01").build(),
+                            Project.builder().assignedUsers(Set.of(user)).name("Project 02").build(),
+                            Project.builder().assignedUsers(Set.of(user)).name("Project 03").build()
+                    )
+            );
+
+            // when a GET request is made to fetch the list of projects by assigned user id
+            ResponseEntity<Project[]> response =
+                    restTemplate.exchange("/projects?user=" + user.getId(), HttpMethod.GET, httpEntity, Project[].class);
+
+            // then expect the projects to have been fetched successfully
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody()).containsExactlyElementsOf(projects);
+        }
     }
 
     @AfterEach
     public void teardown() {
         issueRepository.deleteAll();
         projectRepository.deleteAll();
-    }
-
-    @AfterAll
-    public void authTeardown() {
         userRepository.deleteAll();
     }
 }

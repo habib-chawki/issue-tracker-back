@@ -1,6 +1,7 @@
 package com.habibInc.issueTracker.comment;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.user.User;
@@ -20,6 +21,7 @@ import java.util.Objects;
 @Builder
 
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@JsonIgnoreProperties({"issue", "owner"})
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

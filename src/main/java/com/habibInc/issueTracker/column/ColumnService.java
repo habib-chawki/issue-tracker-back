@@ -57,7 +57,7 @@ public class ColumnService {
                 .orElseThrow(() -> new ResourceNotFoundException("Column not found"));
 
         // check if the column belongs to the board specified by id
-        if (column.getBoard().getId() != boardId) {
+        if (!column.getBoard().getId().equals(boardId)) {
             throw new ResourceNotFoundException("Board not found");
         } else {
             return column;
@@ -85,11 +85,11 @@ public class ColumnService {
         columnRepository.deleteById(column.getId());
     }
 
-    public Column updateTitle(Long boardId, Long columnId, String updatedTitle, User authenticatedUser) {
+    public String updateTitle(Long boardId, Long columnId, String updatedTitle, User authenticatedUser) {
         // fetch the column by id (handles column / board not found errors)
         Column column = getColumnById(boardId, columnId);
 
-        // check whether authenticated user is the board owner and allowed to delete column
+        // only board owner should be able to update column title
         if(!column.getBoard().getOwner().equals(authenticatedUser))
             throw new ForbiddenOperationException("Forbidden operation");
 
@@ -97,7 +97,7 @@ public class ColumnService {
         column.setTitle(updatedTitle);
 
         // save and return
-        return columnRepository.save(column);
+        return columnRepository.save(column).getTitle();
     }
 
     public void updateIssueColumn(Long boardId, Long columnId, Long issueId, Long newColumnId) {

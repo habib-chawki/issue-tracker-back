@@ -25,7 +25,8 @@ import java.util.Objects;
 @Builder
 
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-@JsonIgnoreProperties(value = {"column", "reporter", "assignee", "sprint", "project"})
+@JsonIgnoreProperties(value = {"column", "reporter", "sprint", "project"})
+@Table(name = "issue")
 public class Issue {
 
     @Id
@@ -39,20 +40,20 @@ public class Issue {
     private String summary;
 
     @Enumerated(EnumType.STRING)
-    private IssueType type;
+    private IssueType type = IssueType.STORY;
 
     @Enumerated(EnumType.STRING)
-    private IssueResolution resolution;
+    private IssueStatus status = IssueStatus.UNRESOLVED;
 
     @Enumerated(EnumType.STRING)
-    private IssuePriority priority;
+    private IssuePriority priority = IssuePriority.MEDIUM;
 
     @OneToMany(mappedBy = "issue", cascade = CascadeType.ALL)
     private List<Comment> comments;
 
     private int votes;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne
     private User assignee;
 
     @OneToOne
@@ -67,7 +68,7 @@ public class Issue {
     @ManyToOne
     private Column column;
 
-    private String estimate;
+    private int points;
 
     private LocalDateTime creationTime;
     private LocalDateTime updateTime;

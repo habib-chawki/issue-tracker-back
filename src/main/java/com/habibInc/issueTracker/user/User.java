@@ -13,6 +13,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 
@@ -41,7 +42,10 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
     private String fullName;
+
+    @Column(unique = true, nullable = false)
     private String userName;
 
     @OneToMany(mappedBy = "assignee")
@@ -51,7 +55,10 @@ public class User {
     private List<Issue> reportedIssues;
 
     @OneToMany(mappedBy = "owner")
-    private List<Project> projects;
+    private List<Project> createdProjects;
+
+    @ManyToMany(mappedBy = "assignedUsers")
+    private Set<Project> assignedProjects;
 
     @Override
     public boolean equals(Object o) {

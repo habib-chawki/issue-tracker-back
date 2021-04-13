@@ -2,8 +2,12 @@ package com.habibInc.issueTracker.user;
 
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Set;
 
 @Service
 public class UserService {
@@ -34,5 +38,18 @@ public class UserService {
         return userRepository.findByEmail(email).orElseThrow(
                 () -> new ResourceNotFoundException("User not found")
         );
+    }
+
+    public Set<User> getUsersByAssignedProject(Long projectId) {
+        return userRepository.findAllByAssignedProjectsId(projectId);
+    }
+
+    public List<User> getPaginatedListOfUsers(int page, int size) {
+        PageRequest pageable = PageRequest.of(page, size);
+        return userRepository.findAll(pageable);
+    }
+
+    public List<User> getUsersNotAssignedToProject(Long excludedProjectId, int page, int size) {
+        return userRepository.findAllByAssignedProjectNot(excludedProjectId, PageRequest.of(page, size));
     }
 }
