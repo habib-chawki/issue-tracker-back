@@ -40,11 +40,6 @@ public class BoardControllerTest {
     }
 
     @Test
-    public void shouldFail() {
-        fail();
-    }
-
-    @Test
     public void itShouldCreateBoard() throws Exception {
         // given the board service
         when(boardService.createBoard(any(), eq(board), any())).thenReturn(board);
