@@ -62,4 +62,8 @@ public class ProjectService {
         // add to user to project in case both user and project exist
         projectRepository.addUserToProject(userId, projectId);
     }
+
+    public void removeUserFromProject(Long userId, Long projectId) {
+
+    }
 }
