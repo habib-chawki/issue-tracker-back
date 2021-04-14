@@ -131,5 +131,12 @@ public class ProjectRepositoryTest {
         // expect the user to have been added successfully
         assertThat(projectRepository.findAllByAssignedUsersId(user.getId()))
                 .containsExactly(project);
+
+        // when a request to remove the user from the project is made
+        projectRepository.removeUserFromProject(user.getId(), project.getId());
+
+        // then expect the user to have been removed successfully
+        assertThat(projectRepository.findAllByAssignedUsersId(user.getId()))
+                .doesNotContain(project);
     }
 }
