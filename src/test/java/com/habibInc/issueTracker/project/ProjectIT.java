@@ -336,6 +336,9 @@ public class ProjectIT {
 
             // given the user is added to the project
             projectService.addUserToProject(user.getId(), project.getId());
+
+            // expect the user to have been added successfully
+            assertThat(userService.getUsersByAssignedProject(project.getId())).contains(user);
         }
     }
 
