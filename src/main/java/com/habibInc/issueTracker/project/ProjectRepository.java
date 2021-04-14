@@ -19,6 +19,7 @@ public interface ProjectRepository extends CrudRepository<Project, Long> {
     void addUserToProject(@Param(value = "userId") Long userId,
                           @Param(value = "projectId") Long projectId);
 
+    @Transactional
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query(value = "DELETE FROM project_user WHERE user_id = :userId AND project_id = :projectId", nativeQuery = true)
     void removeUserFromProject(@Param("userId") Long userId,
