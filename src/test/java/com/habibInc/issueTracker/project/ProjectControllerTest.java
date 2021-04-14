@@ -19,8 +19,7 @@ import java.util.Set;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(ProjectController.class)
@@ -155,6 +154,17 @@ public class ProjectControllerTest {
         // when a POST request id made to add the user to the project
         // then the response should be a 200 OK
         mockMvc.perform(post("/projects/" + project.getId() + "/users/" + userId))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void itShouldRemoveUserFromProject() throws Exception {
+        // given a user id
+        Long userId = 100L;
+
+        // when a DELETE request is made to remove a user from the project
+        // then expect a 200 OK response
+        mockMvc.perform(delete("/projects/" + project.getId() + "/users/" + userId))
                 .andExpect(status().isOk());
     }
 }
