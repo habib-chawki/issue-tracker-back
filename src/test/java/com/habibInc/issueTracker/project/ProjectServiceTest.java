@@ -41,8 +41,8 @@ public class ProjectServiceTest {
 
     @BeforeEach
     public void setup() {
-        project = Project.builder().id(1L).name("Proj").build();
-        project2 = Project.builder().id(2L).name("Secondary proj").build();
+        project = Project.builder().id(1L).name("Primary project").build();
+        project2 = Project.builder().id(2L).name("Secondary project").build();
     }
 
     @Test
@@ -167,7 +167,7 @@ public class ProjectServiceTest {
     @Test
     public void itShouldAddUserToProject() {
         // given a user
-        User user = User.builder().id(666L).email("user@email").password("userpass").build();
+        User user = User.builder().id(888L).email("user@email").password("user_pass").build();
 
         // given
         when(userService.getUserById(user.getId())).thenReturn(user);
@@ -177,7 +177,22 @@ public class ProjectServiceTest {
         projectService.addUserToProject(user.getId(), project.getId());
 
         // then the the user should be added successfully via the repository
-        verify(projectRepository, times(1)).findById(project.getId());
         verify(projectRepository).addUserToProject(user.getId(), project.getId());
+    }
+
+    @Test
+    public void itShouldRemoveUserFromProject() {
+        // given a user
+        User user = User.builder().id(888L).email("user@email").password("user_pass").build();
+
+        // given
+        when(userService.getUserById(user.getId())).thenReturn(user);
+        when(projectRepository.findById(project.getId())).thenReturn(Optional.of(project));
+
+        // when removeUserFromProject() is invoked
+        projectService.removeUserFromProject(user.getId(), project.getId());
+
+        // then the user should be remove successfully
+        verify(projectRepository, times(1)).removeUserFromProject(user.getId(), project.getId());
     }
 }
