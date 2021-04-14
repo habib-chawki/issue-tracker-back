@@ -159,6 +159,7 @@ public class ProjectControllerTest {
         mockMvc.perform(post("/projects/" + project.getId() + "/users/" + userId))
                 .andExpect(status().isOk());
 
+        // expect the project service to have been invoked
         verify(projectService, times(1)).addUserToProject(userId, project.getId());
     }
 
@@ -167,9 +168,15 @@ public class ProjectControllerTest {
         // given a user id
         Long userId = 100L;
 
+        // given the service response
+        doNothing().when(projectService).removeUserFromProject(userId, project.getId());
+
         // when a DELETE request is made to remove a user from the project
         // then expect a 200 OK response
         mockMvc.perform(delete("/projects/" + project.getId() + "/users/" + userId))
                 .andExpect(status().isOk());
+
+        // expect the project service to have been invoked
+        verify(projectService, times(1)).removeUserFromProject(userId, project.getId());
     }
 }
