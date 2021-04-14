@@ -18,4 +18,6 @@ public interface ProjectRepository extends CrudRepository<Project, Long> {
     @Query(value = "INSERT INTO project_user(user_id, project_id) VALUES(:userId, :projectId) ", nativeQuery = true)
     void addUserToProject(@Param(value = "userId") Long userId,
                           @Param(value = "projectId") Long projectId);
+
+    void removeUserFromProject(Long userId, Long projectId);
 }
