@@ -65,7 +65,8 @@ public class ProjectController {
 
     @DeleteMapping("/{projectId}/users/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public void removeUserFromProject() {
-
+    public void removeUserFromProject(@PathVariable("projectId") Long projectId,
+                                      @PathVariable("userId") Long userId) {
+        projectService.removeUserFromProject(userId, projectId);
     }
 }
