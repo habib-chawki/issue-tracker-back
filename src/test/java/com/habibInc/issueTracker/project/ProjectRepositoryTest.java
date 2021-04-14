@@ -96,10 +96,7 @@ public class ProjectRepositoryTest {
 
         user = userRepository.save(user);
 
-        // given a project
-        Project project = new Project();
-        project.setName("Project");
-
+        // given the project is saved
         project = projectRepository.save(project);
 
         // when add user to project is invoked
@@ -111,5 +108,35 @@ public class ProjectRepositoryTest {
 
         assertThat(updatedUser.getAssignedProjects()).contains(project);
         assertThat(updatedProject.getAssignedUsers()).contains(user);
+    }
+
+    @Test
+    public void itShouldRemoveUserFromProject() {
+        // given a user
+        User user = userRepository.save(
+                User.builder()
+                .userName("username")
+                .fullName("full name")
+                .email("user@email.me")
+                .password("user@pass")
+                .build()
+        );
+
+        // given the project is saved
+        project = projectRepository.save(project);
+
+        // given the user is added to the project
+        projectRepository.addUserToProject(user.getId(), project.getId());
+
+        // expect the user to have been added successfully
+        assertThat(projectRepository.findAllByAssignedUsersId(user.getId()))
+                .containsExactly(project);
+
+        // when a request to remove the user from the project is made
+        projectRepository.removeUserFromProject(user.getId(), project.getId());
+
+        // then expect the user to have been removed successfully
+        assertThat(projectRepository.findAllByAssignedUsersId(user.getId()))
+                .doesNotContain(project);
     }
 }

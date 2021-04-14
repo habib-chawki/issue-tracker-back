@@ -316,6 +316,54 @@ public class ProjectIT {
         }
     }
 
+    @Nested
+    @DisplayName("DELETE")
+    class Delete {
+
+        HttpEntity httpEntity;
+
+        @BeforeEach
+        public void setup() {
+            httpEntity = new HttpEntity(headers);
+        }
+
+        @Test
+        public void itShouldRemoveUserFromProject() {
+            // given a user
+            User user = userService.createUser(
+                    User.builder()
+                            .userName("username")
+                            .fullName("full name")
+                            .email("user@email.me")
+                            .password("user@pass")
+                            .build()
+            );
+
+            // given the project
+            project = projectService.createProject(project, authenticatedUser);
+
+            // given the user is added to the project
+            projectService.addUserToProject(user.getId(), project.getId());
+
+            // expect the user to have been added successfully
+            assertThat(userService.getUsersByAssignedProject(project.getId())).contains(user);
+
+            // given the URL
+            String url = "/projects/" + project.getId() + "/users/" + user.getId();
+
+            // when a DELETE request is made to remove the user from the project
+            ResponseEntity<Void> response =
+                    restTemplate.exchange(url, HttpMethod.DELETE, httpEntity, Void.class);
+
+            // then expect the user to have been removed successfully
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+            Set<User> usersAssignedToProject = userService.getUsersByAssignedProject(project.getId());
+            assertThat(usersAssignedToProject).doesNotContain(user);
+            assertThat(usersAssignedToProject).contains(authenticatedUser);
+        }
+    }
+
     @AfterEach
     public void teardown() {
         issueRepository.deleteAll();

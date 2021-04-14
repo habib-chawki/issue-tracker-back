@@ -18,9 +18,8 @@ import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(ProjectController.class)
@@ -152,9 +151,32 @@ public class ProjectControllerTest {
         // given a user id
         Long userId = 100L;
 
+        // given the service response
+        doNothing().when(projectService).addUserToProject(userId, project.getId());
+
         // when a POST request id made to add the user to the project
         // then the response should be a 200 OK
         mockMvc.perform(post("/projects/" + project.getId() + "/users/" + userId))
                 .andExpect(status().isOk());
+
+        // expect the project service to have been invoked
+        verify(projectService, times(1)).addUserToProject(userId, project.getId());
+    }
+
+    @Test
+    public void itShouldRemoveUserFromProject() throws Exception {
+        // given a user id
+        Long userId = 100L;
+
+        // given the service response
+        doNothing().when(projectService).removeUserFromProject(userId, project.getId());
+
+        // when a DELETE request is made to remove a user from the project
+        // then expect a 200 OK response
+        mockMvc.perform(delete("/projects/" + project.getId() + "/users/" + userId))
+                .andExpect(status().isOk());
+
+        // expect the project service to have been invoked
+        verify(projectService, times(1)).removeUserFromProject(userId, project.getId());
     }
 }

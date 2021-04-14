@@ -62,4 +62,11 @@ public class ProjectController {
                                  @PathVariable("userId") Long userId){
         projectService.addUserToProject(userId, projectId);
     }
+
+    @DeleteMapping("/{projectId}/users/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void removeUserFromProject(@PathVariable("projectId") Long projectId,
+                                      @PathVariable("userId") Long userId) {
+        projectService.removeUserFromProject(userId, projectId);
+    }
 }
