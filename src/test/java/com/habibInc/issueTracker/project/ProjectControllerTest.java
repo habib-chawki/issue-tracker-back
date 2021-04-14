@@ -18,7 +18,7 @@ import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -151,10 +151,15 @@ public class ProjectControllerTest {
         // given a user id
         Long userId = 100L;
 
+        // given the service response
+        doNothing().when(projectService).addUserToProject(userId, project.getId());
+
         // when a POST request id made to add the user to the project
         // then the response should be a 200 OK
         mockMvc.perform(post("/projects/" + project.getId() + "/users/" + userId))
                 .andExpect(status().isOk());
+
+        verify(projectService, times(1)).addUserToProject(userId, project.getId());
     }
 
     @Test
