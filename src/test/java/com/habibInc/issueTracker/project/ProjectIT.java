@@ -316,6 +316,29 @@ public class ProjectIT {
         }
     }
 
+    @Nested
+    @DisplayName("DELETE")
+    class Delete {
+        @Test
+        public void itShouldRemoveUserFromProject() {
+            // given a user
+            User user = userService.createUser(
+                    User.builder()
+                            .userName("username")
+                            .fullName("full name")
+                            .email("user@email.me")
+                            .password("user@pass")
+                            .build()
+            );
+
+            // given the project
+            project = projectService.createProject(project, authenticatedUser);
+
+            // given the user is added to the project
+            projectService.addUserToProject(user.getId(), project.getId());
+        }
+    }
+
     @AfterEach
     public void teardown() {
         issueRepository.deleteAll();
