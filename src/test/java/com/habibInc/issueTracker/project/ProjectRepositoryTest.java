@@ -122,7 +122,14 @@ public class ProjectRepositoryTest {
                 .build()
         );
 
-        // given a project
+        // given the project is saved
+        project = projectRepository.save(project);
 
+        // given the user is added to the project
+        projectRepository.addUserToProject(user.getId(), project.getId());
+
+        // expect the user to have been added successfully
+        assertThat(projectRepository.findAllByAssignedUsersId(user.getId()))
+                .containsExactly(project);
     }
 }
