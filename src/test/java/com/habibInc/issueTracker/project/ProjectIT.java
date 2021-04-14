@@ -319,6 +319,14 @@ public class ProjectIT {
     @Nested
     @DisplayName("DELETE")
     class Delete {
+
+        HttpEntity httpEntity;
+
+        @BeforeEach
+        public void setup() {
+            httpEntity = new HttpEntity(headers);
+        }
+
         @Test
         public void itShouldRemoveUserFromProject() {
             // given a user
@@ -339,6 +347,16 @@ public class ProjectIT {
 
             // expect the user to have been added successfully
             assertThat(userService.getUsersByAssignedProject(project.getId())).contains(user);
+
+            // given the URL
+            String url = "/projects/" + project.getId() + "/users/" + user.getId();
+
+            // when a DELETE request is made to remove the user from the project
+            ResponseEntity<Void> response =
+                    restTemplate.exchange(url, HttpMethod.DELETE, httpEntity, Void.class);
+
+            // then expect the user to have been removed successfully
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         }
     }
 
