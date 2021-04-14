@@ -64,6 +64,13 @@ public class ProjectService {
     }
 
     public void removeUserFromProject(Long userId, Long projectId) {
+        // fetch user by id (throws user not found error)
+        userService.getUserById(userId);
 
+        // fetch project by id (throws project not found error)
+        getProjectById(projectId);
+
+        // remove user from project
+        projectRepository.removeUserFromProject(userId, projectId);
     }
 }
