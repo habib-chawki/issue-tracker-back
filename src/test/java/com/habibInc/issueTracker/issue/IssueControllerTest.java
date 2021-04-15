@@ -20,6 +20,9 @@ import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -71,20 +74,34 @@ public class IssueControllerTest {
     @Test
     public void itShouldCreateIssue() throws Exception {
 
-        // mock issue service to add new issue
+        // given the issue service response
         when(issueService.createIssue(eq(issue1), any(), anyLong())).thenReturn(issue1);
 
-        // set up json request body
+        // given the request body
         String requestBody = objectMapper.writeValueAsString(issue1);
 
-        // perform a post request and expect the new issue to have been created
-        mockMvc.perform(post("/issues?project=10")
+        // when a POST request is made to create a new issue
+        // then expect the response to be the created issue
+        mockMvc.perform(post("/issues?project={projectId}", 10)
                 .content(requestBody)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(requestBody))
-                .andDo(document("Issue"));
+                .andDo(document("{method-name}",
+                        requestParameters(
+                                parameterWithName("project").description("The project id")
+                        ),
+                        requestFields(
+                                fieldWithPath("summary").description("The issue's summary"),
+                                fieldWithPath("description").description("The issue's description"),
+                                fieldWithPath("type").description("The issue's type, either Story, Bug or Task"),
+                                fieldWithPath("points").description("The issue's story points"),
+                                fieldWithPath("priority").description("The issue's priority, either High, Medium or Low"),
+                                fieldWithPath("assignee").description("The issue's assigned dev")
+                        ),
+                        responseBody())
+                );
     }
 
     @Test
