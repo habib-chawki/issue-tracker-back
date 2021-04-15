@@ -88,19 +88,23 @@ public class IssueControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(requestBody))
-                .andDo(document("{method-name}",
-                        requestParameters(
-                                parameterWithName("project").description("The project id")
-                        ),
-                        requestFields(
-                                fieldWithPath("summary").description("The issue's summary"),
-                                fieldWithPath("description").description("The issue's description"),
-                                fieldWithPath("type").description("The issue's type, either Story, Bug or Task"),
-                                fieldWithPath("points").description("The issue's story points"),
-                                fieldWithPath("priority").description("The issue's priority, either High, Medium or Low"),
-                                fieldWithPath("assignee").description("The issue's assigned dev")
-                        ),
-                        responseBody())
+                .andDo(
+                        document("{method-name}",
+                                requestParameters(
+                                        parameterWithName("project").description("The project id")
+                                ),
+                                relaxedRequestFields(
+                                        fieldWithPath("summary").description("The issue's summary"),
+                                        fieldWithPath("description").description("The issue's description"),
+                                        fieldWithPath("type").description("The issue's type, either Story, Bug or Task"),
+                                        fieldWithPath("points").description("The issue's story points"),
+                                        fieldWithPath("priority").description("The issue's priority, either High, Medium or Low"),
+                                        fieldWithPath("assignee").description("The issue's assigned dev team member")
+                                ),
+                                responseFields(
+                                        subsectionWithPath("[]").description("The created issue with an auto generated id")
+                                )
+                        )
                 );
     }
 
