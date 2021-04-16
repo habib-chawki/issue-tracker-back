@@ -200,20 +200,20 @@ public class IssueControllerTest {
 
     @Test
     public void itShouldUpdateIssue() throws Exception {
-        // make a copy of the issue
+        // given the updated issue
         String issueJson = objectMapper.writeValueAsString(issue1);
         Issue updatedIssue = objectMapper.readValue(issueJson, Issue.class);
 
-        // update the issue
         updatedIssue.setType(IssueType.BUG);
         updatedIssue.setSummary("Updated summary");
 
-        // set up the updated issue as the request body
+        // given the request body
         String requestBody = objectMapper.writeValueAsString(updatedIssue);
 
-        when(issueService.updateIssue(eq(1L), eq(updatedIssue), any())).thenReturn(updatedIssue);
+        // given the service response
+        when(issueService.updateIssue(eq(issue1.getId()), eq(updatedIssue), any())).thenReturn(updatedIssue);
 
-        // when a put request to update an issue is made, then the response should be the updated issue
+        // when a PUT request to update an issue is made, then the response should be the updated issue
         mockMvc.perform(MockMvcRequestBuilders.put("/issues/1")
                 .content(requestBody)
                 .contentType(MediaType.APPLICATION_JSON))
