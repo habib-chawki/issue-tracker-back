@@ -214,12 +214,33 @@ public class IssueControllerTest {
         when(issueService.updateIssue(eq(issue1.getId()), eq(updatedIssue), any())).thenReturn(updatedIssue);
 
         // when a PUT request to update an issue is made, then the response should be the updated issue
-        mockMvc.perform(MockMvcRequestBuilders.put("/issues/1")
+        mockMvc.perform(MockMvcRequestBuilders.put("/issues/{issueId}", issue1.getId())
                 .content(requestBody)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().string(requestBody));
+                .andExpect(content().string(requestBody))
+                .andDo(
+                        document("{methodName}",
+                                relaxedRequestFields(
+                                        fieldWithPath("summary").description("The issue's summary"),
+                                        fieldWithPath("description").description("The issue's description"),
+                                        fieldWithPath("type").description("The issue's type, either Story, Bug or Task"),
+                                        fieldWithPath("points").description("The issue's story points"),
+                                        fieldWithPath("priority").description("The issue's priority, either High, Medium or Low"),
+                                        fieldWithPath("assignee").description("The issue's assigned dev team member")
+                                ),
+                                relaxedResponseFields(
+                                        fieldWithPath("id").description("The issue's id"),
+                                        fieldWithPath("summary").description("The issue's summary"),
+                                        fieldWithPath("description").description("The issue's description"),
+                                        fieldWithPath("type").description("The issue's type, either Story, Bug or Task"),
+                                        fieldWithPath("points").description("The issue's story points"),
+                                        fieldWithPath("priority").description("The issue's priority, either High, Medium or Low"),
+                                        fieldWithPath("assignee").description("The issue's assigned dev team member")
+                                )
+                        )
+                );
     }
 
     @Test
