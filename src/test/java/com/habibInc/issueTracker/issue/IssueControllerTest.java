@@ -21,10 +21,9 @@ import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(IssueController.class)
@@ -280,7 +279,14 @@ public class IssueControllerTest {
         doNothing().when(issueService).deleteIssue(eq(issue2.getId()), any());
 
         mockMvc.perform(delete("/issues/{issueId}", issue2.getId()))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andDo(
+                        document("{methodName}",
+                                pathParameters(
+                                        parameterWithName("issueId").description("The id of the issue to be deleted")
+                                )
+                        )
+                );
     }
 
     @Test
