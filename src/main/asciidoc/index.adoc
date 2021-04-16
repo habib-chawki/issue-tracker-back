@@ -1,0 +1,7 @@
+= Spring REST Docs
+
+.request
+include::{snippets}/itShouldCreateIssue/http-request.adoc[]
+
+.response
+include::{snippets}/itShouldCreateIssue/http-response.adoc[]
