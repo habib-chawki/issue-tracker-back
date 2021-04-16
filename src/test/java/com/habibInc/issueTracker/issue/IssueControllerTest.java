@@ -13,17 +13,17 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(IssueController.class)
@@ -82,7 +82,7 @@ public class IssueControllerTest {
 
         // when a POST request is made to create a new issue
         // then expect the response to be the created issue
-        mockMvc.perform(post("/issues").param("project", "10")
+        mockMvc.perform(MockMvcRequestBuilders.post("/issues").param("project", "10")
                 .content(requestBody)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
@@ -128,7 +128,13 @@ public class IssueControllerTest {
         mockMvc.perform(get("/issues/{issueId}", issue2.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(responseBody));
+                .andExpect(content().json(responseBody)).andDo(
+                        document("{methodName}",
+                            pathParameters(
+                                    parameterWithName("issueId").description("The issue id")
+                            )
+                        )
+        );
     }
 
     @Test
@@ -141,7 +147,7 @@ public class IssueControllerTest {
                 .thenThrow(new ResourceNotFoundException(errorMessage));
 
         // then an error message with a status code of 404 should be returned
-        mockMvc.perform(get("/issues/3"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/issues/3"))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.errorMessage").value(errorMessage));
@@ -152,7 +158,7 @@ public class IssueControllerTest {
         String errorMessage = "Invalid issue id";
 
         // expect an invalid issue id error
-        mockMvc.perform(get("/issues/invalid"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/issues/invalid"))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errorMessage").value(errorMessage));
@@ -167,7 +173,7 @@ public class IssueControllerTest {
         when(issueService.getAllIssues()).thenReturn(issues);
 
         // perform get request and expect the list of all issues to have been returned
-        mockMvc.perform(get("/issues"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/issues"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().string(objectMapper.writeValueAsString(issues)));
@@ -189,7 +195,7 @@ public class IssueControllerTest {
         when(issueService.updateIssue(eq(1L), eq(updatedIssue), any())).thenReturn(updatedIssue);
 
         // when a put request to update an issue is made, then the response should be the updated issue
-        mockMvc.perform(put("/issues/1")
+        mockMvc.perform(MockMvcRequestBuilders.put("/issues/1")
                 .content(requestBody)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -208,7 +214,7 @@ public class IssueControllerTest {
         String requestBody = objectMapper.writeValueAsString(issue1);
 
         // then a 404 not found error should be returned
-        mockMvc.perform(put("/issues/10")
+        mockMvc.perform(MockMvcRequestBuilders.put("/issues/10")
                 .content(requestBody)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
@@ -221,7 +227,7 @@ public class IssueControllerTest {
         String requestBody = objectMapper.writeValueAsString(issue1);
 
         // when the issue id is invalid then an 400 bad request error should be returned
-        mockMvc.perform(put("/issues/invalid")
+        mockMvc.perform(MockMvcRequestBuilders.put("/issues/invalid")
                 .content(requestBody).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
@@ -232,7 +238,7 @@ public class IssueControllerTest {
     public void itShouldDeleteIssueById() throws Exception {
         doNothing().when(issueService).deleteIssue(eq(2L), any());
 
-        mockMvc.perform(delete("/issues/2"))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/issues/2"))
                 .andExpect(status().isOk());
     }
 
@@ -240,7 +246,7 @@ public class IssueControllerTest {
     public void givenDeleteIssueById_whenIssueIdIsInvalid_itShouldReturnInvalidIssueIdError() throws Exception {
         String errorMessage = "Invalid issue id";
 
-        mockMvc.perform(delete("/issues/invalid"))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/issues/invalid"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errorMessage").value(errorMessage));
     }
@@ -253,7 +259,7 @@ public class IssueControllerTest {
                 .when(issueService).deleteIssue(eq(404L), any());
 
         // when an issue does not exists then a 404 error message should be returned
-        mockMvc.perform(delete("/issues/404"))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/issues/404"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.errorMessage").value(errorMessage));
     }
@@ -275,7 +281,7 @@ public class IssueControllerTest {
 
         // when a PATCH request is made to update the issue assignee
         // then the response should be the updated issue
-        mockMvc.perform(patch("/issues/" + issue1.getId())
+        mockMvc.perform(MockMvcRequestBuilders.patch("/issues/" + issue1.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))
                 .andExpect(status().isOk())
