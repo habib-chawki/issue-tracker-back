@@ -313,7 +313,7 @@ public class IssueControllerTest {
 
     @Test
     public void itShouldUpdateIssueAssignee() throws Exception {
-        // given the issue and user ids
+        // given the user id
         Long userId = 110L;
 
         // given the request body
@@ -328,10 +328,30 @@ public class IssueControllerTest {
 
         // when a PATCH request is made to update the issue assignee
         // then the response should be the updated issue
-        mockMvc.perform(MockMvcRequestBuilders.patch("/issues/" + issue1.getId())
+        mockMvc.perform(patch("/issues/{issueId}", issue1.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))
                 .andExpect(status().isOk())
-                .andExpect(content().json(expectedResponse));
+                .andExpect(content().json(expectedResponse))
+                .andDo(
+                        document("{methodName}",
+                                pathParameters(
+                                        parameterWithName("issueId").description("The id of the issue")
+                                ),
+                                requestFields(
+                                        fieldWithPath("assignee").description("The id of the user to be assigned to the issue")
+                                ),
+                                relaxedResponseFields(
+                                        fieldWithPath("id").description("The issue's id"),
+                                        fieldWithPath("summary").description("The issue's summary"),
+                                        fieldWithPath("description").description("The issue's description"),
+                                        fieldWithPath("type").description("The issue's type, either Story, Bug or Task"),
+                                        fieldWithPath("status").description("The issue's type, either Unresolved, In progress or Resolved"),
+                                        fieldWithPath("priority").description("The issue's priority, either High, Medium or Low"),
+                                        fieldWithPath("points").description("The issue's story points"),
+                                        fieldWithPath("assignee").description("The issue's assigned dev team member")
+                                )
+                        )
+                );
     }
 }
