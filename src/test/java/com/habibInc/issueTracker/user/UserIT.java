@@ -147,7 +147,7 @@ public class UserIT {
         Project project = new Project();
         project.setName("Project 01");
 
-        // given a set of users
+        // given a list of users
         List<User> users = (List<User>) userRepository.saveAll(
                 List.of(
                         User.builder().email("user1@email.com").password("pass1").fullName("user 01").userName("user_01").build(),
@@ -160,9 +160,12 @@ public class UserIT {
         project.setAssignedUsers(new HashSet<>(users));
         project = projectRepository.save(project);
 
+        // given the url
+        String url = "/users?project=" + project.getId() + "&page=0&size=10";
+
         // when a GET request is made to fetch the users by project
         ResponseEntity<UserDto[]> response =
-                restTemplate.exchange("/users?project=" + project.getId(), HttpMethod.GET, httpEntity, UserDto[].class);
+                restTemplate.exchange(url, HttpMethod.GET, httpEntity, UserDto[].class);
 
         // then expect the response to be the list of the project's dev team members
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
