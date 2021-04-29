@@ -14,7 +14,7 @@ import java.util.Set;
 public interface UserRepository extends CrudRepository<User, Long> {
     Optional<User> findByEmail(String email);
 
-    Set<User> findAllByAssignedProjectsId(Long projectId);
+    Set<User> findAllByAssignedProjectsId(Long projectId, Pageable pageable);
 
     @Query(value = "SELECT * FROM user WHERE id NOT IN " +
                     "(SELECT user_id FROM project_user WHERE project_id = :projectId)", nativeQuery = true)
