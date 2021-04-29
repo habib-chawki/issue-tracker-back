@@ -180,7 +180,7 @@ public class UserControllerTest {
         // given a project id
         Long projectId = 10L;
 
-        // given the page and size params
+        // given the pagination params
         int page = 0;
         int size = 10;
 
@@ -202,7 +202,10 @@ public class UserControllerTest {
         when(userService.getUsersByAssignedProject(projectId, page, size)).thenReturn(users);
 
         // when a GET request is made, then expect the response to be the list of users
-        mockMvc.perform(get("/users?project=" + projectId))
+        mockMvc.perform(get("/users")
+                .param("project", projectId.toString())
+                .param("size", String.valueOf(size))
+                .param("page", String.valueOf(page)))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(expectedResponse))
                 .andExpect(status().isOk());
