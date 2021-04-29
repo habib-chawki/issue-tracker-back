@@ -84,15 +84,15 @@ public class UserController {
 
     @GetMapping(value = {"/", ""}, params = {"project", "page", "size"})
     @ResponseStatus(HttpStatus.OK)
-    public Set<UserDto> getUsersByAssignedProject(@RequestParam(value = "project") Long projectId,
+    public List<UserDto> getUsersByAssignedProject(@RequestParam(value = "project") Long projectId,
                                                   @RequestParam(value = "page", defaultValue = "0") int page,
                                                   @RequestParam(value = "size", defaultValue = "10") int size) {
         // invoke service, fetch the paginated list of users
         List<User> users = userService.getUsersByAssignedProject(projectId, page, size);
 
         // convert to UserDto
-        Set<UserDto> usersByProject =
-                users.stream().map(user -> modelMapper.map(user, UserDto.class)).collect(Collectors.toSet());
+        List<UserDto> usersByProject =
+                users.stream().map(user -> modelMapper.map(user, UserDto.class)).collect(Collectors.toList());
 
         return usersByProject;
     }
