@@ -346,7 +346,7 @@ public class ProjectIT {
             projectService.addUserToProject(user.getId(), project.getId());
 
             // expect the user to have been added successfully
-            assertThat(userService.getUsersByAssignedProject(project.getId())).contains(user);
+            assertThat(userService.getUsersByAssignedProject(project.getId(), 0, 10)).contains(user);
 
             // given the URL
             String url = "/projects/" + project.getId() + "/users/" + user.getId();
@@ -358,7 +358,7 @@ public class ProjectIT {
             // then expect the user to have been removed successfully
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-            Set<User> usersAssignedToProject = userService.getUsersByAssignedProject(project.getId());
+            Set<User> usersAssignedToProject = userService.getUsersByAssignedProject(project.getId(), 0, 10);
             assertThat(usersAssignedToProject).doesNotContain(user);
             assertThat(usersAssignedToProject).contains(authenticatedUser);
         }

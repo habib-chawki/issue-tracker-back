@@ -127,6 +127,11 @@ public class UserServiceTest {
         // given a project id
         Long projectId = 10L;
 
+        // given the page and size params
+        int page = 0;
+        int size = 10;
+        PageRequest pageable = PageRequest.of(page, size);
+
         // given a list of users
         Set<User> users = Set.of(
                 User.builder().id(1L).userName("user1@email.com").build(),
@@ -135,15 +140,15 @@ public class UserServiceTest {
         );
 
         // given the repository response
-        when(userRepository.findAllByAssignedProjectsId(projectId)).thenReturn(users);
+        when(userRepository.findAllByAssignedProjectsId(projectId, pageable)).thenReturn(users);
 
         // when the service is invoked
-        Set<User> usersByProject = userService.getUsersByAssignedProject(projectId);
+        Set<User> usersByProject = userService.getUsersByAssignedProject(projectId, page, size);
 
         // then expect the list of users to have been fetched successfully
         assertThat(usersByProject).isEqualTo(users);
 
-        verify(userRepository, times(1)).findAllByAssignedProjectsId(projectId);
+        verify(userRepository, times(1)).findAllByAssignedProjectsId(projectId, pageable);
     }
 
     @Test
