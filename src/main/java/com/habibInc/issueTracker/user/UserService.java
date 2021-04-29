@@ -40,13 +40,12 @@ public class UserService {
         );
     }
 
-    public Set<User> getUsersByAssignedProject(Long projectId) {
-        return userRepository.findAllByAssignedProjectsId(projectId);
-    }
-
     public List<User> getPaginatedListOfUsers(int page, int size) {
         PageRequest pageable = PageRequest.of(page, size);
         return userRepository.findAll(pageable);
+    }
+    public Set<User> getUsersByAssignedProject(Long projectId, int page, int size) {
+        return userRepository.findAllByAssignedProjectsId(projectId, PageRequest.of(page, size));
     }
 
     public List<User> getUsersNotAssignedToProject(Long excludedProjectId, int page, int size) {
