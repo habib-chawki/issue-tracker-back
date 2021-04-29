@@ -88,7 +88,7 @@ public class UserController {
                                                   @RequestParam(value = "page", defaultValue = "0") int page,
                                                   @RequestParam(value = "size", defaultValue = "10") int size) {
         // invoke service, fetch the paginated list of users
-        Set<User> users = userService.getUsersByAssignedProject(projectId, page, size);
+        List<User> users = userService.getUsersByAssignedProject(projectId, page, size);
 
         // convert to UserDto
         Set<UserDto> usersByProject =

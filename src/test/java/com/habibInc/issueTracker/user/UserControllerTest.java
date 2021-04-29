@@ -185,7 +185,7 @@ public class UserControllerTest {
         int size = 10;
 
         // given a list of users
-        Set<User> users = Set.of(
+        List<User> users = List.of(
                 User.builder().id(1L).userName("user1@email.com").build(),
                 User.builder().id(2L).userName("user2@email.com").build(),
                 User.builder().id(3L).userName("user3@email.com").build()

@@ -89,7 +89,7 @@ public class UserRepositoryTest {
         project = projectRepository.save(project);
 
         // when a request to find users by project id is made
-        Set<User> usersByProjectId = userRepository.findAllByAssignedProjectsId(project.getId(), PageRequest.of(0, 10));
+        List<User> usersByProjectId = userRepository.findAllByAssignedProjectsId(project.getId(), PageRequest.of(0, 10));
 
         // then expect the response to be the project's dev team
         assertThat(usersByProjectId).containsExactlyElementsOf(users);

@@ -358,7 +358,7 @@ public class ProjectIT {
             // then expect the user to have been removed successfully
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-            Set<User> usersAssignedToProject = userService.getUsersByAssignedProject(project.getId(), 0, 10);
+            List<User> usersAssignedToProject = userService.getUsersByAssignedProject(project.getId(), 0, 10);
             assertThat(usersAssignedToProject).doesNotContain(user);
             assertThat(usersAssignedToProject).contains(authenticatedUser);
         }

@@ -44,7 +44,8 @@ public class UserService {
         PageRequest pageable = PageRequest.of(page, size);
         return userRepository.findAll(pageable);
     }
-    public Set<User> getUsersByAssignedProject(Long projectId, int page, int size) {
+
+    public List<User> getUsersByAssignedProject(Long projectId, int page, int size) {
         return userRepository.findAllByAssignedProjectsId(projectId, PageRequest.of(page, size));
     }
 
