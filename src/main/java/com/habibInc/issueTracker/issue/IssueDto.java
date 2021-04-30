@@ -15,7 +15,7 @@ import lombok.Setter;
 @Getter
 @Setter
 
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = IssueDto.class)
 public class IssueDto {
 
     private Long id;

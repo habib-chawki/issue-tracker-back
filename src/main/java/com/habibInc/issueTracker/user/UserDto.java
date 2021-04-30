@@ -13,7 +13,7 @@ import java.util.Objects;
 @Setter
 @Builder
 
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = UserDto.class)
 public class UserDto {
 
     private Long id;
