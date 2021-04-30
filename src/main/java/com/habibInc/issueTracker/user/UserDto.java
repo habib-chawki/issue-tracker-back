@@ -1,5 +1,8 @@
 package com.habibInc.issueTracker.user;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.ObjectIdResolver;
 import lombok.*;
 
 import java.util.Objects;
@@ -10,8 +13,11 @@ import java.util.Objects;
 @Setter
 @Builder
 
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class UserDto {
+
     private Long id;
+
     private String userName;
     private String fullName;
 
