@@ -390,7 +390,7 @@ public class IssueIT {
     class Patch {
 
         @Test
-        public void itShouldUpdateIssueAssignee() {
+        public void itShouldUpdateIssueAssignee() throws JsonProcessingException {
             // given a user
             User assignee = User.builder()
                     .email("assignee@user")
@@ -411,9 +411,13 @@ public class IssueIT {
             ResponseEntity<IssueDto> response =
                     restTemplate.exchange("/issues/" + issue1.getId(), HttpMethod.PATCH, httpEntity, IssueDto.class);
 
+
+            System.out.println("RESPONSE ==> "+new ObjectMapper().writeValueAsString(response));
+
             // then the response should be the updated issue
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-            assertThat(response.getBody().getAssignee()).isEqualToComparingOnlyGivenFields(assignee);
+            assertThat(response.getBody().getAssignee()).isEqualTo(assignee.getId());
+
         }
     }
 
