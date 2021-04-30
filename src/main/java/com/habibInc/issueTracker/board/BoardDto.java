@@ -1,5 +1,6 @@
 package com.habibInc.issueTracker.board;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.habibInc.issueTracker.column.Column;
 import com.habibInc.issueTracker.user.UserDto;
 import lombok.Data;
@@ -10,8 +11,11 @@ import java.util.Objects;
 @Data
 public class BoardDto {
     private Long id;
+
     private String name;
     private List<Column> columns;
+
+    @JsonIdentityReference(alwaysAsId = true)
     private UserDto owner;
 
     @Override
