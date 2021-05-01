@@ -28,5 +28,6 @@ public class IssueDto {
     @JsonProperty("assignee")
     private Long assigneeId;
 
-    private UserDto reporter;
+    @JsonProperty("reporter")
+    private UserDto reporterId;
 }

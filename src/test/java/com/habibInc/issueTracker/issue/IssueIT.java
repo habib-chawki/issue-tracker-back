@@ -390,7 +390,7 @@ public class IssueIT {
     class Patch {
 
         @Test
-        public void itShouldUpdateIssueAssignee() throws JsonProcessingException {
+        public void itShouldUpdateIssueAssignee() {
             // given a user
             User assignee = User.builder()
                     .email("assignee@user")
