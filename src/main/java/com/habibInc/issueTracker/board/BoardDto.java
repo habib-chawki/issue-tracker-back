@@ -1,8 +1,7 @@
 package com.habibInc.issueTracker.board;
 
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.habibInc.issueTracker.column.Column;
-import com.habibInc.issueTracker.user.UserDto;
 import lombok.Data;
 
 import java.util.List;
@@ -15,8 +14,8 @@ public class BoardDto {
     private String name;
     private List<Column> columns;
 
-    @JsonIdentityReference(alwaysAsId = true)
-    private UserDto owner;
+    @JsonProperty("owner")
+    private Long ownerId;
 
     @Override
     public boolean equals(Object o) {
