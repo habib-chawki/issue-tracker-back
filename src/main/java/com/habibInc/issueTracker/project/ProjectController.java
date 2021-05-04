@@ -1,8 +1,10 @@
 package com.habibInc.issueTracker.project;
 
 import com.habibInc.issueTracker.issue.Issue;
+import com.habibInc.issueTracker.issue.IssueDto;
 import com.habibInc.issueTracker.user.User;
 import com.habibInc.issueTracker.utils.Utils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -11,16 +13,19 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/projects")
 public class ProjectController {
 
     private final ProjectService projectService;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public ProjectController(ProjectService projectService) {
+    public ProjectController(ProjectService projectService, ModelMapper modelMapper) {
         this.projectService = projectService;
+        this.modelMapper = modelMapper;
     }
 
     @PostMapping({"", "/"})
@@ -51,9 +56,19 @@ public class ProjectController {
 
     @GetMapping("/{id}/backlog")
     @ResponseStatus(HttpStatus.OK)
-    public List<Issue> getBacklog(@PathVariable String id) {
+    public List<IssueDto> getBacklog(@PathVariable String id) {
+        // validate project id
         Long projectId = Utils.validateId(id);
-        return projectService.getBacklog(projectId);
+
+        // fetch list of issues by project id
+        List<Issue> issues = projectService.getBacklog(projectId);
+
+        // map to issue DTOs
+        final List<IssueDto> backlog = issues.stream()
+                .map((issue) -> modelMapper.map(issue, IssueDto.class))
+                .collect(Collectors.toList());
+
+        return backlog;
     }
 
     @PostMapping("/{projectId}/users/{userId}")
