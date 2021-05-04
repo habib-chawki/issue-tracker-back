@@ -2,19 +2,22 @@ package com.habibInc.issueTracker.project;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.issue.Issue;
-import com.habibInc.issueTracker.user.User;
+import com.habibInc.issueTracker.issue.IssueDto;
 import com.habibInc.issueTracker.utils.Utils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -33,6 +36,9 @@ public class ProjectControllerTest {
 
     @MockBean
     ProjectService projectService;
+
+    @SpyBean
+    ModelMapper modelMapper;
 
     Project project, project2;
 
@@ -107,14 +113,18 @@ public class ProjectControllerTest {
         );
 
         // given the expected response
-        String response = mapper.writeValueAsString(backlog);
+        String expectedResponse = mapper.writeValueAsString(
+                backlog.stream()
+                        .map((issue) -> modelMapper.map(issue, IssueDto.class))
+                        .collect(Collectors.toList())
+        );
 
         when(projectService.getBacklog(project.getId())).thenReturn(backlog);
 
         // expect the backlog to be fetched successfully
         mockMvc.perform(get("/projects/" + project.getId() + "/backlog"))
                 .andExpect(status().isOk())
-                .andExpect(content().json(response));
+                .andExpect(content().json(expectedResponse));
     }
 
     @Test
