@@ -1,6 +1,5 @@
 package com.habibInc.issueTracker.issue;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.habibInc.issueTracker.user.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,9 +24,6 @@ public class IssueDto {
 
     private int points;
 
-    @JsonProperty("assignee")
-    private Long assigneeId;
-
-    @JsonProperty("reporter")
-    private Long reporterId;
+    private UserDto assignee;
+    private UserDto reporter;
 }
