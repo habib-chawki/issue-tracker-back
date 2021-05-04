@@ -413,7 +413,9 @@ public class IssueIT {
 
             // then the response should be the updated issue
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-            assertThat(response.getBody().getAssigneeId()).isEqualTo(assignee.getId());
+
+            assertThat(response.getBody().getAssignee()).isEqualToComparingOnlyGivenFields(assignee);
+            assertThat(response.getBody().getReporter()).isEqualToComparingOnlyGivenFields(authenticatedUser);
         }
     }
 
