@@ -80,14 +80,17 @@ public class IssueControllerTest {
         // given the request body
         String requestBody = objectMapper.writeValueAsString(issue1);
 
+        // given the expected response issue DTO
+        String expectedResponse = objectMapper.writeValueAsString(modelMapper.map(issue1, IssueDto.class));
+
         // when a POST request is made to create a new issue
-        // then expect the response to be the created issue
+        // then expect a 201 created response
         mockMvc.perform(post("/issues").param("project", "10")
                 .content(requestBody)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(requestBody))
+                .andExpect(content().json(expectedResponse))
                 .andDo(
                         document("{methodName}",
                                 requestParameters(
@@ -106,9 +109,7 @@ public class IssueControllerTest {
                                         fieldWithPath("description").description("The issue's description"),
                                         fieldWithPath("type").description("The issue's type, either Story, Bug or Task"),
                                         fieldWithPath("points").description("The issue's story points"),
-                                        fieldWithPath("priority").description("The issue's priority, either High, Medium or Low"),
-                                        fieldWithPath("creationTime").description("The issue's creation time"),
-                                        fieldWithPath("updateTime").description("The issue's update time")
+                                        fieldWithPath("priority").description("The issue's priority, either High, Medium or Low")
                                 )
                         )
                 );
