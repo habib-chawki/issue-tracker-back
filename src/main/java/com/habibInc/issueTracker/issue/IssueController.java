@@ -30,10 +30,12 @@ public class IssueController {
 
     @PostMapping(value = {"", "/"}, params = "project")
     @ResponseStatus(HttpStatus.CREATED)
-    public Issue createIssue(@RequestBody Issue issue,
+    public IssueDto createIssue(@RequestBody Issue issue,
                              @AuthenticationPrincipal User authenticatedUser,
                              @RequestParam(name = "project") Long projectId) {
-        return issueService.createIssue(issue, authenticatedUser, projectId);
+        // fetch and map the created issue
+        Issue createdIssue = issueService.createIssue(issue, authenticatedUser, projectId);
+        return modelMapper.map(createdIssue, IssueDto.class);
     }
 
     @GetMapping("/{id}")
