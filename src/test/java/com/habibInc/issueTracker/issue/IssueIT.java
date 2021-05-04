@@ -12,6 +12,7 @@ import com.habibInc.issueTracker.user.User;
 import com.habibInc.issueTracker.user.UserRepository;
 import com.habibInc.issueTracker.user.UserService;
 import org.junit.jupiter.api.*;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -53,6 +54,9 @@ public class IssueIT {
 
     @Autowired
     ObjectMapper mapper;
+
+    @Autowired
+    ModelMapper modelMapper;
 
     User authenticatedUser;
     Issue issue1, issue2;
@@ -128,14 +132,17 @@ public class IssueIT {
         @Test
         @DisplayName("Create issue")
         public void itShouldCreateIssue() {
-            // when a POST request to create an issue is received
-            ResponseEntity<Issue> response =
-                    restTemplate.postForEntity("/issues?project=" + project.getId(), httpEntity, Issue.class);
+            // given the expected response
+            IssueDto issueDtoResponse = modelMapper.map(issue1, IssueDto.class);
+
+            // when a POST request to create an issue is made
+            ResponseEntity<IssueDto> response =
+                    restTemplate.postForEntity("/issues?project=" + project.getId(), httpEntity, IssueDto.class);
 
             // then expect the issue to have been created successfully
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
             assertThat(response.getBody().getId()).isNotNull().isPositive();
-            assertThat(response.getBody()).isEqualToComparingOnlyGivenFields(issue1);
+            assertThat(response.getBody()).isEqualToComparingOnlyGivenFields(issueDtoResponse);
         }
 
         @Test
