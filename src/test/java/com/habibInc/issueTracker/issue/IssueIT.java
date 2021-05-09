@@ -147,7 +147,7 @@ public class IssueIT {
 
         @Test
         @DisplayName("Set the authenticated user as issue reporter")
-        public void whenIssueIsCreated_itShouldSetTheAuthenticatedUserAsReporter() {
+        public void givenCreateIssue_itShouldSetTheAuthenticatedUserAsReporter() {
             // when an issue is created after a POST request
             ResponseEntity<Issue> response =
                     restTemplate.postForEntity("/issues?project=" + project.getId(), httpEntity, Issue.class);
@@ -158,7 +158,7 @@ public class IssueIT {
         }
 
         @Test
-        public void whenIssueIsCreated_itShouldSetTheIssueProject() {
+        public void givenCreateIssue_itShouldSetTheIssueProject() {
             // when an issue is created after a POST request
             ResponseEntity<Issue> response =
                     restTemplate.postForEntity("/issues?project=" + project.getId(), httpEntity, Issue.class);
