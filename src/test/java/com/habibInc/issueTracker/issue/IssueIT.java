@@ -176,7 +176,7 @@ public class IssueIT {
                     .email("assignee@issue")
                     .password("@$$ignee")
                     .fullName("issue assignee")
-                    .userName("issue_assignee")
+                    .userName("issue@assignee")
                     .build()
             );
 
