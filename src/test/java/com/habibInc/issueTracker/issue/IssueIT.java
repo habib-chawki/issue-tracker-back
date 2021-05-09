@@ -167,6 +167,32 @@ public class IssueIT {
             assertThat(issueService.getIssueById(response.getBody().getId()).getProject())
                     .isEqualTo(project);
         }
+
+        @Test
+        public void givenCreateIssue_itShouldSetTheAssignee() {
+            // given the assignee
+            User assignee = userService.createUser(
+                    User.builder()
+                    .email("assignee@issue")
+                    .password("@$$ignee")
+                    .fullName("issue assignee")
+                    .userName("issue_assignee")
+                    .build()
+            );
+
+            // given the issue assignee is set
+            issue1.setAssignee(assignee);
+
+            // given the request body
+            httpEntity = new HttpEntity<>(issue1, headers);
+
+            // when an issue is created after a POST request
+            ResponseEntity<IssueDto> response =
+                    restTemplate.postForEntity("/issues?project=" + project.getId(), httpEntity, IssueDto.class);
+
+            // then expect the assignee to have been set
+            assertThat(response.getBody().getAssignee()).isEqualToComparingOnlyGivenFields(assignee);
+        }
     }
 
     @Nested
