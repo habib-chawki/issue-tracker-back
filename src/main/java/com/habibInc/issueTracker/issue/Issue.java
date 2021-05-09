@@ -53,7 +53,7 @@ public class Issue {
 
     private int votes;
 
-    @OneToOne(cascade = CascadeType.REFRESH)
+    @OneToOne
     private User assignee;
 
     @OneToOne
