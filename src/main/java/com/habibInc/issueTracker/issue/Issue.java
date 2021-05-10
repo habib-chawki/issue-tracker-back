@@ -57,6 +57,7 @@ public class Issue {
     private User assignee;
 
     @OneToOne
+    @JoinColumn(updatable = false, nullable = false)
     private User reporter;
 
     @ManyToOne
