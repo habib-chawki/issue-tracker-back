@@ -208,6 +208,11 @@ public class IssueControllerTest {
         // given the request body
         String requestBody = objectMapper.writeValueAsString(updatedIssue);
 
+        // given the expected response issue DTO
+        String expectedResponse = objectMapper.writeValueAsString(
+                modelMapper.map(updatedIssue, IssueDto.class)
+        );
+
         // given the service response
         when(issueService.updateIssue(eq(issue1.getId()), eq(updatedIssue), any())).thenReturn(updatedIssue);
 
@@ -217,7 +222,7 @@ public class IssueControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().string(requestBody))
+                .andExpect(content().string(expectedResponse))
                 .andDo(
                         document("{methodName}",
                                 relaxedRequestFields(
