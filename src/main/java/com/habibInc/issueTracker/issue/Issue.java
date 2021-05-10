@@ -57,11 +57,11 @@ public class Issue {
     private User assignee;
 
     @OneToOne
-    @JoinColumn(updatable = false, nullable = false)
+    @JoinColumn(updatable = false)
     private User reporter;
 
     @ManyToOne
-    @JoinColumn(updatable = false, nullable = false)
+    @JoinColumn(updatable = false)
     private Project project;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -72,9 +72,7 @@ public class Issue {
 
     private int points;
 
-    @javax.persistence.Column(updatable = false, nullable = false)
     private LocalDateTime creationTime;
-
     private LocalDateTime updateTime;
 
     // equals and hashCode
