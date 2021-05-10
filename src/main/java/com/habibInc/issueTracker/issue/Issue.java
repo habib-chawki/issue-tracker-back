@@ -60,6 +60,7 @@ public class Issue {
     private User reporter;
 
     @ManyToOne
+    @JoinColumn(updatable = false, nullable = false)
     private Project project;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -70,7 +71,9 @@ public class Issue {
 
     private int points;
 
+    @javax.persistence.Column(updatable = false, nullable = false)
     private LocalDateTime creationTime;
+
     private LocalDateTime updateTime;
 
     // equals and hashCode
