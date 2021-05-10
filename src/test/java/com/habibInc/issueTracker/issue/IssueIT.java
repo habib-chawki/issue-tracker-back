@@ -254,33 +254,30 @@ public class IssueIT {
 
         @Test
         public void itShouldUpdateIssue() throws JsonProcessingException {
-            // create the issue
+            // given the issue is created
             Issue issue = issueService.createIssue(issue1, authenticatedUser, project.getId());
 
-            // set up an updated issue
-            String issueJson = mapper.writeValueAsString(issue);
-            Issue updatedIssue = mapper.readValue(issueJson, Issue.class);
+            // given the updated issue fields
+            issue1.setSummary("updated summary");
+            issue1.setType(IssueType.BUG);
 
-            updatedIssue.setSummary("updated");
-            updatedIssue.setType(IssueType.BUG);
+            // given the request body
+            HttpEntity<Issue> httpEntity = new HttpEntity<>(issue1, headers);
 
-            // set up the request body and headers
-            HttpEntity<Issue> httpEntity = new HttpEntity<>(updatedIssue, headers);
+            // given the expected response
+            IssueDto updatedIssue = modelMapper.map(issue1, IssueDto.class);
 
-            // when a put request is made with a valid id of an issue that exists
-            ResponseEntity<Issue> response = restTemplate.exchange(
+            // when a PUT request is made to update an issue
+            ResponseEntity<IssueDto> response = restTemplate.exchange(
                     "/issues/" + issue.getId(),
                     HttpMethod.PUT,
                     httpEntity,
-                    Issue.class
+                    IssueDto.class
             );
 
-            // then the issue should be updated
-            assertThat(issueRepository.findById(issue.getId()).get()).isEqualTo(updatedIssue);
-
-            // the response body should be the updated issue
+            // the response should be the updated issue DTO
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-            assertThat(response.getBody()).isEqualTo(updatedIssue);
+            assertThat(response.getBody()).isEqualToComparingOnlyGivenFields(updatedIssue);
         }
 
         @Test
