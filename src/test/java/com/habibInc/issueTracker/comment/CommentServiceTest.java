@@ -76,6 +76,20 @@ public class CommentServiceTest {
     }
 
     @Test
+    public void givenCreateComment_itShouldOwnerAndIssue() {
+        when(commentRepository.save(comment)).thenReturn(comment);
+        when(issueService.getIssueById(issue.getId())).thenReturn(issue);
+
+        // when the "createComment()" service method is called
+        Comment createdComment =
+                commentService.createComment(comment, issue.getId(), owner);
+
+        // then expet the issue and owner to have been set
+        assertThat(createdComment.getIssue()).isEqualTo(issue);
+        assertThat(createdComment.getOwner()).isEqualTo(owner);
+    }
+
+    @Test
     public void givenCreateComment_itShouldSetCreationTime() {
         when(commentRepository.save(comment)).thenReturn(comment);
         when(issueService.getIssueById(issue.getId())).thenReturn(issue);
