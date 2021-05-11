@@ -1,20 +1,26 @@
 package com.habibInc.issueTracker.comment;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.habibInc.issueTracker.user.UserDto;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 
 public class CommentDto {
 
     private Long id;
 
-    @JsonProperty("issue")
-    private Long issueId;
-
-    @JsonProperty("owner")
-    private Long ownerId;
-
     private String content;
+
+    private Long issueId;
+    private UserDto owner;
 
     private LocalDateTime creationTime;
     private LocalDateTime updateTime;
