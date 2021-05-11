@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.exceptionhandler.InvalidIdException;
 import com.habibInc.issueTracker.user.User;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,21 +17,26 @@ import java.util.Map;
 public class CommentController {
 
     private final CommentService commentService;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public CommentController(CommentService commentService) {
+    public CommentController(CommentService commentService, ModelMapper modelMapper) {
         this.commentService = commentService;
+        this.modelMapper = modelMapper;
     }
 
     @PostMapping({"", "/"})
     @ResponseStatus(HttpStatus.CREATED)
-    public Comment createComment(@RequestBody Comment comment,
+    public CommentDto createComment(@RequestBody Comment comment,
                                  @PathVariable("issueId") String id,
                                  @AuthenticationPrincipal User owner){
         try{
             // verify issueId type
             Long issueId = Long.parseLong(id);
-            return commentService.createComment(comment, issueId, owner);
+            Comment createdComment = commentService.createComment(comment, issueId, owner);
+
+            // map comment DTO
+            return modelMapper.map(createdComment, CommentDto.class);
         }catch(NumberFormatException ex){
             throw new InvalidIdException("Invalid issue id");
         }
