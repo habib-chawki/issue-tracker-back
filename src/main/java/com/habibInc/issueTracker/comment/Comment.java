@@ -35,9 +35,10 @@ public class Comment {
 
     private String content;
 
+    @Column(updatable = false)
     private LocalDateTime creationTime;
-    private LocalDateTime updateTime;
 
+    private LocalDateTime updateTime;
 
     // equals and hashCode
     @Override

@@ -54,11 +54,8 @@ public class CommentServiceTest {
 
         // set up a new comment
         comment = new Comment();
-
         comment.setId(1L);
         comment.setContent("My comment");
-        comment.setCreationTime(LocalDateTime.now());
-        comment.setUpdateTime(LocalDateTime.now());
     }
 
     @Test
@@ -76,6 +73,19 @@ public class CommentServiceTest {
         assertThat(response).isEqualTo(comment);
         assertThat(response.getIssue()).isEqualTo(issue);
         assertThat(response.getOwner()).isEqualTo(owner);
+    }
+
+    @Test
+    public void givenCreateComment_itShouldSetCreationTime() {
+        when(commentRepository.save(comment)).thenReturn(comment);
+        when(issueService.getIssueById(issue.getId())).thenReturn(issue);
+
+        // when the "createComment()" service method is called
+        Comment createdComment =
+                commentService.createComment(comment, issue.getId(), owner);
+
+        // then expect the creation time to have been set
+        assertThat(createdComment.getCreationTime()).isNotNull();
     }
 
     @Test

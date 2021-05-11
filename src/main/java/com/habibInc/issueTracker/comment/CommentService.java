@@ -8,6 +8,8 @@ import com.habibInc.issueTracker.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 public class CommentService {
 
@@ -27,6 +29,9 @@ public class CommentService {
         // set the comment issue and owner
         comment.setIssue(issue);
         comment.setOwner(owner);
+
+        // set the comment creation date
+        comment.setCreationTime(LocalDateTime.now());
 
         return commentRepository.save(comment);
     }
