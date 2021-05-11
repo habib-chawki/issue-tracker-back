@@ -6,9 +6,11 @@ import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -27,11 +29,14 @@ public class CommentControllerTest {
     @Autowired
     MockMvc mockMvc;
 
-    @Autowired
-    ObjectMapper mapper;
-
     @MockBean
     CommentService commentService;
+
+    @Autowired
+    ObjectMapper objectMapper;
+
+    @SpyBean
+    ModelMapper modelMapper;
 
     Comment comment;
     Issue issue;
@@ -58,17 +63,23 @@ public class CommentControllerTest {
         when(commentService.createComment(eq(comment), eq(issue.getId()), any()))
                 .thenReturn(comment);
 
-        // set up base url and request body
+        // given the endpoint url and request body
         String baseUrl = String.format("/issues/%s/comments", issue.getId());
-        String requestBody = mapper.writeValueAsString(comment);
+        String requestBody = objectMapper.writeValueAsString(comment);
 
-        // send a post request and expect the comment to be created successfully
+        // given the expected response
+        String expectedResponse = objectMapper.writeValueAsString(
+                modelMapper.map(comment, CommentDto.class)
+        );
+
+        // when a POST request is made to create a new comment
+        // then expect the comment to be created successfully
         mockMvc.perform(post(baseUrl)
                 .content(requestBody)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(requestBody));
+                .andExpect(content().json(expectedResponse));
     }
 
     @Test
@@ -78,7 +89,7 @@ public class CommentControllerTest {
 
         // given the base url and request body
         String baseUrl = String.format("/issues/%s/comments", 404);
-        String requestBody = mapper.writeValueAsString(comment);
+        String requestBody = objectMapper.writeValueAsString(comment);
 
         // given an error message
         String errorMessage = "Issue not found";
@@ -98,7 +109,7 @@ public class CommentControllerTest {
     @Test
     public void givenCreateComment_whenIssueIdIsInvalid_itShouldReturnInvalidIdError() throws Exception {
         // given the request body and an error message
-        String requestBody = mapper.writeValueAsString(comment);
+        String requestBody = objectMapper.writeValueAsString(comment);
         String errorMessage = "Invalid issue id";
 
         // when the request is made with an invalid issue id
