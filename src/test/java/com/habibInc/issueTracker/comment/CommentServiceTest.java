@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
@@ -69,10 +68,8 @@ public class CommentServiceTest {
         // when the "createComment()" service method is called
         Comment response = commentService.createComment(comment, issue.getId(), owner);
 
-        // then the response should be the comment with the issue and owner both set
+        // then the response should be the created comment
         assertThat(response).isEqualTo(comment);
-        assertThat(response.getIssue()).isEqualTo(issue);
-        assertThat(response.getOwner()).isEqualTo(owner);
     }
 
     @Test
