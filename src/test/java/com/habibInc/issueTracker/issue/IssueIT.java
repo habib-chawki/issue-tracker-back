@@ -224,6 +224,9 @@ public class IssueIT {
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody().getId()).isPositive();
             assertThat(response.getBody()).isEqualTo(issue2);
+
+            // expect the response to contain a list of comments
+            assertThat(response.getBody()).hasFieldOrProperty("comments");
         }
 
         @Test
