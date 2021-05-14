@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.project.Project;
+import com.habibInc.issueTracker.utils.validation.UniqueEmail;
 import lombok.*;
 
 import javax.persistence.*;
@@ -33,6 +34,7 @@ public class User {
     private Long id;
 
     @Email(message = "Email should be valid")
+    @UniqueEmail
     @NotBlank(message = "Email must not be blank")
     @Column(unique = true, nullable = false, updatable = false)
     private String email;
