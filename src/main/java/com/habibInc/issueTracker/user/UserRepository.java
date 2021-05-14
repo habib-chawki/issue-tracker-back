@@ -21,4 +21,6 @@ public interface UserRepository extends CrudRepository<User, Long> {
     List<User> findAllByAssignedProjectNot(@Param("projectId") Long projectId, Pageable pageable);
 
     List<User> findAll(Pageable pageable);
+
+    boolean existsByEmail(String email);
 }
