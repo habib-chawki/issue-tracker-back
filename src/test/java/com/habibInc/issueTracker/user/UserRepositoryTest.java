@@ -216,4 +216,11 @@ public class UserRepositoryTest {
         boolean existsByUsername = userRepository.existsByUsername(username);
         assertThat(existsByUsername).isFalse();
     }
+
+    @Test
+    public void givenExistsByUsername_whenUserAlreadyExit_itShouldReturnTrue() {
+        userRepository.save(user);
+        boolean existsByUsername = userRepository.existsByUsername(user.getUsername());
+        assertThat(existsByUsername).isTrue();
+    }
 }
