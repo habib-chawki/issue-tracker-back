@@ -34,6 +34,9 @@ public class UserControllerTest {
     UserService userService;
 
     @MockBean
+    UserRepository userRepository;
+
+    @MockBean
     JwtUtil jwtUtil;
 
     @SpyBean
