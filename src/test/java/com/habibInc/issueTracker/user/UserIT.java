@@ -90,48 +90,6 @@ public class UserIT {
     }
 
     @Test
-    public void givenUserSignup_whenEmailIsNotUnique_itShouldReturnEmailAlreadyRegisteredError() {
-        // given the user
-        userRepository.save(authenticatedUser);
-
-        // given the signup request with an already existing email
-        User userWithNotUniqueEmail = User.builder()
-                .email(authenticatedUser.getEmail())
-                .username("username")
-                .password("user_pass")
-                .fullName("full name")
-                .build();
-
-        // when the signup request is made
-        ResponseEntity<ApiError> response =
-                restTemplate.postForEntity("/users/signup", userWithNotUniqueEmail, ApiError.class);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Email is already registered");
-    }
-
-    @Test
-    public void givenUserSignup_whenUsernameIsNotUnique_itShouldReturnUsernameAlreadyRegisteredError() {
-        // given the authenticated user
-        userRepository.save(authenticatedUser);
-
-        // given the signup request with an already existing username
-        User userWithNotUniqueUsername = User.builder()
-                .username(authenticatedUser.getUsername())
-                .email("user@email.com")
-                .password("user_pass")
-                .fullName("full name")
-                .build();
-
-        // when the signup request is made
-        ResponseEntity<ApiError> response =
-                restTemplate.postForEntity("/users/signup", userWithNotUniqueUsername, ApiError.class);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Username is already in use");
-    }
-
-    @Test
     public void itShouldGetUserById() {
         // set up authorization header
         HttpEntity<Object> httpEntity = new HttpEntity<>(headers);

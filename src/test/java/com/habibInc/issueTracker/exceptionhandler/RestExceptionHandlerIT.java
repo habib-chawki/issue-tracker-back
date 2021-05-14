@@ -52,31 +52,6 @@ public class RestExceptionHandlerIT {
     }
 
     @Test
-    public void givenUserSignup_whenUserAlreadyExists_itShouldReturnDuplicateKeyError() {
-        // given a signup request of a user that already exists
-        User user = User.builder()
-                .email(authenticatedUser.getEmail())
-                .password(authenticatedUser.getPassword())
-                .fullName(authenticatedUser.getFullName())
-                .username(authenticatedUser.getUsername())
-                .build();
-
-        // given the request body
-        HttpEntity httpEntity = new HttpEntity(user, headers);
-
-        // given the signup url
-        String signupUrl = "/users/signup";
-
-        // when the signup request is made
-        ResponseEntity<ApiError> response =
-                restTemplate.exchange(signupUrl, HttpMethod.POST, httpEntity, ApiError.class);
-
-        // then expect a 409 Conflict error
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
-        assertThat(response.getBody().getErrorMessage()).isEqualTo("Duplicate key");
-    }
-
-    @Test
     public void givenGetUserById_whenUserDoesNotExist_itShouldReturnUserNotFoundError() {
         // set up authorization header
         HttpEntity httpEntity = new HttpEntity<>(headers);
@@ -114,6 +89,48 @@ public class RestExceptionHandlerIT {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Issue not found");
         assertThat(response.getBody().getTimestamp()).isNotNull();
+    }
+
+    @Test
+    public void givenUserSignup_whenEmailIsNotUnique_itShouldReturnEmailAlreadyRegisteredError() {
+        // given the user
+        userRepository.save(authenticatedUser);
+
+        // given the signup request with an already existing email
+        User userWithNotUniqueEmail = User.builder()
+                .email(authenticatedUser.getEmail())
+                .username("username")
+                .password("user_pass")
+                .fullName("full name")
+                .build();
+
+        // when the signup request is made
+        ResponseEntity<ApiError> response =
+                restTemplate.postForEntity("/users/signup", userWithNotUniqueEmail, ApiError.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Email is already registered");
+    }
+
+    @Test
+    public void givenUserSignup_whenUsernameIsNotUnique_itShouldReturnUsernameAlreadyRegisteredError() {
+        // given the authenticated user
+        userRepository.save(authenticatedUser);
+
+        // given the signup request with an already existing username
+        User userWithNotUniqueUsername = User.builder()
+                .username(authenticatedUser.getUsername())
+                .email("user@email.com")
+                .password("user_pass")
+                .fullName("full name")
+                .build();
+
+        // when the signup request is made
+        ResponseEntity<ApiError> response =
+                restTemplate.postForEntity("/users/signup", userWithNotUniqueUsername, ApiError.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Username is already in use");
     }
 
     @AfterEach
