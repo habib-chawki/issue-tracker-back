@@ -73,7 +73,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void whenUserIsSignedUp_itShouldRespondWithAuthorizationTokenHeader() throws Exception {
+    public void givenUserSignup_whenSignupIsSuccessful_itShouldRespondWithAuthorizationTokenHeader() throws Exception {
         // given the expected auth token
         String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbiI6InNvbWV0b2tlbiJ9.evnBwUTlQE0U2-hqZ3dUsrOoeb0y56sx_K9O0SbCs7Y";
 

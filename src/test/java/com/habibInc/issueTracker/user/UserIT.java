@@ -90,6 +90,19 @@ public class UserIT {
     }
 
     @Test
+    public void givenUserSignup_whenEmailIsNotUnique_itShouldReturnEmailAlreadyRegisteredError() {
+        // given the user
+        userRepository.save(authenticatedUser);
+
+        // when a signup request is made
+        ResponseEntity<ApiError> response =
+                restTemplate.postForEntity("/users/signup", authenticatedUser, ApiError.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Email is already registered");
+    }
+
+    @Test
     public void itShouldGetUserById() {
         // set up authorization header
         HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
