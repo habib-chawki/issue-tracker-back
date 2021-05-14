@@ -50,6 +50,7 @@ public class User {
 
     @Column(unique = true, nullable = false)
     @UniqueUsername(message = "Username is already in use")
+    @NotBlank(message = "Username must not be blank")
     private String username;
 
     @OneToMany(mappedBy = "assignee")
