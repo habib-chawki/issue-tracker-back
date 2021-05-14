@@ -94,12 +94,33 @@ public class UserIT {
         // given the user
         userRepository.save(authenticatedUser);
 
-        // when a signup request is made
+        // when the signup request is made
         ResponseEntity<ApiError> response =
                 restTemplate.postForEntity("/users/signup", authenticatedUser, ApiError.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Email is already registered");
+    }
+
+    @Test
+    public void givenUserSignup_whenUsernameIsNotUnique_itShouldReturnUsernameAlreadyRegisteredError() {
+        // given the authenticated user
+        userRepository.save(authenticatedUser);
+
+        // given the signup request with an already existing username
+        User userWithNotUniqueUsername = User.builder()
+                .username(authenticatedUser.getUsername())
+                .email("user@email.com")
+                .password("user_pass")
+                .fullName("full name")
+                .build();
+
+        // when the signup request is made
+        ResponseEntity<ApiError> response =
+                restTemplate.postForEntity("/users/signup", userWithNotUniqueUsername, ApiError.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(response.getBody().getErrorMessage()).containsIgnoringCase("Username is already in use");
     }
 
     @Test
