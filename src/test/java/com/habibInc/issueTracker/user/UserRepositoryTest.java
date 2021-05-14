@@ -34,7 +34,7 @@ public class UserRepositoryTest {
         user.setFullName("first-last");
         user.setUserName("my_username");
         user.setEmail("my_email@email.com");
-        user.setPassword("this is it");
+        user.setPassword("myP@$$");
     }
 
     @Test
@@ -202,5 +202,12 @@ public class UserRepositoryTest {
         String email = "doesNotExist@email";
         boolean existsByEmail = userRepository.existsByEmail(email);
         assertThat(existsByEmail).isFalse();
+    }
+
+    @Test
+    public void givenExistsByEmail_WhenUserAlreadyExist_itShouldReturnTrue() {
+        userRepository.save(user);
+        boolean existsByEmail = userRepository.existsByEmail(user.getEmail());
+        assertThat(existsByEmail).isTrue();
     }
 }
