@@ -7,11 +7,12 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 public class UniqueUsernameValidator implements ConstraintValidator<UniqueUsername, String> {
+
     @Autowired
     UserRepository userRepository;
 
     @Override
     public boolean isValid(String username, ConstraintValidatorContext constraintValidatorContext) {
-        return userRepository.existsByUsername(username);
+        return !userRepository.existsByUsername(username);
     }
 }
