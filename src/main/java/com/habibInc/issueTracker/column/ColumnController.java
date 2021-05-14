@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.exceptionhandler.InvalidIdException;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.user.User;
-import com.habibInc.issueTracker.utils.Utils;
+import com.habibInc.issueTracker.utils.validation.IdValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -141,7 +141,7 @@ public class ColumnController {
         Map<String, String> requestBody = new ObjectMapper().readValue(request, Map.class);
 
         // extract and validate the new column id
-        Long newColumnId = Utils.validateId(requestBody.get("newColumnId"));
+        Long newColumnId = IdValidator.validate(requestBody.get("newColumnId"));
 
         // update the issue column
         columnService.updateIssueColumn(boardId, columnId, issueId, newColumnId);

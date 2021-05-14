@@ -1,6 +1,7 @@
 package com.habibInc.issueTracker.utils;
 
 import com.habibInc.issueTracker.exceptionhandler.InvalidIdException;
+import com.habibInc.issueTracker.utils.validation.IdValidator;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -13,7 +14,7 @@ public class UtilsTest {
         String validId = "100";
 
         // when validateId() is called
-        Long parsedId = Utils.validateId(validId);
+        Long parsedId = IdValidator.validate(validId);
 
         assertThat(parsedId).isEqualTo(100L);
     }
@@ -25,6 +26,6 @@ public class UtilsTest {
 
         // when validateId() is invoked
         assertThatExceptionOfType(InvalidIdException.class)
-                .isThrownBy(() -> Utils.validateId(invalidId));
+                .isThrownBy(() -> IdValidator.validate(invalidId));
     }
 }

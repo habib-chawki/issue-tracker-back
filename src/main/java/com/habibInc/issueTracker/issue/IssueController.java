@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.exceptionhandler.InvalidIdException;
 import com.habibInc.issueTracker.user.User;
-import com.habibInc.issueTracker.utils.Utils;
+import com.habibInc.issueTracker.utils.validation.IdValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -87,7 +87,7 @@ public class IssueController {
                                         @RequestBody String request) throws JsonProcessingException {
         // extract the new assignee id from the request body
         Map<String, String> map = objectMapper.readValue(request, Map.class);
-        Long assigneeId = Utils.validateId(map.get("assignee"));
+        Long assigneeId = IdValidator.validate(map.get("assignee"));
 
         // invoke service, update assignee
         Issue issue = issueService.updateIssueAssignee(issueId, assigneeId);

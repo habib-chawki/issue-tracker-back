@@ -2,7 +2,7 @@ package com.habibInc.issueTracker.sprint;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.habibInc.issueTracker.utils.Utils;
+import com.habibInc.issueTracker.utils.validation.IdValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -50,7 +50,7 @@ public class SprintController {
     @PatchMapping("/{sprintId}/backlog")
     @ResponseStatus(HttpStatus.OK)
     public int setSprintBacklog(@PathVariable("sprintId") String id, @RequestBody List<Long> issuesIds){
-        Long sprintId = Utils.validateId(id);
+        Long sprintId = IdValidator.validate(id);
         return sprintService.setSprintBacklog(sprintId, issuesIds);
     }
 
@@ -92,7 +92,7 @@ public class SprintController {
         Long newSprintId = null;
 
         if(!requestBody.get("newSprintId").equals("null")){
-            newSprintId = Utils.validateId(requestBody.get("newSprintId"));
+            newSprintId = IdValidator.validate(requestBody.get("newSprintId"));
         }
 
         // update issue sprint

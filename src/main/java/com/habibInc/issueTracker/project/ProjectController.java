@@ -3,7 +3,7 @@ package com.habibInc.issueTracker.project;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.issue.IssueDto;
 import com.habibInc.issueTracker.user.User;
-import com.habibInc.issueTracker.utils.Utils;
+import com.habibInc.issueTracker.utils.validation.IdValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -50,7 +50,7 @@ public class ProjectController {
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Project getProject(@PathVariable String id) {
-        Long parsedId = Utils.validateId(id);
+        Long parsedId = IdValidator.validate(id);
         return projectService.getProjectById(parsedId);
     }
 
@@ -58,7 +58,7 @@ public class ProjectController {
     @ResponseStatus(HttpStatus.OK)
     public List<IssueDto> getBacklog(@PathVariable String id) {
         // validate project id
-        Long projectId = Utils.validateId(id);
+        Long projectId = IdValidator.validate(id);
 
         // fetch list of issues by project id
         List<Issue> issues = projectService.getBacklog(projectId);

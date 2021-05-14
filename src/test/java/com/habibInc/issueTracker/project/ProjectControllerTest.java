@@ -3,7 +3,7 @@ package com.habibInc.issueTracker.project;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.issue.IssueDto;
-import com.habibInc.issueTracker.utils.Utils;
+import com.habibInc.issueTracker.utils.validation.IdValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
@@ -100,7 +100,7 @@ public class ProjectControllerTest {
         // then a 400 bad request error should be returned
         mockMvc.perform(get("/projects/invalid_id"))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorMessage").value(Utils.errorMessage));
+                .andExpect(jsonPath("$.errorMessage").value(IdValidator.errorMessage));
     }
 
     @Test
@@ -132,7 +132,7 @@ public class ProjectControllerTest {
         mockMvc.perform(get("/projects/invalid_id/backlog"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errorMessage")
-                        .value(Utils.errorMessage));
+                        .value(IdValidator.errorMessage));
     }
 
     @Test

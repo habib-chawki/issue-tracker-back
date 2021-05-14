@@ -1,11 +1,11 @@
-package com.habibInc.issueTracker.utils;
+package com.habibInc.issueTracker.utils.validation;
 
 import com.habibInc.issueTracker.exceptionhandler.InvalidIdException;
 
-public class Utils {
+public class IdValidator {
     public final static String errorMessage = "Invalid id";
 
-    public static Long validateId(String id) throws InvalidIdException {
+    public static Long validate(String id) throws InvalidIdException {
         Long parsedId;
         try{
             parsedId = Long.valueOf(id);
