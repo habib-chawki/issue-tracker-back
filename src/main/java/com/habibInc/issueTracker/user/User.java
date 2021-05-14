@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.project.Project;
 import com.habibInc.issueTracker.utils.validation.UniqueEmail;
+import com.habibInc.issueTracker.utils.validation.UniqueUsername;
 import lombok.*;
 
 import javax.persistence.*;
@@ -48,7 +49,8 @@ public class User {
     private String fullName;
 
     @Column(unique = true, nullable = false)
-    private String userName;
+    @UniqueUsername(message = "Username is already in use")
+    private String username;
 
     @OneToMany(mappedBy = "assignee")
     private List<Issue> assignedIssues;
