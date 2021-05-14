@@ -209,4 +209,11 @@ public class UserRepositoryTest {
         boolean existsByEmail = userRepository.existsByEmail(user.getEmail());
         assertThat(existsByEmail).isTrue();
     }
+
+    @Test
+    public void givenExistsByUsername_whenUserDoesNotExist_itShouldReturnFalse() {
+        String username = "UsernameDoesNotExist";
+        boolean existsByUsername = userRepository.existsByUsername(username);
+        assertThat(existsByUsername).isFalse();
+    }
 }
