@@ -196,4 +196,11 @@ public class UserRepositoryTest {
         // then expect the response to be all the users
         assertThat(response).isEqualTo(users);
     }
+
+    @Test
+    public void givenExistsByEmail_whenUserDoesNotExist_itShouldReturnFalse() {
+        String email = "doesNotExist@email";
+        boolean existsByEmail = userRepository.existsByEmail(email);
+        assertThat(existsByEmail).isFalse();
+    }
 }
