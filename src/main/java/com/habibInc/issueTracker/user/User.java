@@ -34,7 +34,7 @@ public class User {
     private Long id;
 
     @Email(message = "Email should be valid")
-    @UniqueEmail
+    @UniqueEmail(message = "Email is already registered")
     @NotBlank(message = "Email must not be blank")
     @Column(unique = true, nullable = false, updatable = false)
     private String email;
