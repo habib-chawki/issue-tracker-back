@@ -12,7 +12,6 @@ import org.springframework.data.domain.PageRequest;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -32,7 +31,7 @@ public class UserRepositoryTest {
         user = new User();
 
         user.setFullName("first-last");
-        user.setUserName("my_username");
+        user.setUsername("my_username");
         user.setEmail("my_email@email.com");
         user.setPassword("myP@$$");
     }
@@ -78,9 +77,9 @@ public class UserRepositoryTest {
         // given a set of users
         List<User> users = (List<User>) userRepository.saveAll(
                 List.of(
-                        User.builder().id(1L).email("user1@email.com").password("pass1").userName("user_01").fullName("user 01").build(),
-                        User.builder().id(2L).email("user2@email.com").password("pass2").userName("user_02").fullName("user 02").build(),
-                        User.builder().id(3L).email("user3@email.com").password("pass3").userName("user_03").fullName("user 03").build()
+                        User.builder().id(1L).email("user1@email.com").password("pass1").username("user_01").fullName("user 01").build(),
+                        User.builder().id(2L).email("user2@email.com").password("pass2").username("user_02").fullName("user 02").build(),
+                        User.builder().id(3L).email("user3@email.com").password("pass3").username("user_03").fullName("user 03").build()
                 )
         );
 
@@ -99,11 +98,11 @@ public class UserRepositoryTest {
     public void itShouldGetPaginatedListOfUsers() {
         // given a list of users
         List<User> users = List.of(
-                User.builder().email("user01@email").password("user01pass").fullName("user 01").userName("user_01").build(),
-                User.builder().email("user02@email").password("user02pass").fullName("user 02").userName("user_02").build(),
-                User.builder().email("user03@email").password("user03pass").fullName("user 03").userName("user_03").build(),
-                User.builder().email("user04@email").password("user04pass").fullName("user 04").userName("user_04").build(),
-                User.builder().email("user05@email").password("user05pass").fullName("user 05").userName("user_05").build()
+                User.builder().email("user01@email").password("user01pass").fullName("user 01").username("user_01").build(),
+                User.builder().email("user02@email").password("user02pass").fullName("user 02").username("user_02").build(),
+                User.builder().email("user03@email").password("user03pass").fullName("user 03").username("user_03").build(),
+                User.builder().email("user04@email").password("user04pass").fullName("user 04").username("user_04").build(),
+                User.builder().email("user05@email").password("user05pass").fullName("user 05").username("user_05").build()
         );
         users = (List<User>) userRepository.saveAll(users);
 
@@ -130,20 +129,20 @@ public class UserRepositoryTest {
     public void itShouldGetListOfPaginatedUsersNotAssignedToProject() {
         // given the list of users assigned to the project
         List<User> assignedUsers = List.of(
-                User.builder().email("user01@email").password("user01pass").fullName("user 01").userName("user_01").build(),
-                User.builder().email("user02@email").password("user02pass").fullName("user 02").userName("user_02").build(),
-                User.builder().email("user03@email").password("user03pass").fullName("user 03").userName("user_03").build()
+                User.builder().email("user01@email").password("user01pass").fullName("user 01").username("user_01").build(),
+                User.builder().email("user02@email").password("user02pass").fullName("user 02").username("user_02").build(),
+                User.builder().email("user03@email").password("user03pass").fullName("user 03").username("user_03").build()
         );
 
         // given the lists of non-assigned users
         List<User> notAssignedUsers = List.of(
-                User.builder().email("user04@email").password("user04pass").fullName("user 04").userName("user_04").build(),
-                User.builder().email("user05@email").password("user05pass").fullName("user 05").userName("user_05").build()
+                User.builder().email("user04@email").password("user04pass").fullName("user 04").username("user_04").build(),
+                User.builder().email("user05@email").password("user05pass").fullName("user 05").username("user_05").build()
         );
 
         List<User> notAssignedUsers2 = List.of(
-                User.builder().email("user06@email").password("user06pass").fullName("user 06").userName("user_06").build(),
-                User.builder().email("user07@email").password("user07pass").fullName("user 07").userName("user_07").build()
+                User.builder().email("user06@email").password("user06pass").fullName("user 06").username("user_06").build(),
+                User.builder().email("user07@email").password("user07pass").fullName("user 07").username("user_07").build()
         );
 
         assignedUsers = (List<User>) userRepository.saveAll(assignedUsers);
@@ -181,9 +180,9 @@ public class UserRepositoryTest {
         // given a list of users
         List<User> users = (List<User>) userRepository.saveAll(
                 List.of(
-                        User.builder().email("user01@email").password("user01pass").fullName("user 01").userName("user_01").build(),
-                        User.builder().email("user02@email").password("user02pass").fullName("user 02").userName("user_02").build(),
-                        User.builder().email("user03@email").password("user03pass").fullName("user 03").userName("user_03").build()
+                        User.builder().email("user01@email").password("user01pass").fullName("user 01").username("user_01").build(),
+                        User.builder().email("user02@email").password("user02pass").fullName("user 02").username("user_02").build(),
+                        User.builder().email("user03@email").password("user03pass").fullName("user 03").username("user_03").build()
                 )
         );
 

@@ -62,7 +62,7 @@ public class CommentIT {
         authenticatedUser = new User();
         authenticatedUser.setEmail("authenticated.user@email.com");
         authenticatedUser.setPassword("my_password");
-        authenticatedUser.setUserName("auth_username");
+        authenticatedUser.setUsername("auth_username");
         authenticatedUser.setFullName("auth fullname");
 
         // save the user to pass authorization
@@ -209,7 +209,7 @@ public class CommentIT {
             User randomUser = new User();
             randomUser.setEmail("random@user.me");
             randomUser.setPassword("random_pwd");
-            randomUser.setUserName("rand_user");
+            randomUser.setUsername("rand_user");
             randomUser.setFullName("rand user");
 
             randomUser = userService.createUser(randomUser);
@@ -274,7 +274,7 @@ public class CommentIT {
             randomUser.setId(555L);
             randomUser.setEmail("random.user@email.com");
             randomUser.setPassword("random_pass");
-            randomUser.setUserName("rand_user");
+            randomUser.setUsername("rand_user");
             randomUser.setFullName("just random");
 
             randomUser = userService.createUser(randomUser);

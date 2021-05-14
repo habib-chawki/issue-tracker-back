@@ -59,7 +59,7 @@ public class BoardIT {
     public void authSetup() {
         // set up the authenticated user
         authenticatedUser = User.builder()
-                .userName("authenticated_user")
+                .username("authenticated_user")
                 .email("authenticated@user.in")
                 .password("auth_pass")
                 .fullName("auth user")
@@ -263,7 +263,7 @@ public class BoardIT {
             User notAuthenticatedUser = User.builder()
                     .email("not@authenticated.user")
                     .password("forbid")
-                    .userName("not_auth")
+                    .username("not_auth")
                     .fullName("not auth")
                     .build();
 

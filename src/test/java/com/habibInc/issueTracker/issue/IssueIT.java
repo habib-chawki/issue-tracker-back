@@ -72,7 +72,7 @@ public class IssueIT {
         authenticatedUser.setEmail("authenticated@user.me");
         authenticatedUser.setPassword("auth_password");
         authenticatedUser.setFullName("auth full name");
-        authenticatedUser.setUserName("auth username");
+        authenticatedUser.setUsername("auth username");
 
         // save the user to pass authorization
         authenticatedUser = userService.createUser(authenticatedUser);
@@ -176,7 +176,7 @@ public class IssueIT {
                     .email("assignee@issue")
                     .password("@$$ignee")
                     .fullName("issue assignee")
-                    .userName("issue@assignee")
+                    .username("issue@assignee")
                     .build()
             );
 
@@ -309,7 +309,7 @@ public class IssueIT {
             randomReporter.setEmail("random.user@email.com");
             randomReporter.setPassword("random_pass");
             randomReporter.setFullName("random user");
-            randomReporter.setUserName("random_user");
+            randomReporter.setUsername("random_user");
 
             userService.createUser(randomReporter);
 
@@ -393,7 +393,7 @@ public class IssueIT {
             User randomReporter = new User();
             randomReporter.setEmail("not.the.authenticated.user@email.com");
             randomReporter.setPassword("bla_bla_bla");
-            randomReporter.setUserName("random_reporter");
+            randomReporter.setUsername("random_reporter");
             randomReporter.setFullName("random reporter");
 
             userService.createUser(randomReporter);
@@ -429,7 +429,7 @@ public class IssueIT {
                     .email("assignee@user")
                     .password("assignee_pass")
                     .fullName("assignee me")
-                    .userName("issue_assignee")
+                    .username("issue_assignee")
                     .build();
             assignee = userService.createUser(assignee);
 

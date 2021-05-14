@@ -15,7 +15,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.mockito.Mockito.when;
@@ -47,7 +46,7 @@ public class UserControllerTest {
         user = User.builder()
                 .id(1L)
                 .fullName("full")
-                .userName("my_username")
+                .username("my_username")
                 .email("my_email@email.com")
                 .password("user_password")
                 .build();
@@ -186,9 +185,9 @@ public class UserControllerTest {
 
         // given a list of users
         List<User> users = List.of(
-                User.builder().id(1L).userName("user1@email.com").build(),
-                User.builder().id(2L).userName("user2@email.com").build(),
-                User.builder().id(3L).userName("user3@email.com").build()
+                User.builder().id(1L).username("user1@email.com").build(),
+                User.builder().id(2L).username("user2@email.com").build(),
+                User.builder().id(3L).username("user3@email.com").build()
         );
 
         // given the expected response
@@ -216,9 +215,9 @@ public class UserControllerTest {
     public void itShouldGetPaginatedListOfUsers() throws Exception {
         // given a list of users
         List<User> users = List.of(
-                User.builder().id(10L).userName("user01").build(),
-                User.builder().id(20L).userName("user02").build(),
-                User.builder().id(30L).userName("user03").build()
+                User.builder().id(10L).username("user01").build(),
+                User.builder().id(20L).username("user02").build(),
+                User.builder().id(30L).username("user03").build()
         );
 
         // given the service response
@@ -243,9 +242,9 @@ public class UserControllerTest {
 
         // given a list of users
         List<User> users = List.of(
-                User.builder().id(10L).userName("user01").build(),
-                User.builder().id(20L).userName("user02").build(),
-                User.builder().id(30L).userName("user03").build()
+                User.builder().id(10L).username("user01").build(),
+                User.builder().id(20L).username("user02").build(),
+                User.builder().id(30L).username("user03").build()
         );
 
         // given the service response

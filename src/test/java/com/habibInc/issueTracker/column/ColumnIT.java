@@ -70,7 +70,7 @@ public class ColumnIT {
         // save the authenticated user
         authenticatedUser = User.builder()
                 .email("authorized@user.in")
-                .userName("authorized")
+                .username("authorized")
                 .password("auth_pass")
                 .fullName("auth user")
                 .build();
@@ -405,7 +405,7 @@ public class ColumnIT {
             User randomUser = User.builder()
                     .email("random@user.me")
                     .password("random_pass")
-                    .userName("rand_user")
+                    .username("rand_user")
                     .fullName("random user")
                     .build();
             randomUser = userService.createUser(randomUser);
@@ -472,7 +472,7 @@ public class ColumnIT {
             User randomUser = User.builder()
                     .email("not.authenticated@user.random")
                     .password("!authenticated")
-                    .userName("not.auth")
+                    .username("not.auth")
                     .fullName("not authenticated user")
                     .build();
             randomUser = userService.createUser(randomUser);

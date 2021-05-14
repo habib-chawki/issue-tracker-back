@@ -38,7 +38,7 @@ public class RestExceptionHandlerIT {
         // set up the authenticated user
         authenticatedUser = User.builder()
                 .fullName("authenticated user")
-                .userName("auth_user")
+                .username("auth_user")
                 .email("auth@user.email")
                 .password("@uth_p@$$")
                 .build();
@@ -58,7 +58,7 @@ public class RestExceptionHandlerIT {
                 .email(authenticatedUser.getEmail())
                 .password(authenticatedUser.getPassword())
                 .fullName(authenticatedUser.getFullName())
-                .userName(authenticatedUser.getUserName())
+                .username(authenticatedUser.getUsername())
                 .build();
 
         // given the request body

@@ -10,7 +10,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -39,7 +38,7 @@ public class UserServiceTest {
 
         user.setId(1L);
         user.setFullName("full name");
-        user.setUserName("my_username");
+        user.setUsername("my_username");
         user.setEmail("my_email@email.com");
         user.setPassword("MyP@ssworD");
     }
@@ -134,9 +133,9 @@ public class UserServiceTest {
 
         // given a list of users
         List<User> users = List.of(
-                User.builder().id(1L).userName("user1@email.com").build(),
-                User.builder().id(2L).userName("user2@email.com").build(),
-                User.builder().id(3L).userName("user3@email.com").build()
+                User.builder().id(1L).username("user1@email.com").build(),
+                User.builder().id(2L).username("user2@email.com").build(),
+                User.builder().id(3L).username("user3@email.com").build()
         );
 
         // given the repository response
@@ -159,9 +158,9 @@ public class UserServiceTest {
 
         // given a list of users
         List<User> users = List.of(
-                User.builder().id(10L).userName("user01").build(),
-                User.builder().id(20L).userName("user02").build(),
-                User.builder().id(30L).userName("user03").build()
+                User.builder().id(10L).username("user01").build(),
+                User.builder().id(20L).username("user02").build(),
+                User.builder().id(30L).username("user03").build()
         );
 
         // given the repository response
@@ -186,9 +185,9 @@ public class UserServiceTest {
 
         // given a list of users
         List<User> users = List.of(
-                User.builder().id(10L).userName("user01").build(),
-                User.builder().id(20L).userName("user02").build(),
-                User.builder().id(30L).userName("user03").build()
+                User.builder().id(10L).username("user01").build(),
+                User.builder().id(20L).username("user02").build(),
+                User.builder().id(30L).username("user03").build()
         );
 
         // given the repository response

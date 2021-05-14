@@ -22,7 +22,6 @@ import org.springframework.http.*;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -79,7 +78,7 @@ public class SprintIT {
         authenticatedUser.setEmail("auth@user.me");
         authenticatedUser.setPassword("auth.pass");
         authenticatedUser.setFullName("auth full name");
-        authenticatedUser.setUserName("auth username");
+        authenticatedUser.setUsername("auth username");
 
         userService.createUser(authenticatedUser);
 

@@ -37,7 +37,7 @@ public class UserDetailsServiceTest {
 
         user.setId(1L);
         user.setFullName("first");
-        user.setUserName("my_username");
+        user.setUsername("my_username");
         user.setEmail("my_email@email.com");
         user.setPassword("MyP@ssworD");
     }

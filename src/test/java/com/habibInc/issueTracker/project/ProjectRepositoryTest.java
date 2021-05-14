@@ -65,7 +65,7 @@ public class ProjectRepositoryTest {
         user.setEmail("user@email.com");
         user.setPassword("user_pass");
         user.setFullName("user full");
-        user.setUserName("user name");
+        user.setUsername("user name");
 
         user = userRepository.save(user);
 
@@ -92,7 +92,7 @@ public class ProjectRepositoryTest {
         user.setEmail("user@email.com");
         user.setPassword("user_pass");
         user.setFullName("user full");
-        user.setUserName("user name");
+        user.setUsername("user name");
 
         user = userRepository.save(user);
 
@@ -115,7 +115,7 @@ public class ProjectRepositoryTest {
         // given a user
         User user = userRepository.save(
                 User.builder()
-                .userName("username")
+                .username("username")
                 .fullName("full name")
                 .email("user@email.me")
                 .password("user@pass")

@@ -13,7 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -57,7 +56,7 @@ public class ProjectIT {
         authenticatedUser.setEmail("auth.user@email.com");
         authenticatedUser.setPassword("auth_password");
         authenticatedUser.setFullName("auth full name");
-        authenticatedUser.setUserName("auth username");
+        authenticatedUser.setUsername("auth username");
 
         // save the user to pass authorization
         authenticatedUser = userService.createUser(authenticatedUser);
@@ -123,7 +122,7 @@ public class ProjectIT {
             user.setEmail("userToAdd@project");
             user.setPassword("user_project");
             user.setFullName("added user");
-            user.setUserName("added_user");
+            user.setUsername("added_user");
 
             user = userService.createUser(user);
 
@@ -293,7 +292,7 @@ public class ProjectIT {
             user.setEmail("assigned_user@email.com");
             user.setPassword("assigned_user_pass");
             user.setFullName("assigned user");
-            user.setUserName("assigned_user");
+            user.setUsername("assigned_user");
 
             user = userService.createUser(user);
 
@@ -332,7 +331,7 @@ public class ProjectIT {
             // given a user
             User user = userService.createUser(
                     User.builder()
-                            .userName("username")
+                            .username("username")
                             .fullName("full name")
                             .email("user@email.me")
                             .password("user@pass")
