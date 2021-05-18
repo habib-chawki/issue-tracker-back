@@ -1,6 +1,7 @@
 package com.habibInc.issueTracker.board;
 
 import com.habibInc.issueTracker.column.Column;
+import com.habibInc.issueTracker.column.ColumnDto;
 import com.habibInc.issueTracker.column.ColumnRepository;
 import com.habibInc.issueTracker.exceptionhandler.ApiError;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
@@ -115,8 +116,8 @@ public class BoardIT {
         @Test
         public void givenCreateBoard_itShouldSetAuthenticatedUserAsBoardOwner() {
             // when the board is created via a POST request
-            ResponseEntity<Board> response =
-                    restTemplate.exchange(url, HttpMethod.POST, httpEntity, Board.class);
+            ResponseEntity<BoardDto> response =
+                    restTemplate.exchange(url, HttpMethod.POST, httpEntity, BoardDto.class);
 
             // then the authenticated user should have been set as board owner
             assertThat(boardService.getBoardById(response.getBody().getId()).getOwner())
@@ -126,10 +127,10 @@ public class BoardIT {
         @Test
         public void givenCreateBoard_itShouldCreateItsColumns() {
             // when the board is created
-            ResponseEntity<Board> response =
-                    restTemplate.exchange(url, HttpMethod.POST, httpEntity, Board.class);
+            ResponseEntity<BoardDto> response =
+                    restTemplate.exchange(url, HttpMethod.POST, httpEntity, BoardDto.class);
 
-            List<Column> boardColumns = response.getBody().getColumns();
+            List<ColumnDto> boardColumns = response.getBody().getColumns();
 
             // then a "To do", "In progress" and "Done" columns should have been created along with it
             assertThat(boardColumns.get(0).getTitle()).containsIgnoringCase("To Do");
