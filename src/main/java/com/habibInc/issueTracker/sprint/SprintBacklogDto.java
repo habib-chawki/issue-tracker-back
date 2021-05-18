@@ -1,6 +1,6 @@
 package com.habibInc.issueTracker.sprint;
 
-import com.habibInc.issueTracker.issue.Issue;
+import com.habibInc.issueTracker.issue.IssueDto;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -22,7 +22,7 @@ public class SprintBacklogDto {
     private LocalDate startDate;
     private LocalDate endDate;
 
-    private List<Issue> backlog;
+    private List<IssueDto> backlog;
 
     @Override
     public boolean equals(Object o) {
