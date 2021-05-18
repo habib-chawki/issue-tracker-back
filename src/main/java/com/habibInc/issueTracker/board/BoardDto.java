@@ -2,13 +2,18 @@ package com.habibInc.issueTracker.board;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.habibInc.issueTracker.column.Column;
-import lombok.Data;
+import lombok.*;
 
 import java.util.List;
 import java.util.Objects;
 
-@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+
 public class BoardDto {
+
     private Long id;
 
     private String name;
