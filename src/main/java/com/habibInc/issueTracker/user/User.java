@@ -27,7 +27,7 @@ import java.util.Set;
 @Builder
 
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-@JsonIgnoreProperties(value = {"projects", "assignedIssues", "reportedIssues"})
+@JsonIgnoreProperties(value = {"assignedProjects", "createdProjects", "assignedIssues", "reportedIssues"})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
