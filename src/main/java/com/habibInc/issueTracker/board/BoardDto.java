@@ -1,7 +1,6 @@
 package com.habibInc.issueTracker.board;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.habibInc.issueTracker.column.Column;
 import com.habibInc.issueTracker.column.ColumnDto;
 import lombok.*;
 

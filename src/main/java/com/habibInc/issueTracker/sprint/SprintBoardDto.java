@@ -1,6 +1,6 @@
 package com.habibInc.issueTracker.sprint;
 
-import com.habibInc.issueTracker.board.Board;
+import com.habibInc.issueTracker.board.BoardDto;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -21,7 +21,7 @@ public class SprintBoardDto {
     private LocalDate startDate;
     private LocalDate endDate;
 
-    private Board board;
+    private BoardDto board;
 
     @Override
     public boolean equals(Object o) {
