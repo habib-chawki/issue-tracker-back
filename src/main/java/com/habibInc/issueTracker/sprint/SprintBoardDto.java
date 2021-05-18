@@ -1,12 +1,16 @@
 package com.habibInc.issueTracker.sprint;
 
 import com.habibInc.issueTracker.board.Board;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.Objects;
 
-@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+
 public class SprintBoardDto {
     private Long id;
 

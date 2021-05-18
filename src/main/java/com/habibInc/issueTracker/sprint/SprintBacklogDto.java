@@ -7,9 +7,10 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
+@AllArgsConstructor
 @NoArgsConstructor
-@Setter
 @Getter
+@Setter
 
 public class SprintBacklogDto {
     private Long id;
