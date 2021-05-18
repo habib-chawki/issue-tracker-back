@@ -4,9 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -24,10 +26,13 @@ public class BoardControllerTest {
     MockMvc mockMvc;
 
     @Autowired
-    ObjectMapper mapper;
+    ObjectMapper objectMapper;
 
     @MockBean
     BoardService boardService;
+
+    @SpyBean
+    ModelMapper modelMapper;
 
     Board board;
 
@@ -44,9 +49,14 @@ public class BoardControllerTest {
         // given the board service
         when(boardService.createBoard(any(), eq(board), any())).thenReturn(board);
 
-        // when a request to create a board is made
+        // given the expected response
+        String expectedResponse = objectMapper.writeValueAsString(
+                modelMapper.map(board, BoardDto.class)
+        );
+
+        // when a POST request to create a board is made
         String url = "/boards";
-        String requestBody = mapper.writeValueAsString(board);
+        String requestBody = objectMapper.writeValueAsString(board);
 
         // then the response should be the created board
         mockMvc.perform(post(url)
@@ -55,7 +65,7 @@ public class BoardControllerTest {
                 .content(requestBody))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(requestBody));
+                .andExpect(content().json(expectedResponse));
     }
 
     @Test
