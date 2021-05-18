@@ -1,5 +1,6 @@
 package com.habibInc.issueTracker.column;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.habibInc.issueTracker.board.BoardDto;
 import com.habibInc.issueTracker.issue.IssueDto;
 import lombok.AllArgsConstructor;
@@ -19,8 +20,6 @@ public class ColumnDto {
 
     private Long id;
     private String title;
-
-    private BoardDto board;
 
     private List<IssueDto> issues;
 
