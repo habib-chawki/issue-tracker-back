@@ -2,6 +2,7 @@ package com.habibInc.issueTracker.board;
 
 import com.habibInc.issueTracker.exceptionhandler.InvalidIdException;
 import com.habibInc.issueTracker.user.User;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -11,19 +12,24 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/boards")
 public class BoardController {
 
-    private BoardService boardService;
+    private final BoardService boardService;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public BoardController(BoardService boardService){
+    public BoardController(BoardService boardService, ModelMapper modelMapper){
         this.boardService = boardService;
+        this.modelMapper = modelMapper;
     }
 
     @PostMapping(value = {"", "/"}, params = "sprint")
     @ResponseStatus(HttpStatus.CREATED)
-    public Board createBoard(@RequestParam(name = "sprint") Long sprintId,
+    public BoardDto createBoard(@RequestParam(name = "sprint") Long sprintId,
                              @RequestBody Board board,
                              @AuthenticationPrincipal User authenticatedUser){
-        return boardService.createBoard(sprintId, board, authenticatedUser);
+        Board createdBoard = boardService.createBoard(sprintId, board, authenticatedUser);
+
+        // map board DTO
+        return modelMapper.map(createdBoard, BoardDto.class);
     }
 
     @GetMapping("/{boardId}")
