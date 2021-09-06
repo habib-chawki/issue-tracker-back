@@ -25,7 +25,7 @@ public class SprintBoardDto {
 
     @Override
     public String toString() {
-        return "SprintBoardDto{" +
+        return "{" +
                 "id: " + id +
                 ", name: '" + name + '\'' +
                 ", goal: '" + goal + '\'' +

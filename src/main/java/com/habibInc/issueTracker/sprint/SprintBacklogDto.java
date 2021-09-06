@@ -25,6 +25,19 @@ public class SprintBacklogDto {
     private List<IssueDto> backlog;
 
     @Override
+    public String toString() {
+        return "{" +
+                "id: " + id +
+                ", name: '" + name + '\'' +
+                ", goal: '" + goal + '\'' +
+                ", status: " + status +
+                ", startDate: " + startDate +
+                ", endDate: " + endDate +
+                ", backlog: " + backlog +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
