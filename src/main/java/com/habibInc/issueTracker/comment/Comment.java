@@ -40,6 +40,14 @@ public class Comment {
 
     private LocalDateTime updateTime;
 
+    @Override
+    public String toString() {
+        return "{" +
+                "id: " + id +
+                ", content: '" + content + '\'' +
+                '}';
+    }
+
     // equals and hashCode
     @Override
     public boolean equals(Object o) {
