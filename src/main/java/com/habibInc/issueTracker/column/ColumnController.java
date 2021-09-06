@@ -6,6 +6,7 @@ import com.habibInc.issueTracker.exceptionhandler.InvalidIdException;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.user.User;
 import com.habibInc.issueTracker.utils.validation.IdValidator;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/boards/{boardId}")
 
@@ -35,7 +37,9 @@ public class ColumnController {
         try{
             Long boardId = Long.parseLong(id);
 
-            return columnService.createColumn(boardId, column);
+            final Column createdColumn = columnService.createColumn(boardId, column);
+            log.info("Create column: {column: {}, boardId: {}}", createdColumn, id);
+            return createdColumn;
         }catch(NumberFormatException ex){
             throw new InvalidIdException("Invalid board id");
         }
@@ -48,7 +52,9 @@ public class ColumnController {
         try{
             Long boardId = Long.parseLong(id);
 
-            return columnService.createColumns(boardId, columns);
+            final List<Column> createdColumns = columnService.createColumns(boardId, columns);
+            log.info("Created columns: {}", createdColumns);
+            return createdColumns;
         }catch(NumberFormatException ex){
             throw new InvalidIdException("Invalid board id");
         }
@@ -61,7 +67,9 @@ public class ColumnController {
             Long parsedBoardId = Long.parseLong(boardId);
             Long parsedColumnId = Long.parseLong(columnId);
 
-            return columnService.getColumnById(parsedBoardId, parsedColumnId);
+            final Column columnById = columnService.getColumnById(parsedBoardId, parsedColumnId);
+            log.info("Fetched column: {}", columnById);
+            return columnById;
         }catch(NumberFormatException ex){
             throw new InvalidIdException("Invalid id");
         }
@@ -77,7 +85,10 @@ public class ColumnController {
             Long parsedColumnId = Long.parseLong(columnId);
             Long parsedBoardId = Long.parseLong(boardId);
 
-            return columnService.getPaginatedListOfIssues(parsedBoardId, parsedColumnId, page, size);
+            final List<Issue> issues = columnService.getPaginatedListOfIssues(parsedBoardId, parsedColumnId, page, size);
+            log.info("Fetched column issues: {boardId: {}, columnId: {}, issues: {}, page: {}, pageSize: {}}", boardId, columnId, issues, page, size);
+
+            return issues;
         }catch(NumberFormatException ex){
             throw new InvalidIdException("Invalid id");
         }
