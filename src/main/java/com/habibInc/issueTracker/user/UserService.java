@@ -1,7 +1,6 @@
 package com.habibInc.issueTracker.user;
 
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -9,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Slf4j
 @Service
 public class UserService {
     private final UserRepository userRepository;
@@ -26,12 +24,7 @@ public class UserService {
         String userPassword = user.getPassword();
         user.setPassword(bCryptPasswordEncoder.encode(userPassword));
 
-        // save user
-        final User createdUser = userRepository.save(user);
-
-        log.info("User signup success: {userId: {}}", createdUser.getId());
-
-        return createdUser;
+        return userRepository.save(user);
     }
 
     public User getUserById(Long id) {

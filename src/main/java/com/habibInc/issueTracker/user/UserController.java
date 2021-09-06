@@ -2,6 +2,7 @@ package com.habibInc.issueTracker.user;
 
 import com.habibInc.issueTracker.exceptionhandler.InvalidIdException;
 import com.habibInc.issueTracker.security.JwtUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -14,6 +15,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -45,6 +47,8 @@ public class UserController {
 
         // set up user DTO response body
         UserDto responseBody = modelMapper.map(createdUser, UserDto.class);
+
+        log.info("User signup success: {}", responseBody);
 
         // set up the response with the auth token
         ResponseEntity<UserDto> response = ResponseEntity.created(URI.create("/signup"))
