@@ -33,6 +33,22 @@ public class IssueDto {
     private UserDto reporter;
 
     @Override
+    public String toString() {
+        return "{" +
+                "id: " + id +
+                ", description: '" + description + '\'' +
+                ", summary: '" + summary + '\'' +
+                ", type: " + type +
+                ", status: " + status +
+                ", priority: " + priority +
+                ", points: " + points +
+                ", comments: " + comments +
+                ", assignee: " + assignee +
+                ", reporter: " + reporter +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
