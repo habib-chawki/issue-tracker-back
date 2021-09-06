@@ -104,6 +104,7 @@ public class ColumnController {
             Long parsedColumnId = Long.parseLong(columnId);
 
             columnService.deleteColumnById(parsedBoardId, parsedColumnId, authenticatedUser);
+            log.info("Column deleted: {columnId: {}, boardId: {}, owner: {}}", columnId, boardId, authenticatedUser.getId());
         }catch(NumberFormatException ex){
             throw new InvalidIdException("Invalid id");
         }
@@ -131,6 +132,8 @@ public class ColumnController {
             String updatedTitle =
                     columnService.updateTitle(parsedBoardId, parsedColumnId, title, authenticatedUser);
 
+            log.info("Updated column title: {columnId: {}, updatedTitle: {}}", columnId, updatedTitle);
+
             // setup the response body with the updated title
             body = new HashMap<>();
             body.put("updatedTitle", updatedTitle);
@@ -156,5 +159,10 @@ public class ColumnController {
 
         // update the issue column
         columnService.updateIssueColumn(boardId, columnId, issueId, newColumnId);
+
+        log.info("Updated issue column: " +
+                        "{boardId: {}, columnId: {}, issueId: {}, newColumnId: {}}",
+                boardId, columnId, issueId, newColumnId
+        );
     }
 }
