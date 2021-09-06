@@ -63,8 +63,13 @@ public class UserController {
     public User getUser(@PathVariable String id){
         try{
             Long userId = Long.parseLong(id);
-            return userService.getUserById(userId);
+            final User userById = userService.getUserById(userId);
+
+            log.info("Fetched user by id: {userId: {}}", id);
+
+            return userById;
         }catch(NumberFormatException ex){
+            log.error("Invalid user id: {userId: {}}", id);
             throw new InvalidIdException("Invalid user id");
         }
     }
@@ -82,6 +87,8 @@ public class UserController {
         List<UserDto> usersNotAssignedToProject =
                 users.stream().map(user -> modelMapper.map(user, UserDto.class)).collect(Collectors.toList());
 
+        log.info("List of users not assigned to project: {projectId: {}, users: {}}", excludedProjectId, usersNotAssignedToProject);
+
         return usersNotAssignedToProject;
     }
 
@@ -96,6 +103,8 @@ public class UserController {
         // convert to UserDto
         List<UserDto> usersByProject =
                 users.stream().map(user -> modelMapper.map(user, UserDto.class)).collect(Collectors.toList());
+
+        log.info("List of users assigned to project: {projectId: {}, users: {}}", projectId, usersByProject);
 
         return usersByProject;
     }
