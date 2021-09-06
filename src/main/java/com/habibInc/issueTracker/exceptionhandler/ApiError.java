@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Setter
+
 public class ApiError {
     private String errorMessage;
     private HttpStatus status;
@@ -24,5 +25,15 @@ public class ApiError {
         this.status = status;
         this.url = url;
         this.timestamp = timestamp;
+    }
+
+    @Override
+    public String toString() {
+        return "Error {" +
+                "message: '" + errorMessage + '\'' +
+                ", status: " + status +
+                ", url: '" + url + '\'' +
+                ", timestamp: " + timestamp +
+                '}';
     }
 }
