@@ -17,6 +17,15 @@ public class UserDto {
     private String userName;
     private String fullName;
 
+    @Override
+    public String toString() {
+        return "{" +
+                "id:" + id +
+                ", userName:'" + userName + '\'' +
+                ", fullName:'" + fullName + '\'' +
+                '}';
+    }
+
     // equals and hashCode
     @Override
     public boolean equals(Object o) {
