@@ -88,6 +88,8 @@ public class ProjectController {
     public void addUserToProject(@PathVariable("projectId") Long projectId,
                                  @PathVariable("userId") Long userId){
         projectService.addUserToProject(userId, projectId);
+
+        log.info("Added user to project: {userId: {}, projectId: {}}", userId, projectId);
     }
 
     @DeleteMapping("/{projectId}/users/{userId}")
@@ -95,5 +97,7 @@ public class ProjectController {
     public void removeUserFromProject(@PathVariable("projectId") Long projectId,
                                       @PathVariable("userId") Long userId) {
         projectService.removeUserFromProject(userId, projectId);
+
+        log.info("Removed user from project: {userId: {}, projectId: {}}", userId, projectId);
     }
 }
