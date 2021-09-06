@@ -1,7 +1,5 @@
 package com.habibInc.issueTracker.column;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.habibInc.issueTracker.board.BoardDto;
 import com.habibInc.issueTracker.issue.IssueDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,6 +20,15 @@ public class ColumnDto {
     private String title;
 
     private List<IssueDto> issues;
+
+    @Override
+    public String toString() {
+        return "{" +
+                "id: " + id +
+                ", title: '" + title + '\'' +
+                ", issues: " + issues +
+                '}';
+    }
 
     @Override
     public boolean equals(Object o) {
