@@ -48,6 +48,8 @@ public class SprintController {
         // convert Sprint to SprintBoardDto
         SprintBoardDto sprintDto = modelMapper.map(sprint, SprintBoardDto.class);
 
+        log.info("Fetched sprint: {}", sprintDto);
+
         return sprintDto;
     }
 
@@ -55,7 +57,9 @@ public class SprintController {
     @ResponseStatus(HttpStatus.OK)
     public int setSprintBacklog(@PathVariable("sprintId") String id, @RequestBody List<Long> issuesIds){
         Long sprintId = IdValidator.validate(id);
-        return sprintService.setSprintBacklog(sprintId, issuesIds);
+        final int backlog = sprintService.setSprintBacklog(sprintId, issuesIds);
+        log.info("Set sprint backlog: {sprintId: {}, issues: {}}", id, issuesIds);
+        return backlog;
     }
 
     @GetMapping(value = "", params = "status")
@@ -67,6 +71,8 @@ public class SprintController {
         List<SprintBacklogDto> sprintsByStatus = sprints.stream()
                 .map(sprint -> modelMapper.map(sprint, SprintBacklogDto.class))
                 .collect(Collectors.toList());
+
+        log.info("Fetched sprints by status: {}", sprintsByStatus);
 
         return sprintsByStatus;
     }
@@ -81,7 +87,9 @@ public class SprintController {
         SprintStatus status = SprintStatus.valueOf(requestBody.get("newSprintStatus").toUpperCase());
 
         // update sprint status
-        return sprintService.updateSprintStatus(sprintId, status);
+        final Sprint updatedSprint = sprintService.updateSprintStatus(sprintId, status);
+        log.info("Updated sprint status: {sprintId: {}, status: {}}", sprintId, status);
+        return updatedSprint;
     }
 
     @PatchMapping("{sprintId}/issues/{issueId}")
@@ -101,5 +109,7 @@ public class SprintController {
 
         // update issue sprint
         sprintService.updateIssueSprint(sprintId, issueId, newSprintId);
+
+        log.info("Updated issue sprint: {issueId: {}, newSprintId: {}}", issueId, newSprintId);
     }
 }
