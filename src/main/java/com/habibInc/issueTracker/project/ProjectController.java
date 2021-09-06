@@ -4,6 +4,7 @@ import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.issue.IssueDto;
 import com.habibInc.issueTracker.user.User;
 import com.habibInc.issueTracker.utils.validation.IdValidator;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestController
 @RequestMapping("/projects")
 public class ProjectController {
@@ -32,26 +34,34 @@ public class ProjectController {
     @ResponseStatus(HttpStatus.CREATED)
     public Project createProject(@Valid @RequestBody Project project,
                                  @AuthenticationPrincipal User authenticatedUser) {
-        return projectService.createProject(project, authenticatedUser);
+        final Project createdProject = projectService.createProject(project, authenticatedUser);
+        log.info("Project created: {}", createdProject);
+        return createdProject;
     }
 
     @GetMapping(value = {"", "/"}, params = "user")
     @ResponseStatus(HttpStatus.OK)
     public Set<Project> getProjectsByAssignedUser(@RequestParam("user") Long userId) {
-        return projectService.getProjectsByAssignedUser(userId);
+        final Set<Project> projectsByAssignedUser = projectService.getProjectsByAssignedUser(userId);
+        log.info("Fetched projects by assigned user: {userId: {}, projects: {}}", userId, projectsByAssignedUser);
+        return projectsByAssignedUser;
     }
 
     @GetMapping({"", "/"})
     @ResponseStatus(HttpStatus.OK)
     public List<Project> getProjects(){
-        return projectService.getProjects();
+        final List<Project> projects = projectService.getProjects();
+        log.info("Fetched all projects: {}", projects);
+        return projects;
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Project getProject(@PathVariable String id) {
         Long parsedId = IdValidator.validate(id);
-        return projectService.getProjectById(parsedId);
+        final Project projectById = projectService.getProjectById(parsedId);
+        log.info("Fetched project by id: {}", projectById);
+        return projectById;
     }
 
     @GetMapping("/{id}/backlog")
@@ -67,6 +77,8 @@ public class ProjectController {
         final List<IssueDto> backlog = issues.stream()
                 .map((issue) -> modelMapper.map(issue, IssueDto.class))
                 .collect(Collectors.toList());
+
+        log.info("Fetched backlog: {projectId: {}, backlog: {}}", id, backlog);
 
         return backlog;
     }
