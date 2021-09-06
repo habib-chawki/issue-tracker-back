@@ -58,6 +58,8 @@ public class CommentController {
 
             // delete comment after successful verification
             commentService.deleteComment(parsedIssueId, parsedCommentId, authenticatedUser);
+
+            log.info("Deleted comment: {commentId: {}, issueId: {}, ownerId: {}}", commentId, issueId, authenticatedUser.getId());
         }catch(NumberFormatException ex){
             throw new InvalidIdException("Invalid id");
         }
@@ -77,7 +79,10 @@ public class CommentController {
             // verify ids and update comment
             Long parsedCommentId = Long.parseLong(commentId);
             Long parsedIssueId = Long.parseLong(issueId);
-            return commentService.updateComment(parsedCommentId, parsedIssueId, commentContent, authenticatedUser);
+
+            final Comment updatedComment = commentService.updateComment(parsedCommentId, parsedIssueId, commentContent, authenticatedUser);
+            log.info("Updated comment: {}", updatedComment);
+            return updatedComment;
         }catch(NumberFormatException ex){
             throw new InvalidIdException("Invalid id");
         }
