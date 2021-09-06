@@ -87,7 +87,7 @@ public class UserController {
         List<UserDto> usersNotAssignedToProject =
                 users.stream().map(user -> modelMapper.map(user, UserDto.class)).collect(Collectors.toList());
 
-        log.info("List of users not assigned to project: {projectId: {}, users: {}}", excludedProjectId, usersNotAssignedToProject);
+        log.info("List of users not assigned to project: {projectId: {}, users: {}, page: {}, pageSize: {}}", excludedProjectId, usersNotAssignedToProject, page, size);
 
         return usersNotAssignedToProject;
     }
@@ -104,7 +104,7 @@ public class UserController {
         List<UserDto> usersByProject =
                 users.stream().map(user -> modelMapper.map(user, UserDto.class)).collect(Collectors.toList());
 
-        log.info("List of users assigned to project: {projectId: {}, users: {}}", projectId, usersByProject);
+        log.info("List of users assigned to project: {projectId: {}, users: {}, page: {}, pageSize: {}}", projectId, usersByProject, page, size);
 
         return usersByProject;
     }
@@ -118,6 +118,8 @@ public class UserController {
 
         // map to DTOs
         List<UserDto> usersDto = users.stream().map((user) -> modelMapper.map(user, UserDto.class)).collect(Collectors.toList());
+
+        log.info("Paginated list of users: {users: {}, page: {}, pageSize: {}}", page, size, usersDto);
 
         return usersDto;
     }
