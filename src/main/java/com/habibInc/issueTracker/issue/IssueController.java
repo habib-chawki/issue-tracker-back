@@ -48,7 +48,11 @@ public class IssueController {
     public Issue getIssue(@PathVariable String id){
         try {
             Long issueId = Long.parseLong(id);
-            return issueService.getIssueById(issueId);
+            final Issue issueById = issueService.getIssueById(issueId);
+
+            log.info("Fetched issue by id: {issueId: {}}", id);
+
+            return issueById;
         }catch(NumberFormatException ex){
             throw new InvalidIdException("Invalid issue id");
         }
@@ -69,7 +73,11 @@ public class IssueController {
             Issue updatedIssue = issueService.updateIssue(issueId, issue, authenticatedUser);
 
             // set and return issue dto
-            return modelMapper.map(updatedIssue, IssueDto.class);
+            final IssueDto updatedIssueDto = modelMapper.map(updatedIssue, IssueDto.class);
+
+            log.info("Issue updated: {}", updatedIssueDto);
+
+            return updatedIssueDto;
         }catch(NumberFormatException ex){
             throw new InvalidIdException("Invalid issue id");
         }
@@ -82,6 +90,8 @@ public class IssueController {
         try{
             Long issueId = Long.parseLong(id);
             issueService.deleteIssue(issueId, authenticatedUser);
+
+            log.info("Issue deleted by id: {issueId: {}, owner: {}}", id, authenticatedUser.getId());
         }catch(NumberFormatException ex){
             throw new InvalidIdException("Invalid issue id");
         }
@@ -100,6 +110,8 @@ public class IssueController {
 
         // convert to IssueDto
         IssueDto updatedIssue = modelMapper.map(issue, IssueDto.class);
+
+        log.info("Issue assignee updated: {newAssignee: {}, updatedIssue: {}}", assigneeId, updatedIssue);
 
         return updatedIssue;
     }
