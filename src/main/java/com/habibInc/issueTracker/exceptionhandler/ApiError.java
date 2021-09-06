@@ -29,7 +29,7 @@ public class ApiError {
 
     @Override
     public String toString() {
-        return "Error {" +
+        return "Http error {" +
                 "message: '" + errorMessage + '\'' +
                 ", status: " + status +
                 ", url: '" + url + '\'' +
