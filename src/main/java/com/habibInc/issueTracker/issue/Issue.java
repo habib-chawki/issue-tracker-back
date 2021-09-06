@@ -75,6 +75,18 @@ public class Issue {
     private LocalDateTime creationTime;
     private LocalDateTime updateTime;
 
+    @Override
+    public String toString() {
+        return "{" +
+                "id: " + id +
+                ", description: '" + description + '\'' +
+                ", summary: '" + summary + '\'' +
+                ", type: " + type +
+                ", status: " + status +
+                ", priority: " + priority +
+                '}';
+    }
+
     // equals and hashCode
     @Override
     public boolean equals(Object o) {
