@@ -3,6 +3,7 @@ package com.habibInc.issueTracker.sprint;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.utils.validation.IdValidator;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestController
 @RequestMapping("/projects/{projectId}/sprints")
 public class SprintController {
@@ -32,6 +34,8 @@ public class SprintController {
 
         // convert Sprint to SprintBacklogDto
         SprintBacklogDto sprintDto = modelMapper.map(createdSprint, SprintBacklogDto.class);
+
+        log.info("Created sprint: {}", sprintDto);
 
         return sprintDto;
     }

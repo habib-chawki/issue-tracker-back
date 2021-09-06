@@ -24,6 +24,19 @@ public class SprintBoardDto {
     private BoardDto board;
 
     @Override
+    public String toString() {
+        return "SprintBoardDto{" +
+                "id: " + id +
+                ", name: '" + name + '\'' +
+                ", goal: '" + goal + '\'' +
+                ", status: " + status +
+                ", startDate: " + startDate +
+                ", endDate: " + endDate +
+                ", board: " + board +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
