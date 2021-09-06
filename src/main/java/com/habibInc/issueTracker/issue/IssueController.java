@@ -91,7 +91,7 @@ public class IssueController {
             Long issueId = Long.parseLong(id);
             issueService.deleteIssue(issueId, authenticatedUser);
 
-            log.info("Issue deleted by id: {issueId: {}, owner: {}}", id, authenticatedUser.getId());
+            log.info("Issue deleted by id: {issueId: {}}", id);
         }catch(NumberFormatException ex){
             throw new InvalidIdException("Invalid issue id");
         }

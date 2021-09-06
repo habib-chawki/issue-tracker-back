@@ -104,7 +104,7 @@ public class ColumnController {
             Long parsedColumnId = Long.parseLong(columnId);
 
             columnService.deleteColumnById(parsedBoardId, parsedColumnId, authenticatedUser);
-            log.info("Column deleted: {columnId: {}, boardId: {}, owner: {}}", columnId, boardId, authenticatedUser.getId());
+            log.info("Column deleted: {columnId: {}, boardId: {}}", columnId, boardId);
         }catch(NumberFormatException ex){
             throw new InvalidIdException("Invalid id");
         }

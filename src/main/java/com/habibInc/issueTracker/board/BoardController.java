@@ -59,7 +59,7 @@ public class BoardController {
         try{
             Long boardId = Long.parseLong(id);
             boardService.deleteBoardById(boardId, authenticatedUser);
-            log.info("Delete board by id: {boardId: {}, owner: {}}", id, authenticatedUser.getId());
+            log.info("Delete board by id: {boardId: {}}", id);
         }catch (NumberFormatException ex){
             throw new InvalidIdException("Invalid board id");
         }

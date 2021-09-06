@@ -59,7 +59,7 @@ public class CommentController {
             // delete comment after successful verification
             commentService.deleteComment(parsedIssueId, parsedCommentId, authenticatedUser);
 
-            log.info("Deleted comment: {commentId: {}, issueId: {}, ownerId: {}}", commentId, issueId, authenticatedUser.getId());
+            log.info("Deleted comment: {commentId: {}, issueId: {}}", commentId, issueId);
         }catch(NumberFormatException ex){
             throw new InvalidIdException("Invalid id");
         }
