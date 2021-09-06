@@ -25,4 +25,15 @@ public class CommentDto {
     private LocalDateTime creationTime;
     private LocalDateTime updateTime;
 
+    @Override
+    public String toString() {
+        return "{" +
+                "id: " + id +
+                ", content: '" + content + '\'' +
+                ", issueId: " + issueId +
+                ", owner: " + owner +
+                ", creationTime: " + creationTime +
+                ", updateTime: " + updateTime +
+                '}';
+    }
 }

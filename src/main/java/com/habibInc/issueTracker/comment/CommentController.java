@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.exceptionhandler.InvalidIdException;
 import com.habibInc.issueTracker.user.User;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/issues/{issueId}/comments")
 public class CommentController {
@@ -36,7 +38,9 @@ public class CommentController {
             Comment createdComment = commentService.createComment(comment, issueId, owner);
 
             // map comment DTO
-            return modelMapper.map(createdComment, CommentDto.class);
+            final CommentDto createdCommentDto = modelMapper.map(createdComment, CommentDto.class);
+            log.info("Created comment: {}", createdCommentDto);
+            return createdCommentDto;
         }catch(NumberFormatException ex){
             throw new InvalidIdException("Invalid issue id");
         }
