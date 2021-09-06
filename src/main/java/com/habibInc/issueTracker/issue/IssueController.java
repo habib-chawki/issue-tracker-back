@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.exceptionhandler.InvalidIdException;
 import com.habibInc.issueTracker.user.User;
 import com.habibInc.issueTracker.utils.validation.IdValidator;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/issues")
 public class IssueController {
@@ -35,7 +37,11 @@ public class IssueController {
                              @RequestParam(name = "project") Long projectId) {
         // fetch and map the created issue
         Issue createdIssue = issueService.createIssue(issue, authenticatedUser, projectId);
-        return modelMapper.map(createdIssue, IssueDto.class);
+        final IssueDto createdIssueDto = modelMapper.map(createdIssue, IssueDto.class);
+
+        log.info("Issue created: {}", createdIssueDto);
+
+        return createdIssueDto;
     }
 
     @GetMapping("/{id}")
