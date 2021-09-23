@@ -49,6 +49,8 @@ public class IssueDto {
                 ", comments: " + comments +
                 ", assignee: " + assignee +
                 ", reporter: " + reporter +
+                ", creationTime: " + creationTime +
+                ", updateTime: " + updateTime +
                 '}';
     }
 
