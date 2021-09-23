@@ -55,6 +55,7 @@ public class Project {
         return "{" +
                 "id: " + id +
                 ", name: '" + name + '\'' +
+                ", creationTime: " + creationTime +
                 '}';
     }
 
