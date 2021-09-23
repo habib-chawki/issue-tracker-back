@@ -8,6 +8,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -45,6 +46,9 @@ public class Project {
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private Set<User> assignedUsers;
+
+    @Column(updatable = false)
+    private LocalDateTime creationTime = LocalDateTime.now();
 
     @Override
     public String toString() {
