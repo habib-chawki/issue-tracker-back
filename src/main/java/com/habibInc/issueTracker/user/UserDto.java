@@ -14,14 +14,14 @@ public class UserDto {
 
     private Long id;
 
-    private String userName;
+    private String username;
     private String fullName;
 
     @Override
     public String toString() {
         return "{" +
                 "id:" + id +
-                ", userName:'" + userName + '\'' +
+                ", userName:'" + username + '\'' +
                 ", fullName:'" + fullName + '\'' +
                 '}';
     }
