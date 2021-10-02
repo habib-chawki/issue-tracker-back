@@ -22,8 +22,6 @@ Grant all privileges to `trackeruser` on `trackerdb`
 GRANT ALL ON trackerdb.* TO 'trackeruser'@'localhost';
 ```
 
-Specify the following properties inside **`application.properties`**
-
 Clone the repository
 
 ```git
@@ -36,11 +34,13 @@ Change the current working directory
 cd issue-tracker-back/
 ```
 
-Create the application properties file inside src/main/resources
+Create the application properties file inside `src/main/resources`
 
 ```bash
 mkdir src/main/resources && touch src/main/resources/application.properties
 ```
+
+Specify the following properties inside `application.properties`
 
 ```properties
 spring.jpa.hibernate.ddl-auto=create
