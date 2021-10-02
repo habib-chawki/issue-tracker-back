@@ -34,7 +34,7 @@ Change the current working directory
 cd issue-tracker-back/
 ```
 
-Create the application properties file inside `src/main/resources`
+Create the application properties resource file
 
 ```bash
 mkdir src/main/resources && touch src/main/resources/application.properties
@@ -52,4 +52,10 @@ spring.datasource.password=P@$$w0rd
 spring.jpa.properties.javax.persistence.validation.mode=none
 
 secretKey=averysecretkey
+```
+
+Launch the application
+
+```bash
+./mvnw spring-boot:run
 ```
