@@ -6,8 +6,14 @@
 
 Clone the repository
 
-```
+```git
 git clone https://github.com/habib-chawki/issue-tracker-back.git
+```
+
+Change the current working directory
+
+```bash
+cd issue-tracker-back/
 ```
 
 Create the application properties file inside src/main/resources
