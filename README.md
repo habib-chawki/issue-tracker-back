@@ -24,7 +24,7 @@ mkdir src/main/resources && touch src/main/resources/application.properties
 
 Specify the following properties inside **`application.properties`**
 
-```
+```properties
 spring.jpa.hibernate.ddl-auto=create
 spring.datasource.url=jdbc:mysql://${MYSQL_HOST:localhost}:3306/trackerdb
 
@@ -34,4 +34,10 @@ spring.datasource.password=[your_password]
 spring.jpa.properties.javax.persistence.validation.mode=none
 
 secretKey=[your_secretKey]
+```
+
+Create the **`trackerdb`** database
+
+```SQL
+CREATE DATABASE trackerdb;
 ```
