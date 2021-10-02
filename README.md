@@ -36,8 +36,14 @@ spring.jpa.properties.javax.persistence.validation.mode=none
 secretKey=[your_secretKey]
 ```
 
+Create a user
+
+```sql
+CREATE USER 'trackeruser'@'localhost' IDENTIFIED BY 'P@$$w0rd';
+```
+
 Create the **`trackerdb`** database
 
-```SQL
+```sql
 CREATE DATABASE trackerdb;
 ```
