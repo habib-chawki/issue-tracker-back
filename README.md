@@ -21,3 +21,17 @@ Create the application properties file inside src/main/resources
 ```bash
 mkdir src/main/resources && touch src/main/resources/application.properties
 ```
+
+Specify the following properties inside **`application.properties`**
+
+```
+spring.jpa.hibernate.ddl-auto=create
+spring.datasource.url=jdbc:mysql://${MYSQL_HOST:localhost}:3306/trackerdb
+
+spring.datasource.username=[your_username]
+spring.datasource.password=[your_password]
+
+spring.jpa.properties.javax.persistence.validation.mode=none
+
+secretKey=[your_secretKey]
+```
