@@ -4,6 +4,12 @@
 
 # Setup guide
 
+Clone the repository
+
+```
+git clone https://github.com/habib-chawki/issue-tracker-back.git
+```
+
 Create the application properties file inside src/main/resources
 
 ```bash
