@@ -59,3 +59,9 @@ Launch the application
 ```bash
 ./mvnw spring-boot:run
 ```
+
+# Run tests
+
+```bash
+./mvnw test
+```
