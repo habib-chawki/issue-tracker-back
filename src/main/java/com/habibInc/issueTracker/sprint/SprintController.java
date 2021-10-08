@@ -112,4 +112,10 @@ public class SprintController {
 
         log.info("Updated issue sprint: {issueId: {}, newSprintId: {}}", issueId, newSprintId);
     }
+
+    @DeleteMapping("{sprintId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteSprintById() {
+
+    }
 }
