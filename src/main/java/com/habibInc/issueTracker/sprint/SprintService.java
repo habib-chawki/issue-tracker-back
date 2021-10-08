@@ -96,4 +96,8 @@ public class SprintService {
         //save the sprint
         issueRepository.save(issue);
     }
+
+    public void deleteSprintById(Long sprintId) {
+
+    }
 }
