@@ -226,8 +226,12 @@ public class SprintServiceTest {
         // given a random user
         final User notProjectOwner = User.builder().id(666L).build();
 
-        // given the sprint is found by id
+        // given the sprint project is set
+        sprint.setProject(project);
+
+        // given the sprint and project are found by id
         doReturn(sprint).when(sprintService).getSprintById(sprint.getId());
+        doReturn(project).when(projectService).getProjectById(project.getId());
 
         // when the service is invoked to delete the sprint by someone other than the project owner
         // then expect a forbidden operation exception to have been thrown
