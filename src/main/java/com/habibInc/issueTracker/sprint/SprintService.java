@@ -1,12 +1,14 @@
 package com.habibInc.issueTracker.sprint;
 
 import com.habibInc.issueTracker.column.Column;
+import com.habibInc.issueTracker.exceptionhandler.ForbiddenOperationException;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.issue.IssueRepository;
 import com.habibInc.issueTracker.issue.IssueService;
 import com.habibInc.issueTracker.project.Project;
 import com.habibInc.issueTracker.project.ProjectService;
+import com.habibInc.issueTracker.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -97,8 +99,13 @@ public class SprintService {
         issueRepository.save(issue);
     }
 
-    public void deleteSprintById(Long sprintId) {
+    public void deleteSprintById(Long sprintId, User authenticatedUser) {
         final Sprint sprintToDelete = getSprintById(sprintId);
+
+        // delete sprint only when authenticated user is the project owner
+        if(!sprintToDelete.getProject().getOwner().equals(authenticatedUser)) {
+            throw new ForbiddenOperationException("Unauthorized to delete sprint");
+        }
 
         // invoke repository, delete sprint by id
         sprintRepository.deleteById(sprintToDelete.getId());
