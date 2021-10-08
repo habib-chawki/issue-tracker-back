@@ -2,11 +2,13 @@ package com.habibInc.issueTracker.sprint;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.habibInc.issueTracker.user.User;
 import com.habibInc.issueTracker.utils.validation.IdValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -115,8 +117,8 @@ public class SprintController {
 
     @DeleteMapping("{sprintId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteSprintById(@PathVariable Long sprintId) {
+    public void deleteSprintById(@PathVariable Long sprintId, @AuthenticationPrincipal User authenticatedUser) {
         // invoke service, delete sprint by id
-        sprintService.deleteSprintById(sprintId);
+        sprintService.deleteSprintById(sprintId, authenticatedUser);
     }
 }
