@@ -98,7 +98,9 @@ public class SprintService {
     }
 
     public void deleteSprintById(Long sprintId) {
+        final Sprint sprintToDelete = getSprintById(sprintId);
+
         // invoke repository, delete sprint by id
-        sprintRepository.deleteById(sprintId);
+        sprintRepository.deleteById(sprintToDelete.getId());
     }
 }
