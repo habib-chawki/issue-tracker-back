@@ -168,4 +168,17 @@ public class SprintControllerTest {
                 .content(requestBody))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    public void itShouldDeleteSprintById() throws Exception {
+        // given the project and sprint id
+        Long projectId = 100L, sprintId = 200L;
+
+        // given the DELETE endpoint url
+        String url = String.format("/projects/%s/sprints/%s", projectId, sprintId);
+
+        // when a DELETE request is made to delete a sprint by id
+        // then the response should be a 200 OK
+        mockMvc.perform(delete(url)).andExpect(status().isOk());
+    }
 }
