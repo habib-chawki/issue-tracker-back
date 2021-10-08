@@ -174,6 +174,9 @@ public class SprintControllerTest {
         // given the project and sprint id
         Long projectId = 100L, sprintId = 200L;
 
+        // given the sprintService response
+        doNothing().when(sprintService).deleteSprintById(sprintId);
+
         // given the DELETE endpoint url
         String url = String.format("/projects/%s/sprints/%s", projectId, sprintId);
 
