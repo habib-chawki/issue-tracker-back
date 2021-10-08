@@ -102,4 +102,17 @@ public class SprintRepositoryTest {
         assertThat(sprintsByStatus).doesNotContain(overSprint);
     }
 
+    @Test
+    public void itShouldDeleteSprintById() {
+        // given the sprint is saved
+        final Sprint savedSprint = sprintRepository.save(sprint);
+        assertThat(sprintRepository.findById(savedSprint.getId())).isEqualTo(Optional.of(sprint));
+
+        // when the repository is invoked to delete the sprint by id
+        sprintRepository.deleteById(savedSprint.getId());
+
+        // then expect the sprint to be deleted
+        assertThat(sprintRepository.findById(savedSprint.getId())).isEmpty();
+    }
+
 }
