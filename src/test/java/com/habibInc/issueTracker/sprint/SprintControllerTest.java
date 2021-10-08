@@ -11,7 +11,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.ui.Model;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -172,13 +171,13 @@ public class SprintControllerTest {
     @Test
     public void itShouldDeleteSprintById() throws Exception {
         // given the project and sprint id
-        Long projectId = 100L, sprintId = 200L;
+        Long projectId = 100L;
 
-        // given the sprintService response
-        doNothing().when(sprintService).deleteSprintById(sprintId);
+        // given the sprint service response
+        doNothing().when(sprintService).deleteSprintById(sprint.getId());
 
         // given the DELETE endpoint url
-        String url = String.format("/projects/%s/sprints/%s", projectId, sprintId);
+        String url = String.format("/projects/%s/sprints/%s", projectId, sprint.getId());
 
         // when a DELETE request is made to delete a sprint by id
         // then the response should be a 200 OK
