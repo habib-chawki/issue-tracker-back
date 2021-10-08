@@ -98,6 +98,7 @@ public class SprintService {
     }
 
     public void deleteSprintById(Long sprintId) {
-
+        // invoke repository, delete sprint by id
+        sprintRepository.deleteById(sprintId);
     }
 }
