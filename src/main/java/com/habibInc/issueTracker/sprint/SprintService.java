@@ -104,7 +104,7 @@ public class SprintService {
         final Sprint sprintToDelete = getSprintById(sprintId);
 
         // delete sprint only when authenticated user is the project owner
-        if(!sprintToDelete.getProject().getOwner().equals(authenticatedUser)) {
+        if(!project.getOwner().equals(authenticatedUser)) {
             throw new ForbiddenOperationException("Unauthorized to delete sprint");
         }
 
