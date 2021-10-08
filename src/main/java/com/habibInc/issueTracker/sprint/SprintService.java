@@ -99,7 +99,8 @@ public class SprintService {
         issueRepository.save(issue);
     }
 
-    public void deleteSprintById(Long sprintId, User authenticatedUser) {
+    public void deleteSprintById(Long projectId, Long sprintId, User authenticatedUser) {
+        final Project project = projectService.getProjectById(projectId);
         final Sprint sprintToDelete = getSprintById(sprintId);
 
         // delete sprint only when authenticated user is the project owner
