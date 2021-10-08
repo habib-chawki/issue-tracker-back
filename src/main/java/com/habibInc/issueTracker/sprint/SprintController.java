@@ -117,8 +117,8 @@ public class SprintController {
 
     @DeleteMapping("{sprintId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteSprintById(@PathVariable Long sprintId, @AuthenticationPrincipal User authenticatedUser) {
+    public void deleteSprintById(@PathVariable Long projectId, @PathVariable Long sprintId, @AuthenticationPrincipal User authenticatedUser) {
         // invoke service, delete sprint by id
-        sprintService.deleteSprintById(sprintId, authenticatedUser);
+        sprintService.deleteSprintById(projectId, sprintId, authenticatedUser);
     }
 }
