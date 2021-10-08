@@ -195,4 +195,13 @@ public class SprintServiceTest {
         // then the sprint should have been updated
         assertThat(issue.getSprint()).isEqualTo(sprint);
     }
+
+    @Test
+    public void itShouldDeleteSprintById() {
+        // when the service method to delete a sprint by id is invoked
+        sprintService.deleteSprintById(sprint.getId());
+
+        // then expect the repository to have been invoked
+        verify(sprintRepository, times(1)).deleteById(sprint.getId());
+    }
 }
