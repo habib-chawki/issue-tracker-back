@@ -2,6 +2,7 @@ package com.habibInc.issueTracker.sprint;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.issue.Issue;
+import com.habibInc.issueTracker.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
@@ -174,7 +175,7 @@ public class SprintControllerTest {
         Long projectId = 100L;
 
         // given the sprint service response
-        doNothing().when(sprintService).deleteSprintById(sprint.getId());
+        doNothing().when(sprintService).deleteSprintById(eq(sprint.getId()), any(User.class));
 
         // given the DELETE endpoint url
         String url = String.format("/projects/%s/sprints/%s", projectId, sprint.getId());

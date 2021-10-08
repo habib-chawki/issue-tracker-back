@@ -1,11 +1,13 @@
 package com.habibInc.issueTracker.sprint;
 
+import com.habibInc.issueTracker.exceptionhandler.ForbiddenOperationException;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.issue.IssueRepository;
 import com.habibInc.issueTracker.issue.IssueService;
 import com.habibInc.issueTracker.project.Project;
 import com.habibInc.issueTracker.project.ProjectService;
+import com.habibInc.issueTracker.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -198,13 +200,31 @@ public class SprintServiceTest {
 
     @Test
     public void itShouldDeleteSprintById() {
+        // given the project owner
+        final User projectOwner = User.builder().id(1000L).build();
+
         // given the sprint is found by id
         doReturn(sprint).when(sprintService).getSprintById(sprint.getId());
 
         // when the service method to delete a sprint by id is invoked
-        sprintService.deleteSprintById(sprint.getId());
+        sprintService.deleteSprintById(sprint.getId(), projectOwner);
 
-        // then expect the repository to have been invoked
+        // then expect the repository to have been invoked and the sprint to have been deleted
         verify(sprintRepository, times(1)).deleteById(sprint.getId());
+    }
+
+    @Test
+    public void itShouldNotDeleteSprintWhenTheAuthenticatedUserIsNotTheProjectOwner() {
+        // given a random user
+        final User notProjectOwner = User.builder().id(666L).build();
+
+        // given the sprint is found by id
+        doReturn(sprint).when(sprintService).getSprintById(sprint.getId());
+
+        // when the service is invoked to delete the sprint by someone other than the project owner
+        // then expect a forbidden operation exception to have been thrown
+        assertThatExceptionOfType(ForbiddenOperationException.class).isThrownBy(
+                () -> sprintService.deleteSprintById(sprint.getId(), notProjectOwner)
+        );
     }
 }
