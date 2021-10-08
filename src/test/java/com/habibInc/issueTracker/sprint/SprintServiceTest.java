@@ -198,6 +198,9 @@ public class SprintServiceTest {
 
     @Test
     public void itShouldDeleteSprintById() {
+        // given the sprint is found by id
+        doReturn(sprint).when(sprintService).getSprintById(sprint.getId());
+
         // when the service method to delete a sprint by id is invoked
         sprintService.deleteSprintById(sprint.getId());
 
