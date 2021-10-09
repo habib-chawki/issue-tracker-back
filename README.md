@@ -65,8 +65,10 @@ Launch the application
 Create the application properties resource file for testing
 
 ```bash
-mkdir src/main/resources && touch src/main/resources/application.properties
+mkdir src/test/resources && touch src/test/resources/application.properties
 ```
+
+Specify the following properties to enable testing with the H2 in memory database
 
 ```properties
 spring.jpa.properties.hibernate.hbm2ddl.auto=create-drop
@@ -80,6 +82,8 @@ spring.jpa.properties.javax.persistence.validation.mode=none
 
 secretKey=averysecretkeyfortesting
 ```
+
+Run tests
 
 ```bash
 ./mvnw test
