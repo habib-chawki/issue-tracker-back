@@ -285,7 +285,7 @@ public class SprintIT {
             assertThat(response.getBody().getStatus()).isEqualTo(SprintStatus.OVER);
 
             /*
-             * The issues that do not belong to the last column
+             * The issues that does not belong to the last column
              * should be moved back to the product backlog
              * their sprint property value should be set to null
             */
@@ -322,6 +322,17 @@ public class SprintIT {
             assertThat(sprintRepository.findById(newSprint.getId()).get().getBacklog())
                     .contains(issue);
         }
+    }
+
+    @Nested
+    @DisplayName("DELETE")
+    class Delete {
+
+        @Test
+        public void itShouldDeleteSprintAndMoveItsIssuesToTheProductBacklog() {
+
+        }
+
     }
 
     @AfterEach

@@ -225,7 +225,7 @@ public class SprintServiceTest {
     }
 
     @Test
-    public void itShouldNotDeleteSprintWhenTheAuthenticatedUserIsNotTheProjectOwner() {
+    public void itShouldNotDeleteSprint_WhenTheAuthenticatedUserIsNotTheProjectOwner() {
         // given the project
         final Project project = Project.builder().id(777L).owner(User.builder().id(999L).build()).build();
 
