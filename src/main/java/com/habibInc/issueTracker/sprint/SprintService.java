@@ -108,6 +108,14 @@ public class SprintService {
             throw new ForbiddenOperationException("Unauthorized to delete sprint");
         }
 
+        // extract sprint backlog issues' ids
+        final List<Long> sprintBacklogIssueIds = sprintToDelete.getBacklog().stream()
+                .map(issue -> issue.getId())
+                .collect(Collectors.toList());
+
+        // move sprint issues back to product backlog
+        issueRepository.updateIssuesSprint(null, sprintBacklogIssueIds);
+
         // invoke repository, delete sprint by id
         sprintRepository.deleteById(sprintToDelete.getId());
     }
