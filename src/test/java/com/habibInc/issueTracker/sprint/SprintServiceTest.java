@@ -168,7 +168,7 @@ public class SprintServiceTest {
         when(sprintRepository.findById(sprint.getId())).thenReturn(Optional.of(sprint));
         when(sprintRepository.save(sprint)).thenReturn(sprint);
 
-        doNothing().when(sprintService).moveUnfinishedIssuesToProductBacklog(sprint);
+        doNothing().when(sprintService).moveUnfinishedSprintIssuesToProductBacklog(sprint);
 
         // when the service method is invoked
         sprintService.updateSprintStatus(sprint.getId(), SprintStatus.OVER);

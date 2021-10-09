@@ -59,7 +59,7 @@ public class SprintService {
 
         // when the sprint is over, then return the unfinished issues to the product backlog
         if(status.equals(SprintStatus.OVER)){
-            moveUnfinishedIssuesToProductBacklog(sprint);
+            moveUnfinishedSprintIssuesToProductBacklog(sprint);
         }
 
         // update the sprint status
@@ -68,7 +68,7 @@ public class SprintService {
         return sprintRepository.save(sprint);
     }
 
-    public void moveUnfinishedIssuesToProductBacklog(Sprint sprint) {
+    public void moveUnfinishedSprintIssuesToProductBacklog(Sprint sprint) {
         List<Issue> sprintBacklog = sprint.getBacklog();
         List<Column> boardColumns = sprint.getBoard().getColumns();
 
@@ -108,15 +108,20 @@ public class SprintService {
             throw new ForbiddenOperationException("Unauthorized to delete sprint");
         }
 
-        // extract sprint backlog issues' ids
-        final List<Long> sprintBacklogIssueIds = sprintToDelete.getBacklog().stream()
-                .map(issue -> issue.getId())
-                .collect(Collectors.toList());
-
         // move sprint issues back to product backlog
-        issueRepository.updateIssuesSprint(null, sprintBacklogIssueIds);
+        moveIssuesToProductBacklog(sprintToDelete.getBacklog());
 
         // invoke repository, delete sprint by id
         sprintRepository.deleteById(sprintToDelete.getId());
+    }
+
+    private void moveIssuesToProductBacklog(List<Issue> issues) {
+        // extract issues' ids
+        final List<Long> issuesIds = issues.stream()
+                .map(issue -> issue.getId())
+                .collect(Collectors.toList());
+
+        // move the issues back to the product backlog (set their sprint property to null)
+        issueRepository.updateIssuesSprint(null, issuesIds);
     }
 }
