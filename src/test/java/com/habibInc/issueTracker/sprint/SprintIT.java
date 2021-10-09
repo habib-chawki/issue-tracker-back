@@ -367,6 +367,18 @@ public class SprintIT {
 
             // assert that the sprint backlog has been saved
             assertThat(sprintRepository.findById(sprint.getId()).get().getBacklog()).containsExactlyElementsOf(sprintBacklog);
+
+            // when a DELETE request is made to remove the sprint by id
+            restTemplate.exchange(baseUrl + sprint.getId(), HttpMethod.DELETE, httpEntity, Void.class);
+
+            // then the issues should be put back into the product backlog (their sprint property should be set to null)
+            List<Issue> sprintBacklogAfter = (List<Issue>) issueRepository.findAll();
+
+            assertThat(sprintBacklogAfter).containsExactlyElementsOf(sprintBacklog);
+
+            for(Issue issue : sprintBacklogAfter){
+                assertThat(issue.getSprint()).isNull();
+            }
         }
 
     }
