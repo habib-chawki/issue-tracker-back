@@ -328,8 +328,29 @@ public class SprintIT {
     @DisplayName("DELETE")
     class Delete {
 
+        private String baseUrl = "/projects/" + project.getId() + "/sprints/";
+        private HttpEntity httpEntity;
+
+        @BeforeEach
+        public void setup() {
+            httpEntity = new HttpEntity(headers);
+        }
+
         @Test
-        public void itShouldDeleteSprintAndMoveItsIssuesToTheProductBacklog() {
+        public void itShouldDeleteSprintById() {
+            // given the sprint is created
+            sprint = sprintService.createSprint(project.getId(), sprint);
+
+            // when a DELETE request is made to remove the sprint by id
+            final ResponseEntity<Void> response =
+                    restTemplate.exchange(baseUrl + sprint.getId(), HttpMethod.DELETE, httpEntity, Void.class);
+
+            // then expect the sprint to have been removed successfully
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        }
+
+        @Test
+        public void givenDeleteSprint_itShouldMoveIssuesBackToTheProductBacklog() {
 
         }
 
