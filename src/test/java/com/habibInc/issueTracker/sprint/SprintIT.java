@@ -4,6 +4,7 @@ import com.habibInc.issueTracker.board.Board;
 import com.habibInc.issueTracker.board.BoardRepository;
 import com.habibInc.issueTracker.board.BoardService;
 import com.habibInc.issueTracker.column.ColumnRepository;
+import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.issue.Issue;
 import com.habibInc.issueTracker.issue.IssueRepository;
 import com.habibInc.issueTracker.project.Project;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -347,6 +349,8 @@ public class SprintIT {
 
             // then expect the sprint to have been removed successfully
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThatExceptionOfType(ResourceNotFoundException.class).
+                    isThrownBy(() -> sprintService.getSprintById(sprint.getId()));
         }
 
         @Test
