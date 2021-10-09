@@ -72,16 +72,26 @@ public class SprintService {
         List<Issue> sprintBacklog = sprint.getBacklog();
         List<Column> boardColumns = sprint.getBoard().getColumns();
 
+        // get the last board column id
         Long lastColumnId = boardColumns.get(boardColumns.size() - 1).getId();
 
-        // extract the id of all the issues that do not belong to the last column
-        List<Long> unfinishedIssues = sprintBacklog.stream()
+        // extract all the unfinished issues (the ones that do not belong to the last column)
+        List<Issue> unfinishedIssues = sprintBacklog.stream()
                 .filter((issue) -> !issue.getColumn().getId().equals(lastColumnId))
-                .map((issue) -> issue.getId())
                 .collect(Collectors.toList());
 
-        // move the unfinished issues back to the product backlog (set the sprint to null)
-        issueRepository.updateIssuesSprint(null, unfinishedIssues);
+        // move the unfinished issues back to the product backlog
+        moveIssuesToProductBacklog(unfinishedIssues);
+    }
+
+    private void moveIssuesToProductBacklog(List<Issue> issues) {
+        // extract issues' ids
+        final List<Long> issuesIds = issues.stream()
+                .map(issue -> issue.getId())
+                .collect(Collectors.toList());
+
+        // move the issues back to the product backlog (set their sprint property to null)
+        issueRepository.updateIssuesSprint(null, issuesIds);
     }
 
     public void updateIssueSprint(String sprintId, Long issueId, Long newSprintId) {
@@ -113,15 +123,5 @@ public class SprintService {
 
         // invoke repository, delete sprint by id
         sprintRepository.deleteById(sprintToDelete.getId());
-    }
-
-    private void moveIssuesToProductBacklog(List<Issue> issues) {
-        // extract issues' ids
-        final List<Long> issuesIds = issues.stream()
-                .map(issue -> issue.getId())
-                .collect(Collectors.toList());
-
-        // move the issues back to the product backlog (set their sprint property to null)
-        issueRepository.updateIssuesSprint(null, issuesIds);
     }
 }
