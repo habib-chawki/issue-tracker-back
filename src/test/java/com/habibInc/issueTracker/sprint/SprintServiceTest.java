@@ -207,6 +207,9 @@ public class SprintServiceTest {
         // given the sprint project is set
         sprint.setProject(project);
 
+        // given the sprint backlog
+        sprint.setBacklog(new ArrayList<>());
+
         // given the sprint and project are found by id
         doReturn(sprint).when(sprintService).getSprintById(sprint.getId());
         doReturn(project).when(projectService).getProjectById(project.getId());
