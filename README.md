@@ -62,6 +62,25 @@ Launch the application
 
 # Run tests
 
+Create the application properties resource file for testing
+
+```bash
+mkdir src/main/resources && touch src/main/resources/application.properties
+```
+
+```properties
+spring.jpa.properties.hibernate.hbm2ddl.auto=create-drop
+spring.datasource.url=jdbc:h2:mem:testDb;DB_CLOSE_DELAY=-1;MODE=MYSQL;DATABASE_TO_UPPER=false
+spring.datasource.driverClassName=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=sa
+spring.jpa.database-platform=org.hibernate.dialect.MySQL8Dialect
+
+spring.jpa.properties.javax.persistence.validation.mode=none
+
+secretKey=averysecretkeyfortesting
+```
+
 ```bash
 ./mvnw test
 ```
