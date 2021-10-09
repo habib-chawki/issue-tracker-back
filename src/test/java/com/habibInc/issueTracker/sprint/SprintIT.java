@@ -336,13 +336,13 @@ public class SprintIT {
         @BeforeEach
         public void setup() {
             httpEntity = new HttpEntity(headers);
+
+            // given the sprint is created
+            sprint = sprintService.createSprint(project.getId(), sprint);
         }
 
         @Test
         public void itShouldDeleteSprintById() {
-            // given the sprint is created
-            sprint = sprintService.createSprint(project.getId(), sprint);
-
             // when a DELETE request is made to remove the sprint by id
             final ResponseEntity<Void> response =
                     restTemplate.exchange(baseUrl + sprint.getId(), HttpMethod.DELETE, httpEntity, Void.class);
@@ -355,7 +355,18 @@ public class SprintIT {
 
         @Test
         public void givenDeleteSprint_itShouldMoveIssuesBackToTheProductBacklog() {
+            // given the sprint backlog
+            List<Issue> sprintBacklog = List.of(
+                    Issue.builder().id(111L).summary("Issue 01").sprint(sprint).build(),
+                    Issue.builder().id(222L).summary("Issue 02").sprint(sprint).build(),
+                    Issue.builder().id(333L).summary("Issue 03").sprint(sprint).build()
+            );
 
+            // given the issues are saved
+            sprintBacklog = (List<Issue>) issueRepository.saveAll(sprintBacklog);
+
+            // assert that the sprint backlog has been saved
+            assertThat(sprintRepository.findById(sprint.getId()).get().getBacklog()).containsExactlyElementsOf(sprintBacklog);
         }
 
     }
