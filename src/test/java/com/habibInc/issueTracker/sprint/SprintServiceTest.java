@@ -207,12 +207,15 @@ public class SprintServiceTest {
         // given the sprint project is set
         sprint.setProject(project);
 
-        // given the sprint backlog
+        // given the sprint backlog is set
         sprint.setBacklog(new ArrayList<>());
 
         // given the sprint and project are found by id
         doReturn(sprint).when(sprintService).getSprintById(sprint.getId());
         doReturn(project).when(projectService).getProjectById(project.getId());
+
+        // given the issues sprint is updated
+        doReturn(0).when(issueRepository).updateIssuesSprint(eq(null), any(List.class));
 
         // when the service method to delete a sprint by id is invoked
         sprintService.deleteSprintById(project.getId(), sprint.getId(), projectOwner);
