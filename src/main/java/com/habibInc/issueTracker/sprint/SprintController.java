@@ -120,5 +120,7 @@ public class SprintController {
     public void deleteSprintById(@PathVariable Long projectId, @PathVariable Long sprintId, @AuthenticationPrincipal User authenticatedUser) {
         // invoke service, delete sprint by id
         sprintService.deleteSprintById(projectId, sprintId, authenticatedUser);
+
+        log.info("Deleted sprint: {projectId: {}, sprintId: {}}", projectId, sprintId);
     }
 }
