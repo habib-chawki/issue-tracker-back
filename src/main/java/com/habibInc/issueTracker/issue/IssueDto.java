@@ -27,6 +27,7 @@ public class IssueDto {
     private IssueStatus status;
     private IssuePriority priority;
 
+    private int position;
     private int points;
     private List<CommentDto> comments;
 
