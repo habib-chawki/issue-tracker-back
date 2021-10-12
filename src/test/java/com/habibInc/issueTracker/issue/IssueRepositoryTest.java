@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class IssueRepositoryTest {
 
     @Autowired
@@ -74,7 +74,7 @@ public class IssueRepositoryTest {
     }
 
     @Test
-    public void itShouldSaveIssue(){
+    public void itShouldSaveIssue() {
         // save a new issue
         Issue savedIssue = issueRepository.save(issue1);
 
@@ -86,7 +86,7 @@ public class IssueRepositoryTest {
     }
 
     @Test
-    public void itShouldFindIssueById(){
+    public void itShouldFindIssueById() {
         // save a new issue
         Issue savedIssue = issueRepository.save(issue2);
 
@@ -98,7 +98,7 @@ public class IssueRepositoryTest {
     }
 
     @Test
-    public void itShouldFindAllIssues(){
+    public void itShouldFindAllIssues() {
         // given a list of issues
         Issue savedIssue1 = issueRepository.save(issue1);
         Issue savedIssue2 = issueRepository.save(issue2);
@@ -129,7 +129,7 @@ public class IssueRepositoryTest {
     }
 
     @Test
-    public void itShouldFindPaginatedListOfIssuesByColumnId () {
+    public void itShouldFindPaginatedListOfIssuesByColumnId() {
         // given a column
         Column column = new Column();
         column.setTitle("Issues column");
@@ -212,7 +212,7 @@ public class IssueRepositoryTest {
 
         // expect the sprint of each issue to have been set
         List<Issue> updatedIssues = (List<Issue>) issueRepository.findAll();
-        for(Issue issue : updatedIssues)
+        for (Issue issue : updatedIssues)
             assertThat(issue.getSprint()).isEqualTo(sprint);
     }
 
@@ -242,7 +242,7 @@ public class IssueRepositoryTest {
 
         // then expect the column of each issue to be the to do column
         List<Issue> updatedIssues = (List<Issue>) issueRepository.findAll();
-        for(Issue issue : updatedIssues)
+        for (Issue issue : updatedIssues)
             assertThat(issue.getColumn()).isEqualTo(column);
     }
 
@@ -307,5 +307,26 @@ public class IssueRepositoryTest {
 
         // then all the issues without a sprint should be retrieved
         assertThat(issues).containsExactlyElementsOf(issuesWithoutSprint);
+    }
+
+    @Test
+    public void itShouldGetTheIssuesCount() {
+        // given a project
+        project = projectRepository.save(project);
+
+        // given a list of issues
+        List<Issue> issues = (List<Issue>) issueRepository.saveAll(
+                List.of(
+                        Issue.builder().project(project).summary("issue 1").build(),
+                        Issue.builder().project(project).summary("issue 2").build(),
+                        Issue.builder().project(project).summary("issue 3").build()
+                )
+        );
+
+        // when the repository is invoked to fetch the issues count
+        final int numberOfIssues = issueRepository.countByProjectId(project.getId());
+
+        // then the number of issues in a given project should be returned
+        assertThat(numberOfIssues).isEqualTo(issues.size());
     }
 }
