@@ -122,6 +122,7 @@ public class IssueIT {
     class Post {
 
         HttpEntity<Issue> httpEntity;
+        String baseUrl = "/issues?project=" + project.getId();
 
         @BeforeEach
         public void setup() {
@@ -137,7 +138,7 @@ public class IssueIT {
 
             // when a POST request to create an issue is made
             ResponseEntity<IssueDto> response =
-                    restTemplate.postForEntity("/issues?project=" + project.getId(), httpEntity, IssueDto.class);
+                    restTemplate.postForEntity(baseUrl, httpEntity, IssueDto.class);
 
             // then expect the issue to have been created successfully
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
@@ -150,7 +151,7 @@ public class IssueIT {
         public void givenCreateIssue_itShouldSetTheAuthenticatedUserAsReporter() {
             // when an issue is created after a POST request
             ResponseEntity<Issue> response =
-                    restTemplate.postForEntity("/issues?project=" + project.getId(), httpEntity, Issue.class);
+                    restTemplate.postForEntity(baseUrl, httpEntity, Issue.class);
 
             // then the created issue's reporter should be the authenticated user
             assertThat(issueService.getIssueById(response.getBody().getId()).getReporter())
@@ -161,7 +162,7 @@ public class IssueIT {
         public void givenCreateIssue_itShouldSetTheIssueProject() {
             // when an issue is created after a POST request
             ResponseEntity<Issue> response =
-                    restTemplate.postForEntity("/issues?project=" + project.getId(), httpEntity, Issue.class);
+                    restTemplate.postForEntity(baseUrl, httpEntity, Issue.class);
 
             // then the issue project should be set
             assertThat(issueService.getIssueById(response.getBody().getId()).getProject())
@@ -188,10 +189,16 @@ public class IssueIT {
 
             // when an issue is created after a POST request
             ResponseEntity<IssueDto> response =
-                    restTemplate.postForEntity("/issues?project=" + project.getId(), httpEntity, IssueDto.class);
+                    restTemplate.postForEntity(baseUrl, httpEntity, IssueDto.class);
 
             // then expect the assignee to have been set
             assertThat(response.getBody().getAssignee()).isEqualToComparingOnlyGivenFields(assignee);
+        }
+
+        @Test
+        public void givenCreateIssue_itShouldSetItsPosition() {
+            // when a POST request is made to create an issue
+
         }
     }
 
