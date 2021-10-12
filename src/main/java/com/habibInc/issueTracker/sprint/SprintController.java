@@ -47,12 +47,27 @@ public class SprintController {
     public SprintBoardDto getSprintById(@PathVariable Long sprintId){
         Sprint sprint = sprintService.getSprintById(sprintId);
 
-        // convert Sprint to SprintBoardDto
+        // map Sprint to SprintBoardDto
         SprintBoardDto sprintDto = modelMapper.map(sprint, SprintBoardDto.class);
 
         log.info("Fetched sprint: {}", sprintDto);
 
         return sprintDto;
+    }
+
+    @GetMapping(value = "", params = "status")
+    @ResponseStatus(HttpStatus.OK)
+    public List<SprintBacklogDto> getSprintsByStatus(@RequestParam SprintStatus status) {
+        List<Sprint> sprints = sprintService.getSprintsByStatus(status);
+
+        // map each sprint to SprintBacklogDto
+        List<SprintBacklogDto> sprintsByStatus = sprints.stream()
+                .map(sprint -> modelMapper.map(sprint, SprintBacklogDto.class))
+                .collect(Collectors.toList());
+
+        log.info("Fetched sprints by status: {}", sprintsByStatus);
+
+        return sprintsByStatus;
     }
 
     @PatchMapping("/{sprintId}/backlog")
@@ -64,28 +79,13 @@ public class SprintController {
         return backlog;
     }
 
-    @GetMapping(value = "", params = "status")
-    @ResponseStatus(HttpStatus.OK)
-    public List<SprintBacklogDto> getSprintsByStatus(@RequestParam SprintStatus status) {
-        List<Sprint> sprints = sprintService.getSprintsByStatus(status);
-
-        // convert each sprint to SprintBacklogDto
-        List<SprintBacklogDto> sprintsByStatus = sprints.stream()
-                .map(sprint -> modelMapper.map(sprint, SprintBacklogDto.class))
-                .collect(Collectors.toList());
-
-        log.info("Fetched sprints by status: {}", sprintsByStatus);
-
-        return sprintsByStatus;
-    }
-
     @PatchMapping("{sprintId}")
     @ResponseStatus(HttpStatus.OK)
     public Sprint updateSprintStatus(@PathVariable Long sprintId, @RequestBody String request) throws JsonProcessingException {
         // extract request body
         Map<String, String> requestBody = new ObjectMapper().readValue(request, Map.class);
 
-        // extract new sprint status
+        // extract the new sprint status
         SprintStatus status = SprintStatus.valueOf(requestBody.get("newSprintStatus").toUpperCase());
 
         // update sprint status
