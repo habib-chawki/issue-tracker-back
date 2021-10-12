@@ -138,7 +138,17 @@ public class IssueServiceTest {
 
     @Test
     public void givenCreateIssue_itShouldSetPosition() {
+        // given the project id
+        Long projectId = 100L;
 
+        // given the issues count
+        int issuesCount = 5;
+
+        when(issueRepository.countByProjectId(projectId)).thenReturn(issuesCount);
+
+        issueService.createIssue(issue1, authenticatedUser, projectId);
+
+        verify(issueRepository, times(1)).countByProjectId(projectId);
     }
 
     @Test
