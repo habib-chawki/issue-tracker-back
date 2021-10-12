@@ -314,6 +314,9 @@ public class IssueRepositoryTest {
         // given a project
         project = projectRepository.save(project);
 
+        // issues count should be 0 at first
+        assertThat(issueRepository.countByProjectId(project.getId())).isEqualTo(0);
+
         // given a list of issues
         List<Issue> issues = (List<Issue>) issueRepository.saveAll(
                 List.of(
