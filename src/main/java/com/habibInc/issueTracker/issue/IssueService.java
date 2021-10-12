@@ -42,6 +42,9 @@ public class IssueService {
         // set the creation time
         issue.setCreationTime(LocalDateTime.now());
 
+        // get the project issues count to determine the new issue's position
+        final int position = issueRepository.countByProjectId(projectId) + 1;
+
         return issueRepository.save(issue);
     }
 
