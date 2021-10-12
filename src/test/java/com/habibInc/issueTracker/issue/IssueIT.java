@@ -197,13 +197,32 @@ public class IssueIT {
         }
 
         @Test
-        public void givenCreateIssue_itShouldSetPosition() {
+        public void givenCreateIssue_itShouldSetItsPosition() {
             // when a POST request is made to create an issue
             final ResponseEntity<IssueDto> response =
                     restTemplate.postForEntity(baseUrl, httpEntity, IssueDto.class);
 
             // then expect the issue's position to have been set
             assertThat(response.getBody().getPosition()).isEqualTo(1);
+        }
+
+        @Test
+        public void givenCreateIssue_itShouldPutIssueInLastPosition() {
+            // given a list of project issues
+            List<Issue> issues = (List<Issue>) issueRepository.saveAll(
+                    List.of(
+                            Issue.builder().project(project).summary("issue 1").build(),
+                            Issue.builder().project(project).summary("issue 2").build(),
+                            Issue.builder().project(project).summary("issue 3").build()
+                    )
+            );
+
+            // when a POST request is made to create a new issue
+            final ResponseEntity<IssueDto> response =
+                    restTemplate.postForEntity(baseUrl, httpEntity, IssueDto.class);
+
+            // then the issue's position should be last
+            assertThat(response.getBody().getPosition()).isEqualTo(issues.size() + 1);
         }
     }
 
