@@ -121,13 +121,14 @@ public class IssueIT {
     @DisplayName("POST")
     class Post {
 
-        HttpEntity<Issue> httpEntity;
-        String baseUrl = "/issues?project=" + project.getId();
+        private HttpEntity<Issue> httpEntity;
+        private String baseUrl;
 
         @BeforeEach
         public void setup() {
             // set up the request
             httpEntity = new HttpEntity<>(issue1, headers);
+            baseUrl = String.format("/issues?project=%d", project.getId());
         }
 
         @Test
@@ -196,9 +197,13 @@ public class IssueIT {
         }
 
         @Test
-        public void givenCreateIssue_itShouldSetItsPosition() {
+        public void givenCreateIssue_itShouldSetPosition() {
             // when a POST request is made to create an issue
+            final ResponseEntity<IssueDto> response =
+                    restTemplate.postForEntity(baseUrl, httpEntity, IssueDto.class);
 
+            // then expect the issue's position to have been set
+            assertThat(response.getBody().getPosition()).isEqualTo(1);
         }
     }
 
