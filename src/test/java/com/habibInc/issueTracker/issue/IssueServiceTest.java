@@ -98,7 +98,8 @@ public class IssueServiceTest {
         // create the issue
         Issue createdIssue = issueService.createIssue(issue1, null, null);
 
-        // expect the issue to have been created successfully
+        // expect the repository to have been invoked and the issue to have been created
+        verify(issueRepository, times(1)).save(issue1);
         assertThat(createdIssue).isEqualTo(issue1);
     }
 
@@ -133,6 +134,11 @@ public class IssueServiceTest {
 
         // then its project property should be set
         assertThat(createdIssue.getProject()).isEqualTo(project);
+    }
+
+    @Test
+    public void givenCreateIssue_itShouldSetPosition() {
+
     }
 
     @Test
