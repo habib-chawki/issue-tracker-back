@@ -310,7 +310,7 @@ public class IssueRepositoryTest {
     }
 
     @Test
-    public void itShouldGetTheIssuesCount() {
+    public void itShouldCountIssuesByProject() {
         // given a project
         project = projectRepository.save(project);
 
@@ -331,5 +331,37 @@ public class IssueRepositoryTest {
 
         // then the number of issues in a given project should be returned
         assertThat(numberOfIssues).isEqualTo(issues.size());
+    }
+
+    @Test
+    public void givenCountIssuesByProject_itShouldCountOnlyIssuesOfSpecifiedProjectById() {
+        // given two distinct projects
+        final Project project1 = projectRepository.save(Project.builder().name("project 01").build());
+        final Project project2 = projectRepository.save(Project.builder().name("project 02").build());
+
+        // given the first project issues
+        List<Issue> project1Issues = (List<Issue>) issueRepository.saveAll(
+                List.of(
+                        Issue.builder().project(project1).summary("issue 11").build(),
+                        Issue.builder().project(project1).summary("issue 12").build()
+                )
+        );
+
+        // given the second project issues
+        List<Issue> project2Issues = (List<Issue>) issueRepository.saveAll(
+                List.of(
+                        Issue.builder().project(project2).summary("issue 21").build(),
+                        Issue.builder().project(project2).summary("issue 22").build(),
+                        Issue.builder().project(project2).summary("issue 23").build()
+                )
+        );
+
+        // when the repository is invoked to count project issues
+        final int project1Count = issueRepository.countByProjectId(project1.getId());
+        final int project2Count = issueRepository.countByProjectId(project2.getId());
+
+        // then expect each project count to be correct
+        assertThat(project1Count).isEqualTo(project1Issues.size());
+        assertThat(project2Count).isEqualTo(project2Issues.size());
     }
 }
