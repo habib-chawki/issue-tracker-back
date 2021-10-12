@@ -45,6 +45,10 @@ public class IssueService {
         // get the project issues count to determine the new issue's position
         final int position = issueRepository.countByProjectId(projectId) + 1;
 
+        // set the issue's position
+        issue.setPosition(position);
+
+        // save the issue
         return issueRepository.save(issue);
     }
 
