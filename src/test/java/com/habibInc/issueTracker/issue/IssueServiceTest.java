@@ -144,10 +144,14 @@ public class IssueServiceTest {
         // given the issues count
         int issuesCount = 5;
 
+        when(issueRepository.save(issue1)).thenReturn(issue1);
         when(issueRepository.countByProjectId(projectId)).thenReturn(issuesCount);
 
+        // when the service is invoked to create the issue
         issueService.createIssue(issue1, authenticatedUser, projectId);
 
+        // then expect the issue's position to have been set
+        assertThat(issue1.getPosition()).isEqualTo(issuesCount+1);
         verify(issueRepository, times(1)).countByProjectId(projectId);
     }
 
