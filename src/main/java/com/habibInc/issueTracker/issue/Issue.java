@@ -72,6 +72,8 @@ public class Issue {
 
     private int points;
 
+    private int position;
+
     private LocalDateTime creationTime;
     private LocalDateTime updateTime;
 
