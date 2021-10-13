@@ -31,4 +31,6 @@ public interface IssueRepository extends PagingAndSortingRepository<Issue, Long>
     int updateIssuesColumn(@Param("columnId") Long columnId, @Param("ids") List<Long> ids);
 
     int countByProjectId(Long projectId);
+
+    void swapPositions(Long issue1, Long issue2);
 }
