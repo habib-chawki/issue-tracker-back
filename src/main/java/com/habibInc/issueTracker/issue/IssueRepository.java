@@ -30,7 +30,10 @@ public interface IssueRepository extends PagingAndSortingRepository<Issue, Long>
     @Query(value = "UPDATE issue SET `column_id` = :columnId WHERE id IN :ids", nativeQuery = true)
     int updateIssuesColumn(@Param("columnId") Long columnId, @Param("ids") List<Long> ids);
 
-    int countByProjectId(Long projectId);
+    @Transactional
+    @Modifying(clearAutomatically = true)
+    @Query(value = "UPDATE issue SET position = (SELECT position FROM issue WHERE id = :id2) WHERE id = :id1", nativeQuery = true)
+    void swapPositions(@Param("id1") Long issueId1, @Param("id2") Long issueId2);
 
-    void swapPositions(Long issue1, Long issue2);
+    int countByProjectId(Long projectId);
 }
