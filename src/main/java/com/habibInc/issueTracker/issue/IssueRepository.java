@@ -32,7 +32,7 @@ public interface IssueRepository extends PagingAndSortingRepository<Issue, Long>
 
     @Transactional
     @Modifying(clearAutomatically = true)
-    @Query(value = "SET @tempId1 = (SELECT position FROM issue WHERE id = :id1); UPDATE issue SET position = (SELECT position FROM issue WHERE id = :id2) WHERE id = :id1 ; UPDATE issue SET position = @tempId1 WHERE id = :id2", nativeQuery = true)
+    @Query(value = "SET @tempId1 = (SELECT position FROM issue WHERE id = :id1); SET @tempId2 = (SELECT position FROM issue WHERE id = :id2); UPDATE issue SET position = (CASE WHEN id = :id1 THEN @tempId2 WHEN id = :id2 THEN @tempId1 END)", nativeQuery = true)
     void swapPositions(@Param("id1") Long issueId1, @Param("id2") Long issueId2);
 
     int countByProjectId(Long projectId);
