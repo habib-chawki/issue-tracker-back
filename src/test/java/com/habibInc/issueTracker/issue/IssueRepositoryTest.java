@@ -373,15 +373,18 @@ public class IssueRepositoryTest {
         issue1 = issueRepository.save(issue1);
         issue2 = issueRepository.save(issue2);
 
-        // given their initial positions
+        // given the issues' initial positions
         final int position1 = issue1.getPosition();
         final int position2 = issue2.getPosition();
 
-        // when the repository is invoked to swap the positions
+        // when the repository is invoked to swap their positions
         issueRepository.swapPositions(issue1.getId(), issue2.getId());
 
         // then expect the issues' positions to have been swapped
-        assertThat(issueRepository.findById(issue1.getId()).get().getPosition()).isEqualTo(position2);
-        assertThat(issueRepository.findById(issue2.getId()).get().getPosition()).isEqualTo(position1);
+        issue1 = issueRepository.findById(issue1.getId()).get();
+        issue2 = issueRepository.findById(issue2.getId()).get();
+
+        assertThat(issue1.getPosition()).isEqualTo(position2);
+        assertThat(issue2.getPosition()).isEqualTo(position1);
     }
 }
