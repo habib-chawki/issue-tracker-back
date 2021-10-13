@@ -54,6 +54,7 @@ public class IssueRepositoryTest {
         issue1.setStatus(IssueStatus.RESOLVED);
         issue1.setCreationTime(LocalDateTime.now());
         issue1.setUpdateTime(LocalDateTime.now());
+        issue1.setPosition(11);
         issue1.setPoints(4);
 
         // set up issue2 properties
@@ -63,6 +64,7 @@ public class IssueRepositoryTest {
         issue2.setStatus(IssueStatus.IN_PROGRESS);
         issue2.setCreationTime(LocalDateTime.now());
         issue2.setUpdateTime(LocalDateTime.now());
+        issue2.setPosition(22);
         issue2.setPoints(21);
 
         // create a project
@@ -367,18 +369,17 @@ public class IssueRepositoryTest {
 
     @Test
     public void itShouldSwapThePositionsOfTwoIssues() {
-        // given the issues' positions
-        int position1 = 11;
-        int position2 = 22;
 
-        // given two issues
-        final Issue issue1 = Issue.builder().summary("issue 01").position(position1).build();
-        final Issue issue2 = Issue.builder().summary("issue 02").position(position2).build();
+        issue1 = issueRepository.save(issue1);
+        issue2 = issueRepository.save(issue2);
+
+        final int position1 = issue1.getPosition();
+        final int position2 = issue2.getPosition();
 
         // when the repository is invoked to swap their positions
         issueRepository.swapPositions(issue1.getId(), issue2.getId());
 
         // then expect the issues' positions to have been swapped
-        assertThat(issue1.getPosition()).isEqualTo(position2);
+        assertThat(issueRepository.findById(issue1.getId()).get().getPosition()).isEqualTo(position2);
     }
 }
