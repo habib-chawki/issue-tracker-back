@@ -364,4 +364,21 @@ public class IssueRepositoryTest {
         assertThat(project1Count).isEqualTo(project1Issues.size());
         assertThat(project2Count).isEqualTo(project2Issues.size());
     }
+
+    @Test
+    public void itShouldSwapThePositionsOfTwoIssues() {
+        // given the issues' positions
+        int position1 = 11;
+        int position2 = 22;
+
+        // given two issues
+        final Issue issue1 = Issue.builder().summary("issue 01").position(position1).build();
+        final Issue issue2 = Issue.builder().summary("issue 02").position(position2).build();
+
+        // when the repository is invoked to swap their positions
+        issueRepository.swapPositions(issue1.getId(), issue2.getId());
+
+        // then expect the issues' positions to have been swapped
+        assertThat(issue1.getPosition()).isEqualTo(position2);
+    }
 }
