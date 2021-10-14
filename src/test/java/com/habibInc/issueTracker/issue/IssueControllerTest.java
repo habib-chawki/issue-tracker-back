@@ -369,7 +369,7 @@ public class IssueControllerTest {
         String requestBody = "{\"issue1\": 11, \"issue2\": 22}";
 
         // given the service response
-        doNothing().when(issueService).swapIssues(projectId, issueId1, issueId2);
+        doNothing().when(issueService).swapIssuesPositions(projectId, issueId1, issueId2);
 
         // when a PATCH request is made to update the issues positions is made
         // then expect the positions to have been updated
