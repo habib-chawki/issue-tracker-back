@@ -297,7 +297,7 @@ public class IssueServiceTest {
         when(projectService.getProjectById(project.getId())).thenReturn(project);
 
         // when the service is invoked to swap issues' positions
-        issueService.swapIssues(project.getId(), issue1.getId(), issue2.getId());
+        issueService.swapIssuesPositions(project.getId(), issue1.getId(), issue2.getId());
 
         // then expect the repository to have been invoked and the positions to have been swapped
         verify(issueRepository, times(1)).swapPositions(issue1.getId(), issue2.getId());

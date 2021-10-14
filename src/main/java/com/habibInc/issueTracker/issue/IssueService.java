@@ -95,7 +95,7 @@ public class IssueService {
         return issueRepository.save(issue);
     }
 
-    public void swapIssues(Long projectId, Long issueId1, Long issueId2) {
+    public void swapIssuesPositions(Long projectId, Long issueId1, Long issueId2) {
         // fetch the project by id
         Project project = projectService.getProjectById(projectId);
 

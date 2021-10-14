@@ -129,7 +129,7 @@ public class IssueController {
         Long projectId = IdValidator.validate(id);
 
         // invoke service, swap issues' positions
-        issueService.swapIssues(projectId, issueId1, issueId2);
+        issueService.swapIssuesPositions(projectId, issueId1, issueId2);
     }
 
 }
