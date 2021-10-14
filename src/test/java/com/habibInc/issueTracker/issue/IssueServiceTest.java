@@ -290,15 +290,17 @@ public class IssueServiceTest {
     @Test
     public void itShouldSwapThePositionsOfTwoIssues() {
         // given the project
-        Long projectId = 100L;
+        Project project = Project.builder().id(100L).name("project swap").build();
 
         // given the repository response
         doNothing().when(issueRepository).swapPositions(issue1.getId(), issue2.getId());
+        when(projectService.getProjectById(project.getId())).thenReturn(project);
 
-        // when the service is invoked to swap issues positions
-        issueService.swapIssues(projectId, issue1.getId(), issue2.getId());
+        // when the service is invoked to swap issues' positions
+        issueService.swapIssues(project.getId(), issue1.getId(), issue2.getId());
 
         // then expect the repository to have been invoked and the positions to have been swapped
         verify(issueRepository, times(1)).swapPositions(issue1.getId(), issue2.getId());
+        verify(projectService, times(1)).getProjectById(project.getId());
     }
 }
