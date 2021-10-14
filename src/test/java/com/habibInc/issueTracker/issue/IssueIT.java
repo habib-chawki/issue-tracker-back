@@ -372,6 +372,44 @@ public class IssueIT {
     }
 
     @Nested
+    @DisplayName("PATCH")
+    class Patch {
+
+        @Test
+        public void itShouldUpdateIssueAssignee() {
+            // given a user
+            User assignee = User.builder()
+                    .email("assignee@user")
+                    .password("assignee_pass")
+                    .fullName("assignee me")
+                    .username("issue_assignee")
+                    .build();
+            assignee = userService.createUser(assignee);
+
+            // given an issue
+            issue1 = issueService.createIssue(issue1, authenticatedUser, project.getId());
+
+            // given the request body
+            String requestBody = "{\"assignee\" : \"" + assignee.getId() + "\"}";
+            HttpEntity httpEntity = new HttpEntity(requestBody, headers);
+
+            // when a PATCH request is made to update the issue assignee
+            ResponseEntity<IssueDto> response =
+                    restTemplate.exchange("/issues/" + issue1.getId(), HttpMethod.PATCH, httpEntity, IssueDto.class);
+
+            // then the response should be the updated issue
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+            assertThat(response.getBody().getAssignee()).isEqualToComparingOnlyGivenFields(assignee);
+            assertThat(response.getBody().getReporter()).isEqualToComparingOnlyGivenFields(authenticatedUser);
+        }
+
+        @Test
+        public void itShouldSwapThePositionsOfTwoIssues() {
+        }
+    }
+
+    @Nested
     @DisplayName("DELETE")
     class Delete {
 
@@ -446,40 +484,6 @@ public class IssueIT {
             // then the operation should be forbidden
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
             assertThat(response.getBody().getErrorMessage()).contains("Forbidden");
-        }
-    }
-
-    @Nested
-    @DisplayName("PATCH")
-    class Patch {
-
-        @Test
-        public void itShouldUpdateIssueAssignee() {
-            // given a user
-            User assignee = User.builder()
-                    .email("assignee@user")
-                    .password("assignee_pass")
-                    .fullName("assignee me")
-                    .username("issue_assignee")
-                    .build();
-            assignee = userService.createUser(assignee);
-
-            // given an issue
-            issue1 = issueService.createIssue(issue1, authenticatedUser, project.getId());
-
-            // given the request body
-            String requestBody = "{\"assignee\" : \"" + assignee.getId() + "\"}";
-            HttpEntity httpEntity = new HttpEntity(requestBody, headers);
-
-            // when a PATCH request is made to update the issue assignee
-            ResponseEntity<IssueDto> response =
-                    restTemplate.exchange("/issues/" + issue1.getId(), HttpMethod.PATCH, httpEntity, IssueDto.class);
-
-            // then the response should be the updated issue
-            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-
-            assertThat(response.getBody().getAssignee()).isEqualToComparingOnlyGivenFields(assignee);
-            assertThat(response.getBody().getReporter()).isEqualToComparingOnlyGivenFields(authenticatedUser);
         }
     }
 
