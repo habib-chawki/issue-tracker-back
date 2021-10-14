@@ -96,6 +96,6 @@ public class IssueService {
     }
 
     public void swapIssues(Long projectId, Long issueId1, Long issueId2) {
-
+        issueRepository.swapPositions(issueId1, issueId2);
     }
 }
