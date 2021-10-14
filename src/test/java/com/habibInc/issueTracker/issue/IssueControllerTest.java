@@ -355,4 +355,15 @@ public class IssueControllerTest {
                         )
                 );
     }
+
+    @Test
+    public void itShouldSwapThePositionsOfTwoIssues() throws Exception {
+        // given the project id
+        Long projectId = 100L;
+
+        // when a PATCH request is made to update the issues positions is made
+        // then expect the positions to have been updated
+        mockMvc.perform(patch("/issues")
+                .queryParam("project", projectId.toString())).andExpect(status().isOk());
+    }
 }
