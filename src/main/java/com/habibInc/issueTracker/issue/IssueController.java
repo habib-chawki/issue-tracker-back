@@ -1,6 +1,7 @@
 package com.habibInc.issueTracker.issue;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.habibInc.issueTracker.exceptionhandler.InvalidIdException;
 import com.habibInc.issueTracker.user.User;
@@ -12,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @Slf4j
@@ -118,8 +120,10 @@ public class IssueController {
 
     @PatchMapping
     @ResponseStatus(HttpStatus.OK)
-    public void swapIssuesPositions() {
-
+    public void swapIssuesPositions(@RequestBody JsonNode request) {
+        // extract the two issues ids
+        Long issueId1 = IdValidator.validate(request.get("issue1").toString());
+        Long issueId2 = IdValidator.validate(request.get("issue2").toString());
     }
 
 }

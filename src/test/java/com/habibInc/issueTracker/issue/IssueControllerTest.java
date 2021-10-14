@@ -361,9 +361,14 @@ public class IssueControllerTest {
         // given the project id
         Long projectId = 100L;
 
+        // given the request body
+        String requestBody = "{\"issue1\": 11, \"issue2\": 22}";
+
         // when a PATCH request is made to update the issues positions is made
         // then expect the positions to have been updated
         mockMvc.perform(patch("/issues")
-                .queryParam("project", projectId.toString())).andExpect(status().isOk());
+                .queryParam("project", projectId.toString())
+                .content(requestBody).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 }
