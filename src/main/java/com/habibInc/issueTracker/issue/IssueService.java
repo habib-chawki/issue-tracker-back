@@ -94,4 +94,8 @@ public class IssueService {
 
         return issueRepository.save(issue);
     }
+
+    public void swapIssues(Long projectId, Long issueId1, Long issueId2) {
+
+    }
 }
