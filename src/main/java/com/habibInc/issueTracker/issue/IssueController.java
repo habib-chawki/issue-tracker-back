@@ -115,4 +115,11 @@ public class IssueController {
 
         return updatedIssue;
     }
+
+    @PatchMapping
+    @ResponseStatus(HttpStatus.OK)
+    public void swapIssuesPositions() {
+
+    }
+
 }
