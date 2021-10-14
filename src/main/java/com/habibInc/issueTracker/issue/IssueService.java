@@ -96,6 +96,9 @@ public class IssueService {
     }
 
     public void swapIssues(Long projectId, Long issueId1, Long issueId2) {
+        // fetch the project by id
+        Project project = projectService.getProjectById(projectId);
+
         issueRepository.swapPositions(issueId1, issueId2);
     }
 }
