@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class IssueService {
@@ -99,6 +101,16 @@ public class IssueService {
         // fetch the project by id
         Project project = projectService.getProjectById(projectId);
 
+        // extract the list of issues' ids from project backlog
+        final List<Long> projectBacklog =
+                project.getBacklog().stream().map((issue) -> issue.getId()).collect(Collectors.toList());
+
+        // assert that the project backlog contains the issues
+        if(!projectBacklog.contains(issueId1) || !projectBacklog.contains(issueId2)){
+            throw new ForbiddenOperationException("Issues do not belong to the same project");
+        }
+
+        // invoke repository, swap issues' positions
         issueRepository.swapPositions(issueId1, issueId2);
     }
 }
