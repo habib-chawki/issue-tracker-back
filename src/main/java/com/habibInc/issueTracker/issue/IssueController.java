@@ -118,12 +118,15 @@ public class IssueController {
         return updatedIssue;
     }
 
-    @PatchMapping
+    @PatchMapping(params = "project")
     @ResponseStatus(HttpStatus.OK)
-    public void swapIssuesPositions(@RequestBody JsonNode request) {
+    public void swapIssuesPositions(@RequestParam("project") String id, @RequestBody JsonNode request) {
         // extract the two issues ids
         Long issueId1 = IdValidator.validate(request.get("issue1").toString());
         Long issueId2 = IdValidator.validate(request.get("issue2").toString());
+
+        // validate project id
+        Long projectId = IdValidator.validate(id);
     }
 
 }

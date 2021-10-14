@@ -361,8 +361,15 @@ public class IssueControllerTest {
         // given the project id
         Long projectId = 100L;
 
+        // given the issue ids
+        Long issueId1 = 11L;
+        Long issueId2 = 22L;
+
         // given the request body
         String requestBody = "{\"issue1\": 11, \"issue2\": 22}";
+
+        // given the service response
+        doNothing().when(issueService).swapIssues(projectId, issueId1, issueId2);
 
         // when a PATCH request is made to update the issues positions is made
         // then expect the positions to have been updated
