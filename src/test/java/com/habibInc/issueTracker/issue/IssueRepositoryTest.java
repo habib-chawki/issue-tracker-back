@@ -271,8 +271,9 @@ public class IssueRepositoryTest {
         assertThat(retrievedBacklog).hasSameElementsAs(backlog);
     }
 
+
     @Test
-    public void itShouldFindAllIssuesByProjectIdAndSprintId() {
+    public void givenFindIssues_whenSprintIsNotNull_itShouldReturnSprintBacklog() {
         // given a project
         project = projectRepository.save(project);
 
@@ -280,12 +281,27 @@ public class IssueRepositoryTest {
         sprint.setProject(project);
         sprint = sprintRepository.save(sprint);
 
-        // given a list of issues belonging to a sprint
+        // given a list of issues belonging to the sprint
         List<Issue> issuesWithSprint = List.of(
                 Issue.builder().project(project).sprint(sprint).summary("issue 1").build(),
                 Issue.builder().project(project).sprint(sprint).summary("issue 2").build(),
                 Issue.builder().project(project).sprint(sprint).summary("issue 3").build()
         );
+
+        issuesWithSprint = (List<Issue>) issueRepository.saveAll(issuesWithSprint);
+
+        // when "findAllByProjectIdAndSprintId()" is invoked with a sprint id
+        List<Issue> issues =
+                issueRepository.findAllByProjectIdAndSprintId(project.getId(), sprint.getId());
+
+        // then all the issues belonging to the sprint should be retrieved
+        assertThat(issues).containsExactlyElementsOf(issuesWithSprint);
+    }
+
+    @Test
+    public void givenFindIssues_whenSprintIsNull_itShouldReturnProductBacklog() {
+        // given a project
+        project = projectRepository.save(project);
 
         // given a list of issues without a sprint
         List<Issue> issuesWithoutSprint = List.of(
@@ -294,18 +310,10 @@ public class IssueRepositoryTest {
                 Issue.builder().project(project).summary("issue 30").build()
         );
 
-        issuesWithSprint = (List<Issue>) issueRepository.saveAll(issuesWithSprint);
         issuesWithoutSprint = (List<Issue>) issueRepository.saveAll(issuesWithoutSprint);
 
-        // when "findAllByProjectIdAndSprintId()" is invoked with a sprint id
-        List<Issue> issues =
-                issueRepository.findAllByProjectIdAndSprintId(project.getId(), sprint.getId());
-
-        // then all the issues belonging to the sprint should be retrieved
-        assertThat(issues).containsExactlyElementsOf(issuesWithSprint);
-
         // when "findAllByProjectIdAndSprintId()" is invoked with a null sprint id
-        issues = issueRepository.findAllByProjectIdAndSprintId(project.getId(), null);
+        List<Issue> issues = issueRepository.findAllByProjectIdAndSprintId(project.getId(), null);
 
         // then all the issues without a sprint should be retrieved
         assertThat(issues).containsExactlyElementsOf(issuesWithoutSprint);
