@@ -123,7 +123,7 @@ public class ProjectServiceTest {
     }
 
     @Test
-    public void itShouldGetProjectBacklog() {
+    public void itShouldGetProductBacklogByProjectId() {
         // given the project backlog
         List<Issue> backlog = List.of(
                 Issue.builder().id(100L).summary("issue 1").build(),
@@ -137,11 +137,11 @@ public class ProjectServiceTest {
         List<Issue> retrievedBacklog = projectService.getBacklog(project.getId());
 
         // then the backlog should be retrieved successfully
-        assertThat(retrievedBacklog).isEqualTo(backlog);
+        assertThat(retrievedBacklog).containsExactlyElementsOf(backlog);
     }
 
     @Test
-    public void itShouldGetOrderedProductBacklog() {
+    public void itShouldGetOrderedProductBacklogByProjectId() {
         // given the expected ordered backlog
         List<Issue> orderedBacklog = List.of(
                 Issue.builder().id(100L).position(1).summary("issue 1").build(),
@@ -156,7 +156,7 @@ public class ProjectServiceTest {
         List<Issue> retrievedBacklog = projectService.getOrderedBacklog(project.getId());
 
         // then the ordered backlog should be retrieved successfully
-        assertThat(retrievedBacklog).isEqualTo(orderedBacklog);
+        assertThat(retrievedBacklog).containsExactlyElementsOf(orderedBacklog);
     }
 
     @Test
