@@ -104,7 +104,7 @@ public class ProjectControllerTest {
     }
 
     @Test
-    public void itShouldGetProjectBacklog() throws Exception {
+    public void itShouldGetProductBacklogByProjectIdOrderedByIssuesPositions() throws Exception {
         // given the project backlog
         List<Issue> backlog = List.of(
                 Issue.builder().id(100L).summary("issue 1").build(),
@@ -119,7 +119,7 @@ public class ProjectControllerTest {
                         .collect(Collectors.toList())
         );
 
-        when(projectService.getBacklog(project.getId())).thenReturn(backlog);
+        when(projectService.getOrderedBacklog(project.getId())).thenReturn(backlog);
 
         // expect the backlog to be fetched successfully
         mockMvc.perform(get("/projects/" + project.getId() + "/backlog"))
