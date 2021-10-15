@@ -445,6 +445,37 @@ public class IssueIT {
             assertThat(issue1.getPosition()).isEqualTo(issue2Position);
             assertThat(issue2.getPosition()).isEqualTo(issue1Position);
         }
+
+        @Test
+        public void givenSwapIssuesPositions_whenIssuesDoNotBelongToTheSameProject_itShouldNotSwapTheirPositions() {
+            // given two distinct projects
+            final Project projectPrimary = projectService.createProject(Project.builder().name("Project primary").build(), authenticatedUser);
+            final Project projectSecondary = projectService.createProject(Project.builder().name("Project secondary").build(), authenticatedUser);
+
+            // given the two issues belonging to two different projects
+            issue1 = issueService.createIssue(issue1, authenticatedUser, projectPrimary.getId());
+            issue2 = issueService.createIssue(issue2, authenticatedUser, projectSecondary.getId());
+
+            // given the PATCH endpoint url
+            final String url = UriComponentsBuilder
+                    .fromUriString("/issues")
+                    .queryParam("project", project.getId())
+                    .build().toString();
+
+            // given the request body
+            final ObjectNode requestBody = mapper.createObjectNode();
+            requestBody.put("issue1", issue1.getId());
+            requestBody.put("issue2", issue2.getId());
+
+            HttpEntity<ObjectNode> httpEntity = new HttpEntity<>(requestBody, headers);
+
+            // when a PATCH request is made to swap the positions of the two issues belonging to two different projects
+            final ResponseEntity<ApiError> response =
+                    restTemplate.exchange(url, HttpMethod.PATCH, httpEntity, ApiError.class);
+
+            // then expect a forbidden operation error
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+        }
     }
 
     @Nested
