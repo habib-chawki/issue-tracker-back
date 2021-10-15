@@ -107,7 +107,7 @@ public class IssueService {
 
         // assert that the project backlog contains the issues
         if(!projectBacklog.contains(issueId1) || !projectBacklog.contains(issueId2)){
-            throw new ForbiddenOperationException("Issues do not belong to the same project");
+            throw new ForbiddenOperationException("Can not swap issues");
         }
 
         // invoke repository, swap issues' positions
