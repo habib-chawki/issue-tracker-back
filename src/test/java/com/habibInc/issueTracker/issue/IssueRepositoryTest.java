@@ -13,8 +13,10 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.util.comparator.Comparators;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -316,6 +318,28 @@ public class IssueRepositoryTest {
 
         // then all the issues without belonging to the product backlog should be retrieved
         assertThat(issues).containsExactlyElementsOf(productBacklog);
+    }
+
+    @Test
+    public void itShouldReturnIssuesByProjectIdAndSprintIdOrderedByPosition() {
+        // given the project
+        project = projectRepository.save(project);
+
+        // given a list of issues with different positions
+        List<Issue> issues = List.of(
+                Issue.builder().project(project).position(3).summary("issue 10").build(),
+                Issue.builder().project(project).position(1).summary("issue 20").build(),
+                Issue.builder().project(project).position(2).summary("issue 30").build()
+        );
+
+        issueRepository.saveAll(issues);
+
+        // when the repository is invoked to fetch the product backlog ordered by position
+        List<Issue> productBacklog =
+                issueRepository.findAllByProjectIdAndSprintIdOrderByPosition(project.getId(), null);
+
+        // then the product backlog should be ordered by issues' positions
+        assertThat(productBacklog).isSortedAccordingTo(Comparator.comparingInt(Issue::getPosition));
     }
 
     @Test
