@@ -415,10 +415,14 @@ public class IssueIT {
             issue1 = issueService.createIssue(issue1, authenticatedUser, project.getId());
             issue2 = issueService.createIssue(issue2, authenticatedUser, project.getId());
 
+            // given the issues positions
+            int issue1Position = issue1.getPosition();
+            int issue2Position = issue2.getPosition();
+
             // given the PATCH endpoint url
             final String url = UriComponentsBuilder
                             .fromUriString("/issues")
-                            .queryParam("project", IssueIT.this.project.getId())
+                            .queryParam("project", project.getId())
                             .build().toString();
 
             // given the request body
@@ -434,6 +438,12 @@ public class IssueIT {
 
             // then expect the issues' positions to have been swapped
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+            issue1 = issueService.getIssueById(issue1.getId());
+            issue2 = issueService.getIssueById(issue2.getId());
+
+            assertThat(issue1.getPosition()).isEqualTo(issue2Position);
+            assertThat(issue2.getPosition()).isEqualTo(issue1Position);
         }
     }
 
