@@ -271,7 +271,6 @@ public class IssueRepositoryTest {
         assertThat(retrievedBacklog).hasSameElementsAs(backlog);
     }
 
-
     @Test
     public void givenFindIssuesByProjectAndSprintId_whenSprintIsNotNull_itShouldReturnSprintBacklog() {
         // given the project
@@ -303,20 +302,20 @@ public class IssueRepositoryTest {
         // given the project
         project = projectRepository.save(project);
 
-        // given a list of issues without a sprint
-        List<Issue> issuesWithoutSprint = List.of(
+        // given a list of issues that don't belong to any sprint
+        List<Issue> productBacklog = List.of(
                 Issue.builder().project(project).summary("issue 10").build(),
                 Issue.builder().project(project).summary("issue 20").build(),
                 Issue.builder().project(project).summary("issue 30").build()
         );
 
-        issuesWithoutSprint = (List<Issue>) issueRepository.saveAll(issuesWithoutSprint);
+        productBacklog = (List<Issue>) issueRepository.saveAll(productBacklog);
 
         // when "findAllByProjectIdAndSprintId()" is invoked with a null sprint id
         List<Issue> issues = issueRepository.findAllByProjectIdAndSprintId(project.getId(), null);
 
-        // then all the issues without a sprint should be retrieved
-        assertThat(issues).containsExactlyElementsOf(issuesWithoutSprint);
+        // then all the issues without belonging to the product backlog should be retrieved
+        assertThat(issues).containsExactlyElementsOf(productBacklog);
     }
 
     @Test
