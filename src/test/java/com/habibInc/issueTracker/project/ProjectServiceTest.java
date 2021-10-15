@@ -141,6 +141,25 @@ public class ProjectServiceTest {
     }
 
     @Test
+    public void itShouldGetOrderedProductBacklog() {
+        // given the expected ordered backlog
+        List<Issue> orderedBacklog = List.of(
+                Issue.builder().id(100L).position(1).summary("issue 1").build(),
+                Issue.builder().id(200L).position(2).summary("issue 2").build(),
+                Issue.builder().id(300L).position(3).summary("issue 2").build()
+        );
+
+        // given the repository response
+        when(issueRepository.findAllByProjectIdAndSprintIdOrderByPosition(project.getId(), null)).thenReturn(orderedBacklog);
+
+        // when the service is invoked to fetch the ordered backlog
+        List<Issue> retrievedBacklog = projectService.getOrderedBacklog(project.getId());
+
+        // then the ordered backlog should be retrieved successfully
+        assertThat(retrievedBacklog).isEqualTo(orderedBacklog);
+    }
+
+    @Test
     public void itShouldGetProjectsByAssignedUser() {
         // given a user id
         Long userId = 10L;
