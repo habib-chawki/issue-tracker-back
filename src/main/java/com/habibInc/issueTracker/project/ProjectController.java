@@ -70,8 +70,8 @@ public class ProjectController {
         // validate project id
         Long projectId = IdValidator.validate(id);
 
-        // fetch list of issues by project id
-        List<Issue> issues = projectService.getBacklog(projectId);
+        // fetch list of issues by project id, ordered by their positions
+        List<Issue> issues = projectService.getOrderedBacklog(projectId);
 
         // map to issue DTOs
         final List<IssueDto> backlog = issues.stream()
