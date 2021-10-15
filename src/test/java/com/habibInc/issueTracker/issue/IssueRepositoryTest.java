@@ -273,8 +273,8 @@ public class IssueRepositoryTest {
 
 
     @Test
-    public void givenFindIssues_whenSprintIsNotNull_itShouldReturnSprintBacklog() {
-        // given a project
+    public void givenFindIssuesByProjectAndSprintId_whenSprintIsNotNull_itShouldReturnSprintBacklog() {
+        // given the project
         project = projectRepository.save(project);
 
         // given a sprint
@@ -282,25 +282,25 @@ public class IssueRepositoryTest {
         sprint = sprintRepository.save(sprint);
 
         // given a list of issues belonging to the sprint
-        List<Issue> issuesWithSprint = List.of(
+        List<Issue> sprintBacklog = List.of(
                 Issue.builder().project(project).sprint(sprint).summary("issue 1").build(),
                 Issue.builder().project(project).sprint(sprint).summary("issue 2").build(),
                 Issue.builder().project(project).sprint(sprint).summary("issue 3").build()
         );
 
-        issuesWithSprint = (List<Issue>) issueRepository.saveAll(issuesWithSprint);
+        sprintBacklog = (List<Issue>) issueRepository.saveAll(sprintBacklog);
 
         // when "findAllByProjectIdAndSprintId()" is invoked with a sprint id
         List<Issue> issues =
                 issueRepository.findAllByProjectIdAndSprintId(project.getId(), sprint.getId());
 
         // then all the issues belonging to the sprint should be retrieved
-        assertThat(issues).containsExactlyElementsOf(issuesWithSprint);
+        assertThat(issues).containsExactlyElementsOf(sprintBacklog);
     }
 
     @Test
-    public void givenFindIssues_whenSprintIsNull_itShouldReturnProductBacklog() {
-        // given a project
+    public void givenFindIssuesByProjectAndSprintId_whenSprintIsNull_itShouldReturnProductBacklog() {
+        // given the project
         project = projectRepository.save(project);
 
         // given a list of issues without a sprint
