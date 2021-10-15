@@ -406,6 +406,15 @@ public class IssueIT {
 
         @Test
         public void itShouldSwapThePositionsOfTwoIssues() {
+            // given the issues are created and belong to the same project
+            issue1 = issueService.createIssue(issue1, authenticatedUser, project.getId());
+            issue2 = issueService.createIssue(issue2, authenticatedUser, project.getId());
+
+            // given the PATCH endpoint url
+            String url = "/issues?project="+project.getId();
+
+            // when a PATCH request is made to swap the positions of the two issues
+
         }
     }
 
