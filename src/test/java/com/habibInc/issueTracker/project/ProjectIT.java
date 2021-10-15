@@ -15,6 +15,8 @@ import org.springframework.http.*;
 import org.springframework.web.util.UriBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -228,9 +230,9 @@ public class ProjectIT {
 
             // given the project backlog
             List<Issue> backlog = List.of(
-                    Issue.builder().project(project).summary("issue 1").build(),
-                    Issue.builder().project(project).summary("issue 2").build(),
-                    Issue.builder().project(project).summary("issue 2").build()
+                    Issue.builder().position(3).project(project).summary("issue 1").build(),
+                    Issue.builder().position(1).project(project).summary("issue 2").build(),
+                    Issue.builder().position(2).project(project).summary("issue 2").build()
             );
 
             // given the backlog is saved
@@ -247,6 +249,9 @@ public class ProjectIT {
             // then expect the backlog to have been retrieved successfully
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).hasSameElementsAs(backlog);
+
+            // expect the issues to be in the correct order by position
+            assertThat(response.getBody()).isSortedAccordingTo(Comparator.comparingInt(Issue::getPosition));
         }
 
         @Test
