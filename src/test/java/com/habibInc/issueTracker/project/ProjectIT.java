@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
+import org.springframework.web.util.UriBuilder;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 import java.util.Set;
@@ -215,12 +217,14 @@ public class ProjectIT {
         }
 
         @Test
-        public void itShouldGetProjectBacklog() {
+        public void itShouldGetOrderedProductBacklogByProjectId() {
             // given the project is saved
             project = projectService.createProject(project, authenticatedUser);
 
             // given the GET backlog url
-            String url = String.format("%s/%s/backlog", baseUrl, project.getId());
+            final String url = UriComponentsBuilder.fromUriString(baseUrl)
+                    .pathSegment(project.getId().toString(), "backlog")
+                    .build().toString();
 
             // given the project backlog
             List<Issue> backlog = List.of(
