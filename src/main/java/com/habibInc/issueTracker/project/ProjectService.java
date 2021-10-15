@@ -48,6 +48,10 @@ public class ProjectService {
         return issueRepository.findAllByProjectIdAndSprintId(projectId, null);
     }
 
+    public List<Issue> getOrderedBacklog(Long projectId) {
+        return issueRepository.findAllByProjectIdAndSprintIdOrderByPosition(projectId, null);
+    }
+
     public Set<Project> getProjectsByAssignedUser(Long userId) {
         return projectRepository.findAllByAssignedUsersId(userId);
     }
