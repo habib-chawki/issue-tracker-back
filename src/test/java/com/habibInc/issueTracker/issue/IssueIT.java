@@ -2,6 +2,7 @@ package com.habibInc.issueTracker.issue;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.habibInc.issueTracker.exceptionhandler.ApiError;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import com.habibInc.issueTracker.project.Project;
@@ -17,7 +18,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -411,10 +416,24 @@ public class IssueIT {
             issue2 = issueService.createIssue(issue2, authenticatedUser, project.getId());
 
             // given the PATCH endpoint url
-            String url = "/issues?project="+project.getId();
+            final String url = UriComponentsBuilder
+                            .fromUriString("/issues")
+                            .queryParam("project", IssueIT.this.project.getId())
+                            .build().toString();
+
+            // given the request body
+            final ObjectNode requestBody = mapper.createObjectNode();
+            requestBody.put("issue1", issue1.getId());
+            requestBody.put("issue2", issue2.getId());
+
+            HttpEntity<ObjectNode> httpEntity = new HttpEntity<>(requestBody, headers);
 
             // when a PATCH request is made to swap the positions of the two issues
+            final ResponseEntity<Void> response =
+                    restTemplate.exchange(url, HttpMethod.PATCH, httpEntity, Void.class);
 
+            // then expect the issues' positions to have been swapped
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         }
     }
 
