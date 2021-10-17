@@ -73,6 +73,7 @@ public class IssueServiceTest {
         issue1.setCreationTime(LocalDateTime.now());
         issue1.setUpdateTime(LocalDateTime.now());
         issue1.setPoints(4);
+        issue1.setPosition(1);
 
         // set the authenticated user as the reporter
         issue1.setReporter(authenticatedUser);
@@ -86,6 +87,7 @@ public class IssueServiceTest {
         issue2.setCreationTime(LocalDateTime.now());
         issue2.setUpdateTime(LocalDateTime.now());
         issue2.setPoints(8);
+        issue2.setPosition(2);
 
         // set another reporter for issue2
         issue2.setReporter(reporter);
@@ -291,9 +293,13 @@ public class IssueServiceTest {
         // given the project
         Project project = Project.builder().id(100L).backlog(List.of(issue1, issue2)).name("project swap").build();
 
-        // given
+        // given the issues belong to the same project
         issue1.setProject(project);
         issue2.setProject(project);
+
+        // given the issues positions before the swap
+        final int position1 = issue1.getPosition();
+        final int position2 = issue2.getPosition();
 
         // given
         when(projectService.getProjectById(project.getId())).thenReturn(project);
