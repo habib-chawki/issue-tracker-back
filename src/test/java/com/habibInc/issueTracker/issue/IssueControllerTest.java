@@ -1,6 +1,7 @@
 package com.habibInc.issueTracker.issue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.habibInc.issueTracker.exceptionhandler.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -318,7 +319,8 @@ public class IssueControllerTest {
         Long userId = 110L;
 
         // given the request body
-        String requestBody = "{\"assignee\" : \"" + userId + "\"}";
+        ObjectNode requestBody = objectMapper.createObjectNode();
+        requestBody.put("assignee", userId);
 
         // given the service response
         when(issueService.updateIssueAssignee(issue1.getId(), userId)).thenReturn(issue1);
@@ -331,7 +333,7 @@ public class IssueControllerTest {
         // then the response should be the updated issue
         mockMvc.perform(patch("/issues/{issueId}", issue1.getId())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
+                .content(requestBody.toString()))
                 .andExpect(status().isOk())
                 .andExpect(content().json(expectedResponse))
                 .andDo(
