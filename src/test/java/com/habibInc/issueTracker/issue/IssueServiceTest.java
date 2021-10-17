@@ -318,15 +318,21 @@ public class IssueServiceTest {
 
     @Test
     public void itShouldOnlySwapIssues_whenTheyBelongToTheSameProject() {
-        // given the project backlog contains only one of the two issues
-        Project project = Project.builder().id(100L).name("project swap").build();
+        // given the projects
+        final Project project = Project.builder().id(100L).name("main project").build();
+        final Project otherProject = Project.builder().id(666L).name("other project").build();
+
+        // given the issues belong to different projects
+        issue1.setProject(project);
+        issue2.setProject(otherProject);
 
         // given the project service response
         when(projectService.getProjectById(project.getId())).thenReturn(project);
         when(issueRepository.findById(issue1.getId())).thenReturn(Optional.of(issue1));
         when(issueRepository.findById(issue2.getId())).thenReturn(Optional.of(issue2));
 
-        // when the service is invoked to swap the positions, then an exception should be thrown
+        // when the service is invoked to swap the issues' positions
+        // then the swap operation should be forbidden
         assertThatExceptionOfType(ForbiddenOperationException.class).
                 isThrownBy(() -> issueService.swapIssuesPositions(project.getId(), issue2.getId(), issue1.getId()));
     }
