@@ -395,7 +395,9 @@ public class IssueIT {
             issue1 = issueService.createIssue(issue1, authenticatedUser, project.getId());
 
             // given the request body
-            String requestBody = "{\"assignee\" : \"" + assignee.getId() + "\"}";
+            final ObjectNode requestBody = mapper.createObjectNode();
+            requestBody.put("assignee", assignee.getId());
+
             HttpEntity httpEntity = new HttpEntity(requestBody, headers);
 
             // when a PATCH request is made to update the issue assignee
