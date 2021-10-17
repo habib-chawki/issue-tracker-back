@@ -95,7 +95,7 @@ public class IssueService {
         // set the assignee
         issue.setAssignee(assignee);
 
-        return issueRepository.save(issue);
+        return issue;
     }
 
     @Transactional
@@ -112,7 +112,10 @@ public class IssueService {
             throw new ForbiddenOperationException("Can not swap issues");
         }
 
-        // invoke repository, swap issues' positions
-        issueRepository.swapPositions(issueId1, issueId2);
+        final int position1 = issue1.getPosition();
+        final int position2 = issue2.getPosition();
+
+        issue1.setPosition(position2);
+        issue2.setPosition(position1);
     }
 }
