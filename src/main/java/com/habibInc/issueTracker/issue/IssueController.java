@@ -3,6 +3,7 @@ package com.habibInc.issueTracker.issue;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.habibInc.issueTracker.exceptionhandler.InvalidIdException;
 import com.habibInc.issueTracker.user.User;
 import com.habibInc.issueTracker.utils.validation.IdValidator;
@@ -102,10 +103,9 @@ public class IssueController {
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public IssueDto updateIssueAssignee(@PathVariable("id") Long issueId,
-                                        @RequestBody String request) throws JsonProcessingException {
+                                        @RequestBody ObjectNode request) throws JsonProcessingException {
         // extract the new assignee id from the request body
-        Map<String, String> map = objectMapper.readValue(request, Map.class);
-        Long assigneeId = IdValidator.validate(map.get("assignee"));
+        Long assigneeId = IdValidator.validate(request.get("assignee").toString());
 
         // invoke service, update assignee
         Issue issue = issueService.updateIssueAssignee(issueId, assigneeId);
