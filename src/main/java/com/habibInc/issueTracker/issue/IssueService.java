@@ -8,6 +8,7 @@ import com.habibInc.issueTracker.user.User;
 import com.habibInc.issueTracker.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -97,16 +98,17 @@ public class IssueService {
         return issueRepository.save(issue);
     }
 
+    @Transactional
     public void swapIssuesPositions(Long projectId, Long issueId1, Long issueId2) {
         // fetch the project by id
-        Project project = projectService.getProjectById(projectId);
+        final Project project = projectService.getProjectById(projectId);
 
-        // extract the list of issues' ids from project backlog
-        final List<Long> projectBacklog =
-                project.getBacklog().stream().map((issue) -> issue.getId()).collect(Collectors.toList());
+        // fetch the issues by id
+        final Issue issue1 = getIssueById(issueId1);
+        final Issue issue2 = getIssueById(issueId2);
 
-        // assert that the project backlog contains the issues
-        if(!projectBacklog.contains(issueId1) || !projectBacklog.contains(issueId2)){
+        // assert that the issues belong to the same project
+        if(!issue1.getProject().equals(project) || !issue2.getProject().equals(project)){
             throw new ForbiddenOperationException("Can not swap issues");
         }
 
