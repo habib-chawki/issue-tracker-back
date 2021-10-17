@@ -310,6 +310,9 @@ public class IssueServiceTest {
         issueService.swapIssuesPositions(project.getId(), issue1.getId(), issue2.getId());
 
         // then expect the positions to have been swapped
+        assertThat(issue1.getPosition()).isEqualTo(position2);
+        assertThat(issue2.getPosition()).isEqualTo(position1);
+
         verify(projectService, times(1)).getProjectById(project.getId());
     }
 
