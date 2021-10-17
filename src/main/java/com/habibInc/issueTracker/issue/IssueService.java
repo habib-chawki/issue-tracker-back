@@ -112,6 +112,7 @@ public class IssueService {
             throw new ForbiddenOperationException("Can not swap issues");
         }
 
+        // swap issues positions
         final int position1 = issue1.getPosition();
         final int position2 = issue2.getPosition();
 

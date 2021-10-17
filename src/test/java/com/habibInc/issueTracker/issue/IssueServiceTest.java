@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -275,7 +276,6 @@ public class IssueServiceTest {
 
         when(userService.getUserById(assignee.getId())).thenReturn(assignee);
         when(issueRepository.findById(issue1.getId())).thenReturn(Optional.of(issue1));
-        when(issueRepository.save(issue1)).thenReturn(issue1);
 
         // when the update assignee request is made
         issueService.updateIssueAssignee(issue1.getId(), assignee.getId());
@@ -284,7 +284,6 @@ public class IssueServiceTest {
         assertThat(issue1.getAssignee()).isEqualTo(assignee);
 
         verify(issueRepository, times(1)).findById(issue1.getId());
-        verify(issueRepository, times(1)).save(issue1);
     }
 
     @Test
@@ -292,15 +291,19 @@ public class IssueServiceTest {
         // given the project
         Project project = Project.builder().id(100L).backlog(List.of(issue1, issue2)).name("project swap").build();
 
-        // given the repository response
-        doNothing().when(issueRepository).swapPositions(issue1.getId(), issue2.getId());
+        // given
+        issue1.setProject(project);
+        issue2.setProject(project);
+
+        // given
         when(projectService.getProjectById(project.getId())).thenReturn(project);
+        when(issueRepository.findById(issue1.getId())).thenReturn(Optional.of(issue1));
+        when(issueRepository.findById(issue2.getId())).thenReturn(Optional.of(issue2));
 
         // when the service is invoked to swap issues' positions
         issueService.swapIssuesPositions(project.getId(), issue1.getId(), issue2.getId());
 
-        // then expect the repository to have been invoked and the positions to have been swapped
-        verify(issueRepository, times(1)).swapPositions(issue1.getId(), issue2.getId());
+        // then expect the positions to have been swapped
         verify(projectService, times(1)).getProjectById(project.getId());
     }
 
